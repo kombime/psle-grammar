@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Keep the Seesaw Level: Subject-Verb Agreement</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚖️</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Lexend:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F3EEF8;
+    --surface: #FFFFFF;
+    --surface-2: #EAE2F3;
+    --ink: #2A1838;
+    --ink-soft: #5E4D6E;
+    --subj: #C2410C;        /* orange: the subject's end of the seesaw */
+    --subj-soft: #FDE6D8;
+    --verb: #6A3FC1;        /* violet: the verb's end */
+    --verb-soft: #E9E0FB;
+    --beam: #8B6B4A;
+    --right: #1D7541;  --right-soft: #DCF1E3;
+    --wrong: #B8322A;  --wrong-soft: #F9E0DE;
+    --rule: rgba(42,24,56,0.13);
+    --font-display: 'Lilita One', 'Arial Rounded MT Bold', 'Trebuchet MS', sans-serif;
+    --font-body: 'Lexend', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1A1224; --surface: #251A31; --surface-2: #30233F;
+      --ink: #F1EAF7; --ink-soft: #BCAECB;
+      --subj: #FF9A5E; --subj-soft: #3F2418;
+      --verb: #BBA2FF; --verb-soft: #2E2350;
+      --beam: #B08D6A;
+      --right: #72D69D; --right-soft: #17311F;
+      --wrong: #F48D84; --wrong-soft: #3D1F1D;
+      --rule: rgba(241,234,247,0.15);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1A1224; --surface: #251A31; --surface-2: #30233F;
+    --ink: #F1EAF7; --ink-soft: #BCAECB;
+    --subj: #FF9A5E; --subj-soft: #3F2418;
+    --verb: #BBA2FF; --verb-soft: #2E2350;
+    --beam: #B08D6A;
+    --right: #72D69D; --right-soft: #17311F;
+    --wrong: #F48D84; --wrong-soft: #3D1F1D;
+    --rule: rgba(241,234,247,0.15);
+  }
+
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15.5px; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 24px 18px 64px; }
+  img, svg { max-width: 100%; }
+  p { line-height: 1.6; }
+  b, strong { font-weight: 700; }
+  :focus-visible { outline: 3px solid var(--verb); outline-offset: 2px; }
+
+  .back-link {
+    display: inline-block; margin: 0 0 22px; padding: 8px 16px;
+    font-weight: 500; font-size: 14px; color: var(--ink); text-decoration: none;
+    background: var(--surface); border-radius: 999px; border: 2px solid var(--rule);
+  }
+  .back-link:hover { border-color: var(--verb); }
+
+  /* Subject / verb highlighting used in every example */
+  .s { color: var(--subj); font-weight: 700; border-bottom: 2.5px solid var(--subj); }
+  .v { color: var(--verb); font-weight: 700; border-bottom: 2.5px dotted var(--verb); }
+  .x { opacity: 0.55; }  /* the "extra words" you cover up */
+  .no { color: var(--wrong); text-decoration: line-through; text-decoration-thickness: 2px; }
+  .ok { color: var(--right); font-weight: 700; }
+
+  h1, h2, h3 { font-family: var(--font-display); font-weight: 400; letter-spacing: 0.01em; }
+  h2 { font-size: 28px; line-height: 1.1; margin: 0 0 6px; }
+  .sub { color: var(--ink-soft); margin: 0 0 20px; max-width: 56ch; }
+  section { margin-bottom: 52px; }
+
+  /* ---------- Hero ---------- */
+  .hero h1 { font-size: clamp(40px, 11vw, 64px); line-height: 0.95; margin: 0 0 14px; }
+  .hero .lead { font-size: 17px; max-width: 46ch; margin: 0 0 22px; color: var(--ink-soft); }
+  .playground {
+    background: var(--surface); border-radius: 22px; padding: 18px 14px 16px;
+    border: 2px solid var(--rule);
+  }
+  .playground svg { display: block; width: 100%; height: auto; }
+  #plank { transform-box: view-box; transform-origin: 170px 112px; transition: transform 0.6s cubic-bezier(.3,1.5,.5,1); }
+  .seat-s { fill: var(--subj-soft); stroke: var(--subj); stroke-width: 2.5; }
+  .seat-v { fill: var(--verb-soft); stroke: var(--verb); stroke-width: 2.5; }
+  .seat-text { font-family: var(--font-display); font-size: 17px; text-anchor: middle; }
+  .seat-text.s-t { fill: var(--subj); }
+  .seat-text.v-t { fill: var(--verb); }
+  .seat-cap { font-family: var(--font-body); font-size: 10px; text-anchor: middle; fill: var(--ink-soft); }
+  .beam { fill: var(--beam); }
+  .pivot { fill: var(--ink-soft); }
+  .ground { stroke: var(--rule); stroke-width: 3; stroke-linecap: round; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .chip {
+    font: inherit; font-size: 14.5px; font-weight: 500; color: var(--ink);
+    background: var(--surface-2); border: 2px solid transparent; border-radius: 999px;
+    padding: 9px 14px; min-height: 42px; cursor: pointer;
+  }
+  .chip[aria-pressed="true"] { border-color: var(--ink); background: var(--surface); }
+  .verdict-line { margin: 12px 4px 0; font-size: 14.5px; min-height: 2.6em; }
+  .verdict-line b.lv { color: var(--right); }
+  .verdict-line b.tp { color: var(--wrong); }
+  @media (prefers-reduced-motion: reduce) { #plank { transition: none; } }
+
+  /* ---------- Rule ---------- */
+  .steps { list-style: none; margin: 0; padding: 0; counter-reset: step; }
+  .steps li {
+    counter-increment: step; position: relative;
+    padding: 14px 16px 14px 62px; margin-bottom: 10px;
+    background: var(--surface); border-radius: 16px;
+  }
+  .steps li::before {
+    content: counter(step); position: absolute; left: 14px; top: 12px;
+    width: 34px; height: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 19px;
+    background: var(--ink); color: var(--bg);
+  }
+  .steps li p { margin: 0; }
+  .steps li p + p { margin-top: 6px; font-size: 14.5px; color: var(--ink-soft); }
+
+  .swap {
+    margin-top: 16px; padding: 18px; border-radius: 18px;
+    background: var(--verb-soft); border: 2px dashed var(--verb);
+  }
+  .swap h3 { margin: 0 0 6px; font-size: 21px; color: var(--verb); }
+  .swap p { margin: 0 0 8px; }
+  .swap .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0; }
+  .swap .pair div { background: var(--surface); border-radius: 12px; padding: 10px 12px; font-size: 15px; }
+  .swap .note { font-size: 13.5px; color: var(--ink-soft); margin: 0; }
+
+  /* ---------- Traps ---------- */
+  .trap {
+    background: var(--surface); border-radius: 18px; padding: 16px 18px; margin-bottom: 12px;
+    border-left: 6px solid var(--wrong);
+  }
+  .trap h3 { margin: 0 0 8px; font-size: 20px; }
+  .trap .eg { margin: 0 0 4px; font-size: 15px; }
+  .trap .why { margin: 8px 0 0; font-size: 14px; color: var(--ink-soft); }
+
+  /* ---------- Categories ---------- */
+  .cats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 580px) { .cats { grid-template-columns: 1fr; } }
+  .cat { background: var(--surface); border-radius: 18px; padding: 16px 16px 12px; }
+  .cat .verdict {
+    display: inline-block; font-family: var(--font-display); font-size: 14px;
+    padding: 3px 10px 4px; border-radius: 8px; margin-bottom: 8px;
+  }
+  .verdict.one { background: var(--subj-soft); color: var(--subj); }
+  .verdict.many { background: var(--verb-soft); color: var(--verb); }
+  .verdict.near { background: var(--surface-2); color: var(--ink); }
+  .cat h3 { margin: 0 0 6px; font-size: 19px; }
+  .cat p { margin: 0 0 8px; font-size: 14.5px; }
+  .cat p.rule-line { color: var(--ink-soft); }
+
+  /* ---------- Special cases ---------- */
+  .specials { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 580px) { .specials { grid-template-columns: 1fr; } }
+  .special { background: var(--surface-2); border-radius: 18px; padding: 16px; }
+  .special h3 { margin: 0 0 6px; font-size: 18px; }
+  .special p { margin: 0 0 8px; font-size: 14px; }
+  .special p:last-child { margin-bottom: 0; }
+
+  /* ---------- Quiz ---------- */
+  .scoreboard {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 2;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 16px; margin-bottom: 18px; border-radius: 16px;
+    background: var(--ink); color: var(--bg);
+  }
+  .scoreboard .label { font-size: 12.5px; opacity: 0.8; }
+  .score { font-family: var(--font-display); font-size: 26px; }
+  .reset-btn {
+    font: inherit; font-weight: 500; font-size: 14px; padding: 10px 16px; min-height: 44px;
+    border-radius: 999px; border: 2px solid var(--bg); background: transparent; color: var(--bg); cursor: pointer;
+  }
+  .quiz-card { background: var(--surface); border-radius: 18px; padding: 16px 16px 14px; margin-bottom: 14px; }
+  .quiz-num { font-size: 12.5px; color: var(--ink-soft); margin: 0 0 6px; }
+  .quiz-text { font-size: 16.5px; margin: 0 0 14px; line-height: 1.6; }
+  .blank { display: inline-block; min-width: 64px; text-align: center; border-bottom: 2.5px dashed var(--ink-soft); color: var(--ink-soft); }
+  .blank.filled { border-bottom-style: solid; border-bottom-color: var(--verb); color: var(--verb); font-weight: 700; }
+  .opts { display: flex; flex-direction: column; gap: 9px; }
+  .opts.row { flex-direction: row; }
+  .opts.row .opt { flex: 1; text-align: center; }
+  .opt {
+    font: inherit; font-size: 16px; font-weight: 500; text-align: left;
+    padding: 11px 14px; min-height: 46px; border-radius: 999px;
+    border: 2px solid var(--rule); background: var(--bg); color: var(--ink); cursor: pointer;
+  }
+  .opt:not(:disabled):hover { border-color: var(--verb); }
+  .opt:disabled { cursor: default; }
+  .opt .tag { font-weight: 700; margin-right: 8px; color: var(--verb); }
+  .opt.correct, .opt.reveal { background: var(--right-soft); border-color: var(--right); color: var(--right); }
+  .opt.incorrect { background: var(--wrong-soft); border-color: var(--wrong); color: var(--wrong); }
+  .feedback { display: none; margin-top: 12px; padding-top: 12px; border-top: 2px dashed var(--rule); font-size: 14px; line-height: 1.55; }
+  .feedback.show { display: block; }
+  .verdict-q { display: block; font-family: var(--font-display); font-size: 17px; margin-bottom: 2px; }
+  .feedback.fb-ok .verdict-q { color: var(--right); }
+  .feedback.fb-no .verdict-q { color: var(--wrong); }
+
+  /* ---------- Summary ---------- */
+  .summary { background: var(--surface); border-radius: 22px; padding: 20px; border: 2px solid var(--rule); }
+  .summary h2 { margin-bottom: 12px; }
+  .summary ul { margin: 0; padding-left: 20px; line-height: 1.75; font-size: 15px; }
+  .chant {
+    margin: 18px 0 0; padding: 16px; border-radius: 16px; text-align: center;
+    background: var(--verb-soft); font-family: var(--font-display); font-size: 21px; line-height: 1.3; color: var(--ink);
+  }
+  footer { text-align: center; font-size: 12.5px; color: var(--ink-soft); margin-top: 36px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back-link" href="index.html">← Back to the shelf</a>
+
+  <!-- 1. HERO -->
+  <header class="hero">
+    <h1>Keep the Seesaw Level</h1>
+    <p class="lead">Every sentence is a seesaw. The <span class="s">subject</span> sits on one end and the <span class="v">verb</span> sits on the other. One rider needs a one-rider verb; a crowd needs a crowd verb. Get it wrong and the sentence tips over.</p>
+
+    <div class="playground">
+      <svg viewBox="0 0 340 170" role="img" aria-labelledby="seesawTitle">
+        <title id="seesawTitle">A seesaw with the subject on the left seat and the verb on the right seat</title>
+        <line class="ground" x1="12" y1="152" x2="328" y2="152"/>
+        <g id="plank">
+          <rect class="beam" x="22" y="104" width="296" height="10" rx="5"/>
+          <rect class="seat-s" x="30" y="66" width="112" height="38" rx="10"/>
+          <rect class="seat-v" x="198" y="66" width="112" height="38" rx="10"/>
+          <text class="seat-text s-t" id="seatS" x="86" y="91">dog</text>
+          <text class="seat-text v-t" id="seatV" x="254" y="91">runs</text>
+          <text class="seat-cap" x="86" y="58">subject</text>
+          <text class="seat-cap" x="254" y="58">verb</text>
+        </g>
+        <polygon class="pivot" points="148,152 192,152 170,112"/>
+      </svg>
+      <div class="chips" role="group" aria-label="Try a sentence on the seesaw">
+        <button class="chip" type="button" aria-pressed="true" data-s="dog" data-v="runs" data-ok="1"
+          data-msg="One dog, so the verb takes the -s: runs.">The dog runs.</button>
+        <button class="chip" type="button" aria-pressed="false" data-s="dogs" data-v="run" data-ok="1"
+          data-msg="More than one dog, so the verb drops its -s: run.">The dogs run.</button>
+        <button class="chip" type="button" aria-pressed="false" data-s="dogs" data-v="runs" data-ok="0"
+          data-msg="A crowd of dogs with a one-rider verb. It should be: The dogs run.">The dogs runs.</button>
+        <button class="chip" type="button" aria-pressed="false" data-s="box" data-v="are" data-ok="0"
+          data-msg="The rider is the box, not the crayons. One box, so: The box of crayons is…">The box of crayons are…</button>
+      </div>
+      <p class="verdict-line" id="seesawMsg" aria-live="polite"><b class="lv">Level.</b> One dog, so the verb takes the -s: runs.</p>
+    </div>
+  </header>
+
+  <!-- 2. THE RULE -->
+  <section>
+    <h2>The three-step balance check</h2>
+    <p class="sub">Use this every time you're choosing between is/are, has/have, was/were, or a verb with or without -s.</p>
+    <ol class="steps">
+      <li>
+        <p><b>Find the real subject.</b> Ask: who or what is doing the action? Cover up any extra words that describe it.</p>
+        <p>The <span class="s">bag</span> <span class="x">of oranges</span> <span class="v">is</span> heavy. → The rider is the bag.</p>
+      </li>
+      <li>
+        <p><b>Count it.</b> Is it one person or thing, or more than one?</p>
+        <p>One bag. One rider.</p>
+      </li>
+      <li>
+        <p><b>Match the verb.</b> One takes the one-rider verb: <b>is, has, was, runs</b>. More than one takes the crowd verb: <b>are, have, were, run</b>.</p>
+        <p>The <span class="s">bag</span> <span class="v">is</span> heavy. The <span class="s">bags</span> <span class="v">are</span> heavy.</p>
+      </li>
+    </ol>
+
+    <div class="swap">
+      <h3>The S swap</h3>
+      <p>Here's the twist that confuses everyone. On a <b>noun</b>, an -s usually means <i>more than one</i>. On a <b>verb</b>, an -s means <i>just one</i>. So the -s jumps across the seesaw. It never sits on both ends.</p>
+      <div class="pair">
+        <div>The <span class="s">bird</span> <span class="v">sings</span>.</div>
+        <div>The <span class="s">birds</span> <span class="v">sing</span>.</div>
+      </div>
+      <p class="note">This matters in the present tense and with is/are, has/have and was/were. Most past-tense verbs, like <i>walked</i>, stay the same for one or many.</p>
+    </div>
+  </section>
+
+  <!-- 3. TRAPS -->
+  <section>
+    <h2>Three traps that tip the seesaw</h2>
+    <p class="sub">These are the mistakes that show up again and again in grammar papers and compositions.</p>
+
+    <div class="trap">
+      <h3>Trap 1: Matching the nearest noun</h3>
+      <p class="eg"><span class="no">The box of crayons are on the table.</span></p>
+      <p class="eg"><span class="ok">The <span class="s">box</span> <span class="x">of crayons</span> <span class="v">is</span> on the table.</span></p>
+      <p class="why">"Crayons" sits right next to the verb, so it's tempting to match it. But the box is the rider. Put your finger over the "of…" part and the answer becomes obvious. It works the other way too: The <span class="s">leaves</span> <span class="x">on the tree</span> <span class="v">are</span> brown.</p>
+    </div>
+
+    <div class="trap">
+      <h3>Trap 2: "Each of" and "one of"</h3>
+      <p class="eg"><span class="no">Each of the pupils have a name tag.</span></p>
+      <p class="eg"><span class="ok"><span class="s">Each</span> <span class="x">of the pupils</span> <span class="v">has</span> a name tag.</span></p>
+      <p class="eg"><span class="ok"><span class="s">One</span> <span class="x">of my cousins</span> <span class="v">plays</span> the piano.</span></p>
+      <p class="why">The plural word after "of" is a decoy. The rider is "each" or "one", and both mean a single person or thing.</p>
+    </div>
+
+    <div class="trap">
+      <h3>Trap 3: "There is" and "There are"</h3>
+      <p class="eg"><span class="no">There is three apples in the basket.</span></p>
+      <p class="eg"><span class="ok">There <span class="v">are</span> three <span class="s">apples</span> in the basket.</span></p>
+      <p class="why">In these sentences the subject comes <i>after</i> the verb, so look ahead to find the rider. The same goes for sentences starting with "Here": Here <span class="v">are</span> your <span class="s">books</span>. Here <span class="v">is</span> your <span class="s">book</span>.</p>
+    </div>
+  </section>
+
+  <!-- 4. CATEGORIES -->
+  <section>
+    <h2>Who's on the seesaw?</h2>
+    <p class="sub">Some subjects are made of more than one word. Here's how to count them.</p>
+    <div class="cats">
+      <div class="cat">
+        <span class="verdict many">Crowd verb</span>
+        <h3>Two subjects joined by "and"</h3>
+        <p class="rule-line">"And" adds riders together, so the subject is more than one.</p>
+        <p><span class="s">Wei Ling and her brother</span> <span class="v">walk</span> to school.</p>
+        <p><span class="s">My pencil case and my water bottle</span> <span class="v">are</span> in my bag.</p>
+      </div>
+      <div class="cat">
+        <span class="verdict near">Match the nearer one</span>
+        <h3>"Either… or" and "Neither… nor"</h3>
+        <p class="rule-line">Only one choice gets on the seesaw, so the verb matches the subject <b>closest to it</b>.</p>
+        <p>Neither Arjun nor <span class="s">Nurul</span> <span class="v">is</span> late.</p>
+        <p>Either Marcus or <span class="s">his sisters</span> <span class="v">are</span> bringing the cake.</p>
+        <p>Neither the twins nor <span class="s">their mother</span> <span class="v">knows</span> the way.</p>
+      </div>
+      <div class="cat">
+        <span class="verdict one">One-rider verb</span>
+        <h3>Each, every, everyone, nobody</h3>
+        <p class="rule-line">These words look at people one at a time, so they always take the one-rider verb, even when they talk about a whole class.</p>
+        <p><span class="s">Everyone</span> in Primary 5 <span class="v">has</span> a library card.</p>
+        <p><span class="s">Nobody</span> <span class="v">likes</span> a soggy sandwich.</p>
+        <p>Even with two nouns: <span class="s">Every boy and girl</span> <span class="v">gets</span> a medal.</p>
+      </div>
+      <div class="cat">
+        <span class="verdict one">One-rider verb</span>
+        <h3>Groups acting as one</h3>
+        <p class="rule-line">Words like class, team, choir, family and committee name many people, but when the group acts together as one unit, it takes the one-rider verb. This is what PSLE expects.</p>
+        <p>Our <span class="s">class</span> <span class="v">is</span> going on an excursion.</p>
+        <p>The <span class="s">committee</span> <span class="v">has</span> made its decision.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. SPECIAL CASES -->
+  <section>
+    <h2>Four tricky riders</h2>
+    <p class="sub">The quiz includes these less obvious patterns. Each one still follows the three-step check once you know who the real rider is.</p>
+    <div class="specials">
+      <div class="special">
+        <h3>"As well as" and "along with"</h3>
+        <p>Unlike "and", these phrases don't add a rider. They're extra words, so cover them up, like the "of…" part in Trap 1. "Together with" works the same way.</p>
+        <p><span class="s">Mr Tan</span>, <span class="x">as well as his pupils,</span> <span class="v">is</span> at the assembly.</p>
+        <p><span class="s">The children</span>, <span class="x">along with their teacher,</span> <span class="v">are</span> at the bus stop.</p>
+      </div>
+      <div class="special">
+        <h3>Pairs: scissors, spectacles, trousers</h3>
+        <p>These words are always plural on their own, because they're made of two matching parts. But add "a pair of" and the rider becomes the pair: one pair.</p>
+        <p>My <span class="s">spectacles</span> <span class="v">are</span> on the table.</p>
+        <p>A <span class="s">pair</span> <span class="x">of scissors</span> <span class="v">is</span> in the drawer.</p>
+      </div>
+      <div class="special">
+        <h3>"The number of" vs. "A number of"</h3>
+        <p><b>The number of</b> means one figure, a count, so it takes the one-rider verb. <b>A number of</b> means "several", a crowd, so it takes the crowd verb.</p>
+        <p><span class="s">The number</span> <span class="x">of pupils</span> <span class="v">is</span> growing.</p>
+        <p><span class="s">A number of pupils</span> <span class="v">are</span> absent today.</p>
+      </div>
+      <div class="special">
+        <h3>Amounts of money and time</h3>
+        <p>When you talk about money, time or distance as one total amount, it's one rider, even though the number is more than one.</p>
+        <p><span class="s">Five dollars</span> <span class="v">is</span> too much for a pencil.</p>
+        <p><span class="s">Three days</span> <span class="v">is</span> a long time to wait.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. PRACTICE -->
+  <section>
+    <h2>Balance the seesaw</h2>
+    <p class="sub">Tap the verb that keeps each sentence level. You'll see straight away if you're right, and why. The questions get trickier as you go.</p>
+    <div class="scoreboard">
+      <div><div class="label">Your score</div><div class="score" id="scoreDisplay">0 / 30</div></div>
+      <button class="reset-btn" id="resetBtn" type="button">Start over</button>
+    </div>
+    <div id="quizContainer"></div>
+  </section>
+
+  <!-- 7. PIN THIS UP -->
+  <section class="summary">
+    <h2>Pin This Up</h2>
+    <ul>
+      <li><b>Find the real rider.</b> Cover up "of…", "as well as…" and "along with…".</li>
+      <li><b>One rider</b> → is, has, was, runs. <b>A crowd</b> → are, have, were, run.</li>
+      <li><b>"And"</b> makes a crowd. <b>"Or" / "nor"</b>: match the nearer one.</li>
+      <li><b>Each, every, everyone, one of</b> → one rider.</li>
+      <li><b>A group acting as one</b> (class, team, committee) → one rider.</li>
+      <li><b>There / Here</b> → look after the verb to find the rider.</li>
+    </ul>
+    <p class="chant">Find who's riding, count them true —<br>one S per seesaw, never two!</p>
+  </section>
+
+  <footer>My Grammar Shelf, Lesson 03</footer>
+</div>
+
+<script>
+(function () {
+  /* ---------- Hero seesaw ---------- */
+  const plank = document.getElementById('plank');
+  const seatS = document.getElementById('seatS');
+  const seatV = document.getElementById('seatV');
+  const msg = document.getElementById('seesawMsg');
+  const chips = document.querySelectorAll('.chip');
+  let tiltLeft = true;
+  chips.forEach(c => c.addEventListener('click', () => {
+    chips.forEach(o => o.setAttribute('aria-pressed', 'false'));
+    c.setAttribute('aria-pressed', 'true');
+    seatS.textContent = c.dataset.s;
+    seatV.textContent = c.dataset.v;
+    const ok = c.dataset.ok === '1';
+    if (ok) {
+      plank.style.transform = 'rotate(0deg)';
+    } else {
+      tiltLeft = !tiltLeft;
+      plank.style.transform = 'rotate(' + (tiltLeft ? -13 : 13) + 'deg)';
+    }
+    msg.innerHTML = (ok ? '<b class="lv">Level.</b> ' : '<b class="tp">Tipped over!</b> ') + c.dataset.msg;
+  }));
+
+  /* ---------- Quiz ---------- */
+  const QUESTIONS = [
+    { text: "My brother ___ to school every morning.", options: ["walks", "walk"], answer: 0, why: "One brother is one rider, so the verb takes the -s: walks." },
+    { text: "The pupils in my class ___ excited about Sports Day.", options: ["is", "are"], answer: 1, why: "The rider is \"pupils\", more than one, so the crowd verb: are." },
+    { text: "My grandparents ___ in a flat near our school.", options: ["lives", "live"], answer: 1, why: "Grandparents are more than one, so the verb drops its -s: live." },
+    { text: "The durians at the market ___ very expensive this week.", options: ["is", "are"], answer: 1, why: "Cover \"at the market\". The rider is \"durians\", more than one, so: are." },
+    { text: "Wei Ling and her brother ___ to school together.", options: ["walks", "walk"], answer: 1, why: "\"And\" adds riders together. Two people make a crowd, so: walk." },
+    { text: "The school choir ___ a concert every November.", options: ["holds", "hold"], answer: 0, why: "The choir acts together as one group, so it takes the one-rider verb: holds." },
+    { text: "My pencil case and my water bottle ___ in my bag.", options: ["is", "are"], answer: 1, why: "Two things joined by \"and\" make a crowd, so: are." },
+    { text: "Everyone in Primary 5 ___ a library card.", options: ["has", "have"], answer: 0, why: "\"Everyone\" looks at people one at a time, so it takes the one-rider verb: has." },
+    { text: "There ___ three new pupils in our class this term.", options: ["is", "are"], answer: 1, why: "Look after the verb: the rider is \"three new pupils\", a crowd, so: are." },
+    { text: "My cat ___ on my bed every afternoon.", options: ["sleeps", "sleep"], answer: 0, why: "One cat is one rider, so the verb takes the -s: sleeps." },
+
+    { text: "The box of crayons ___ on the teacher's desk.", options: ["is", "are"], answer: 0, why: "Cover \"of crayons\". The rider is one box, so: is." },
+    { text: "Each of the pupils ___ a name tag.", options: ["has", "have"], answer: 0, why: "The rider is \"each\", which means one at a time, so: has." },
+    { text: "The committee ___ decided to cancel the carnival.", options: ["has", "have"], answer: 0, why: "The committee made one decision as a group, so it takes the one-rider verb: has." },
+    { text: "The leaves on the big tree ___ turning brown.", options: ["is", "are"], answer: 1, why: "Don't match \"tree\". Cover \"on the big tree\" and the rider is \"leaves\", a crowd, so: are." },
+    { text: "Neither Arjun nor Nurul ___ late for school.", options: ["is", "are"], answer: 0, why: "With \"neither… nor\", match the nearer subject. Nurul is one person, so: is." },
+    { text: "Either Marcus or his sisters ___ bringing the cake.", options: ["is", "are"], answer: 1, why: "Match the nearer subject. \"His sisters\" are more than one, so: are." },
+    { text: "One of my friends ___ in Tampines.", options: ["lives", "live"], answer: 0, why: "The rider is \"one\", not \"friends\", so the verb takes the -s: lives." },
+    { text: "Our class ___ going on an excursion to the zoo.", options: ["is", "are"], answer: 0, why: "The class is going together as one unit, so: is." },
+    { text: "Every boy and girl ___ a medal at the end of the race.", options: ["gets", "get"], answer: 0, why: "\"Every\" looks at each child one at a time, even with two nouns, so: gets." },
+    { text: "Mum and Dad ___ coming to watch my concert.", options: ["is", "are"], answer: 1, why: "\"And\" joins two people into a crowd, so: are." },
+
+    { text: "Mr Tan, as well as his pupils, ___ going to the assembly.", options: ["is", "are"], answer: 0, why: "\"As well as his pupils\" is extra. Cover it, and the rider is Mr Tan alone, so: is." },
+    { text: "The children, along with their teacher, ___ waiting at the bus stop.", options: ["is", "are"], answer: 1, why: "Cover \"along with their teacher\". The rider is \"the children\", a crowd, so: are." },
+    { text: "My new spectacles ___ on the table.", options: ["is", "are"], answer: 1, why: "\"Spectacles\" on its own is always plural, because it has two matching parts, so: are." },
+    { text: "A pair of scissors ___ in the art cupboard.", options: ["is", "are"], answer: 0, why: "With \"a pair of\", the rider is the pair, and one pair takes: is." },
+    { text: "The number of pupils in the CCA ___ growing every year.", options: ["is", "are"], answer: 0, why: "\"The number of\" is one figure, a count, so it takes the one-rider verb: is." },
+    { text: "A number of parents ___ volunteering at the school carnival.", options: ["is", "are"], answer: 1, why: "\"A number of\" means several, a crowd, so it takes the crowd verb: are." },
+    { text: "Ten dollars ___ enough to buy lunch for the whole week.", options: ["is", "are"], answer: 0, why: "Ten dollars is one total amount of money, so it's one rider: is." },
+    { text: "Two weeks ___ a long time to wait for the results.", options: ["is", "are"], answer: 0, why: "Two weeks is one stretch of time here, so it's one rider: is." },
+    { text: "Here ___ the library books you lent me.", options: ["is", "are"], answer: 1, why: "Like \"there\", look after the verb. The rider is \"the library books\", a crowd, so: are." },
+    { text: "Neither the teacher nor the pupils ___ heard the fire alarm.", options: ["has", "have"], answer: 1, why: "Match the nearer subject. \"The pupils\" are more than one, so: have." }
+  ];
+
+  const container = document.getElementById('quizContainer');
+  const scoreEl = document.getElementById('scoreDisplay');
+  let score = 0, answered = [];
+  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  function updateScore() { scoreEl.textContent = score + ' / ' + QUESTIONS.length; }
+
+  function render() {
+    container.innerHTML = '';
+    answered = QUESTIONS.map(() => false);
+    QUESTIONS.forEach((q, i) => {
+      const card = document.createElement('div');
+      card.className = 'quiz-card';
+      const hasBlank = q.text.includes('___');
+      const short = q.options.every(o => o.length <= 14);
+      card.innerHTML =
+        '<p class="quiz-num">Question ' + (i + 1) + ' of ' + QUESTIONS.length + '</p>' +
+        '<p class="quiz-text">' + esc(q.text).replace('___', '<span class="blank">___</span>') + '</p>' +
+        '<div class="opts' + (short ? ' row' : '') + '"></div>' +
+        '<div class="feedback" role="status"></div>';
+      const opts = card.querySelector('.opts');
+      q.options.forEach((o, j) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'opt';
+        b.innerHTML = (short ? '' : '<span class="tag">' + String.fromCharCode(65 + j) + '</span>') + esc(o);
+        b.addEventListener('click', () => answer(i, j, card, hasBlank));
+        opts.appendChild(b);
+      });
+      container.appendChild(card);
+    });
+    updateScore();
+  }
+
+  function answer(i, j, card, hasBlank) {
+    if (answered[i]) return;
+    answered[i] = true;
+    const q = QUESTIONS[i], ok = j === q.answer;
+    if (ok) score++;
+    updateScore();
+    if (hasBlank) {
+      const blank = card.querySelector('.blank');
+      blank.textContent = q.options[j];
+      blank.classList.add('filled');
+    }
+    card.querySelectorAll('.opt').forEach((b, k) => {
+      b.disabled = true;
+      if (k === j) b.classList.add(ok ? 'correct' : 'incorrect');
+      else if (k === q.answer && !ok) b.classList.add('reveal');
+    });
+    const fb = card.querySelector('.feedback');
+    fb.classList.add('show', ok ? 'fb-ok' : 'fb-no');
+    fb.innerHTML = '<span class="verdict-q">' +
+      (ok ? 'Correct!' : 'Not quite. The answer is "' + esc(q.options[q.answer]) + '".') +
+      '</span>' + esc(q.why);
+  }
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    score = 0;
+    render();
+    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
