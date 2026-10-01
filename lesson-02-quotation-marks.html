@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Inside the Speech Bubble</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -23,6 +24,18 @@
     --font-display: 'Bangers', cursive;
     --font-body: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
   }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #1C1A17;
+      --panel: #262320;
+      --ink: #F2EFE4;
+      --red-soft: #3A2220;
+      --blue-soft: #1E2E3A;
+      --yellow-soft: #352A15;
+      --green-soft: #17311F;
+      --blue: #6FAEDB;
+    }
+  }
   :root[data-theme="dark"] {
     --paper: #1C1A17;
     --panel: #262320;
@@ -31,6 +44,7 @@
     --blue-soft: #1E2E3A;
     --yellow-soft: #352A15;
     --green-soft: #17311F;
+    --blue: #6FAEDB;
   }
 
   * { box-sizing: border-box; }
@@ -46,6 +60,7 @@
     background-size: 11px 11px;
     min-height: 100%;
   }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) body { background-image: radial-gradient(circle, rgba(242,239,228,0.07) 1px, transparent 1px); } }
   :root[data-theme="dark"] body {
     background-image: radial-gradient(circle, rgba(242,239,228,0.07) 1px, transparent 1px);
   }
@@ -381,7 +396,7 @@
     <div class="scoreboard">
       <div>
         <div class="label">Your score</div>
-        <div class="score" id="scoreDisplay">0 / 16</div>
+        <div class="score" id="scoreDisplay">0 / 30</div>
       </div>
       <button class="reset-btn" id="resetBtn">Start over</button>
     </div>
@@ -406,102 +421,36 @@
 <script>
 (function() {
   const QUESTIONS = [
-    {
-      prompt: 'She said im sorry.',
-      options: ['"I\'m sorry." she said.', '"I\'m sorry," she said.', '"I\'m sorry", she said.', '"I\'m sorry" she said.'],
-      answer: 1,
-      why: 'A comma goes before the tag, not a full stop, since the sentence continues after the quote.'
-    },
-    {
-      prompt: 'The teacher asked who left this here.',
-      options: ['The teacher asked "Who left this here?"', 'The teacher asked, "Who left this here?"', 'The teacher asked, "Who left this here."', 'The teacher asked "Who left this here."'],
-      answer: 1,
-      why: 'A comma is needed before the opening quote (tag comes first), and the question mark belongs inside since the quoted words are a question.'
-    },
-    {
-      prompt: 'He shouted watch out.',
-      options: ['"Watch out." he shouted.', '"Watch out," he shouted.', '"Watch out!" he shouted.', '"Watch out!," he shouted.'],
-      answer: 2,
-      why: 'The quote is an exclamation, so the ! stays exactly as it is — no comma is added before or after it.'
-    },
-    {
-      prompt: 'My mum called out dinner is ready.',
-      options: ['My mum called out, "Dinner is ready."', 'My mum called out "Dinner is ready".', 'My mum called out, "Dinner is ready".', 'My mum called out "Dinner is ready."'],
-      answer: 0,
-      why: 'Comma before the opening quote (tag comes first), and the full stop belongs inside the closing quote.'
-    },
-    {
-      prompt: 'She asked are you coming.',
-      options: ['"Are you coming?" she asked.', '"Are you coming," she asked.', '"Are you coming?," she asked.', '"Are you coming" she asked?'],
-      answer: 0,
-      why: 'The quoted words form a question, so the ? stays inside the quote and is not swapped for a comma.'
-    },
-    {
-      prompt: 'The coach yelled congratulations.',
-      options: ['"Congratulations!"the coach yelled.', '"Congratulations," the coach yelled.', '"Congratulations!" the coach yelled.', 'The coach yelled "Congratulations!"'],
-      answer: 2,
-      why: 'The ! stays inside the quote, and a space is always needed after the closing quotation mark before the next word.'
-    },
-    {
-      prompt: 'He admitted quietly i think we are lost.',
-      options: ['"I think we are lost" he admitted quietly.', '"I think we are lost," he admitted quietly.', '"I think we are lost." he admitted quietly.', '"I think we are lost", he admitted quietly.'],
-      answer: 1,
-      why: 'A statement quote followed by a tag takes a comma inside the closing quote, not a full stop.'
-    },
-    {
-      prompt: 'She whispered follow me.',
-      options: ['She whispered "Follow me."', 'She whispered, "Follow me."', 'She whispered, "Follow me".', 'She whispered "follow me."'],
-      answer: 1,
-      why: 'Comma before the opening quote, and the full stop belongs inside the closing quote.'
-    },
-    {
-      prompt: 'My sister shouted put that down.',
-      options: ['My sister shouted, "put that down!"', 'My sister shouted, "Put that down!"', 'My sister shouted "Put that down!"', 'My sister shouted, "Put that down"!'],
-      answer: 1,
-      why: 'Comma before the quote, the quoted sentence starts with a capital letter, and the ! stays inside the closing quote.'
-    },
-    {
-      prompt: 'The girl said that was the best dance ever.',
-      options: ['"That was the best dance ever!" the girl said.', '"That was the best dance ever," the girl said.', '"That was the best dance ever!," the girl said.', '"That was the best dance ever." the girl said.'],
-      answer: 0,
-      why: 'The exclamation mark stays exactly as it is when a tag follows — it never changes into a comma.'
-    },
-    {
-      prompt: 'A thought, standing alone, with no speech tag: finally, alone at last.',
-      options: ['"Finally! Alone at last"', '"Finally! Alone at last!"', '"Finally. Alone at last!"', 'Finally! Alone at last!"'],
-      answer: 1,
-      why: 'With no tag at all, each exclamation inside the quote keeps its own ! — and the closing quotation mark comes right after the last one.'
-    },
-    {
-      prompt: 'A question, standing alone, with no speech tag: how do I sign up.',
-      options: ['"How do I sign up"', '"How do I sign up?"', '"How do I sign up."', 'How do I sign up?"'],
-      answer: 1,
-      why: 'With no tag, punctuate normally inside the quote — this is a question, so it needs a question mark, and the quotation marks must wrap the whole thing.'
-    },
-    {
-      prompt: 'Father said she is on her way, and today the restaurant is crowded (two separate ideas).',
-      options: ['My father said, "She is on her way, the restaurant is crowded today."', 'My father said "She is on her way. The restaurant is crowded today."', 'My father said, "She is on her way. The restaurant is crowded today."', 'My father said, "She is on her way today the restaurant is crowded."'],
-      answer: 2,
-      why: 'Comma before the opening quote, and two complete ideas inside the quote need their own full stop between them, not a comma.'
-    },
-    {
-      prompt: 'The nurse said the patient is stable now.',
-      options: ['The nurse said, "The patient is stable now."', 'The nurse said "The patient is stable now".', 'The nurse said, "The patient is stable now".', 'The nurse said "the patient is stable now."'],
-      answer: 0,
-      why: 'Comma before the opening quote, the quote starts with a capital letter, and the full stop belongs inside the closing quote.'
-    },
-    {
-      prompt: 'Tom replied i dont think so.',
-      options: ['"I don\'t think so." Tom replied.', '"I don\'t think so," Tom replied.', '"I don\'t think so", Tom replied.', '"I don\'t think so" Tom replied.'],
-      answer: 1,
-      why: 'A statement quote followed by a tag takes a comma inside the closing quote, not a full stop.'
-    },
-    {
-      prompt: 'The child whined can we go home now.',
-      options: ['"Can we go home now," the child whined.', '"Can we go home now." the child whined.', '"Can we go home now?" the child whined.', '"Can we go home now" the child whined.'],
-      answer: 2,
-      why: 'The quoted words form a question, so a question mark is needed inside the quote — not a comma or full stop.'
-    }
+    { prompt: 'She said im sorry.', options: ['"I\'m sorry." she said.', '"I\'m sorry," she said.', '"I\'m sorry", she said.', '"I\'m sorry" she said.'], answer: 1, why: 'A comma goes before the tag, not a full stop, since the sentence continues after the quote.' },
+    { prompt: 'She whispered follow me.', options: ['She whispered "Follow me."', 'She whispered, "Follow me."', 'She whispered, "Follow me".', 'She whispered "follow me."'], answer: 1, why: 'Comma before the opening quote, and the full stop belongs inside the closing quote.' },
+    { prompt: 'She asked are you coming.', options: ['"Are you coming?" she asked.', '"Are you coming," she asked.', '"Are you coming?," she asked.', '"Are you coming" she asked?'], answer: 0, why: 'The quoted words form a question, so the ? stays inside the quote and is not swapped for a comma.' },
+    { prompt: 'A question, standing alone, with no speech tag: how do I sign up.', options: ['"How do I sign up"', '"How do I sign up?"', '"How do I sign up."', 'How do I sign up?"'], answer: 1, why: 'With no tag, punctuate normally inside the quote — this is a question, so it needs a question mark, and the quotation marks must wrap the whole thing.' },
+    { prompt: 'Priya said i will bring the snacks.', options: ['"I will bring the snacks." Priya said.', '"I will bring the snacks" Priya said.', '"I will bring the snacks", Priya said.', '"I will bring the snacks," Priya said.'], answer: 3, why: 'A statement followed by a tag takes a comma, and the comma sits inside the closing quote.' },
+    { prompt: 'Arjun asked can I borrow your ruler.', options: ['"Can I borrow your ruler," Arjun asked.', '"Can I borrow your ruler." Arjun asked.', '"Can I borrow your ruler?," Arjun asked.', '"Can I borrow your ruler?" Arjun asked.'], answer: 3, why: 'A question keeps its ? even when a tag follows — and no extra comma is added after it.' },
+    { prompt: 'My mum called out dinner is ready.', options: ['My mum called out, "Dinner is ready."', 'My mum called out "Dinner is ready".', 'My mum called out, "Dinner is ready".', 'My mum called out "Dinner is ready."'], answer: 0, why: 'Comma before the opening quote (tag comes first), and the full stop belongs inside the closing quote.' },
+    { prompt: 'A statement, standing alone, with no speech tag: the canteen is closed today.', options: ['"The canteen is closed today"', '"the canteen is closed today."', '"The canteen is closed today,"', '"The canteen is closed today."'], answer: 3, why: 'With no tag, punctuate normally: a capital letter to start and a full stop inside the closing quote.' },
+    { prompt: 'Tom replied i dont think so.', options: ['"I don\'t think so." Tom replied.', '"I don\'t think so," Tom replied.', '"I don\'t think so", Tom replied.', '"I don\'t think so" Tom replied.'], answer: 1, why: 'A statement quote followed by a tag takes a comma inside the closing quote, not a full stop.' },
+    { prompt: 'Mum asked did you finish your homework.', options: ['"Did you finish your homework," Mum asked.', '"Did you finish your homework." Mum asked.', '"did you finish your homework?" Mum asked.', '"Did you finish your homework?" Mum asked.'], answer: 3, why: 'The ? stays inside the quote, and the spoken sentence starts with a capital letter.' },
+    { prompt: 'The teacher asked who left this here.', options: ['The teacher asked "Who left this here?"', 'The teacher asked, "Who left this here?"', 'The teacher asked, "Who left this here."', 'The teacher asked "Who left this here."'], answer: 1, why: 'A comma is needed before the opening quote (tag comes first), and the question mark belongs inside since the quoted words are a question.' },
+    { prompt: 'He shouted watch out.', options: ['"Watch out." he shouted.', '"Watch out," he shouted.', '"Watch out!" he shouted.', '"Watch out!," he shouted.'], answer: 2, why: 'The quote is an exclamation, so the ! stays exactly as it is — no comma is added before or after it.' },
+    { prompt: 'He admitted quietly i think we are lost.', options: ['"I think we are lost" he admitted quietly.', '"I think we are lost," he admitted quietly.', '"I think we are lost." he admitted quietly.', '"I think we are lost", he admitted quietly.'], answer: 1, why: 'A statement quote followed by a tag takes a comma inside the closing quote, not a full stop.' },
+    { prompt: 'The canteen auntie said that will be two dollars.', options: ['"That will be $2." the canteen auntie said.', '"That will be $2" the canteen auntie said.', '"That will be $2," the canteen auntie said.', '"That will be $2", the canteen auntie said.'], answer: 2, why: 'The tag comes after a statement, so the full stop becomes a comma — inside the closing quote.' },
+    { prompt: 'The bus driver asked where are you going.', options: ['The bus driver asked "Where are you going?"', 'The bus driver asked, "Where are you going."', 'The bus driver asked, "where are you going?"', 'The bus driver asked, "Where are you going?"'], answer: 3, why: 'Comma before the opening quote, a capital to start the speech, and the ? inside the closing quote.' },
+    { prompt: 'The child whined can we go home now.', options: ['"Can we go home now," the child whined.', '"Can we go home now." the child whined.', '"Can we go home now?" the child whined.', '"Can we go home now" the child whined.'], answer: 2, why: 'The quoted words form a question, so a question mark is needed inside the quote — not a comma or full stop.' },
+    { prompt: 'Nurul whispered i think the test is easy.', options: ['"I think the test is easy." Nurul whispered.', '"I think the test is easy" Nurul whispered.', '"I think the test is easy,"Nurul whispered.', '"I think the test is easy," Nurul whispered.'], answer: 3, why: 'Comma inside the closing quote because the tag continues the sentence — and a space before the tag.' },
+    { prompt: 'The girl said that was the best dance ever.', options: ['"That was the best dance ever!" the girl said.', '"That was the best dance ever," the girl said.', '"That was the best dance ever!," the girl said.', '"That was the best dance ever." the girl said.'], answer: 0, why: 'The exclamation mark stays exactly as it is when a tag follows — it never changes into a comma.' },
+    { prompt: 'The principal said the concert will start at seven.', options: ['The principal said "The concert will start at seven."', 'The principal said, "the concert will start at seven."', 'The principal said, "The concert will start at seven."', 'The principal said, "The concert will start at seven".'], answer: 2, why: 'Comma before the opening quote, a capital letter to start the speech, and the full stop inside the closing quote.' },
+    { prompt: 'A thought, standing alone, with no speech tag: finally, alone at last.', options: ['"Finally! Alone at last"', '"Finally! Alone at last!"', '"Finally. Alone at last!"', 'Finally! Alone at last!"'], answer: 1, why: 'With no tag at all, each exclamation inside the quote keeps its own ! — and the closing quotation mark comes right after the last one.' },
+    { prompt: 'The coach yelled congratulations.', options: ['"Congratulations!"the coach yelled.', '"Congratulations," the coach yelled.', '"Congratulations!" the coach yelled.', 'The coach yelled "Congratulations!"'], answer: 2, why: 'The ! stays inside the quote, and a space is always needed after the closing quotation mark before the next word.' },
+    { prompt: 'The commentator screamed goal.', options: ['"Goal!"the commentator screamed.', '"Goal!," the commentator screamed.', '"Goal!" the commentator screamed.', '"Goal"! the commentator screamed.'], answer: 2, why: 'The ! stays inside the bubble with no extra comma, and a space comes after the closing quote.' },
+    { prompt: 'My sister shouted put that down.', options: ['My sister shouted, "put that down!"', 'My sister shouted, "Put that down!"', 'My sister shouted "Put that down!"', 'My sister shouted, "Put that down"!'], answer: 1, why: 'Comma before the quote, the quoted sentence starts with a capital letter, and the ! stays inside the closing quote.' },
+    { prompt: 'Dad reminded me don\'t forget your homework diary.', options: ['Dad reminded me "Don\'t forget your homework diary."', 'Dad reminded me, "don\'t forget your homework diary."', 'Dad reminded me, "Don\'t forget your homework diary".', 'Dad reminded me, "Don\'t forget your homework diary."'], answer: 3, why: 'Comma before the quote, a capital letter to start the speech, and the full stop inside the closing quote.' },
+    { prompt: 'Wei Ling gasped my wallet is gone (she is shocked).', options: ['"My wallet is gone!," Wei Ling gasped.', '"My wallet is gone!" Wei Ling gasped.', '"My wallet is gone"! Wei Ling gasped.', '"my wallet is gone!" Wei Ling gasped.'], answer: 1, why: 'The ! stays inside the quote with no comma added, and the speech starts with a capital letter.' },
+    { prompt: 'The nurse said the patient is stable now.', options: ['The nurse said, "The patient is stable now."', 'The nurse said "The patient is stable now".', 'The nurse said, "The patient is stable now".', 'The nurse said "the patient is stable now."'], answer: 0, why: 'Comma before the opening quote, the quote starts with a capital letter, and the full stop belongs inside the closing quote.' },
+    { prompt: 'Mr Tan announced the bus is here.', options: ['"The bus is here," Mr Tan announced.', '"The bus is here." Mr Tan announced.', '"the bus is here," Mr Tan announced.', '"The bus is here,"Mr Tan announced.'], answer: 0, why: 'Comma inside the quote before the tag, a capital to start the speech, and a space after the closing quote.' },
+    { prompt: 'Father said she is on her way, and today the restaurant is crowded (two separate ideas).', options: ['My father said, "She is on her way, the restaurant is crowded today."', 'My father said "She is on her way. The restaurant is crowded today."', 'My father said, "She is on her way. The restaurant is crowded today."', 'My father said, "She is on her way today the restaurant is crowded."'], answer: 2, why: 'Comma before the opening quote, and two complete ideas inside the quote need their own full stop between them, not a comma.' },
+    { prompt: 'Ms Goh said the hall is full and please line up quietly (two separate ideas).', options: ['Ms Goh said, "The hall is full, please line up quietly."', 'Ms Goh said, "The hall is full please line up quietly."', 'Ms Goh said "The hall is full. Please line up quietly."', 'Ms Goh said, "The hall is full. Please line up quietly."'], answer: 3, why: 'Two complete ideas need a full stop between them, even inside one quote — plus a comma before the opening quote.' },
+    { prompt: 'Marcus asked i missed the bus can you give me a lift (two separate ideas).', options: ['"I missed the bus. Can you give me a lift?" Marcus asked.', '"I missed the bus, can you give me a lift?" Marcus asked.', '"I missed the bus. Can you give me a lift," Marcus asked.', '"I missed the bus. Can you give me a lift?"Marcus asked.'], answer: 0, why: 'Each idea gets its own end mark, the question keeps its ?, and a space comes before the tag.' }
   ];
 
   const container = document.getElementById('quizContainer');

@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Will vs. Would: The Time Traveler's Rule</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⏳</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600;700&family=Spectral+SC:wght@600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -23,9 +24,36 @@
     --right: #6FC98A;
     --right-soft: #1f3a2a;
     --rule: rgba(243,238,223,0.14);
+    --teal-soft: #1f3f3c;
+    --glow-1: #2a3268;
+    --glow-2: #1e2550;
     --font-display: 'Spectral', Georgia, serif;
     --font-display-sc: 'Spectral SC', Georgia, serif;
     --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  /* Daytime logbook: light theme */
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #E9ECF7; --bg-deep: #DFE3F2; --surface: #FFFFFF; --surface-raised: #F1F3FB;
+      --ink: #1B2042; --ink-dim: #4A5078;
+      --gold: #8E620C; --gold-soft: #F4E4BF;
+      --teal: #17766B; --teal-soft: #D5EFEB;
+      --wrong: #B3352E; --wrong-soft: #F9E0DE;
+      --right: #1D7340; --right-soft: #DCF1E3;
+      --rule: rgba(27,32,66,0.14);
+      --glow-1: #D6DCF4; --glow-2: #E0F1EE;
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #E9ECF7; --bg-deep: #DFE3F2; --surface: #FFFFFF; --surface-raised: #F1F3FB;
+    --ink: #1B2042; --ink-dim: #4A5078;
+    --gold: #8E620C; --gold-soft: #F4E4BF;
+    --teal: #17766B; --teal-soft: #D5EFEB;
+    --wrong: #B3352E; --wrong-soft: #F9E0DE;
+    --right: #1D7340; --right-soft: #DCF1E3;
+    --rule: rgba(27,32,66,0.14);
+    --glow-1: #D6DCF4; --glow-2: #E0F1EE;
   }
 
   * { box-sizing: border-box; }
@@ -43,8 +71,8 @@
     padding-top: env(safe-area-inset-top, 0px);
     padding-bottom: env(safe-area-inset-bottom, 0px);
     background:
-      radial-gradient(ellipse 900px 500px at 15% -10%, #2a3268 0%, transparent 60%),
-      radial-gradient(ellipse 700px 500px at 100% 10%, #1e2550 0%, transparent 55%),
+      radial-gradient(ellipse 900px 500px at 15% -10%, var(--glow-1) 0%, transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 10%, var(--glow-2) 0%, transparent 55%),
       var(--bg);
     min-height: 100%;
   }
@@ -197,7 +225,7 @@
     border-radius: 10px;
     margin-bottom: 8px;
   }
-  .case-card.would-case .case-word { color: var(--teal); background: #1f3f3c; }
+  .case-card.would-case .case-word { color: var(--teal); background: var(--teal-soft); }
   .case-card p { margin: 0 0 8px; font-size: 13.5px; color: var(--ink-dim); line-height: 1.5; }
   .case-card .ex {
     font-size: 13.5px;
@@ -346,19 +374,19 @@
     <div class="diagram">
       <svg viewBox="0 0 680 150" xmlns="http://www.w3.org/2000/svg">
         <!-- WILL: solid certain path -->
-        <line x1="40" y1="45" x2="600" y2="45" stroke="#E8B24B" stroke-width="3" stroke-linecap="round"/>
-        <circle cx="40" cy="45" r="6" fill="#E8B24B"/>
-        <polygon points="600,38 616,45 600,52" fill="#E8B24B"/>
-        <text x="40" y="28" fill="#E8B24B" font-family="Spectral SC, serif" font-size="13">WILL — one certain path</text>
+        <line x1="40" y1="45" x2="600" y2="45" style="stroke:var(--gold)" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="40" cy="45" r="6" style="fill:var(--gold)"/>
+        <polygon points="600,38 616,45 600,52" style="fill:var(--gold)"/>
+        <text x="40" y="28" style="fill:var(--gold)" font-family="Spectral SC, serif" font-size="13">WILL — one certain path</text>
 
         <!-- WOULD: dashed branching paths -->
-        <line x1="40" y1="110" x2="300" y2="110" stroke="#57CBBE" stroke-width="3" stroke-linecap="round"/>
-        <circle cx="40" cy="110" r="6" fill="#57CBBE"/>
-        <line x1="300" y1="110" x2="600" y2="80" stroke="#57CBBE" stroke-width="2.5" stroke-dasharray="7 6" stroke-linecap="round"/>
-        <line x1="300" y1="110" x2="600" y2="140" stroke="#57CBBE" stroke-width="2.5" stroke-dasharray="7 6" stroke-linecap="round"/>
-        <polygon points="594,75 610,80 596,88" fill="#57CBBE" opacity="0.8"/>
-        <polygon points="594,135 610,140 596,146" fill="#57CBBE" opacity="0.8"/>
-        <text x="40" y="132" fill="#57CBBE" font-family="Spectral SC, serif" font-size="13">WOULD — depends what happens</text>
+        <line x1="40" y1="110" x2="300" y2="110" style="stroke:var(--teal)" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="40" cy="110" r="6" style="fill:var(--teal)"/>
+        <line x1="300" y1="110" x2="600" y2="80" style="stroke:var(--teal)" stroke-width="2.5" stroke-dasharray="7 6" stroke-linecap="round"/>
+        <line x1="300" y1="110" x2="600" y2="140" style="stroke:var(--teal)" stroke-width="2.5" stroke-dasharray="7 6" stroke-linecap="round"/>
+        <polygon points="594,75 610,80 596,88" style="fill:var(--teal)" opacity="0.8"/>
+        <polygon points="594,135 610,140 596,146" style="fill:var(--teal)" opacity="0.8"/>
+        <text x="40" y="132" style="fill:var(--teal)" font-family="Spectral SC, serif" font-size="13">WOULD — depends what happens</text>
       </svg>
       <div class="diagram-caption">
         <span class="cap-will"><span class="dot"></span>A real plan or promise</span>
@@ -443,7 +471,7 @@
     <div class="scoreboard">
       <div>
         <div class="label">Your score</div>
-        <div class="score" id="scoreDisplay">0 / 20</div>
+        <div class="score" id="scoreDisplay">0 / 30</div>
       </div>
       <button class="reset-btn" id="resetBtn">Start over</button>
     </div>
@@ -469,24 +497,34 @@
   const QUESTIONS = [
     { before: "I ", blank: "___", after: " ask my parents to sign the consent form tomorrow.", answer: "will", why: "A definite plan for tomorrow — a firm promise, not a hypothetical." },
     { before: "If I had a time machine, I ", blank: "___", after: " visit the dinosaurs.", answer: "would", why: "Starts with \"if\" and describes something impossible right now — a hypothetical." },
-    { before: "I hope you ", blank: "___", after: " reply soon.", answer: "will", why: "A real hope about something that could really happen takes \"will.\"" },
-    { before: "My parents ", blank: "___", after: " also write down my medication details on the form.", answer: "will", why: "A concrete, definite plan — not a maybe." },
-    { before: "If I were taller, I ", blank: "___", after: " be able to reach the shelf.", answer: "would", why: "Starts with \"if,\" describing something that isn't true right now." },
-    { before: "I ", blank: "___", after: " go to the school bookshop tomorrow and buy you a new one.", answer: "will", why: "A firm, definite plan for tomorrow." },
-    { before: "She said that if it rained, she ", blank: "___", after: " bring an umbrella.", answer: "would", why: "Reports a condition (\"if it rained\") from the past — a hypothetical situation." },
-    { before: "The teacher promised the class ", blank: "___", after: " get extra recess on Friday.", answer: "would", why: "This reports a past promise about the future — in reported speech, \"will\" shifts back to \"would.\"" },
-    { before: "I ", blank: "___", after: " give you the old book and the new one so you have both.", answer: "will", why: "A real plan the writer is definitely going to carry out." },
-    { before: "If I won the lottery, I ", blank: "___", after: " buy a house for my family.", answer: "would", why: "Starts with \"if,\" imagining something that hasn't happened and may never happen." },
-    { before: "I ", blank: "___", after: " be very happy if you could join us.", answer: "would", why: "A polite, conditional wish — it depends on whether you can actually join." },
-    { before: "They ", blank: "___", after: " arrive at 3pm, as planned.", answer: "will", why: "A scheduled, definite plan — not a maybe." },
-    { before: "If she practised more, she ", blank: "___", after: " improve quickly.", answer: "would", why: "Starts with \"if,\" describing a condition that isn't guaranteed to happen." },
     { before: "We ", blank: "___", after: " meet you at the station tomorrow morning.", answer: "will", why: "A firm, definite plan for tomorrow." },
-    { before: "He said he ", blank: "___", after: " call me back later.", answer: "would", why: "Reported speech: when you report what someone said in the past, \"will\" shifts back to \"would.\"" },
+    { before: "If I were taller, I ", blank: "___", after: " be able to reach the shelf.", answer: "would", why: "Starts with \"if,\" describing something that isn't true right now." },
+    { before: "Don't worry, Mum. I ", blank: "___", after: " pack my PE attire tonight.", answer: "will", why: "A firm plan the writer is definitely going to carry out tonight." },
+    { before: "If I won the lottery, I ", blank: "___", after: " buy a house for my family.", answer: "would", why: "Starts with \"if,\" imagining something that hasn't happened and may never happen." },
+    { before: "I ", blank: "___", after: " go to the school bookshop tomorrow and buy you a new one.", answer: "will", why: "A firm, definite plan for tomorrow." },
+    { before: "If she practised more, she ", blank: "___", after: " improve quickly.", answer: "would", why: "Starts with \"if,\" describing a condition that isn't guaranteed to happen." },
+    { before: "I ", blank: "___", after: " give you the old book and the new one so you have both.", answer: "will", why: "A real plan the writer is definitely going to carry out." },
+    { before: "Our family ", blank: "___", after: " adopt a dog if we had a bigger flat.", answer: "would", why: "The \"if\" part comes last here, but it's still imagining something that isn't true — a hypothetical." },
+    { before: "I hope you ", blank: "___", after: " reply soon.", answer: "will", why: "A real hope about something that could really happen takes \"will.\"" },
+    { before: "They ", blank: "___", after: " arrive at 3pm, as planned.", answer: "will", why: "A scheduled, definite plan — not a maybe." },
+    { before: "I ", blank: "___", after: " be very happy if you could join us.", answer: "would", why: "A polite, conditional wish — it depends on whether you can actually join." },
+    { before: "I promise I ", blank: "___", after: " return your water bottle tomorrow.", answer: "will", why: "A promise you're making right now about the future is a firm promise — \"will.\"" },
+    { before: "She said that if it rained, she ", blank: "___", after: " bring an umbrella.", answer: "would", why: "Reports a condition (\"if it rained\") from the past — a hypothetical situation." },
+    { before: "My parents ", blank: "___", after: " also write down my medication details on the form.", answer: "will", why: "A concrete, definite plan — not a maybe." },
     { before: "I ", blank: "___", after: " love to visit Japan one day.", answer: "would", why: "A wish or polite desire, not a firm plan — \"would love to\" is a fixed, hypothetical-sounding phrase." },
+    { before: "Dear Mr Tan, I ", blank: "___", after: " hand in my late assignment by Friday.", answer: "will", why: "A firm promise to a teacher about a real deadline — definitely going to happen." },
+    { before: "He said he ", blank: "___", after: " call me back later.", answer: "would", why: "Reported speech: when you report what someone said in the past, \"will\" shifts back to \"would.\"" },
+    { before: "I hope Mdm Rahimah ", blank: "___", after: " like the card we made for Teachers' Day.", answer: "will", why: "Like \"I hope you will accept me,\" a real hope about a real outcome takes \"will.\"" },
     { before: "The bus ", blank: "___", after: " leave at exactly 8 o'clock.", answer: "will", why: "A scheduled fact about the future — definite, not conditional." },
     { before: "If I were you, I ", blank: "___", after: " apologise first.", answer: "would", why: "\"If I were you\" is a classic hypothetical — it's imagined advice, not a real plan." },
+    { before: "The teacher promised the class ", blank: "___", after: " get extra recess on Friday.", answer: "would", why: "This reports a past promise about the future — in reported speech, \"will\" shifts back to \"would.\"" },
+    { before: "Our class excursion to the Science Centre ", blank: "___", after: " start at 9 a.m. on Thursday.", answer: "will", why: "A timetabled event is a scheduled fact, so it takes \"will.\"" },
+    { before: "I ", blank: "___", after: " like to join the Robotics CCA next year.", answer: "would", why: "\"Would like to\" is a polite wish, just like \"would love to\" — not a firm plan." },
+    { before: "I ", blank: "___", after: " definitely recommend this restaurant to my friends.", answer: "will", why: "A firm, confident intention — not hypothetical at all." },
     { before: "She promised she ", blank: "___", after: " finish the project by Friday.", answer: "would", why: "Reported promise: like reported speech, a past-tense \"promised\" shifts \"will\" back to \"would.\"" },
-    { before: "I ", blank: "___", after: " definitely recommend this restaurant to my friends.", answer: "will", why: "A firm, confident intention — not hypothetical at all." }
+    { before: "If I were you, I ", blank: "___", after: " check my answers again before handing in the paper.", answer: "would", why: "\"If I were you\" imagines being in someone else's shoes — always hypothetical, so always \"would.\"" },
+    { before: "Wei Ling told me she ", blank: "___", after: " meet us at the canteen after assembly.", answer: "would", why: "\"Told me\" reports what she said in the past, so her \"will\" shifts back to \"would.\"" },
+    { before: "The Primary 6 prelim exams ", blank: "___", after: " begin next Monday.", answer: "will", why: "A fixed date on the school calendar is a scheduled fact — \"will.\"" }
   ];
 
   const container = document.getElementById('quizContainer');
