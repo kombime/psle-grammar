@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inside the Speech Bubble</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F2EFE4;
+    --panel: #FFFDF6;
+    --ink: #201D1A;
+    --red: #E2473A;
+    --red-soft: #FBE1DE;
+    --blue: #2B6E9E;
+    --blue-soft: #DCEAF4;
+    --yellow: #F2A93B;
+    --yellow-soft: #FCEBCF;
+    --green: #2C9B5D;
+    --green-soft: #DCF2E4;
+    --font-display: 'Bangers', cursive;
+    --font-body: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  :root[data-theme="dark"] {
+    --paper: #1C1A17;
+    --panel: #262320;
+    --ink: #F2EFE4;
+    --red-soft: #3A2220;
+    --blue-soft: #1E2E3A;
+    --yellow-soft: #352A15;
+    --green-soft: #17311F;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  html, body { margin: 0; padding: 0; background: var(--paper); }
+  body {
+    font-family: var(--font-body);
+    color: var(--ink);
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    background-color: var(--paper);
+    background-image: radial-gradient(circle, rgba(32,29,26,0.07) 1px, transparent 1px);
+    background-size: 11px 11px;
+    min-height: 100%;
+  }
+  :root[data-theme="dark"] body {
+    background-image: radial-gradient(circle, rgba(242,239,228,0.07) 1px, transparent 1px);
+  }
+
+  .wrap { max-width: 740px; margin: 0 auto; padding: 32px 18px 70px; }
+
+  /* ---------- Hero ---------- */
+  .hero { text-align: center; padding: 10px 0 30px; }
+  .eyebrow {
+    font-family: var(--font-body); font-weight: 800; font-size: 13px;
+    letter-spacing: 0.05em; color: var(--blue); margin: 0 0 14px;
+  }
+  .hero-bubble {
+    position: relative;
+    display: inline-block;
+    background: var(--panel);
+    border: 4px solid var(--ink);
+    border-radius: 26px;
+    padding: 26px 28px 30px;
+    max-width: 560px;
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+  .hero-bubble::before {
+    content: ""; position: absolute; bottom: -22px; left: 54px;
+    width: 0; height: 0; border-style: solid; border-width: 24px 20px 0 0;
+    border-color: var(--ink) transparent transparent transparent;
+  }
+  .hero-bubble::after {
+    content: ""; position: absolute; bottom: -14px; left: 59px;
+    width: 0; height: 0; border-style: solid; border-width: 17px 14px 0 0;
+    border-color: var(--panel) transparent transparent transparent;
+  }
+  h1.title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(32px, 8vw, 50px);
+    line-height: 1.02;
+    letter-spacing: 0.01em;
+    margin: 0;
+    color: var(--ink);
+  }
+  h1.title .pop { color: var(--red); }
+  .hero-sub {
+    margin: 28px auto 0;
+    max-width: 50ch;
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--ink);
+    opacity: 0.82;
+  }
+
+  /* ---------- Section scaffolding ---------- */
+  section { margin-bottom: 46px; }
+  .section-label {
+    font-family: var(--font-body); font-weight: 800; font-size: 12.5px;
+    letter-spacing: 0.06em; color: var(--red); margin: 0 0 6px;
+  }
+  h2 {
+    font-family: var(--font-display); font-weight: 400;
+    font-size: 28px; letter-spacing: 0.01em; margin: 0 0 16px; color: var(--ink);
+  }
+  p.lede { font-size: 15.5px; line-height: 1.6; opacity: 0.85; margin: 0 0 20px; max-width: 58ch; }
+
+  /* ---------- Step cards ---------- */
+  .steps { display: flex; flex-direction: column; gap: 12px; }
+  .step {
+    display: flex; gap: 14px; align-items: flex-start;
+    background: var(--panel); border: 3px solid var(--ink); border-radius: 14px;
+    padding: 14px 16px; box-shadow: 4px 4px 0 var(--ink);
+  }
+  .step-num {
+    font-family: var(--font-display); font-size: 26px; color: var(--red);
+    line-height: 1; min-width: 30px;
+  }
+  .step p { margin: 0; font-size: 14.5px; line-height: 1.55; }
+
+  /* ---------- Trap burst ---------- */
+  .trap {
+    position: relative;
+    background: var(--red-soft);
+    border: 3px solid var(--red);
+    border-radius: 14px;
+    padding: 20px 20px 18px;
+    margin-top: 18px;
+  }
+  .trap-tag {
+    display: inline-block; font-family: var(--font-display); font-size: 20px;
+    color: #fff; background: var(--red); padding: 3px 14px 5px;
+    border-radius: 20px; transform: rotate(-3deg); margin-bottom: 10px;
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+  .trap p { margin: 0 0 10px; font-size: 14.5px; line-height: 1.55; }
+  .trap .wrong { color: var(--red); text-decoration: line-through; font-weight: 700; }
+  .trap .right { color: var(--green); font-weight: 800; }
+
+  /* ---------- Category panels ---------- */
+  .cat-panel {
+    background: var(--panel); border: 3px solid var(--ink); border-radius: 16px;
+    padding: 18px 20px 16px; margin-bottom: 18px; box-shadow: 5px 5px 0 var(--ink);
+  }
+  .cat-panel.a { border-color: var(--blue); }
+  .cat-panel.b { border-color: var(--red); }
+  .cat-panel.c { border-color: var(--yellow); }
+  .cat-panel.d { border-color: var(--green); }
+  .cat-head {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+  }
+  .cat-letter {
+    font-family: var(--font-display); font-size: 22px; color: #fff;
+    width: 34px; height: 34px; border-radius: 50%; display: flex;
+    align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .cat-panel.a .cat-letter { background: var(--blue); }
+  .cat-panel.b .cat-letter { background: var(--red); }
+  .cat-panel.c .cat-letter { background: var(--yellow); }
+  .cat-panel.d .cat-letter { background: var(--green); }
+  .cat-title { font-family: var(--font-body); font-weight: 800; font-size: 15.5px; }
+  .cat-rule { font-size: 14px; opacity: 0.8; line-height: 1.5; margin: 0 0 12px; }
+  .cat-ex { font-size: 14.5px; margin: 0 0 6px; line-height: 1.5; }
+  .cat-ex b { font-family: 'Nunito'; font-weight: 800; }
+
+  /* ---------- Special cases ---------- */
+  .case-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  @media (max-width: 560px) {
+    .case-grid { grid-template-columns: 1fr; }
+  }
+  .case-card {
+    background: var(--panel);
+    border-radius: 14px;
+    padding: 16px 16px 14px;
+    border: 3px solid var(--ink);
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+  .case-card .case-num {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-size: 14px;
+    color: #fff;
+    background: var(--blue);
+    padding: 2px 10px 4px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+  }
+  .case-card h4 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 17px;
+    margin: 0 0 6px;
+    color: var(--ink);
+  }
+  .case-card p { margin: 0 0 8px; font-size: 13.5px; opacity: 0.85; line-height: 1.5; }
+  .case-card .ex { font-size: 13.5px; margin: 0; line-height: 1.5; }
+  .case-card .ex .wrong { color: var(--red); text-decoration: line-through; }
+  .case-card .ex .right { color: var(--green); font-weight: 800; }
+
+  /* ---------- Quiz ---------- */
+  .scoreboard {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--panel); border: 3px solid var(--ink); border-radius: 14px;
+    padding: 12px 18px; margin-bottom: 20px; box-shadow: 4px 4px 0 var(--ink);
+  }
+  .scoreboard .label { font-size: 12.5px; opacity: 0.7; }
+  .scoreboard .score { font-family: var(--font-display); font-size: 26px; color: var(--red); }
+  .scoreboard .reset-btn {
+    background: var(--ink); color: var(--paper); border: none;
+    font-family: var(--font-body); font-weight: 700; font-size: 13px;
+    padding: 8px 16px; border-radius: 20px; cursor: pointer;
+  }
+  .scoreboard .reset-btn:active { transform: scale(0.96); }
+
+  .quiz-bubble {
+    position: relative;
+    background: var(--panel); border: 3px solid var(--ink); border-radius: 16px;
+    padding: 18px 18px 16px; margin-bottom: 26px; box-shadow: 5px 5px 0 var(--ink);
+  }
+  .quiz-num {
+    font-family: var(--font-display); font-size: 14px; color: var(--blue); margin: 0 0 8px;
+  }
+  .quiz-prompt { font-size: 14.5px; margin: 0 0 12px; opacity: 0.85; }
+  .quiz-options { display: flex; flex-direction: column; gap: 9px; }
+  .quiz-opt {
+    text-align: left;
+    font-family: var(--font-body); font-size: 14.5px; font-weight: 600;
+    background: var(--paper); border: 2.5px solid var(--ink); border-radius: 10px;
+    padding: 10px 14px; cursor: pointer; color: var(--ink);
+  }
+  .quiz-opt:active { transform: scale(0.99); }
+  .quiz-opt:disabled { cursor: default; }
+  .quiz-opt .tag {
+    display: inline-block; font-family: var(--font-display); font-size: 13px;
+    margin-right: 8px; color: var(--blue);
+  }
+  .quiz-opt.correct { background: var(--green-soft); border-color: var(--green); }
+  .quiz-opt.incorrect { background: var(--red-soft); border-color: var(--red); }
+  .quiz-opt.reveal-correct { background: var(--green-soft); border-color: var(--green); }
+
+  .feedback {
+    margin-top: 12px; padding-top: 12px; border-top: 2px dashed var(--ink);
+    font-size: 14px; line-height: 1.55; opacity: 0.85; display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback .verdict { font-family: var(--font-display); font-size: 16px; display: block; margin-bottom: 4px; }
+  .feedback.is-correct .verdict { color: var(--green); }
+  .feedback.is-incorrect .verdict { color: var(--red); }
+
+  /* ---------- Summary ---------- */
+  .summary {
+    background: var(--yellow-soft); border: 3px solid var(--yellow);
+    border-radius: 16px; padding: 20px 20px 18px;
+  }
+  .summary h2 { margin-bottom: 10px; }
+  .summary ul { margin: 0; padding-left: 20px; font-size: 14.5px; line-height: 1.8; }
+  .summary li b { }
+  .chant {
+    margin-top: 16px; padding: 14px 16px; background: var(--panel);
+    border: 2.5px dashed var(--ink); border-radius: 12px;
+    font-family: var(--font-display); font-size: 16px; letter-spacing: 0.01em;
+    color: var(--ink); text-align: center;
+  }
+
+  footer { text-align: center; font-size: 12px; opacity: 0.5; margin-top: 36px; }
+  .back-link { display:inline-block; margin:0 0 14px; font-family:var(--font-body); font-weight:800; font-size:14px; color:var(--ink); text-decoration:none; background:var(--panel); border:2.5px solid var(--ink); border-radius:20px; padding:6px 14px; box-shadow:3px 3px 0 var(--ink); }
+  .back-link:active { transform:translate(2px,2px); box-shadow:1px 1px 0 var(--ink); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back-link" href="index.html">← Back to the shelf</a>
+
+  <header class="hero">
+    <p class="eyebrow">A Grammar Lesson · Punctuating Speech</p>
+    <div class="hero-bubble">
+      <h1 class="title">Inside the<br><span class="pop">Speech Bubble!</span></h1>
+    </div>
+    <p class="hero-sub">Picture quotation marks as a speech bubble in a comic. Anything that's literally part of the spoken words — including the punctuation mark right at the end — stays <b>inside</b> the bubble.</p>
+  </header>
+
+  <section>
+    <p class="section-label">The Method</p>
+    <h2>The 3-Step Check</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <p><b>Open the bubble.</b> If a speech tag comes before the quote, put a comma right before the opening quotation mark. <i>She said, "I'm sorry."</i></p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <p><b>Look at what's being said.</b> A statement gets a full stop (.), a question gets a question mark (?), an exclamation gets an exclamation mark (!).</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <p><b>Look at what comes AFTER the closing quote.</b> Does the sentence stop here, or does more follow, like a speech tag? This is the step most people get wrong!</p>
+      </div>
+    </div>
+
+    <div class="trap">
+      <span class="trap-tag">WATCH OUT!</span>
+      <p>A full stop <b>never</b> sits right before a speech tag that continues the sentence — even though the quoted words look like a finished sentence.</p>
+      <p><span class="wrong">"Yes." my mother said.</span></p>
+      <p><span class="right">"Yes," my mother said.</span></p>
+      <p>But a question or exclamation mark never changes into a comma: <span class="right">"Where is mother?" I asked.</span></p>
+    </div>
+  </section>
+
+  <section>
+    <p class="section-label">The Four Cases</p>
+    <h2>Where Does the Punctuation Go?</h2>
+
+    <div class="cat-panel a">
+      <div class="cat-head"><div class="cat-letter">A</div><div class="cat-title">Tag BEFORE the quote</div></div>
+      <p class="cat-rule">Always put a comma right before the quote opens — no matter what kind of sentence follows inside.</p>
+      <p class="cat-ex"><b>She said, "I'm sorry."</b></p>
+      <p class="cat-ex"><b>Ms Goh asked, "Who would like to volunteer?"</b></p>
+    </div>
+
+    <div class="cat-panel b">
+      <div class="cat-head"><div class="cat-letter">B</div><div class="cat-title">Tag AFTER + a statement</div></div>
+      <p class="cat-rule">The trickiest case. Swap the full stop for a comma, because the sentence isn't over — the tag still has to finish it.</p>
+      <p class="cat-ex"><b>"I am sorry I dropped it," I said guiltily.</b></p>
+      <p class="cat-ex"><b>"We should leave now," she whispered.</b></p>
+    </div>
+
+    <div class="cat-panel c">
+      <div class="cat-head"><div class="cat-letter">C</div><div class="cat-title">Tag AFTER + a question/exclamation</div></div>
+      <p class="cat-rule">Unlike statements, ? and ! never change into a comma — they stay exactly as they are.</p>
+      <p class="cat-ex"><b>"Where is mother?" I asked.</b></p>
+      <p class="cat-ex"><b>"Watch out!" he shouted.</b></p>
+    </div>
+
+    <div class="cat-panel d">
+      <div class="cat-head"><div class="cat-letter">D</div><div class="cat-title">No speech tag at all</div></div>
+      <p class="cat-rule">Punctuate the sentence inside the bubble normally — statement gets a full stop, question gets a question mark.</p>
+      <p class="cat-ex"><b>"I am going to the toilet."</b></p>
+      <p class="cat-ex"><b>"How do I sign up?"</b></p>
+    </div>
+  </section>
+
+  <section>
+    <p class="section-label">Beyond the Basics</p>
+    <h2>Three More Things to Watch</h2>
+    <p class="lede">The quiz below includes a few finer details that aren't about comma-vs-full-stop. Here's what to look out for.</p>
+    <div class="case-grid">
+      <div class="case-card">
+        <span class="case-num">1</span>
+        <h4>Two Sentences, One Quote</h4>
+        <p>If a character's speech contains two separate complete ideas, each one still needs its own full stop — don't join them with a comma, even though they're inside the same quotation marks.</p>
+        <p class="ex"><span class="wrong">"She is on her way, the restaurant is crowded today."</span><br><span class="right">"She is on her way. The restaurant is crowded today."</span></p>
+      </div>
+      <div class="case-card">
+        <span class="case-num">2</span>
+        <h4>Space After the Quote</h4>
+        <p>Always leave a space between the closing quotation mark and whatever comes next — a missing space is a easy-to-miss but common slip.</p>
+        <p class="ex"><span class="wrong">"Congratulations!"the coach yelled.</span><br><span class="right">"Congratulations!" the coach yelled.</span></p>
+      </div>
+      <div class="case-card">
+        <span class="case-num">3</span>
+        <h4>Capital to Start the Quote</h4>
+        <p>When a new sentence of speech begins inside quotation marks, it starts with a capital letter — just like any other sentence would.</p>
+        <p class="ex"><span class="wrong">My mum called out, "dinner is ready."</span><br><span class="right">My mum called out, "Dinner is ready."</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="section-label">Practice</p>
+    <h2>Pick the Correct Version</h2>
+    <p class="lede">Tap the option you think is punctuated correctly. You'll find out right away — and why.</p>
+
+    <div class="scoreboard">
+      <div>
+        <div class="label">Your score</div>
+        <div class="score" id="scoreDisplay">0 / 16</div>
+      </div>
+      <button class="reset-btn" id="resetBtn">Start over</button>
+    </div>
+
+    <div id="quizContainer"></div>
+  </section>
+
+  <section class="summary">
+    <h2>Pin This Up</h2>
+    <ul>
+      <li><b>Tag BEFORE the quote</b> → comma before the opening quotation mark.</li>
+      <li><b>Tag AFTER + statement</b> → comma (not full stop) inside the closing quote.</li>
+      <li><b>Tag AFTER + question/exclamation</b> → keep the ? or ! — never add a comma too.</li>
+      <li><b>No tag at all</b> → punctuate normally inside the quote.</li>
+    </ul>
+    <div class="chant">"Comma before I speak, comma after if more words creep —<br>but keep my ? and ! the way they're meant to be."</div>
+  </section>
+
+  <footer>Inside the Speech Bubble · English Grammar Lessons</footer>
+</div>
+
+<script>
+(function() {
+  const QUESTIONS = [
+    {
+      prompt: 'She said im sorry.',
+      options: ['"I\'m sorry." she said.', '"I\'m sorry," she said.', '"I\'m sorry", she said.', '"I\'m sorry" she said.'],
+      answer: 1,
+      why: 'A comma goes before the tag, not a full stop, since the sentence continues after the quote.'
+    },
+    {
+      prompt: 'The teacher asked who left this here.',
+      options: ['The teacher asked "Who left this here?"', 'The teacher asked, "Who left this here?"', 'The teacher asked, "Who left this here."', 'The teacher asked "Who left this here."'],
+      answer: 1,
+      why: 'A comma is needed before the opening quote (tag comes first), and the question mark belongs inside since the quoted words are a question.'
+    },
+    {
+      prompt: 'He shouted watch out.',
+      options: ['"Watch out." he shouted.', '"Watch out," he shouted.', '"Watch out!" he shouted.', '"Watch out!," he shouted.'],
+      answer: 2,
+      why: 'The quote is an exclamation, so the ! stays exactly as it is — no comma is added before or after it.'
+    },
+    {
+      prompt: 'My mum called out dinner is ready.',
+      options: ['My mum called out, "Dinner is ready."', 'My mum called out "Dinner is ready".', 'My mum called out, "Dinner is ready".', 'My mum called out "Dinner is ready."'],
+      answer: 0,
+      why: 'Comma before the opening quote (tag comes first), and the full stop belongs inside the closing quote.'
+    },
+    {
+      prompt: 'She asked are you coming.',
+      options: ['"Are you coming?" she asked.', '"Are you coming," she asked.', '"Are you coming?," she asked.', '"Are you coming" she asked?'],
+      answer: 0,
+      why: 'The quoted words form a question, so the ? stays inside the quote and is not swapped for a comma.'
+    },
+    {
+      prompt: 'The coach yelled congratulations.',
+      options: ['"Congratulations!"the coach yelled.', '"Congratulations," the coach yelled.', '"Congratulations!" the coach yelled.', 'The coach yelled "Congratulations!"'],
+      answer: 2,
+      why: 'The ! stays inside the quote, and a space is always needed after the closing quotation mark before the next word.'
+    },
+    {
+      prompt: 'He admitted quietly i think we are lost.',
+      options: ['"I think we are lost" he admitted quietly.', '"I think we are lost," he admitted quietly.', '"I think we are lost." he admitted quietly.', '"I think we are lost", he admitted quietly.'],
+      answer: 1,
+      why: 'A statement quote followed by a tag takes a comma inside the closing quote, not a full stop.'
+    },
+    {
+      prompt: 'She whispered follow me.',
+      options: ['She whispered "Follow me."', 'She whispered, "Follow me."', 'She whispered, "Follow me".', 'She whispered "follow me."'],
+      answer: 1,
+      why: 'Comma before the opening quote, and the full stop belongs inside the closing quote.'
+    },
+    {
+      prompt: 'My sister shouted put that down.',
+      options: ['My sister shouted, "put that down!"', 'My sister shouted, "Put that down!"', 'My sister shouted "Put that down!"', 'My sister shouted, "Put that down"!'],
+      answer: 1,
+      why: 'Comma before the quote, the quoted sentence starts with a capital letter, and the ! stays inside the closing quote.'
+    },
+    {
+      prompt: 'The girl said that was the best dance ever.',
+      options: ['"That was the best dance ever!" the girl said.', '"That was the best dance ever," the girl said.', '"That was the best dance ever!," the girl said.', '"That was the best dance ever." the girl said.'],
+      answer: 0,
+      why: 'The exclamation mark stays exactly as it is when a tag follows — it never changes into a comma.'
+    },
+    {
+      prompt: 'A thought, standing alone, with no speech tag: finally, alone at last.',
+      options: ['"Finally! Alone at last"', '"Finally! Alone at last!"', '"Finally. Alone at last!"', 'Finally! Alone at last!"'],
+      answer: 1,
+      why: 'With no tag at all, each exclamation inside the quote keeps its own ! — and the closing quotation mark comes right after the last one.'
+    },
+    {
+      prompt: 'A question, standing alone, with no speech tag: how do I sign up.',
+      options: ['"How do I sign up"', '"How do I sign up?"', '"How do I sign up."', 'How do I sign up?"'],
+      answer: 1,
+      why: 'With no tag, punctuate normally inside the quote — this is a question, so it needs a question mark, and the quotation marks must wrap the whole thing.'
+    },
+    {
+      prompt: 'Father said she is on her way, and today the restaurant is crowded (two separate ideas).',
+      options: ['My father said, "She is on her way, the restaurant is crowded today."', 'My father said "She is on her way. The restaurant is crowded today."', 'My father said, "She is on her way. The restaurant is crowded today."', 'My father said, "She is on her way today the restaurant is crowded."'],
+      answer: 2,
+      why: 'Comma before the opening quote, and two complete ideas inside the quote need their own full stop between them, not a comma.'
+    },
+    {
+      prompt: 'The nurse said the patient is stable now.',
+      options: ['The nurse said, "The patient is stable now."', 'The nurse said "The patient is stable now".', 'The nurse said, "The patient is stable now".', 'The nurse said "the patient is stable now."'],
+      answer: 0,
+      why: 'Comma before the opening quote, the quote starts with a capital letter, and the full stop belongs inside the closing quote.'
+    },
+    {
+      prompt: 'Tom replied i dont think so.',
+      options: ['"I don\'t think so." Tom replied.', '"I don\'t think so," Tom replied.', '"I don\'t think so", Tom replied.', '"I don\'t think so" Tom replied.'],
+      answer: 1,
+      why: 'A statement quote followed by a tag takes a comma inside the closing quote, not a full stop.'
+    },
+    {
+      prompt: 'The child whined can we go home now.',
+      options: ['"Can we go home now," the child whined.', '"Can we go home now." the child whined.', '"Can we go home now?" the child whined.', '"Can we go home now" the child whined.'],
+      answer: 2,
+      why: 'The quoted words form a question, so a question mark is needed inside the quote — not a comma or full stop.'
+    }
+  ];
+
+  const container = document.getElementById('quizContainer');
+  const scoreDisplay = document.getElementById('scoreDisplay');
+  const resetBtn = document.getElementById('resetBtn');
+  let score = 0;
+  let answered = new Array(QUESTIONS.length).fill(false);
+
+  function updateScore() {
+    scoreDisplay.textContent = score + " / " + QUESTIONS.length;
+  }
+
+  function render() {
+    container.innerHTML = '';
+    QUESTIONS.forEach((q, i) => {
+      const card = document.createElement('div');
+      card.className = 'quiz-bubble';
+
+      const num = document.createElement('p');
+      num.className = 'quiz-num';
+      num.textContent = 'Q' + (i + 1);
+      card.appendChild(num);
+
+      const prompt = document.createElement('p');
+      prompt.className = 'quiz-prompt';
+      prompt.textContent = q.prompt;
+      card.appendChild(prompt);
+
+      const optWrap = document.createElement('div');
+      optWrap.className = 'quiz-options';
+
+      q.options.forEach((optText, j) => {
+        const btn = document.createElement('button');
+        btn.className = 'quiz-opt';
+        btn.innerHTML = '<span class="tag">' + String.fromCharCode(65 + j) + '</span>' + optText.replace(/</g, '&lt;');
+        btn.addEventListener('click', () => handleAnswer(i, j, card));
+        optWrap.appendChild(btn);
+      });
+      card.appendChild(optWrap);
+
+      const feedback = document.createElement('div');
+      feedback.className = 'feedback';
+      feedback.id = 'feedback-' + i;
+      card.appendChild(feedback);
+
+      container.appendChild(card);
+    });
+  }
+
+  function handleAnswer(i, chosenIdx, card) {
+    if (answered[i]) return;
+    answered[i] = true;
+
+    const q = QUESTIONS[i];
+    const correct = chosenIdx === q.answer;
+    if (correct) score++;
+    updateScore();
+
+    const buttons = card.querySelectorAll('.quiz-opt');
+    buttons.forEach((b, j) => {
+      b.disabled = true;
+      if (j === chosenIdx) {
+        b.classList.add(correct ? 'correct' : 'incorrect');
+      } else if (j === q.answer && !correct) {
+        b.classList.add('reveal-correct');
+      }
+    });
+
+    const feedback = document.getElementById('feedback-' + i);
+    feedback.classList.add('show', correct ? 'is-correct' : 'is-incorrect');
+    feedback.innerHTML = '<span class="verdict">' + (correct ? 'Correct!' : 'Not quite!') + '</span>' + q.why;
+  }
+
+  resetBtn.addEventListener('click', () => {
+    score = 0;
+    answered = new Array(QUESTIONS.length).fill(false);
+    updateScore();
+    render();
+    window.scrollTo({ top: container.offsetTop - 80, behavior: 'smooth' });
+  });
+
+  render();
+  updateScore();
+})();
+</script>
+</body>
+</html>

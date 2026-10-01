@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>My Grammar Shelf</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Atkinson+Hyperlegible:wght@400;700&family=Spectral:wght@700&family=Bangers&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #E4EAE1;
+    --ink: #1D2924;
+    --ink-soft: #4C5C55;
+    --wood: #7A4E31;
+    --wood-dark: #5C3822;
+    --empty: rgba(29,41,36,0.28);
+    --font-head: 'Young Serif', Georgia, serif;
+    --font-body: 'Atkinson Hyperlegible', -apple-system, BlinkMacSystemFont, sans-serif;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #142019; --ink: #E6ECE3; --ink-soft: #A3B2AA;
+      --wood: #6A4229; --wood-dark: #4A2D1B; --empty: rgba(230,236,227,0.25);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #142019; --ink: #E6ECE3; --ink-soft: #A3B2AA;
+    --wood: #6A4229; --wood-dark: #4A2D1B; --empty: rgba(230,236,227,0.25);
+  }
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+  }
+  .wrap { max-width: 620px; margin: 0 auto; padding: 44px 20px 60px; }
+
+  h1 {
+    font-family: var(--font-head);
+    font-weight: 400;
+    font-size: clamp(38px, 10vw, 58px);
+    line-height: 1;
+    margin: 0 0 12px;
+    letter-spacing: -0.01em;
+  }
+  .intro { font-size: 17px; line-height: 1.55; color: var(--ink-soft); margin: 0 0 40px; max-width: 42ch; }
+
+  /* ---------- The stack ---------- */
+  .stack { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+  .stack li { display: flex; }
+  .stack li:nth-child(odd)  { justify-content: flex-start; padding-left: 4%; }
+  .stack li:nth-child(even) { justify-content: flex-end; padding-right: 2%; }
+
+  .book {
+    display: flex; align-items: center; gap: 14px;
+    width: 92%;
+    min-height: 92px;
+    padding: 14px 20px;
+    border-radius: 4px 6px 6px 4px;
+    text-decoration: none;
+    position: relative;
+    box-shadow: inset 0 -5px 0 rgba(0,0,0,0.18), inset 0 3px 0 rgba(255,255,255,0.08);
+    transition: transform 0.15s ease;
+  }
+  .book:hover, .book:focus-visible { transform: translateX(10px); }
+  .book:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+  @media (prefers-reduced-motion: reduce) { .book { transition: none; } .book:hover, .book:focus-visible { transform: none; } }
+
+  .book .num { font-family: var(--font-head); font-size: 15px; opacity: 0.75; min-width: 22px; }
+  .book .text { flex: 1; }
+  .book .t { display: block; line-height: 1.05; }
+  .book .d { display: block; font-family: var(--font-body); font-size: 13.5px; margin-top: 6px; opacity: 0.85; line-height: 1.35; }
+  .book .q { font-family: var(--font-body); font-size: 12.5px; font-weight: 700; white-space: nowrap; opacity: 0.85; }
+
+  /* Lesson 01: navy logbook, gold + teal */
+  .book.b01 {
+    background: #171B36;
+    color: #F3EEDF;
+    border-left: 8px solid #E8B24B;
+  }
+  .book.b01 .t { font-family: 'Spectral', Georgia, serif; font-weight: 700; font-size: 23px; }
+  .book.b01 .t span { color: #57CBBE; }
+
+  /* Lesson 02: comic panel, red + ink */
+  .book.b02 {
+    width: 86%;
+    background: #FFFDF6;
+    color: #201D1A;
+    border: 3px solid #201D1A;
+    box-shadow: 4px 4px 0 #E2473A;
+  }
+  .book.b02 .t { font-family: 'Bangers', cursive; font-size: 27px; letter-spacing: 0.02em; color: #E2473A; }
+
+  /* The next book still to be written */
+  .slot {
+    width: 80%;
+    min-height: 64px;
+    border: 2px dashed var(--empty);
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink-soft);
+    font-size: 14px;
+    margin-bottom: 2px;
+  }
+
+  .shelf {
+    height: 16px;
+    background: var(--wood);
+    border-bottom: 6px solid var(--wood-dark);
+    border-radius: 2px;
+    margin-top: 2px;
+  }
+
+  .note { margin-top: 36px; font-size: 14px; color: var(--ink-soft); line-height: 1.55; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>My Grammar Shelf</h1>
+  <p class="intro">One tricky PSLE English rule in each book, with a practice quiz at the end. Tap a spine to open it.</p>
+
+  <!-- Newest lesson goes at the TOP of the stack.
+       To add one: copy a <li> block, give it a new bNN class, and add matching styles above. -->
+  <ol class="stack" reversed>
+    <li><div class="slot">Next book coming soon</div></li>
+
+    <li>
+      <a class="book b02" href="lesson-02-quotation-marks.html">
+        <span class="num">02</span>
+        <span class="text">
+          <span class="t">Inside the Speech Bubble!</span>
+          <span class="d">Commas, full stops and question marks in quotes</span>
+        </span>
+        <span class="q">16 Qs</span>
+      </a>
+    </li>
+
+    <li>
+      <a class="book b01" href="lesson-01-will-vs-would.html">
+        <span class="num">01</span>
+        <span class="text">
+          <span class="t">Will <span>vs.</span> Would</span>
+          <span class="d">The time traveler's rule for plans and maybes</span>
+        </span>
+        <span class="q">20 Qs</span>
+      </a>
+    </li>
+  </ol>
+  <div class="shelf" aria-hidden="true"></div>
+
+  <p class="note">Each lesson has a "Back to the shelf" button at the top, so you can always find your way back here.</p>
+</div>
+</body>
+</html>
