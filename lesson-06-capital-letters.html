@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Who Gets the VIP Pass? Capital Letters</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎟️</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Figtree:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FCE6D4;            /* peach event wall */
+    --surface: #FFFFFF;
+    --ink: #231A14;
+    --ink-soft: #66513F;
+    --vip: #0B6E6E;           /* VIP teal */
+    --vip-soft: #D5EEEC;
+    --gold: #C98A00;          /* pass gold */
+    --gold-soft: #FFF0C7;
+    --plain: rgba(35,26,20,0.35);
+    --right: #1F7A45;   --right-soft: #DDF1E4;
+    --wrong: #B3261E;   --wrong-soft: #F8DEDC;
+    --rule: rgba(35,26,20,0.14);
+    --font-display: 'Alfa Slab One', Georgia, serif;
+    --font-body: 'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
+
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1B1411; --surface: #2A201B; --ink: #F7EDE4; --ink-soft: #C4B2A3;
+      --vip: #5CCFC9; --vip-soft: #143533;
+      --gold: #F2BE3A; --gold-soft: #3A2E10;
+      --plain: rgba(247,237,228,0.35);
+      --right: #6FD49A; --right-soft: #17321F;
+      --wrong: #F08A82; --wrong-soft: #3A1E1C;
+      --rule: rgba(247,237,228,0.14);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1B1411; --surface: #2A201B; --ink: #F7EDE4; --ink-soft: #C4B2A3;
+    --vip: #5CCFC9; --vip-soft: #143533;
+    --gold: #F2BE3A; --gold-soft: #3A2E10;
+    --plain: rgba(247,237,228,0.35);
+    --right: #6FD49A; --right-soft: #17321F;
+    --wrong: #F08A82; --wrong-soft: #3A1E1C;
+    --rule: rgba(247,237,228,0.14);
+  }
+
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; }
+  .wrap { max-width: 740px; margin: 0 auto; padding: 28px 18px 64px; }
+  img, svg { max-width: 100%; }
+  section { margin-bottom: 48px; }
+  h1, h2 { font-family: var(--font-display); font-weight: 400; }
+  h2 { font-size: 26px; line-height: 1.15; margin: 0 0 8px; }
+  h3 { font-family: var(--font-body); font-weight: 800; font-size: 18px; margin: 0 0 8px; }
+  p { line-height: 1.55; }
+  .sub { color: var(--ink-soft); margin: 0 0 20px; max-width: 60ch; }
+  :focus-visible { outline: 3px solid var(--vip); outline-offset: 2px; }
+  .cap { color: var(--vip); font-weight: 800; }
+
+  .back-link {
+    display: inline-block; margin: 0 0 22px; padding: 9px 16px; min-height: 40px;
+    font-weight: 700; font-size: 14px; color: var(--ink); text-decoration: none;
+    border: 2px solid var(--ink); border-radius: 22px; background: var(--surface);
+  }
+
+  /* Ticket shape: notched sides */
+  .ticket {
+    position: relative; background: var(--surface); border-radius: 10px; padding: 18px 20px;
+    -webkit-mask: radial-gradient(circle 9px at 0 50%, transparent 98%, #000) left / 51% 100% no-repeat,
+                  radial-gradient(circle 9px at 100% 50%, transparent 98%, #000) right / 51% 100% no-repeat;
+            mask: radial-gradient(circle 9px at 0 50%, transparent 98%, #000) left / 51% 100% no-repeat,
+                  radial-gradient(circle 9px at 100% 50%, transparent 98%, #000) right / 51% 100% no-repeat;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero h1 { font-size: clamp(36px, 9.5vw, 58px); line-height: 1.02; margin: 0 0 14px; }
+  .hero h1 .pass {
+    display: inline-block; background: var(--vip); color: #fff; padding: 0 12px 4px; border-radius: 8px;
+    transform: rotate(-2deg); box-shadow: 4px 4px 0 var(--gold);
+  }
+  .lead { font-size: 17px; max-width: 58ch; margin: 0 0 22px; }
+
+  .gate { background: var(--surface); border-radius: 10px; padding: 18px 14px 16px; border: 2px dashed var(--plain); }
+  .gate-title { font-weight: 800; margin: 0 0 4px; }
+  .gate-hint { margin: 0 0 14px; font-size: 14.5px; color: var(--ink-soft); }
+  .crowd { display: flex; flex-wrap: wrap; gap: 26px 8px; padding-top: 18px; }
+  .guest {
+    position: relative; font: inherit; font-size: 17px; font-weight: 700; min-height: 44px; min-width: 44px;
+    padding: 8px 12px; border-radius: 8px; cursor: pointer;
+    border: 2px dashed var(--plain); background: transparent; color: var(--ink);
+  }
+  .guest.vip { border: 2px solid var(--vip); background: var(--vip-soft); color: var(--vip); }
+  .guest.vip::before {   /* lanyard */
+    content: ""; position: absolute; left: 50%; top: -18px; width: 22px; height: 18px; transform: translateX(-50%);
+    border: 3px solid var(--gold); border-bottom: none; border-radius: 12px 12px 0 0;
+  }
+  .guest.right-vip { box-shadow: 0 0 0 3px var(--right); }
+  .guest.crasher { box-shadow: 0 0 0 3px var(--wrong); }
+  .gate-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+  .btn {
+    font: inherit; font-weight: 800; font-size: 14.5px; min-height: 44px; padding: 10px 18px; border-radius: 22px;
+    border: 2px solid var(--ink); background: var(--ink); color: var(--bg); cursor: pointer;
+  }
+  .btn.ghost { background: transparent; color: var(--ink); }
+  .gate-msg { margin: 12px 2px 0; font-size: 15px; min-height: 24px; }
+
+  /* ---------- Rule ---------- */
+  .checks { display: grid; gap: 12px; }
+  .check { display: grid; grid-template-columns: 52px 1fr; gap: 12px; align-items: start; }
+  .check .q {
+    width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 22px; background: var(--gold-soft); color: var(--gold); border: 2px solid var(--gold);
+  }
+  .check p { margin: 0 0 6px; }
+  .bouncer { margin-top: 14px; padding: 14px 16px; border-left: 5px solid var(--vip); background: var(--vip-soft); border-radius: 0 8px 8px 0; }
+  .bouncer p { margin: 0 0 6px; }
+  .bouncer p:last-child { margin: 0; }
+
+  /* ---------- Traps ---------- */
+  .trap { margin-bottom: 14px; border-top: 6px solid var(--wrong); border-radius: 10px; }
+  .trap h3 { color: var(--wrong); }
+  .trap p { margin: 0 0 8px; }
+  .bad { color: var(--wrong); text-decoration: line-through; text-decoration-thickness: 1.5px; }
+  .good { color: var(--right); font-weight: 700; }
+  .why { color: var(--ink-soft); font-size: 15px; }
+
+  /* ---------- Categories ---------- */
+  .lists { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 560px) { .lists { grid-template-columns: 1fr; } }
+  .list { background: var(--surface); border-radius: 10px; padding: 16px 18px; border-left: 6px solid var(--vip); }
+  .list .label { display: inline-block; font-family: var(--font-display); font-size: 14px; background: var(--vip); color: #fff; padding: 3px 10px 5px; border-radius: 6px; margin-bottom: 8px; }
+  .list p { margin: 0 0 7px; font-size: 15px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 10px; padding: 0; list-style: none; }
+  .chips li { font-size: 13.5px; font-weight: 700; padding: 3px 9px; border-radius: 12px; background: var(--gold-soft); color: var(--ink); }
+
+  /* ---------- Special ---------- */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 560px) { .grid-2 { grid-template-columns: 1fr; } }
+  .special { background: var(--surface); border-radius: 10px; padding: 16px; border: 2px solid var(--gold); }
+  .special p { margin: 0 0 8px; font-size: 15px; }
+
+  /* ---------- Quiz ---------- */
+  .scoreboard {
+    display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; margin-bottom: 20px;
+    background: var(--vip); color: #fff; border-radius: 10px; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 2;
+  }
+  .scoreboard .label { font-size: 13px; opacity: 0.85; }
+  .score { font-family: var(--font-display); font-size: 24px; }
+  .reset-btn { font: inherit; font-weight: 800; font-size: 14px; padding: 10px 16px; min-height: 44px; border-radius: 22px; border: 2px solid #fff; background: transparent; color: #fff; cursor: pointer; }
+  .quiz-card { background: var(--surface); padding: 18px; margin-bottom: 14px; border-radius: 10px; }
+  .quiz-num { font-size: 13px; color: var(--ink-soft); margin: 0 0 6px; }
+  .quiz-ask { font-size: 14px; font-weight: 800; color: var(--vip); margin: 0 0 6px; }
+  .quiz-text { font-size: 17px; margin: 0 0 14px; font-weight: 600; line-height: 1.45; }
+  .blank { display: inline-block; min-width: 60px; text-align: center; border-bottom: 2px dashed var(--ink-soft); color: var(--ink-soft); }
+  .blank.filled { border-bottom-style: solid; color: var(--vip); font-weight: 800; }
+  .opts { display: flex; flex-direction: column; gap: 9px; }
+  .opts.row { flex-direction: row; }
+  .opts.row .opt { flex: 1; text-align: center; }
+  .opt { font: inherit; font-size: 15.5px; text-align: left; padding: 11px 14px; min-height: 44px; border: 2px solid var(--rule); background: var(--bg); color: var(--ink); cursor: pointer; border-radius: 8px; }
+  .opt:disabled { cursor: default; }
+  .opt .tag { font-weight: 800; margin-right: 8px; color: var(--vip); }
+  .opt.correct, .opt.reveal { background: var(--right-soft); border-color: var(--right); }
+  .opt.incorrect { background: var(--wrong-soft); border-color: var(--wrong); }
+  .feedback { display: none; margin-top: 12px; padding-top: 12px; border-top: 2px dashed var(--rule); font-size: 15px; line-height: 1.55; }
+  .feedback.show { display: block; }
+  .verdict { display: block; font-weight: 800; margin-bottom: 4px; }
+  .feedback.fb-ok .verdict { color: var(--right); }
+  .feedback.fb-no .verdict { color: var(--wrong); }
+
+  /* ---------- Summary ---------- */
+  .summary { background: var(--surface); border-radius: 10px; padding: 20px; border: 3px solid var(--ink); box-shadow: 6px 6px 0 var(--vip); }
+  .summary ul { margin: 0; padding-left: 20px; line-height: 1.8; }
+  .chant { margin: 18px 0 0; padding: 14px 16px; background: var(--gold-soft); border-radius: 8px; font-family: var(--font-display); font-size: 18px; line-height: 1.45; text-align: center; }
+  footer { text-align: center; color: var(--ink-soft); font-size: 13px; margin-top: 30px; }
+  @media (prefers-reduced-motion: reduce) { .hero h1 .pass { transform: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back-link" href="index.html">← Back to the shelf</a>
+
+  <!-- 1. HERO -->
+  <header class="hero">
+    <h1>Who Gets the <span class="pass">VIP Pass</span>?</h1>
+    <p class="lead">Think of a capital letter as a VIP pass. Every word in a sentence would love one, but you're the guard at the door, and passes go only to two kinds of guest: the <b>first word of a sentence</b>, and a <b>special name</b> that belongs to one particular person, place, day or thing. Everyone else comes in through the normal entrance, in small letters.</p>
+
+    <div class="gate">
+      <p class="gate-title">Your turn at the door</p>
+      <p class="gate-hint">Tap each word that deserves a VIP pass (a capital letter). Tap again to take it back. Then check your guest list.</p>
+      <div class="crowd" id="crowd"></div>
+      <div class="gate-actions">
+        <button class="btn" type="button" id="gateCheck">Check my guest list</button>
+        <button class="btn ghost" type="button" id="gateReset">Start again</button>
+      </div>
+      <p class="gate-msg" id="gateMsg" aria-live="polite"></p>
+    </div>
+  </header>
+
+  <!-- 2. THE RULE -->
+  <section>
+    <h2>The door check</h2>
+    <p class="sub">Ask these two questions about any word. If the answer to either one is yes, the word gets a capital letter.</p>
+    <div class="checks">
+      <div class="check ticket">
+        <div class="q">1</div>
+        <div>
+          <p><b>Is it the first word of a sentence?</b> That includes the first word of a sentence <i>inside speech marks</i>.</p>
+          <p><span class="cap">L</span>ast week, my mum called out, "<span class="cap">D</span>inner is ready!"</p>
+        </div>
+      </div>
+      <div class="check ticket">
+        <div class="q">2</div>
+        <div>
+          <p><b>Is it the special name of one particular person, place, day, event or group?</b></p>
+          <p>We met <span class="cap">M</span>s <span class="cap">G</span>oh at <span class="cap">P</span>arkway <span class="cap">P</span>arade on <span class="cap">S</span>aturday.</p>
+        </div>
+      </div>
+    </div>
+    <div class="bouncer">
+      <p><b>The guard's test:</b> could you swap the word for a general word, like "a mall", "a teacher" or "a country"? If so, it's a special name, and it gets a pass. The general word stays small.</p>
+      <p><span class="cap">P</span>arkway <span class="cap">P</span>arade → a mall. <span class="cap">M</span>s <span class="cap">G</span>oh → a teacher. <span class="cap">J</span>apan → a country.</p>
+      <p>And one word always gets a pass, wherever it stands: <span class="cap">I</span>.</p>
+    </div>
+  </section>
+
+  <!-- 3. TRAPS -->
+  <section>
+    <h2>Three traps at the gate</h2>
+    <p class="sub">The first two are opposites: forgetting a pass, and handing one out when it isn't needed. The third catches words in the middle of a sentence.</p>
+
+    <div class="trap ticket">
+      <h3>Trap 1: Forgetting the pass for a name</h3>
+      <p><span class="bad">I visited singapore in december and saw the esplanade.</span></p>
+      <p><span class="good">I visited Singapore in December and saw the Esplanade.</span></p>
+      <p class="why">Countries, months and buildings are all special names. Watch for words made from a name too: Singapore → <b>Singaporeans</b>, Japan → <b>Japanese</b>, England → <b>English</b>.</p>
+    </div>
+
+    <div class="trap ticket">
+      <h3>Trap 2: Name or just a description?</h3>
+      <p><span class="bad">My Mum and I went to the Community Club near our School.</span></p>
+      <p><span class="good">My mum and I went to the community club near our school.</span></p>
+      <p><span class="good">Thank you, Mum! / Mum and I went to Casuarina Community Club.</span></p>
+      <p class="why">After <i>my, our, the</i> or <i>a</i>, words like mum, grandmother, teacher and school are just descriptions, so they stay small. Use a capital only when the word is used <i>as a name</i>, or when it's part of the full name.</p>
+    </div>
+
+    <div class="trap ticket">
+      <h3>Trap 3: A pass in the middle of a sentence</h3>
+      <p><span class="bad">After signing the consent form, What must I do?</span></p>
+      <p><span class="good">After signing the consent form, what must I do?</span></p>
+      <p><span class="bad">"We are back!" My parents exclaimed.</span></p>
+      <p><span class="good">"We are back!" my parents exclaimed.</span></p>
+      <p class="why">A comma doesn't start a new sentence, so the next word stays small. After speech, the speech tag ("my parents exclaimed") still belongs to the same sentence, so it stays small too.</p>
+    </div>
+  </section>
+
+  <!-- 4. CATEGORIES -->
+  <section>
+    <h2>Who's on the VIP list</h2>
+    <p class="sub">Special names come in four main groups. If a name has more than one word, every main word gets a pass.</p>
+    <div class="lists">
+      <div class="list">
+        <span class="label">People</span>
+        <ul class="chips"><li>names</li><li>Mr / Mrs / Ms / Mdm / Dr</li><li>Mum, Dad (as names)</li><li>I</li></ul>
+        <p>Nurul and I helped Mdm Rahimah carry the books.</p>
+        <p>"Can I go to the park, Dad?" asked Marcus.</p>
+      </div>
+      <div class="list">
+        <span class="label">Places</span>
+        <ul class="chips"><li>countries</li><li>cities</li><li>roads</li><li>buildings and malls</li><li>parks</li></ul>
+        <p>We drove along Orchard Road to Gardens by the Bay.</p>
+        <p>My uncle works at Changi Airport in Singapore.</p>
+      </div>
+      <div class="list">
+        <span class="label">Days and events</span>
+        <ul class="chips"><li>days</li><li>months</li><li>festivals</li><li>named events</li></ul>
+        <p>Racial Harmony Day falls on a Friday this July.</p>
+        <p>We visit my grandparents during Chinese New Year and Hari Raya Puasa.</p>
+      </div>
+      <div class="list">
+        <span class="label">Groups and languages</span>
+        <ul class="chips"><li>languages</li><li>nationalities</li><li>class names</li><li>clubs and schools</li></ul>
+        <p>Our English teacher speaks Japanese too.</p>
+        <p>Arjun from Primary 5F asked a Primary Six student for help.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. SPECIAL CASES -->
+  <section>
+    <h2>Special guests</h2>
+    <p class="sub">The quiz checks these too. They follow their own small rules.</p>
+    <div class="grid-2">
+      <div class="special">
+        <h3>"The" stays small</h3>
+        <p>Some names come with "the" in front. In the middle of a sentence, "the" stays small. Only the name itself gets the pass.</p>
+        <p><span class="good">We took photos with the Merlion and watched a show at the Esplanade.</span></p>
+      </div>
+      <div class="special">
+        <h3>Seasons stay small</h3>
+        <p>Spring, summer, autumn and winter are not special names, so they stay small. Months, though, always get a pass.</p>
+        <p><span class="bad">We flew to Korea in Winter.</span></p>
+        <p><span class="good">We flew to Korea in winter, in December.</span></p>
+      </div>
+      <div class="special">
+        <h3>Titles of books, songs and shows</h3>
+        <p>The first word and every main word get a pass. Small words like <i>a, an, the, of, in, on, and</i> stay small, unless they come first.</p>
+        <p><span class="bad">The Secret Of The Old Kampong</span></p>
+        <p><span class="good">The Secret of the Old Kampong</span></p>
+      </div>
+      <div class="special">
+        <h3>Opening and closing a letter</h3>
+        <p>In "Dear Sir/Madam," both titles get a pass. In the closing, only the <b>first</b> word gets one.</p>
+        <p><span class="bad">yours faithfully, / Yours Sincerely,</span></p>
+        <p><span class="good">Yours faithfully, / Yours sincerely,</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. PRACTICE -->
+  <section>
+    <h2>Run the door</h2>
+    <p class="sub">Three kinds of question: fill the blank, check a sentence, or pick the correctly capitalised version. You'll see straight away if you're right, and why. The questions get trickier as you go.</p>
+    <div class="scoreboard">
+      <div><div class="label">Your score</div><div class="score" id="scoreDisplay">0 / 30</div></div>
+      <button class="reset-btn" id="resetBtn" type="button">Start over</button>
+    </div>
+    <div id="quizContainer"></div>
+  </section>
+
+  <!-- 7. PIN THIS UP -->
+  <section class="summary">
+    <h2>Pin This Up</h2>
+    <ul>
+      <li><b>Pass 1:</b> the first word of every sentence, including the first word inside speech marks.</li>
+      <li><b>Pass 2:</b> special names of people, places, days, months, festivals, events, languages, nationalities and classes.</li>
+      <li><b>Always:</b> the word "I".</li>
+      <li><b>No pass:</b> general words (a mall, my mum, our school), seasons, a word after a comma, and a speech tag after a quote.</li>
+      <li><b>Titles:</b> capitalise the main words. <b>Letters:</b> "Yours sincerely" has only one capital.</li>
+    </ul>
+    <p class="chant">First word, or a one-of-a-kind name?<br>Pass it in! The rest stay plain.</p>
+  </section>
+
+  <footer>My Grammar Shelf, Lesson 06</footer>
+</div>
+
+<script>
+(function () {
+  /* ---------- Hero: the door ---------- */
+  const GUESTS = [
+    ['last', 'Last', true], ['december,', 'December,', true], ['my', 'My', false], ['family', 'Family', false],
+    ['flew', 'Flew', false], ['to', 'To', false], ['tokyo', 'Tokyo', true], ['to', 'To', false],
+    ['visit', 'Visit', false], ['disneyland', 'Disneyland', true], ['with', 'With', false], ['my', 'My', false], ['uncle.', 'Uncle.', false]
+  ];
+  const crowd = document.getElementById('crowd');
+  const gateMsg = document.getElementById('gateMsg');
+  let state = [];
+  function drawGate() {
+    crowd.innerHTML = '';
+    state = GUESTS.map(() => false);
+    GUESTS.forEach((g, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'guest';
+      b.textContent = g[0];
+      b.setAttribute('aria-pressed', 'false');
+      b.addEventListener('click', () => {
+        state[i] = !state[i];
+        b.textContent = state[i] ? g[1] : g[0];
+        b.classList.toggle('vip', state[i]);
+        b.classList.remove('right-vip', 'crasher');
+        b.setAttribute('aria-pressed', String(state[i]));
+        gateMsg.textContent = '';
+      });
+      crowd.appendChild(b);
+    });
+    gateMsg.textContent = '';
+  }
+  document.getElementById('gateCheck').addEventListener('click', () => {
+    let found = 0, missed = 0, crashers = 0;
+    crowd.querySelectorAll('.guest').forEach((b, i) => {
+      const should = GUESTS[i][2];
+      b.classList.remove('right-vip', 'crasher');
+      if (state[i] && should) { found++; b.classList.add('right-vip'); }
+      else if (state[i] && !should) { crashers++; b.classList.add('crasher'); }
+      else if (!state[i] && should) { missed++; }
+    });
+    if (found === 4 && crashers === 0) {
+      gateMsg.innerHTML = '<b>Perfect door work!</b> "Last" starts the sentence. "December", "Tokyo" and "Disneyland" are special names. "My uncle" is just a description.';
+    } else {
+      gateMsg.innerHTML = '<b>' + found + ' of 4 VIPs let in.</b> ' +
+        (missed ? missed + ' still waiting outside. ' : '') +
+        (crashers ? crashers + ' gatecrasher' + (crashers > 1 ? 's' : '') + ' (red) got a pass they shouldn\'t have. ' : '') +
+        'Ask the door check: first word, or a special name?';
+    }
+  });
+  document.getElementById('gateReset').addEventListener('click', drawGate);
+  drawGate();
+
+  /* ---------- Quiz ---------- */
+  const FILL = "Pick the right word for the blank.";
+  const CHECK = "Is the capitalisation correct?";
+  const PICK = "Pick the correctly capitalised version.";
+  const CN = ["Correct", "Needs fixing"];
+  const QUESTIONS = [
+    { ask: FILL, text: "My family went to ___ for the December holidays.", options: ["Japan", "japan"], answer: 0, why: "Japan is the special name of one particular country, so it gets a pass." },
+    { ask: FILL, text: "We bought a new rice cooker at the ___ on Saturday.", options: ["Mall", "mall"], answer: 1, why: "“Mall” is a general word here. It doesn't name one particular mall, so it stays small." },
+    { ask: FILL, text: "Our class party is on the last Friday of ___.", options: ["November", "november"], answer: 0, why: "Months are special names, so November always gets a pass." },
+    { ask: PICK, text: "mrs lin is my english teacher.", options: ["Mrs lin is my English teacher.", "Mrs Lin is my english teacher.", "Mrs Lin is My English Teacher.", "Mrs Lin is my English teacher."], answer: 3, why: "“Mrs Lin” is a name and “English” is a language. “My” and “teacher” are general words." },
+    { ask: FILL, text: "On Saturday, ___ cycled with my brother at East Coast Park.", options: ["I", "i"], answer: 0, why: "The word “I” always gets a pass, wherever it stands in the sentence." },
+    { ask: FILL, text: "Arjun is the tallest boy in ___ 5F.", options: ["Primary", "primary"], answer: 0, why: "“Primary 5F” is the name of one particular class, so “Primary” gets a pass." },
+    { ask: PICK, text: "last wednesday, mr tan asked for volunteers.", options: ["Last wednesday, Mr Tan asked for volunteers.", "last Wednesday, Mr Tan asked for volunteers.", "Last Wednesday, Mr Tan asked for volunteers.", "Last Wednesday, Mr Tan Asked for Volunteers."], answer: 2, why: "“Last” starts the sentence. “Wednesday” and “Mr Tan” are special names. Nothing else needs a pass." },
+    { ask: FILL, text: "My cousin plays badminton at a ___ in Tampines.", options: ["Community Club", "community club"], answer: 1, why: "“A community club” could be any one, so it's a description and stays small." },
+    { ask: FILL, text: "Next week, our school will celebrate ___.", options: ["racial harmony day", "Racial Harmony Day"], answer: 1, why: "It's the name of a special event, so every main word gets a pass." },
+    { ask: CHECK, text: "We took photos with the Merlion at Marina Bay.", options: CN, answer: 0, why: "“Merlion” and “Marina Bay” are special names, and “the” stays small in the middle of a sentence." },
+
+    { ask: CHECK, text: "I do not know why so many singaporeans love durians.", options: CN, answer: 1, why: "“Singaporeans” comes from the name Singapore, so it needs a capital S." },
+    { ask: PICK, text: "i bought a present for my mum.", options: ["I bought a present for my Mum.", "I bought a present for my mum.", "I Bought a present for my mum.", "i bought a present for my mum."], answer: 1, why: "After “my”, mum is a description, not a name. Only the first word “I” gets a pass." },
+    { ask: FILL, text: "“Thank you, ___!” I said as I hugged her.", options: ["Mum", "mum"], answer: 0, why: "Here “Mum” is used as her name, as you're speaking to her, so it gets a pass." },
+    { ask: PICK, text: "“we are back!” my parents exclaimed.", options: ["“We are back!” My parents exclaimed.", "“We are back!” my parents exclaimed.", "“we are back!” my parents exclaimed.", "“We are back!” my Parents exclaimed."], answer: 1, why: "“We” starts the speech. The tag “my parents exclaimed” continues the same sentence, so it stays small." },
+    { ask: CHECK, text: "After signing the consent form, what must I do?", options: CN, answer: 0, why: "A comma doesn't start a new sentence, so “what” correctly stays small. Only “I” needs a pass." },
+    { ask: FILL, text: "We went to the ___ to watch a musical.", options: ["Esplanade", "esplanade"], answer: 0, why: "The Esplanade is the name of one particular building, so it gets a pass. “The” stays small." },
+    { ask: PICK, text: "my mum called out, “dinner is ready.”", options: ["My mum called out, “dinner is ready.”", "My mum called out, “Dinner is ready.”", "My Mum called out, “Dinner is ready.”", "my mum called out, “Dinner is ready.”"], answer: 1, why: "Both the sentence and the speech start with capitals. “Mum” after “my” is a description, so it stays small." },
+    { ask: FILL, text: "My brother will start at a ___ school next year.", options: ["Secondary", "secondary"], answer: 1, why: "“A secondary school” could be any school. It's a description, not a name." },
+    { ask: CHECK, text: "We bought kueh lapis for Hari Raya Puasa.", options: CN, answer: 0, why: "Hari Raya Puasa is the name of a festival, so every word gets a pass." },
+    { ask: PICK, text: "the library is at the corner of orchard road.", options: ["The library is at the corner of Orchard road.", "The Library is at the corner of Orchard Road.", "The library is at the corner of Orchard Road.", "The library is at the Corner of Orchard Road."], answer: 2, why: "“Orchard Road” is the full name, so both words get a pass. “Library” and “corner” are general words." },
+
+    { ask: PICK, text: "Which closing for a formal letter is correct?", options: ["Yours Sincerely,", "yours sincerely,", "Yours sincerely,"], answer: 2, why: "In a letter closing, only the first word gets a pass: “Yours sincerely,”." },
+    { ask: PICK, text: "Which greeting for a formal letter is correct?", options: ["Dear sir/madam,", "dear Sir/Madam,", "Dear Sir/madam,", "Dear Sir/Madam,"], answer: 3, why: "“Dear” opens the letter, and both titles, Sir and Madam, get a pass." },
+    { ask: FILL, text: "We flew to Tokyo in ___ and saw snow for the first time.", options: ["Winter", "winter"], answer: 1, why: "Seasons are not special names, so “winter” stays small." },
+    { ask: CHECK, text: "Our trip to Korea in Spring was our best holiday ever.", options: CN, answer: 1, why: "“Korea” is right, but seasons stay small. It should be “in spring”." },
+    { ask: PICK, text: "Which book title is capitalised correctly?", options: ["The Secret of the Old Kampong", "The Secret Of The Old Kampong", "the Secret of the old Kampong", "The secret of the old kampong"], answer: 0, why: "The first word and the main words get passes. “Of” and “the” stay small because they don't come first." },
+    { ask: PICK, text: "Which song title is capitalised correctly?", options: ["Dancing in the Rain", "Dancing In The Rain", "dancing in the rain", "Dancing in the rain"], answer: 0, why: "Main words like “Dancing” and “Rain” get passes. Small words like “in” and “the” stay small." },
+    { ask: PICK, text: "during chinese new year, we visited my grandmother in malaysia.", options: ["During Chinese New Year, we visited my Grandmother in Malaysia.", "During Chinese new year, we visited my grandmother in Malaysia.", "During Chinese New Year, we visited my grandmother in Malaysia.", "during Chinese New Year, we visited my grandmother in Malaysia."], answer: 2, why: "The festival and the country are special names. “My grandmother” is a description, so it stays small." },
+    { ask: CHECK, text: "“And next up is Jack!” The host exclaimed.", options: CN, answer: 1, why: "The speech tag continues the sentence, so it should be “the host exclaimed”." },
+    { ask: PICK, text: "the primary one pupils followed their buddies to the canteen.", options: ["The primary one pupils followed their buddies to the canteen.", "The Primary One Pupils followed their buddies to the canteen.", "The Primary One pupils followed their Buddies to the Canteen.", "The Primary One pupils followed their buddies to the canteen."], answer: 3, why: "“Primary One” names a school level, so it gets passes. Pupils, buddies and canteen are general words." },
+    { ask: PICK, text: "on youth day, ms goh told us, “you were all amazing!”", options: ["On Youth Day, Ms Goh told us, “You were all amazing!”", "On youth day, Ms Goh told us, “You were all amazing!”", "On Youth Day, Ms Goh told us, “you were all amazing!”", "On Youth Day, Ms Goh Told Us, “You Were All Amazing!”"], answer: 0, why: "Passes go to the first word, the event, the name, and the first word of the speech. Nothing else." }
+  ];
+
+  const container = document.getElementById('quizContainer');
+  const scoreEl = document.getElementById('scoreDisplay');
+  let score = 0, answered = [];
+
+  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  function updateScore() { scoreEl.textContent = score + ' / ' + QUESTIONS.length; }
+
+  function render() {
+    container.innerHTML = '';
+    answered = QUESTIONS.map(() => false);
+    QUESTIONS.forEach((q, i) => {
+      const card = document.createElement('div');
+      card.className = 'quiz-card';
+      const hasBlank = q.text.includes('___');
+      const short = q.options.every(o => o.length <= 14);
+      card.innerHTML =
+        '<p class="quiz-num">Question ' + (i + 1) + ' of ' + QUESTIONS.length + '</p>' +
+        (q.ask ? '<p class="quiz-ask">' + esc(q.ask) + '</p>' : '') +
+        '<p class="quiz-text">' + esc(q.text).replace('___', '<span class="blank">___</span>') + '</p>' +
+        '<div class="opts' + (short ? ' row' : '') + '"></div>' +
+        '<div class="feedback" role="status"></div>';
+      const opts = card.querySelector('.opts');
+      q.options.forEach((o, j) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'opt';
+        b.innerHTML = (short ? '' : '<span class="tag">' + String.fromCharCode(65 + j) + '</span>') + esc(o);
+        b.addEventListener('click', () => answer(i, j, card, hasBlank));
+        opts.appendChild(b);
+      });
+      container.appendChild(card);
+    });
+    updateScore();
+  }
+
+  function answer(i, j, card, hasBlank) {
+    if (answered[i]) return;
+    answered[i] = true;
+    const q = QUESTIONS[i], ok = j === q.answer;
+    if (ok) score++;
+    updateScore();
+    if (hasBlank) {
+      const blank = card.querySelector('.blank');
+      blank.textContent = q.options[j];
+      blank.classList.add('filled');
+    }
+    const short = q.options.every(o => o.length <= 14);
+    card.querySelectorAll('.opt').forEach((b, k) => {
+      b.disabled = true;
+      if (k === j) b.classList.add(ok ? 'correct' : 'incorrect');
+      else if (k === q.answer && !ok) b.classList.add('reveal');
+    });
+    const fb = card.querySelector('.feedback');
+    fb.classList.add('show', ok ? 'fb-ok' : 'fb-no');
+    fb.innerHTML = '<span class="verdict">' +
+      (ok ? 'Correct!' : 'Not quite. The answer is ' + (short ? '"' + esc(q.options[q.answer]) + '"' : String.fromCharCode(65 + q.answer)) + '.') +
+      '</span>' + esc(q.why);
+  }
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    score = 0;
+    render();
+    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

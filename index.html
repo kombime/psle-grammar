@@ -7,7 +7,7 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Atkinson+Hyperlegible:wght@400;700&family=Spectral:wght@700&family=Bangers&family=Lilita+One&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Atkinson+Hyperlegible:wght@400;700&family=Spectral:wght@700&family=Bangers&family=Lilita+One&family=Big+Shoulders+Display:wght@800&family=Fraunces:opsz,wght@9..144,800&family=Alfa+Slab+One&family=Caveat+Brush&family=Baloo+2:wght@800&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #E4EAE1;
@@ -108,6 +108,60 @@
   }
   .book.b03 .t { font-family: 'Lilita One', 'Trebuchet MS', sans-serif; font-size: 26px; color: #FF9A5E; }
 
+  /* Lesson 04: railway carriage, maroon on steel */
+  .book.b04 {
+    width: 90%;
+    background: #7A2333;
+    color: #FBEFF1;
+    border-top: 5px solid #A85A06;
+    border-bottom: 5px solid #A85A06;
+  }
+  .book.b04 .t { font-family: 'Big Shoulders Display', 'Arial Narrow', sans-serif; font-weight: 800; font-size: 28px; text-transform: uppercase; letter-spacing: 0.02em; }
+
+  /* Lesson 05: sheet music, magenta breath mark on manuscript blue */
+  .book.b05 {
+    width: 84%;
+    color: #14213D;
+    background:
+      repeating-linear-gradient(to bottom, rgba(20,33,61,0.16) 0 1px, transparent 1px 7px) 0 10px / 100% 29px no-repeat,
+      #E9F0F7;
+    border-right: 8px solid #A3175F;
+  }
+  .book.b05 .t { font-family: 'Fraunces', Georgia, serif; font-weight: 800; font-size: 24px; }
+  .book.b05 .t span { color: #A3175F; }
+
+  /* Lesson 06: VIP pass, teal badge on peach with gold lanyard */
+  .book.b06 {
+    width: 88%;
+    background: #0B6E6E;
+    color: #FFFFFF;
+    border-left: 10px solid #FCE6D4;
+    border-top: 4px solid #F2BE3A;
+  }
+  .book.b06 .t { font-family: 'Alfa Slab One', Georgia, serif; font-size: 24px; }
+  .book.b06 .t span { color: #F2BE3A; }
+
+  /* Lesson 07: photo album, cobalt + sepia washi tape on kraft */
+  .book.b07 {
+    width: 86%;
+    background: #E6D5B8;
+    color: #1F2430;
+    border-top: 6px solid rgba(39,71,184,0.6);
+    border-bottom: 6px solid rgba(138,90,43,0.6);
+  }
+  .book.b07 .t { font-family: 'Caveat Brush', cursive; font-size: 29px; }
+  .book.b07 .t span { color: #2747B8; }
+
+  /* Lesson 08: jigsaw, raspberry word piece + amber preposition piece */
+  .book.b08 {
+    width: 90%;
+    background: #C2255C;
+    color: #FFFFFF;
+    border-right: 26px solid #F59F00;
+  }
+  .book.b08 .t { font-family: 'Baloo 2', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 27px; }
+  .book.b08 .t span { color: #FFD666; }
+
   /* The next book still to be written */
   .slot {
     width: 80%;
@@ -140,6 +194,61 @@
        To add one: copy a <li> block, give it a new bNN class, and add matching styles above. -->
   <ol class="stack" reversed>
     <li><div class="slot">Next book coming soon</div></li>
+
+    <li>
+      <a class="book b08" href="lesson-08-prepositions.html">
+        <span class="num">08</span>
+        <span class="text">
+          <span class="t">Only <span>One Piece</span> Fits</span>
+          <span class="d">Prepositions: in, on, at, into, and fixed pairs</span>
+        </span>
+        <span class="q">30 Qs</span>
+      </a>
+    </li>
+
+    <li>
+      <a class="book b07" href="lesson-07-tense-consistency.html">
+        <span class="num">07</span>
+        <span class="text">
+          <span class="t">Every Story Is a <span>Photo Album</span></span>
+          <span class="d">Tense consistency: keeping a story in the past</span>
+        </span>
+        <span class="q">30 Qs</span>
+      </a>
+    </li>
+
+    <li>
+      <a class="book b06" href="lesson-06-capital-letters.html">
+        <span class="num">06</span>
+        <span class="text">
+          <span class="t">Who Gets the <span>VIP Pass</span>?</span>
+          <span class="d">Capital letters: sentence starts and special names</span>
+        </span>
+        <span class="q">30 Qs</span>
+      </a>
+    </li>
+
+    <li>
+      <a class="book b05" href="lesson-05-commas-in-long-sentences.html">
+        <span class="num">05</span>
+        <span class="text">
+          <span class="t">Where Do You <span>Breathe</span>?</span>
+          <span class="d">Commas in long sentences: intros, new verses and echoes</span>
+        </span>
+        <span class="q">30 Qs</span>
+      </a>
+    </li>
+
+    <li>
+      <a class="book b04" href="lesson-04-comma-splices.html">
+        <span class="num">04</span>
+        <span class="text">
+          <span class="t">A Comma Can't Pull a Carriage</span>
+          <span class="d">Comma splices: joining two sentences properly</span>
+        </span>
+        <span class="q">30 Qs</span>
+      </a>
+    </li>
 
     <li>
       <a class="book b03" href="lesson-03-subject-verb-agreement.html">

@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Only One Piece Fits: Prepositions</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧩</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #DFF3F7;
+    --surface: #FFFFFF;
+    --ink: #0D2A33;
+    --ink-soft: #46636C;
+    --word: #C2255C;          /* word piece: raspberry */
+    --word-soft: #FBE3EC;
+    --prep: #F59F00;          /* preposition piece: amber */
+    --prep-soft: #FFF1CC;
+    --prep-ink: #4A3000;
+    --right: #1F7A45;   --right-soft: #DDF1E4;
+    --wrong: #B3261E;   --wrong-soft: #F8DEDC;
+    --rule: rgba(13,42,51,0.14);
+    --board: rgba(13,42,51,0.07);
+    --font-display: 'Baloo 2', 'Trebuchet MS', sans-serif;
+    --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0B1E24; --surface: #12303A; --ink: #E6F4F7; --ink-soft: #9FBAC2;
+      --word: #F06595; --word-soft: #3D1526;
+      --prep: #FFC94D; --prep-soft: #3A2C08; --prep-ink: #FFE7A8;
+      --right: #6FD49A; --right-soft: #17321F;
+      --wrong: #F08A82; --wrong-soft: #3A1E1C;
+      --rule: rgba(230,244,247,0.14);
+      --board: rgba(230,244,247,0.06);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0B1E24; --surface: #12303A; --ink: #E6F4F7; --ink-soft: #9FBAC2;
+    --word: #F06595; --word-soft: #3D1526;
+    --prep: #FFC94D; --prep-soft: #3A2C08; --prep-ink: #FFE7A8;
+    --right: #6FD49A; --right-soft: #17321F;
+    --wrong: #F08A82; --wrong-soft: #3A1E1C;
+    --rule: rgba(230,244,247,0.14);
+    --board: rgba(230,244,247,0.06);
+  }
+
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; }
+  .wrap { max-width: 740px; margin: 0 auto; padding: 28px 18px 64px; }
+  img, svg { max-width: 100%; }
+  section { margin-bottom: 48px; }
+  h1, h2, h3 { font-family: var(--font-display); font-weight: 800; }
+  h2 { font-size: 30px; line-height: 1.1; margin: 0 0 8px; }
+  h3 { font-size: 20px; line-height: 1.2; margin: 0 0 8px; }
+  p { line-height: 1.55; }
+  .sub { color: var(--ink-soft); margin: 0 0 20px; max-width: 60ch; }
+  :focus-visible { outline: 3px solid var(--word); outline-offset: 2px; }
+
+  .back-link {
+    display: inline-block; margin: 0 0 22px; padding: 9px 16px; min-height: 40px;
+    font-weight: 700; font-size: 14px; color: var(--ink); text-decoration: none;
+    border-radius: 12px; background: var(--surface); border: 2px solid var(--rule);
+  }
+
+  /* Inline pieces used in examples */
+  .w { color: var(--word); font-weight: 700; }
+  .pp {
+    display: inline-block; background: var(--prep-soft); color: var(--prep-ink); font-weight: 800;
+    padding: 0 6px; border-radius: 5px; border: 1.5px solid var(--prep);
+  }
+  .bad { color: var(--wrong); text-decoration: line-through; text-decoration-thickness: 1.5px; }
+  .good { color: var(--right); font-weight: 700; }
+  .why { color: var(--ink-soft); font-size: 15px; }
+
+  /* ---------- Hero ---------- */
+  .hero h1 { font-size: clamp(40px, 10.5vw, 64px); line-height: 0.98; margin: 0 0 14px; }
+  .hero h1 .one { color: var(--word); }
+  .lead { font-size: 17px; max-width: 58ch; margin: 0 0 22px; }
+
+  .board {
+    background-color: var(--surface); border-radius: 16px; padding: 18px 16px;
+    background-image: linear-gradient(var(--board) 1px, transparent 1px), linear-gradient(90deg, var(--board) 1px, transparent 1px);
+    background-size: 22px 22px;
+    border: 2px solid var(--rule);
+  }
+  .puzzle-line { font-size: 19px; font-weight: 600; margin: 0 0 18px; line-height: 2.2; }
+  .jig {
+    position: relative; display: inline-block; font-family: var(--font-display); font-weight: 800; font-size: 20px;
+    padding: 2px 14px 0; border-radius: 8px; line-height: 1.6; vertical-align: middle;
+  }
+  .jig.word { background: var(--word); color: #fff; margin-right: 12px; }
+  .jig.word::after {   /* tab sticking out to the right */
+    content: ""; position: absolute; right: -10px; top: 50%; width: 16px; height: 16px; border-radius: 50%;
+    background: var(--word); transform: translateY(-50%);
+  }
+  .jig.hole {
+    min-width: 62px; text-align: center; color: var(--ink-soft); background: transparent;
+    border: 2.5px dashed var(--prep); margin-left: -14px; padding-left: 18px;
+  }
+  .jig.hole.filled { background: var(--prep); color: #2B1C00; border-style: solid; animation: snap 0.28s ease-out; }
+  @keyframes snap { 0% { transform: translateX(14px); } 70% { transform: translateX(-3px); } 100% { transform: translateX(0); } }
+  .tray { display: flex; gap: 10px; flex-wrap: wrap; }
+  .piece {
+    font: inherit; font-family: var(--font-display); font-weight: 800; font-size: 19px; min-height: 48px; min-width: 70px;
+    padding: 6px 16px; border-radius: 10px; cursor: pointer;
+    background: var(--prep-soft); color: var(--prep-ink); border: 2.5px solid var(--prep);
+  }
+  .piece.nope { animation: shake 0.35s; border-color: var(--wrong); background: var(--wrong-soft); color: var(--wrong); }
+  @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+  @media (prefers-reduced-motion: reduce) { .jig.hole.filled, .piece.nope { animation: none; } }
+  .hero-msg { margin: 14px 2px 0; font-size: 15px; min-height: 48px; }
+  .next-btn {
+    font: inherit; font-weight: 700; font-size: 14.5px; min-height: 44px; padding: 10px 18px; border-radius: 22px;
+    border: 2px solid var(--ink); background: var(--ink); color: var(--surface); cursor: pointer; margin-top: 8px;
+  }
+
+  /* ---------- Rule ---------- */
+  .qs { display: grid; gap: 12px; }
+  .qcard { background: var(--surface); border-radius: 14px; padding: 16px 18px; border-left: 8px solid var(--prep); }
+  .qcard.pair { border-left-color: var(--word); }
+  .qcard.miss { border-left-color: var(--ink); }
+  .qcard p { margin: 0 0 6px; }
+  .qcard p:last-child { margin: 0; }
+  .qnum { font-family: var(--font-display); font-weight: 800; font-size: 15px; color: var(--ink-soft); }
+
+  /* Space diagram */
+  .spaces { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+  @media (max-width: 480px) { .spaces { grid-template-columns: 1fr 1fr; } }
+  .space { background: var(--surface); border-radius: 12px; padding: 10px; text-align: center; font-size: 14px; }
+  .space svg { width: 100%; height: 64px; display: block; margin-bottom: 4px; }
+  .space b { font-family: var(--font-display); font-size: 20px; color: var(--ink); display: block; }
+
+  /* ---------- Traps ---------- */
+  .trap { background: var(--surface); border-radius: 14px; padding: 16px 18px; margin-bottom: 12px; border: 2.5px dashed var(--wrong); }
+  .trap h3 { color: var(--wrong); }
+  .trap p { margin: 0 0 8px; }
+
+  /* ---------- Categories ---------- */
+  .cats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 560px) { .cats { grid-template-columns: 1fr; } }
+  .cat { background: var(--surface); border-radius: 14px; padding: 16px 18px; }
+  .cat .tag { display: inline-block; font-family: var(--font-display); font-weight: 800; font-size: 13px; padding: 2px 10px; border-radius: 8px; margin-bottom: 6px; background: var(--prep); color: #2B1C00; }
+  .cat.pairs .tag { background: var(--word); color: #fff; }
+  .cat p { margin: 0 0 6px; font-size: 15px; }
+  .chunks { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  .chunks li { font-size: 14px; font-weight: 700; padding: 4px 10px; border-radius: 8px; background: var(--word-soft); color: var(--word); }
+
+  /* ---------- Specials ---------- */
+  .grid-3 { display: grid; gap: 12px; }
+  .special { background: var(--surface); border-radius: 14px; padding: 16px 18px; border-top: 6px solid var(--ink); }
+  .special p { margin: 0 0 8px; font-size: 15px; }
+  .tbl { overflow-x: auto; }
+  .when { border-collapse: collapse; font-size: 14.5px; margin: 4px 0 8px; min-width: 280px; }
+  .when td { padding: 5px 10px 5px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  .when td:first-child { font-family: var(--font-display); font-weight: 800; font-size: 18px; width: 44px; }
+
+  /* ---------- Quiz ---------- */
+  .scoreboard {
+    display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; margin-bottom: 20px;
+    background: var(--word); color: #fff; border-radius: 14px; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 2;
+  }
+  .scoreboard .label { font-size: 13px; opacity: 0.9; }
+  .score { font-family: var(--font-display); font-weight: 800; font-size: 26px; line-height: 1.1; }
+  .reset-btn { font: inherit; font-weight: 700; font-size: 14px; padding: 10px 16px; min-height: 44px; border-radius: 22px; border: 2px solid #fff; background: transparent; color: #fff; cursor: pointer; }
+  .quiz-card { background: var(--surface); padding: 18px; margin-bottom: 14px; border-radius: 14px; }
+  .quiz-num { font-size: 13px; color: var(--ink-soft); margin: 0 0 6px; }
+  .quiz-ask { font-size: 14px; font-weight: 700; color: var(--word); margin: 0 0 6px; }
+  .quiz-text { font-size: 17px; margin: 0 0 14px; font-weight: 600; line-height: 1.45; }
+  .blank { display: inline-block; min-width: 56px; text-align: center; border-bottom: 2.5px dashed var(--prep); color: var(--ink-soft); }
+  .blank.filled { border-bottom-style: solid; color: var(--prep-ink); background: var(--prep-soft); border-radius: 4px 4px 0 0; font-weight: 800; }
+  .opts { display: flex; flex-direction: column; gap: 9px; }
+  .opts.row { flex-direction: row; }
+  .opts.row .opt { flex: 1; text-align: center; }
+  .opt { font: inherit; font-size: 15.5px; text-align: left; padding: 11px 14px; min-height: 44px; border: 2px solid var(--rule); background: var(--bg); color: var(--ink); cursor: pointer; border-radius: 10px; }
+  .opts.row .opt { font-family: var(--font-display); font-weight: 800; font-size: 18px; }
+  .opt:disabled { cursor: default; }
+  .opt .tag { font-weight: 700; margin-right: 8px; color: var(--word); }
+  .opt.correct, .opt.reveal { background: var(--right-soft); border-color: var(--right); }
+  .opt.incorrect { background: var(--wrong-soft); border-color: var(--wrong); }
+  .feedback { display: none; margin-top: 12px; padding-top: 12px; border-top: 2px dashed var(--rule); font-size: 15px; line-height: 1.55; }
+  .feedback.show { display: block; }
+  .verdict { display: block; font-weight: 700; margin-bottom: 4px; }
+  .feedback.fb-ok .verdict { color: var(--right); }
+  .feedback.fb-no .verdict { color: var(--wrong); }
+
+  /* ---------- Summary ---------- */
+  .summary { background: var(--surface); border-radius: 16px; padding: 20px; border: 3px solid var(--word); }
+  .summary ul { margin: 0; padding-left: 20px; line-height: 1.8; }
+  .chant { margin: 18px 0 0; padding: 14px 16px; background: var(--prep-soft); color: var(--ink); border-radius: 12px; font-family: var(--font-display); font-weight: 800; font-size: 20px; line-height: 1.35; text-align: center; }
+  footer { text-align: center; color: var(--ink-soft); font-size: 13px; margin-top: 30px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back-link" href="index.html">← Back to the shelf</a>
+
+  <!-- 1. HERO -->
+  <header class="hero">
+    <h1>Only <span class="one">One Piece</span> Fits</h1>
+    <p class="lead">Prepositions are the small joining pieces of a sentence: <i>in, on, at, to, of, into, through</i>. They're like jigsaw pieces. Lots of them look almost the same, but in each gap, only one has the right shape. Sometimes the shape comes from <b>a place</b>: is it inside something, or on top of it? Other times it comes from <b>the word right before the gap</b>. For example, "interested" only ever clicks with "in".</p>
+
+    <div class="board">
+      <p class="puzzle-line" id="puzzleLine"></p>
+      <div class="tray" id="tray" role="group" aria-label="Preposition pieces"></div>
+      <p class="hero-msg" id="heroMsg" aria-live="polite"></p>
+      <button class="next-btn" type="button" id="nextPuzzle">Next puzzle →</button>
+    </div>
+  </header>
+
+  <!-- 2. THE RULE -->
+  <section>
+    <h2>Finding the right piece</h2>
+    <p class="sub">When you reach a gap, ask these three questions in order.</p>
+    <div class="qs">
+      <div class="qcard">
+        <p class="qnum">QUESTION 1</p>
+        <p><b>Is it about a place, or movement?</b> Picture the space. Is it inside something, on a surface, at one spot, or moving into something?</p>
+        <p>We sat <span class="pp">on</span> the balcony. The ball rolled <span class="pp">into</span> the drain.</p>
+      </div>
+      <div class="qcard pair">
+        <p class="qnum">QUESTION 2</p>
+        <p><b>Is it a fixed pair?</b> Some words always take the same partner. Don't guess from the meaning. Learn the pair as one chunk.</p>
+        <p><span class="w">interested</span> <span class="pp">in</span>, <span class="w">reply</span> <span class="pp">to</span>, <span class="pp">in</span> <span class="w">shock</span>, a <span class="w">grip</span> <span class="pp">on</span></p>
+      </div>
+      <div class="qcard miss">
+        <p class="qnum">QUESTION 3</p>
+        <p><b>Is a piece missing?</b> Read the sentence aloud. Some words can't connect to the next word without their piece.</p>
+        <p><span class="bad">Please reply me.</span> → <span class="good">Please reply <span class="pp">to</span> me.</span></p>
+      </div>
+    </div>
+
+    <div class="spaces" aria-label="Pictures of in, on, at, into, onto and through">
+      <div class="space">
+        <svg viewBox="0 0 100 64" aria-hidden="true"><rect x="20" y="10" width="60" height="46" rx="6" style="fill:none;stroke:var(--ink);stroke-width:3"/><circle cx="50" cy="38" r="9" style="fill:var(--word)"/></svg>
+        <b>in</b>inside a space
+      </div>
+      <div class="space">
+        <svg viewBox="0 0 100 64" aria-hidden="true"><rect x="12" y="44" width="76" height="10" rx="3" style="fill:var(--ink)"/><circle cx="50" cy="33" r="10" style="fill:var(--word)"/></svg>
+        <b>on</b>on a surface
+      </div>
+      <div class="space">
+        <svg viewBox="0 0 100 64" aria-hidden="true"><line x1="10" y1="40" x2="90" y2="40" style="stroke:var(--ink-soft);stroke-width:2;stroke-dasharray:4 4"/><circle cx="50" cy="40" r="5" style="fill:var(--ink)"/><circle cx="50" cy="20" r="9" style="fill:var(--word)"/></svg>
+        <b>at</b>one spot
+      </div>
+      <div class="space">
+        <svg viewBox="0 0 100 64" aria-hidden="true"><rect x="50" y="10" width="40" height="46" rx="6" style="fill:none;stroke:var(--ink);stroke-width:3"/><path d="M10 33 H62" style="stroke:var(--word);stroke-width:4"/><path d="M56 25 L66 33 L56 41" style="fill:none;stroke:var(--word);stroke-width:4"/></svg>
+        <b>into</b>moving inside
+      </div>
+      <div class="space">
+        <svg viewBox="0 0 100 64" aria-hidden="true"><rect x="40" y="44" width="52" height="10" rx="3" style="fill:var(--ink)"/><path d="M10 20 Q40 0 62 34" style="fill:none;stroke:var(--word);stroke-width:4"/><path d="M52 30 L63 38 L66 25" style="fill:none;stroke:var(--word);stroke-width:4"/></svg>
+        <b>onto</b>moving on top
+      </div>
+      <div class="space">
+        <svg viewBox="0 0 100 64" aria-hidden="true"><rect x="40" y="8" width="20" height="48" rx="3" style="fill:none;stroke:var(--ink);stroke-width:3"/><path d="M8 32 H88" style="stroke:var(--word);stroke-width:4"/><path d="M80 24 L90 32 L80 40" style="fill:none;stroke:var(--word);stroke-width:4"/></svg>
+        <b>through</b>in one side, out the other
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. TRAPS -->
+  <section>
+    <h2>Three traps</h2>
+    <p class="sub">Every example here comes from a real composition.</p>
+    <div class="trap">
+      <h3>Trap 1: A missing piece</h3>
+      <p><span class="bad">I hope you will reply me soon.</span> → <span class="good">I hope you will reply <span class="pp">to</span> me soon.</span></p>
+      <p><span class="bad">I poured a glass water.</span> → <span class="good">I poured a glass <span class="pp">of</span> water.</span></p>
+      <p><span class="bad">Meet me at the shop downstairs our block.</span> → <span class="good">Meet me at the shop <span class="pp">at the foot of</span> our block.</span></p>
+      <p class="why">If the sentence sounds like it's skipping a step, a piece is probably missing.</p>
+    </div>
+    <div class="trap">
+      <h3>Trap 2: Guessing the partner from the meaning</h3>
+      <p><span class="bad">I am interested to join.</span> → <span class="good">I am interested <span class="pp">in</span> joining.</span></p>
+      <p><span class="bad">She covered her mouth with shock.</span> → <span class="good">She covered her mouth <span class="pp">in</span> shock.</span></p>
+      <p><span class="bad">I lost grip of the iPad.</span> → <span class="good">I lost my grip <span class="pp">on</span> the iPad.</span></p>
+      <p class="why">"Into" sounds right for joining something, and "with" sounds right for a feeling. But fixed pairs don't follow logic. They're chunks you have to know.</p>
+    </div>
+    <div class="trap">
+      <h3>Trap 3: Inside or on top?</h3>
+      <p><span class="bad">We were playing games in the balcony.</span> → <span class="good">We were playing games <span class="pp">on</span> the balcony.</span></p>
+      <p><span class="bad">I walked into the stage.</span> → <span class="good">I walked <span class="pp">onto</span> the stage.</span></p>
+      <p class="why">A balcony, a stage and a field are surfaces you stand <i>on</i>, not boxes you're <i>in</i>. If you walk "into" a stage, you crash into it!</p>
+    </div>
+  </section>
+
+  <!-- 4. CATEGORIES -->
+  <section>
+    <h2>The four boxes of pieces</h2>
+    <p class="sub">Two boxes hold place pieces, and two hold fixed pairs.</p>
+    <div class="cats">
+      <div class="cat">
+        <span class="tag">Where it is</span>
+        <p><span class="pp">in</span> a space or area: in the canteen, in the school hall, in Singapore.</p>
+        <p><span class="pp">on</span> a surface, floor or vehicle: on the balcony, on the stage, on the bus, on the MRT.</p>
+        <p><span class="pp">at</span> one spot: at the bus stop, at the door, at the foot of our block.</p>
+      </div>
+      <div class="cat">
+        <span class="tag">Where it's going</span>
+        <p><span class="pp">into</span>: The ball rolled into the drain.</p>
+        <p><span class="pp">onto</span>: I walked onto the stage.</p>
+        <p><span class="pp">through</span>: I peeked through the peephole.</p>
+        <p><span class="pp">out of</span>: Students ran out of their classrooms.</p>
+      </div>
+      <div class="cat pairs">
+        <span class="tag">Verb + piece</span>
+        <p>Raj <span class="w">apologised</span> <span class="pp">to</span> Mary <span class="pp">for</span> spoiling her book.</p>
+        <p>I would like to <span class="w">enrol</span> <span class="pp">in</span> the programme.</p>
+        <ul class="chunks"><li>reply to</li><li>listen to</li><li>apologise to (a person)</li><li>apologise for (a thing)</li><li>enrol in</li><li>take part in</li><li>lend a hand to</li><li>depend on</li></ul>
+      </div>
+      <div class="cat pairs">
+        <span class="tag">Describing word or phrase + piece</span>
+        <p>Ms Goh was <span class="w">proud</span> <span class="pp">of</span> us. Lila stared at me <span class="pp">in</span> <span class="w">disbelief</span>.</p>
+        <p><span class="pp">Out of</span> the corner of my eye, I saw Mum.</p>
+        <ul class="chunks"><li>interested in</li><li>good at</li><li>proud of</li><li>afraid of</li><li>in shock</li><li>in disbelief</li><li>a grip on</li><li>a glass of</li><li>out of the corner of my eye</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. SPECIAL CASES -->
+  <section>
+    <h2>Three more puzzles in the quiz</h2>
+    <p class="sub">These follow their own small rules.</p>
+    <div class="grid-3">
+      <div class="special">
+        <h3>Time pieces: at, on, in</h3>
+        <div class="tbl">
+          <table class="when">
+            <tr><td>at</td><td>a clock time: at 7 a.m., at noon, at recess</td></tr>
+            <tr><td>on</td><td>a day or date: on Saturday, on 22 August, on Youth Day</td></tr>
+            <tr><td>in</td><td>a longer stretch: in December, in 2026, in the morning</td></tr>
+          </table>
+        </div>
+        <p class="why">Think of it as getting bigger: a point (at), then a day (on), then a month or more (in).</p>
+      </div>
+      <div class="special">
+        <h3>After a piece, a verb takes -ing</h3>
+        <p>When a verb comes straight after a preposition, it takes <b>-ing</b>. This catches lots of letters to teachers.</p>
+        <p><span class="bad">I look forward to hear from you.</span> → <span class="good">I look forward <span class="pp">to</span> hearing from you.</span></p>
+        <p><span class="bad">Are you interested in sign up?</span> → <span class="good">Are you interested <span class="pp">in</span> signing up?</span></p>
+      </div>
+      <div class="special">
+        <h3>Sometimes no piece at all</h3>
+        <p>Some words connect directly, with no piece in between. Adding one is just as wrong as leaving one out.</p>
+        <p><span class="bad">We discussed about the plan.</span> → <span class="good">We discussed the plan.</span></p>
+        <p><span class="bad">We entered into the hall.</span> → <span class="good">We entered the hall.</span></p>
+        <p><span class="bad">I went to home.</span> → <span class="good">I went home.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. PRACTICE -->
+  <section>
+    <h2>Find the piece</h2>
+    <p class="sub">Tap the piece that fits, or pick the correct sentence. You'll see straight away if you're right, and why. The questions get trickier as you go.</p>
+    <div class="scoreboard">
+      <div><div class="label">Your score</div><div class="score" id="scoreDisplay">0 / 30</div></div>
+      <button class="reset-btn" id="resetBtn" type="button">Start over</button>
+    </div>
+    <div id="quizContainer"></div>
+  </section>
+
+  <!-- 7. PIN THIS UP -->
+  <section class="summary">
+    <h2>Pin This Up</h2>
+    <ul>
+      <li><b>Place:</b> use <i>in</i> for a space, <i>on</i> for a surface or vehicle, and <i>at</i> for one spot.</li>
+      <li><b>Movement:</b> use <i>into, onto, through</i> or <i>out of</i>.</li>
+      <li><b>Fixed pairs:</b> reply to, interested in, enrol in, a grip on, in shock, proud of. Learn them as chunks.</li>
+      <li><b>Time:</b> <i>at</i> 7 a.m., <i>on</i> Saturday, <i>in</i> December.</li>
+      <li><b>After a preposition</b>, a verb takes -ing: look forward to hearing.</li>
+      <li><b>No piece:</b> discuss the plan, enter the hall, go home.</li>
+    </ul>
+    <p class="chant">Picture the place, or learn the pair.<br>Only one piece clicks in there!</p>
+  </section>
+
+  <footer>My Grammar Shelf, Lesson 08</footer>
+</div>
+
+<script>
+(function () {
+  /* ---------- Hero puzzles ---------- */
+  const PUZZLES = [
+    { before: 'Nurul is very', word: 'interested', after: 'dance.', pieces: ['to', 'in', 'on'], fit: 'in',
+      ok: '<b>Click!</b> “Interested” always pairs with “in”. You learn this one as a chunk.', no: 'That piece doesn\'t fit. “Interested” has its own partner. Try another.' },
+    { before: 'I hope you will', word: 'reply', after: 'me soon.', pieces: ['for', 'at', 'to'], fit: 'to',
+      ok: '<b>Click!</b> You “reply to” someone. Without “to”, there\'s a piece missing.', no: 'Not this one. Which piece takes your reply across to the person?' },
+    { before: 'We watched the fireworks', word: 'sitting', after: 'the balcony.', pieces: ['in', 'on', 'at'], fit: 'on',
+      ok: '<b>Click!</b> A balcony is a surface you sit <i>on</i>, not a box you sit <i>in</i>.', no: 'Not quite. Picture it: is a balcony a box, or a surface?' },
+    { before: 'I poured myself a', word: 'glass', after: 'water.', pieces: ['of', 'with', 'for'], fit: 'of',
+      ok: '<b>Click!</b> “A glass of”, “a slice of”, “a bowl of”: amounts take “of”.', no: 'That piece doesn\'t fit. Amounts like “a glass ___” always take the same piece.' }
+  ];
+  let p = 0;
+  const line = document.getElementById('puzzleLine');
+  const tray = document.getElementById('tray');
+  const msg = document.getElementById('heroMsg');
+  function drawPuzzle() {
+    const z = PUZZLES[p];
+    line.innerHTML = z.before + ' <span class="jig word">' + z.word + '</span><span class="jig hole" id="hole">?</span> ' + z.after;
+    tray.innerHTML = '';
+    msg.textContent = '';
+    z.pieces.forEach(t => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'piece'; b.textContent = t;
+      b.addEventListener('click', () => {
+        if (t === z.fit) {
+          const hole = document.getElementById('hole');
+          hole.textContent = t; hole.classList.add('filled');
+          tray.querySelectorAll('.piece').forEach(x => x.disabled = true);
+          msg.innerHTML = z.ok;
+        } else {
+          b.classList.remove('nope'); void b.offsetWidth; b.classList.add('nope');
+          msg.innerHTML = z.no;
+        }
+      });
+      tray.appendChild(b);
+    });
+  }
+  document.getElementById('nextPuzzle').addEventListener('click', () => { p = (p + 1) % PUZZLES.length; drawPuzzle(); });
+  drawPuzzle();
+
+  /* ---------- Quiz ---------- */
+  const FILL = "Tap the piece that fits.";
+  const CHECK = "Is the preposition right?";
+  const PICK = "Pick the correct sentence.";
+  const CN = ["Correct", "Needs fixing"];
+  const QUESTIONS = [
+    { ask: FILL, text: "Please reply ___ me by Friday.", options: ["at", "for", "to"], answer: 2, why: "“Reply” connects to a person with “to”. It's a verb + piece pair." },
+    { ask: FILL, text: "My mum is waiting for me ___ the bus stop.", options: ["in", "on", "at"], answer: 2, why: "A bus stop is one spot, so it takes “at”." },
+    { ask: FILL, text: "We sat ___ the balcony and watched the fireworks.", options: ["on", "in", "at"], answer: 0, why: "A balcony is a surface you sit on, not a box you're inside." },
+    { ask: FILL, text: "Nurul is very interested ___ dance.", options: ["on", "in", "at"], answer: 1, why: "“Interested” always pairs with “in”. It's a fixed chunk." },
+    { ask: FILL, text: "I poured myself a glass ___ water.", options: ["with", "in", "of"], answer: 2, why: "Amounts take “of”: a glass of water, a slice of cake, a bowl of noodles." },
+    { ask: FILL, text: "The ball bounced off the wall and rolled ___ the drain.", options: ["into", "onto", "at"], answer: 0, why: "The ball moved inside the drain, so this is movement: “into”." },
+    { ask: FILL, text: "Hundreds of students sat quietly ___ the school hall.", options: ["on", "at", "in"], answer: 2, why: "The hall is a space with walls around you, so it takes “in”." },
+    { ask: FILL, text: "Marcus is good ___ solving maths puzzles.", options: ["in", "at", "on"], answer: 1, why: "“Good” pairs with “at” when you talk about a skill." },
+    { ask: FILL, text: "We got ___ the MRT at Dhoby Ghaut.", options: ["in", "on", "at"], answer: 1, why: "Buses, trains and the MRT are vehicles you travel on, so they take “on”." },
+    { ask: CHECK, text: "Ms Goh was very proud of our performance.", options: CN, answer: 0, why: "“Proud of” is the right fixed pair." },
+
+    { ask: CHECK, text: "I hope you will reply me soon.", options: CN, answer: 1, why: "A piece is missing. It should be “reply to me”." },
+    { ask: PICK, text: "Which sentence is correct?", options: ["I would like to enrol into the programme.", "I would like to enrol in the programme.", "I would like to enrol at the programme."], answer: 1, why: "“Enrol” pairs with “in”. “Into” sounds right from the meaning, but this is a fixed chunk." },
+    { ask: FILL, text: "I lost my grip ___ the iPad, and it crashed to the floor.", options: ["of", "on", "at"], answer: 1, why: "You have a grip “on” something. It's a fixed pair, so don't guess from the meaning." },
+    { ask: CHECK, text: "She covered her mouth with shock.", options: CN, answer: 1, why: "Feelings like this take the fixed chunk “in shock”, not “with shock”." },
+    { ask: FILL, text: "We should always lend a helping hand ___ those in need.", options: ["for", "to", "with"], answer: 1, why: "You lend something “to” someone, and that includes a helping hand." },
+    { ask: PICK, text: "My heart thumped as I ___ the stage.", options: ["My heart thumped as I walked onto the stage.", "My heart thumped as I walked into the stage.", "My heart thumped as I walked at the stage.", "My heart thumped as I walked in the stage."], answer: 0, why: "You move up on top of a stage, so it's “onto”. Walking “into” a stage means crashing into it." },
+    { ask: FILL, text: "I peeked ___ the peephole and saw my brother outside.", options: ["through", "across", "into"], answer: 0, why: "You look in one side of the peephole and out the other, so it's “through”." },
+    { ask: FILL, text: "Raj apologised to Mary ___ spoiling her storybook.", options: ["to", "for", "with"], answer: 1, why: "You apologise “to” a person “for” the thing you did." },
+    { ask: CHECK, text: "Lila stared at my origami swan in disbelief.", options: CN, answer: 0, why: "“In disbelief” is a fixed chunk, just like “in shock”." },
+    { ask: PICK, text: "Which sentence is correct?", options: ["At the corner of my eye, I saw Mum running into the hall.", "Out of the corner of my eye, I saw Mum running into the hall.", "In the corner of my eye, I saw Mum running into the hall."], answer: 1, why: "The fixed phrase is always “out of the corner of my eye”." },
+
+    { ask: FILL, text: "Are you interested ___ signing up for the baking course?", options: ["to", "in", "for"], answer: 1, why: "“Interested in” is the fixed pair, and the verb after it takes -ing: “signing”." },
+    { ask: PICK, text: "Which ending to a formal letter is correct?", options: ["I look forward to hear from you.", "I look forward hearing from you.", "I look forward to hearing from you.", "I look forward for hearing from you."], answer: 2, why: "The chunk is “look forward to”, and since “to” is a preposition here, the verb takes -ing: “hearing”." },
+    { ask: FILL, text: "Our class concert is ___ Saturday.", options: ["on", "in", "at"], answer: 0, why: "Days and dates take “on”: on Saturday, on 22 August." },
+    { ask: FILL, text: "The school bus leaves ___ 7 a.m. sharp.", options: ["on", "in", "at"], answer: 2, why: "A clock time is a point, so it takes “at”." },
+    { ask: CHECK, text: "We will visit our cousins in Johor in December.", options: CN, answer: 0, why: "A place you're inside takes “in”, and so does a month." },
+    { ask: CHECK, text: "Let us discuss about the plan for Sports Day.", options: CN, answer: 1, why: "“Discuss” connects directly to its object with no piece: “discuss the plan”." },
+    { ask: PICK, text: "Which sentence is correct?", options: ["When we entered into the hall, everyone fell silent.", "When we entered at the hall, everyone fell silent.", "When we entered to the hall, everyone fell silent.", "When we entered the hall, everyone fell silent."], answer: 3, why: "“Enter” needs no piece: you simply enter the hall." },
+    { ask: FILL, text: "I was so tired that I went straight ___ after school.", options: ["to home", "home", "at home"], answer: 1, why: "“Go home” needs no piece. You go to school, but you just go home." },
+    { ask: PICK, text: "Which sentence is correct?", options: ["Meet me on the convenience store at the foot of our block after school.", "Meet me at the convenience store downstairs our block after school.", "Meet me at the convenience store at the foot of our block after school.", "Meet me at the convenience store at the foot on our block after school."], answer: 2, why: "Use “at” for a meeting spot. “At the foot of our block” needs every piece in place." },
+    { ask: PICK, text: "Which line from a letter to a teacher is correct?", options: ["I hope you will reply to me soon, as I am interested in joining the programme.", "I hope you will reply me soon, as I am interested in joining the programme.", "I hope you will reply to me soon, as I am interested to joining the programme.", "I hope you will reply to me soon, as I am interested on joining the programme."], answer: 0, why: "It needs “reply to” and “interested in”, followed by an -ing verb: “joining”." }
+  ];
+
+  const container = document.getElementById('quizContainer');
+  const scoreEl = document.getElementById('scoreDisplay');
+  let score = 0, answered = [];
+
+  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  function updateScore() { scoreEl.textContent = score + ' / ' + QUESTIONS.length; }
+
+  function render() {
+    container.innerHTML = '';
+    answered = QUESTIONS.map(() => false);
+    QUESTIONS.forEach((q, i) => {
+      const card = document.createElement('div');
+      card.className = 'quiz-card';
+      const hasBlank = q.text.includes('___');
+      const short = q.options.every(o => o.length <= 14);
+      card.innerHTML =
+        '<p class="quiz-num">Question ' + (i + 1) + ' of ' + QUESTIONS.length + '</p>' +
+        (q.ask ? '<p class="quiz-ask">' + esc(q.ask) + '</p>' : '') +
+        '<p class="quiz-text">' + esc(q.text).replace('___', '<span class="blank">___</span>') + '</p>' +
+        '<div class="opts' + (short ? ' row' : '') + '"></div>' +
+        '<div class="feedback" role="status"></div>';
+      const opts = card.querySelector('.opts');
+      q.options.forEach((o, j) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'opt';
+        b.innerHTML = (short ? '' : '<span class="tag">' + String.fromCharCode(65 + j) + '</span>') + esc(o);
+        b.addEventListener('click', () => answer(i, j, card, hasBlank, short));
+        opts.appendChild(b);
+      });
+      container.appendChild(card);
+    });
+    updateScore();
+  }
+
+  function answer(i, j, card, hasBlank, short) {
+    if (answered[i]) return;
+    answered[i] = true;
+    const q = QUESTIONS[i], ok = j === q.answer;
+    if (ok) score++;
+    updateScore();
+    if (hasBlank && short) {
+      const blank = card.querySelector('.blank');
+      blank.textContent = q.options[j];
+      blank.classList.add('filled');
+    }
+    card.querySelectorAll('.opt').forEach((b, k) => {
+      b.disabled = true;
+      if (k === j) b.classList.add(ok ? 'correct' : 'incorrect');
+      else if (k === q.answer && !ok) b.classList.add('reveal');
+    });
+    const fb = card.querySelector('.feedback');
+    fb.classList.add('show', ok ? 'fb-ok' : 'fb-no');
+    fb.innerHTML = '<span class="verdict">' +
+      (ok ? 'Correct!' : 'Not quite. The answer is ' + (short ? '"' + esc(q.options[q.answer]) + '"' : String.fromCharCode(65 + q.answer)) + '.') +
+      '</span>' + esc(q.why);
+  }
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    score = 0;
+    render();
+    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

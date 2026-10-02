@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Where Do You Breathe? Commas in Long Sentences</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎼</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #E9F0F7;
+    --surface: #FFFFFF;
+    --ink: #14213D;
+    --ink-soft: #4A5874;
+    --staff: rgba(20,33,61,0.22);
+    --accent: #A3175F;        /* breath mark magenta */
+    --accent-soft: #F9E3EE;
+    --singer: #2F5D9E;        /* subject ("singer") blue */
+    --singer-soft: #E0EAF7;
+    --hi: #F7D774;            /* highlighter */
+    --right: #1F7A45;   --right-soft: #DDF1E4;
+    --wrong: #B3261E;   --wrong-soft: #F8DEDC;
+    --rule: rgba(20,33,61,0.14);
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body: 'Source Sans 3', -apple-system, BlinkMacSystemFont, sans-serif;
+
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0E1628; --surface: #17223A; --ink: #E9EEF7; --ink-soft: #A9B4CA;
+      --staff: rgba(233,238,247,0.2);
+      --accent: #F27BB5; --accent-soft: #3A1A2C;
+      --singer: #8DB3F0; --singer-soft: #1C2D4C;
+      --hi: #8A6D12;
+      --right: #6FD49A; --right-soft: #17321F;
+      --wrong: #F08A82; --wrong-soft: #3A1E1C;
+      --rule: rgba(233,238,247,0.14);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0E1628; --surface: #17223A; --ink: #E9EEF7; --ink-soft: #A9B4CA;
+    --staff: rgba(233,238,247,0.2);
+    --accent: #F27BB5; --accent-soft: #3A1A2C;
+    --singer: #8DB3F0; --singer-soft: #1C2D4C;
+    --hi: #8A6D12;
+    --right: #6FD49A; --right-soft: #17321F;
+    --wrong: #F08A82; --wrong-soft: #3A1E1C;
+    --rule: rgba(233,238,247,0.14);
+  }
+
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; }
+  .wrap { max-width: 740px; margin: 0 auto; padding: 28px 18px 64px; }
+  img, svg { max-width: 100%; }
+  section { margin-bottom: 48px; }
+  h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 800; }
+  h2 { font-size: 27px; line-height: 1.15; margin: 0 0 8px; }
+  h3 { font-size: 19px; margin: 0 0 8px; font-weight: 600; }
+  p { line-height: 1.55; }
+  .sub { color: var(--ink-soft); margin: 0 0 20px; max-width: 60ch; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  b.br, .br { color: var(--accent); font-weight: 800; }
+  .sing { color: var(--singer); font-weight: 700; }
+
+  .back-link {
+    display: inline-block; margin: 0 0 22px; padding: 9px 16px; min-height: 40px;
+    font-weight: 700; font-size: 14px; color: var(--ink); text-decoration: none;
+    border: 1.5px solid var(--staff); border-radius: 22px; background: var(--surface);
+  }
+
+  /* Staff-paper motif: five thin lines across the top of a panel */
+  .staffed {
+    position: relative;
+    background: var(--surface);
+    padding: 34px 18px 18px;
+    border-radius: 4px;
+  }
+  .staffed::before {
+    content: ""; position: absolute; left: 14px; right: 14px; top: 10px; height: 13px;
+    background: repeating-linear-gradient(to bottom, var(--staff) 0 1px, transparent 1px 3px);
+  }
+
+  /* ---------- Hero ---------- */
+  .hero h1 {
+    font-size: clamp(36px, 9vw, 56px);
+    line-height: 1.02;
+    margin: 0 0 14px;
+    letter-spacing: -0.01em;
+  }
+  .hero h1 .mark { color: var(--accent); }
+  .lead { font-size: 17px; max-width: 58ch; margin: 0 0 22px; }
+
+  .score-sheet { background: var(--surface); border-radius: 4px; padding: 18px 14px 16px; }
+  .score-sheet .clef-row { display: flex; align-items: flex-end; gap: 0; flex-wrap: wrap; row-gap: 14px; }
+  .note {
+    position: relative; display: inline-flex; flex-direction: column; align-items: center;
+    padding: 0 6px; height: 92px; justify-content: flex-end;
+    background:
+      linear-gradient(var(--staff), var(--staff)) 0 14px / 100% 1px no-repeat,
+      linear-gradient(var(--staff), var(--staff)) 0 22px / 100% 1px no-repeat,
+      linear-gradient(var(--staff), var(--staff)) 0 30px / 100% 1px no-repeat,
+      linear-gradient(var(--staff), var(--staff)) 0 38px / 100% 1px no-repeat,
+      linear-gradient(var(--staff), var(--staff)) 0 46px / 100% 1px no-repeat;
+  }
+  .note .head {
+    position: absolute; left: 50%; width: 11px; height: 8px; border-radius: 50%;
+    background: var(--ink); transform: translateX(-50%) rotate(-20deg);
+    top: var(--y, 30px);
+  }
+  .note .head::after {
+    content: ""; position: absolute; right: 0; bottom: 3px; width: 1.5px; height: 24px; background: var(--ink);
+  }
+  .note .word {
+    font-family: var(--font-display); font-weight: 600; font-size: 17px; padding: 2px 3px; border-radius: 3px;
+    transition: background 0.2s;
+  }
+  .note .word.danger { background: var(--wrong-soft); color: var(--wrong); }
+  .breath {
+    display: inline-flex; flex-direction: column; justify-content: flex-start; align-items: center;
+    height: 92px; width: 0; overflow: hidden; opacity: 0;
+    transition: width 0.25s ease, opacity 0.25s ease;
+    background:
+      linear-gradient(var(--staff), var(--staff)) 0 14px / 100% 1px no-repeat,
+      linear-gradient(var(--staff), var(--staff)) 0 22px / 100% 1px no-repeat,
+      linear-gradient(var(--staff), var(--staff)) 0 30px / 100% 1px no-repeat,
+      linear-gradient(var(--staff), var(--staff)) 0 38px / 100% 1px no-repeat,
+      linear-gradient(var(--staff), var(--staff)) 0 46px / 100% 1px no-repeat;
+  }
+  .breath span { font-family: var(--font-display); font-weight: 800; font-size: 34px; line-height: 1; color: var(--accent); margin-top: -10px; }
+  .breath.on { width: 22px; opacity: 1; }
+  @media (prefers-reduced-motion: reduce) { .breath, .note .word { transition: none; } }
+
+  .toggles { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+  .toggle {
+    font: inherit; font-weight: 700; font-size: 14.5px; min-height: 44px; padding: 10px 16px;
+    border-radius: 22px; border: 2px solid var(--staff); background: transparent; color: var(--ink); cursor: pointer;
+  }
+  .toggle[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .hero-msg { margin: 12px 2px 0; font-size: 15px; min-height: 48px; }
+  .hero-msg b { font-family: var(--font-display); }
+
+  /* ---------- Rule ---------- */
+  .glossary { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+  @media (max-width: 560px) { .glossary { grid-template-columns: 1fr; } }
+  .gloss { border-left: 4px solid var(--singer); background: var(--surface); padding: 12px 14px; border-radius: 0 4px 4px 0; }
+  .gloss.b { border-left-color: var(--accent); }
+  .gloss p { margin: 0; font-size: 15px; }
+
+  .bars { list-style: none; margin: 0; padding: 0; counter-reset: bar; }
+  .bars li {
+    counter-increment: bar; position: relative; padding: 14px 16px 14px 62px; margin-bottom: 10px;
+    background: var(--surface); border-radius: 4px;
+  }
+  .bars li::before {
+    content: counter(bar); position: absolute; left: 14px; top: 12px;
+    width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-weight: 800; font-size: 18px;
+    background: var(--accent); color: #fff;
+  }
+  .bars li p { margin: 0 0 6px; }
+  .bars li p:last-child { margin: 0; }
+  .eg { font-size: 15.5px; }
+
+  .no-breath { margin-top: 14px; border: 2px dashed var(--staff); border-radius: 4px; padding: 14px 16px; }
+  .no-breath h3 { margin-bottom: 6px; }
+  .no-breath p { margin: 0 0 6px; font-size: 15px; }
+
+  /* ---------- Traps ---------- */
+  .trap { margin-bottom: 14px; }
+  .trap h3 { color: var(--wrong); }
+  .trap p { margin: 0 0 8px; }
+  .bad { color: var(--wrong); text-decoration: line-through; text-decoration-thickness: 1.5px; }
+  .good { color: var(--right); font-weight: 700; }
+  .why { color: var(--ink-soft); font-size: 15px; }
+
+  /* ---------- Categories ---------- */
+  .cat { margin-bottom: 14px; }
+  .cat .tag {
+    display: inline-block; font-weight: 700; font-size: 13px; padding: 3px 10px; border-radius: 12px;
+    background: var(--accent-soft); color: var(--accent); margin-bottom: 8px;
+  }
+  .cat .kinds { margin: 4px 0 10px; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px; }
+  .cat .kinds li { font-size: 13.5px; padding: 3px 9px; border-radius: 12px; background: var(--singer-soft); color: var(--singer); font-weight: 600; }
+  .cat p { margin: 0 0 7px; }
+
+  /* ---------- Special cases ---------- */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 560px) { .grid-2 { grid-template-columns: 1fr; } }
+  .special { background: var(--surface); border-radius: 4px; padding: 16px; border-top: 4px solid var(--singer); }
+  .special.wide { grid-column: 1 / -1; }
+  .special p { margin: 0 0 8px; font-size: 15px; }
+
+  /* ---------- Quiz ---------- */
+  .scoreboard {
+    display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; margin-bottom: 20px;
+    background: var(--ink); color: var(--bg); border-radius: 4px; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 2;
+  }
+  .scoreboard .label { font-size: 13px; opacity: 0.8; }
+  .score { font-family: var(--font-display); font-weight: 800; font-size: 24px; }
+  .reset-btn { font: inherit; font-weight: 700; font-size: 14px; padding: 10px 16px; min-height: 44px; border-radius: 22px; border: 1.5px solid currentColor; background: transparent; color: inherit; cursor: pointer; }
+  .quiz-card { background: var(--surface); padding: 18px; margin-bottom: 14px; border-radius: 4px; }
+  .quiz-num { font-size: 13px; color: var(--ink-soft); margin: 0 0 6px; }
+  .quiz-ask { font-size: 14px; font-weight: 700; color: var(--accent); margin: 0 0 6px; }
+  .quiz-text { font-size: 17px; margin: 0 0 14px; font-family: var(--font-display); font-weight: 600; line-height: 1.45; }
+  .blank { display: inline-block; min-width: 60px; text-align: center; border-bottom: 2px dashed var(--ink-soft); color: var(--ink-soft); }
+  .blank.filled { border-bottom-style: solid; color: var(--accent); font-weight: 700; }
+  .opts { display: flex; flex-direction: column; gap: 9px; }
+  .opts.row { flex-direction: row; }
+  .opts.row .opt { flex: 1; text-align: center; }
+  .opt { font: inherit; font-size: 15.5px; text-align: left; padding: 11px 14px; min-height: 44px; border: 1.5px solid var(--staff); background: var(--bg); color: var(--ink); cursor: pointer; border-radius: 6px; }
+  .opt:disabled { cursor: default; }
+  .opt .tag { font-weight: 700; margin-right: 8px; color: var(--accent); }
+  .opt.correct, .opt.reveal { background: var(--right-soft); border-color: var(--right); }
+  .opt.incorrect { background: var(--wrong-soft); border-color: var(--wrong); }
+  .feedback { display: none; margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--staff); font-size: 15px; line-height: 1.55; }
+  .feedback.show { display: block; }
+  .verdict { display: block; font-weight: 700; margin-bottom: 4px; }
+  .feedback.fb-ok .verdict { color: var(--right); }
+  .feedback.fb-no .verdict { color: var(--wrong); }
+
+  /* ---------- Summary ---------- */
+  .summary { background: var(--surface); border-radius: 4px; padding: 34px 20px 20px; position: relative; }
+  .summary::before {
+    content: ""; position: absolute; left: 14px; right: 14px; top: 10px; height: 13px;
+    background: repeating-linear-gradient(to bottom, var(--accent) 0 1px, transparent 1px 3px); opacity: 0.5;
+  }
+  .summary ul { margin: 0; padding-left: 20px; line-height: 1.8; }
+  .chant {
+    margin: 18px 0 0; padding: 14px 16px; background: var(--accent-soft); border-radius: 4px;
+    font-family: var(--font-display); font-weight: 600; font-size: 18px; line-height: 1.45; text-align: center;
+  }
+  footer { text-align: center; color: var(--ink-soft); font-size: 13px; margin-top: 30px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back-link" href="index.html">← Back to the shelf</a>
+
+  <!-- 1. HERO -->
+  <header class="hero">
+    <h1>Where Do You <span class="mark">Breathe</span>?</h1>
+    <p class="lead">In a song sheet, a singer looks for a tiny mark shaped like a comma. It's called a <b class="br">breath mark</b>, and it tells them where to pause so the words make sense. A comma in a long sentence does the same job for your reader. Leave it out, and your reader runs two parts together and gets the wrong idea.</p>
+
+    <div class="score-sheet">
+      <div class="clef-row" id="heroLine" aria-live="polite"></div>
+      <div class="toggles" role="group" aria-label="Choose how to sing the sentence">
+        <button class="toggle" type="button" data-mode="off" aria-pressed="true">Sing it in one breath</button>
+        <button class="toggle" type="button" data-mode="on" aria-pressed="false">Add the breath mark</button>
+      </div>
+      <p class="hero-msg" id="heroMsg"></p>
+    </div>
+  </header>
+
+  <!-- 2. THE RULE -->
+  <section>
+    <h2>The three breath marks</h2>
+    <p class="sub">Two words you'll see all through this lesson:</p>
+    <div class="glossary">
+      <div class="gloss"><p><b class="sing">The singer</b> is the person or thing doing the action (the subject): <i>I, we, Mum, the bus, my group</i>.</p></div>
+      <div class="gloss b"><p><b class="br">The breath mark</b> is the comma. In a long sentence, there are three places where you'll usually need one.</p></div>
+    </div>
+
+    <ol class="bars">
+      <li>
+        <p><b>After the intro.</b> If the sentence starts with an opening part <i>before</i> the singer appears, breathe when the intro ends.</p>
+        <p class="eg">As soon as the bell rang<b class="br">,</b> <span class="sing">we</span> rushed to the canteen.</p>
+      </li>
+      <li>
+        <p><b>Before a new verse.</b> If <i>and, but, so, or, yet</i> brings in a <i>new singer</i> with their own action, breathe just before that word.</p>
+        <p class="eg"><span class="sing">We</span> spent more than $30<b class="br">,</b> so <span class="sing">the cashier</span> gave us a voucher.</p>
+      </li>
+      <li>
+        <p><b>Before an echo.</b> If the sentence ends with an <i>-ing</i> part that adds an extra action or a result, breathe before it.</p>
+        <p class="eg"><span class="sing">I</span> groaned<b class="br">,</b> crumpling my wrinkled origami paper.</p>
+      </li>
+    </ol>
+
+    <div class="no-breath">
+      <h3>And where you don't breathe</h3>
+      <p>Never put a comma between the singer and their verb: <span class="bad">My best friend Lila, folded a swan.</span> <span class="good">My best friend Lila folded a swan.</span></p>
+      <p>A comma doesn't belong just anywhere a sentence feels long. Only add one when one of the three breath marks applies.</p>
+    </div>
+  </section>
+
+  <!-- 3. TRAPS -->
+  <section>
+    <h2>Three traps</h2>
+    <p class="sub">These come straight from real compositions. The first one is by far the most common.</p>
+
+    <div class="trap staffed">
+      <h3>Trap 1: Running straight through the intro</h3>
+      <p><span class="bad">As soon as Mrs Lin saw what was happening she stopped the older boy.</span></p>
+      <p><span class="good">As soon as Mrs Lin saw what was happening, she stopped the older boy.</span></p>
+      <p class="why">Without the breath, the reader runs into "happening she" and has to go back. The longer the intro, the more your reader needs that comma. The same goes for short opening words like <i>Suddenly, Luckily</i> and <i>At first</i>.</p>
+    </div>
+
+    <div class="trap staffed">
+      <h3>Trap 2: Breathing on the wrong side of "so"</h3>
+      <p><span class="bad">We were very hungry so, we ordered two plates of chicken rice.</span></p>
+      <p><span class="good">We were very hungry, so we ordered two plates of chicken rice.</span></p>
+      <p class="why">The breath comes <i>before</i> the joining word, never after it. "so we ordered…" is the new verse, and it has to stay together. The same goes for <i>and</i> and <i>but</i>.</p>
+    </div>
+
+    <div class="trap staffed">
+      <h3>Trap 3: Breathing when there's no new verse</h3>
+      <p><span class="bad">I grabbed my umbrella, and ran to the bus stop.</span></p>
+      <p><span class="good">I grabbed my umbrella and ran to the bus stop.</span></p>
+      <p><span class="bad">We stayed indoors, because it was raining heavily.</span></p>
+      <p><span class="good">We stayed indoors because it was raining heavily.</span></p>
+      <p class="why">In the first, there is only one singer ("I") doing two actions, so no new verse starts. In the second, the linking part comes at the <i>end</i>, so it isn't an intro. Neither one needs a breath.</p>
+    </div>
+  </section>
+
+  <!-- 4. CATEGORIES -->
+  <section>
+    <h2>The three breath marks up close</h2>
+    <p class="sub">Each breath mark has a few common shapes. Learn to spot them.</p>
+
+    <div class="cat staffed">
+      <span class="tag">Breath mark 1</span>
+      <h3>After the intro</h3>
+      <ul class="kinds"><li>opening words</li><li>time and place phrases</li><li>linking-word parts</li><li>-ing openers</li></ul>
+      <p><b>Opening words:</b> Suddenly<b class="br">,</b> a ring from the doorbell startled me. / Luckily<b class="br">,</b> Dad had recorded my performance.</p>
+      <p><b>Time and place phrases:</b> During recess the next day<b class="br">,</b> Arjun showed me his card trick. / From that day on<b class="br">,</b> I practised every evening.</p>
+      <p><b>Linking-word parts</b> (when, as soon as, once, after, before, if, although, because): When I finished my homework<b class="br">,</b> I switched on the iPad. / Although she was nervous<b class="br">,</b> Nurul sang the solo beautifully.</p>
+      <p><b>-ing openers:</b> Hearing the news<b class="br">,</b> my brother wiped away his tears. / Seeing me struggle<b class="br">,</b> Mum sat down beside me.</p>
+    </div>
+
+    <div class="cat staffed">
+      <span class="tag">Breath mark 2</span>
+      <h3>Before a new verse</h3>
+      <ul class="kinds"><li>, and</li><li>, but</li><li>, so</li><li>, or</li><li>, yet</li></ul>
+      <p><span class="sing">Wei Ling</span> wanted to join the race<b class="br">,</b> but <span class="sing">she</span> had hurt her ankle.</p>
+      <p><span class="sing">My father</span> played our favourite songs<b class="br">,</b> and <span class="sing">my brother</span> sang along loudly.</p>
+      <p><span class="sing">Dinner</span> was ready<b class="br">,</b> so <span class="sing">we</span> sat down at the table.</p>
+      <p class="why">Check: does a new singer appear after the joining word? If yes, breathe before it. (You met these joining words in the Train Carriage lesson. Here, the focus is on where the comma sits.)</p>
+    </div>
+
+    <div class="cat staffed">
+      <span class="tag">Breath mark 3</span>
+      <h3>Before an echo</h3>
+      <ul class="kinds"><li>an extra action</li><li>a result</li></ul>
+      <p><b>An extra action:</b> Lila sat beside me<b class="br">,</b> folding the paper step by step. / Mum hugged me tightly<b class="br">,</b> whispering that it was all right.</p>
+      <p><b>A result:</b> The bus braked suddenly<b class="br">,</b> throwing us all forward. / The glass vase fell off the shelf<b class="br">,</b> shattering into tiny pieces.</p>
+      <p class="why">The echo tells you what else happened at the same time, or what happened because of the main action.</p>
+    </div>
+  </section>
+
+  <!-- 5. SPECIAL CASES -->
+  <section>
+    <h2>Three more things the quiz will check</h2>
+    <p class="sub">These aren't one of the three breath marks, but they all turn up in long sentences.</p>
+    <div class="grid-2">
+      <div class="special">
+        <h3>A side note needs two breaths</h3>
+        <p>When you slip extra information into the middle of a sentence, such as who someone is or what something is, put a comma on <b>both</b> sides of it.</p>
+        <p><span class="bad">Our waiter, Mr Evan Sim took our orders.</span></p>
+        <p><span class="good">Our waiter<b class="br">,</b> Mr Evan Sim<b class="br">,</b> took our orders.</span></p>
+        <p><span class="good">Ms Goh<b class="br">,</b> my form teacher<b class="br">,</b> announced the news.</span></p>
+        <p class="why">Test: take the side note out. "Our waiter took our orders" still works, so the side note needs commas on both sides.</p>
+      </div>
+      <div class="special">
+        <h3>An -ing part that describes who you saw</h3>
+        <p>An -ing part that tells you what the person you just named was doing isn't an echo. It belongs to that person, so don't breathe before it.</p>
+        <p><span class="good">I saw a Primary Six boy pushing a younger student.</span></p>
+        <p><span class="good">I found my little brother hiding under the bed.</span></p>
+        <p class="why">Who was pushing? The boy, not "I". So the -ing part stays attached to "the boy", with no comma.</p>
+      </div>
+      <div class="special wide">
+        <h3>A list of three or more</h3>
+        <p>Separate each item or action with a comma. In Singapore schools, you don't usually need a comma before the final "and".</p>
+        <p><span class="bad">At DisneySea, we rode rides played games and watched a parade.</span></p>
+        <p><span class="good">At DisneySea, we rode rides<b class="br">,</b> played games and watched a parade.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. PRACTICE -->
+  <section>
+    <h2>Mark the breaths</h2>
+    <p class="sub">Some questions ask if a sentence needs a comma. Others ask you to pick the version with the commas in the right places. You'll see straight away if you're right, and why. The questions get trickier as you go.</p>
+    <div class="scoreboard">
+      <div><div class="label">Your score</div><div class="score" id="scoreDisplay">0 / 30</div></div>
+      <button class="reset-btn" id="resetBtn" type="button">Start over</button>
+    </div>
+    <div id="quizContainer"></div>
+  </section>
+
+  <!-- 7. PIN THIS UP -->
+  <section class="summary">
+    <h2>Pin This Up</h2>
+    <ul>
+      <li><b>After the intro:</b> an opening word, phrase or linking part, then a comma, then the singer.</li>
+      <li><b>Before a new verse:</b> a comma before <i>and / but / so</i> when a new singer follows.</li>
+      <li><b>Before an echo:</b> a comma before an <i>-ing</i> part that adds an extra action or result.</li>
+      <li><b>Side notes</b> get two commas, one on each side.</li>
+      <li><b>No breath:</b> between the singer and the verb, after <i>so</i>, for one singer doing two actions, or before a linking part at the end.</li>
+    </ul>
+    <p class="chant">Intro done? Breathe right there.<br>New verse or echo? Breathe before, with care.</p>
+  </section>
+
+  <footer>My Grammar Shelf, Lesson 05</footer>
+</div>
+
+<script>
+(function () {
+  /* ---------- Hero: sing the sentence ---------- */
+  const WORDS = [
+    ['While', 34], ['we', 26], ['were', 30], ['eating', 22],
+    ['BREATH'],
+    ['the', 38], ['cat', 30], ['jumped', 26], ['onto', 34], ['the', 30], ['table.', 22]
+  ];
+  const line = document.getElementById('heroLine');
+  const msg = document.getElementById('heroMsg');
+  let breathEl;
+  const danger = [];
+  WORDS.forEach((w, i) => {
+    if (w[0] === 'BREATH') {
+      breathEl = document.createElement('span');
+      breathEl.className = 'breath';
+      breathEl.setAttribute('aria-hidden', 'true');
+      breathEl.innerHTML = '<span>,</span>';
+      line.appendChild(breathEl);
+      return;
+    }
+    const n = document.createElement('span');
+    n.className = 'note';
+    n.innerHTML = '<span class="head" style="--y:' + w[1] + 'px"></span><span class="word">' + w[0] + '</span>';
+    if (i === 3 || i === 5 || i === 6) danger.push(n.querySelector('.word'));
+    line.appendChild(n);
+  });
+  const MODES = {
+    off: { breath: false, m: '<b>Uh-oh.</b> "While we were eating the cat…" Wait, they were eating the <i>cat</i>? With no breath, the reader runs the intro into the main sentence.' },
+    on:  { breath: true,  m: '<b>Phew.</b> "While we were eating, the cat jumped onto the table." The breath mark ends the intro, and the cat is safe.' }
+  };
+  function setMode(mode) {
+    const d = MODES[mode];
+    breathEl.classList.toggle('on', d.breath);
+    danger.forEach(el => el.classList.toggle('danger', !d.breath));
+    msg.innerHTML = d.m;
+  }
+  document.querySelectorAll('.toggle').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('.toggle').forEach(o => o.setAttribute('aria-pressed', 'false'));
+    b.setAttribute('aria-pressed', 'true');
+    setMode(b.dataset.mode);
+  }));
+  setMode('off');
+
+  /* ---------- Quiz ---------- */
+  const CHECK = "Does this sentence need a comma?";
+  const PICK = "Pick the version with the commas in the right places.";
+  const YN = ["Needs a comma", "Fine as it is"];
+  const QUESTIONS = [
+    { ask: CHECK, text: "As soon as the bell rang we rushed to the canteen.", options: YN, answer: 0, why: "The intro ends at “rang”. Breathe there, before the singer “we” starts the main sentence." },
+    { ask: CHECK, text: "Suddenly, a loud crash came from the kitchen.", options: YN, answer: 1, why: "“Suddenly” is an opening word, and its breath mark is already in place." },
+    { ask: PICK, text: "When I finished my homework I switched on the iPad.", options: ["When I finished my homework I switched on the iPad.", "When I finished, my homework I switched on the iPad.", "When I finished my homework, I switched on the iPad.", "When I finished my homework I, switched on the iPad."], answer: 2, why: "The intro is “When I finished my homework”. Breathe right after it, before the singer “I”." },
+    { ask: CHECK, text: "Lila sat beside me, folding the paper step by step.", options: YN, answer: 1, why: "“Folding the paper…” is an echo adding Lila's extra action, so the comma before it is right." },
+    { ask: CHECK, text: "We spent more than $30 so the cashier gave us a voucher.", options: YN, answer: 0, why: "“So” brings in a new singer, “the cashier”. That's a new verse, so breathe before “so”." },
+    { ask: PICK, text: "Luckily Dad had recorded my performance.", options: ["Luckily Dad, had recorded my performance.", "Luckily, Dad had recorded my performance.", "Luckily Dad had recorded, my performance.", "Luckily Dad had, recorded my performance."], answer: 1, why: "“Luckily” is an opening word. Breathe after it, and never between the singer “Dad” and the verb." },
+    { ask: CHECK, text: "I groaned crumpling the wrinkled origami paper.", options: YN, answer: 0, why: "“Crumpling the…” is an echo, an extra action. Breathe before it: “I groaned, crumpling…”" },
+    { ask: PICK, text: "Wei Ling wanted to join the race but she had hurt her ankle.", options: ["Wei Ling wanted to join the race but, she had hurt her ankle.", "Wei Ling wanted to join the race, but she had hurt her ankle.", "Wei Ling, wanted to join the race but she had hurt her ankle.", "Wei Ling wanted to join, the race but she had hurt her ankle."], answer: 1, why: "A new singer, “she”, follows “but”. The breath goes before “but”, not after it." },
+    { ask: CHECK, text: "During recess the next day Arjun showed me his new card trick.", options: YN, answer: 0, why: "“During recess the next day” is a time-phrase intro. Breathe after it, before the singer “Arjun”." },
+    { ask: PICK, text: "The bus braked suddenly throwing us all forward.", options: ["The bus braked suddenly throwing us, all forward.", "The bus, braked suddenly throwing us all forward.", "The bus braked suddenly throwing, us all forward.", "The bus braked suddenly, throwing us all forward."], answer: 3, why: "“Throwing us all forward” is an echo showing the result. Breathe just before it." },
+
+    { ask: CHECK, text: "I packed my bag and waited for the school bus.", options: YN, answer: 1, why: "There's only one singer, “I”, doing two actions. No new verse starts, so no breath is needed." },
+    { ask: CHECK, text: "We stayed indoors because it was raining heavily.", options: YN, answer: 1, why: "The linking part comes at the end, not as an intro. The sentence flows without a breath." },
+    { ask: PICK, text: "Dinner was ready so we sat down at the table.", options: ["Dinner was ready so, we sat down at the table.", "Dinner was ready, so we sat down at the table.", "Dinner, was ready so we sat down at the table.", "Dinner was ready so we sat, down at the table."], answer: 1, why: "A new singer, “we”, follows “so”. The breath goes before “so”, never after it." },
+    { ask: CHECK, text: "Hearing the news my brother wiped away his tears and smiled.", options: YN, answer: 0, why: "“Hearing the news” is an -ing opener. Breathe after it, before the singer “my brother”." },
+    { ask: PICK, text: "Although she was nervous Nurul sang the solo beautifully.", options: ["Although, she was nervous Nurul sang the solo beautifully.", "Although she was nervous Nurul, sang the solo beautifully.", "Although she was nervous, Nurul sang the solo beautifully.", "Although she was nervous Nurul sang, the solo beautifully."], answer: 2, why: "The intro is “Although she was nervous”. Breathe after it, just before the singer “Nurul”." },
+    { ask: CHECK, text: "My father played our favourite songs and my brother sang along loudly.", options: YN, answer: 0, why: "“My brother sang” is a new verse with a new singer. Breathe before “and”." },
+    { ask: PICK, text: "The glass vase fell off the shelf shattering into tiny pieces.", options: ["The glass vase fell off, the shelf shattering into tiny pieces.", "The glass vase, fell off the shelf shattering into tiny pieces.", "The glass vase fell off the shelf, shattering into tiny pieces.", "The glass vase fell off the shelf shattering, into tiny pieces."], answer: 2, why: "“Shattering into tiny pieces” is an echo showing the result. The breath goes right before it." },
+    { ask: CHECK, text: "Once I had received the trophy I ran off the stage.", options: YN, answer: 0, why: "“Once I had received the trophy” is an intro. Breathe after “trophy”, before the singer “I”." },
+    { ask: PICK, text: "Marcus forgot his water bottle and Mr Tan let him buy a drink.", options: ["Marcus forgot his water bottle and, Mr Tan let him buy a drink.", "Marcus forgot, his water bottle and Mr Tan let him buy a drink.", "Marcus forgot his water bottle, and Mr Tan let him buy a drink.", "Marcus, forgot his water bottle and Mr Tan let him buy a drink."], answer: 2, why: "A new singer, “Mr Tan”, follows “and”. The breath goes before “and”, not after it." },
+    { ask: CHECK, text: "Mum smiled when she saw my report book.", options: YN, answer: 1, why: "The linking part “when she saw…” comes at the end, so it isn't an intro. No breath needed." },
+
+    { ask: PICK, text: "Our waiter Mr Evan Sim served our pancakes quickly.", options: ["Our waiter, Mr Evan Sim served our pancakes quickly.", "Our waiter, Mr Evan Sim, served our pancakes quickly.", "Our waiter Mr Evan Sim, served our pancakes quickly.", "Our waiter, Mr Evan, Sim served our pancakes quickly."], answer: 1, why: "“Mr Evan Sim” is a side note about the waiter, so it needs a comma on both sides." },
+    { ask: CHECK, text: "I saw a Primary Six boy pushing a younger student.", options: YN, answer: 1, why: "“Pushing a younger student” describes the boy you saw. It isn't an echo of your action, so no breath." },
+    { ask: PICK, text: "At DisneySea we rode rides played games and watched a parade.", options: ["At DisneySea, we rode rides, played games and watched a parade.", "At DisneySea we rode rides played games, and watched a parade.", "At DisneySea, we rode, rides played games and watched a parade.", "At, DisneySea we rode rides, played games and watched a parade."], answer: 0, why: "Breathe after the intro, then separate the three actions in the list. No comma is needed before the final “and”." },
+    { ask: CHECK, text: "The Esplanade, a performing arts centre looks like a giant durian.", options: YN, answer: 0, why: "A side note needs two commas. The closing one after “centre” is missing." },
+    { ask: PICK, text: "Out of the corner of my eye I saw Mum running into the hall.", options: ["Out of the corner of my eye, I saw Mum running into the hall.", "Out of the corner of my eye, I saw Mum running, into the hall.", "Out of the corner of my eye I saw, Mum running into the hall.", "Out of the corner, of my eye I saw Mum running into the hall."], answer: 0, why: "Breathe once the intro ends. “Running into the hall” describes Mum, so no comma goes before it." },
+    { ask: PICK, text: "When the music stopped we bowed and the audience clapped wildly.", options: ["When the music stopped, we bowed, and the audience clapped wildly.", "When the music stopped we bowed, and the audience clapped wildly.", "When the music stopped, we bowed and, the audience clapped wildly.", "When the music, stopped we bowed and the audience clapped wildly."], answer: 0, why: "There are two breaths: one after the intro, and one before “and”, because “the audience” is a new singer." },
+    { ask: CHECK, text: "We bought balloons, streamers, paper cups and a big chocolate cake.", options: YN, answer: 1, why: "This list already has commas between its items, and no comma is needed before the final “and”." },
+    { ask: PICK, text: "Ms Goh my form teacher announced that Youth Day was coming.", options: ["Ms Goh, my form teacher announced that Youth Day was coming.", "Ms Goh my form teacher, announced that Youth Day was coming.", "Ms Goh, my form teacher, announced, that Youth Day was coming.", "Ms Goh, my form teacher, announced that Youth Day was coming."], answer: 3, why: "“My form teacher” is a side note, so it needs two commas. No comma goes after “announced”." },
+    { ask: CHECK, text: "I found my little brother hiding under the bed.", options: YN, answer: 1, why: "“Hiding under the bed” tells you what your brother was doing, so it stays attached to him. No breath." },
+    { ask: PICK, text: "After a long discussion Ikel and I agreed to tell the truth so we walked into the living room nervously.", options: ["After a long discussion, Ikel and I agreed to tell the truth, so we walked into the living room nervously.", "After a long discussion Ikel and I agreed to tell the truth, so we walked into the living room nervously.", "After a long discussion, Ikel and I agreed to tell the truth so, we walked into the living room nervously.", "After a long discussion, Ikel and I, agreed to tell the truth, so we walked into the living room nervously."], answer: 0, why: "Breathe after the intro and before “so”. There's never a breath between the singers “Ikel and I” and their verb." }
+  ];
+
+  const container = document.getElementById('quizContainer');
+  const scoreEl = document.getElementById('scoreDisplay');
+  let score = 0, answered = [];
+
+  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  function updateScore() { scoreEl.textContent = score + ' / ' + QUESTIONS.length; }
+
+  function render() {
+    container.innerHTML = '';
+    answered = QUESTIONS.map(() => false);
+    QUESTIONS.forEach((q, i) => {
+      const card = document.createElement('div');
+      card.className = 'quiz-card';
+      const hasBlank = q.text.includes('___');
+      const short = q.options.every(o => o.length <= 14);
+      card.innerHTML =
+        '<p class="quiz-num">Question ' + (i + 1) + ' of ' + QUESTIONS.length + '</p>' +
+        (q.ask ? '<p class="quiz-ask">' + esc(q.ask) + '</p>' : '') +
+        '<p class="quiz-text">' + esc(q.text).replace('___', '<span class="blank">___</span>') + '</p>' +
+        '<div class="opts' + (short ? ' row' : '') + '"></div>' +
+        '<div class="feedback" role="status"></div>';
+      const opts = card.querySelector('.opts');
+      q.options.forEach((o, j) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'opt';
+        b.innerHTML = (short ? '' : '<span class="tag">' + String.fromCharCode(65 + j) + '</span>') + esc(o);
+        b.addEventListener('click', () => answer(i, j, card, hasBlank));
+        opts.appendChild(b);
+      });
+      container.appendChild(card);
+    });
+    updateScore();
+  }
+
+  function answer(i, j, card, hasBlank) {
+    if (answered[i]) return;
+    answered[i] = true;
+    const q = QUESTIONS[i], ok = j === q.answer;
+    if (ok) score++;
+    updateScore();
+    if (hasBlank) {
+      const blank = card.querySelector('.blank');
+      blank.textContent = q.options[j];
+      blank.classList.add('filled');
+    }
+    const short = q.options.every(o => o.length <= 14);
+    card.querySelectorAll('.opt').forEach((b, k) => {
+      b.disabled = true;
+      if (k === j) b.classList.add(ok ? 'correct' : 'incorrect');
+      else if (k === q.answer && !ok) b.classList.add('reveal');
+    });
+    const fb = card.querySelector('.feedback');
+    fb.classList.add('show', ok ? 'fb-ok' : 'fb-no');
+    fb.innerHTML = '<span class="verdict">' +
+      (ok ? 'Correct!' : 'Not quite. The answer is ' + (short ? '"' + esc(q.options[q.answer]) + '"' : String.fromCharCode(65 + q.answer)) + '.') +
+      '</span>' + esc(q.why);
+  }
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    score = 0;
+    render();
+    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
