@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Stop, Ask or Wow? Ending a Sentence</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚦</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Andika:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FFF3C9;
+    --surface: #FFFFFF;
+    --surface-2: #FFF9E6;
+    --ink: #1E2433;
+    --ink-soft: #4F566B;
+    --road: #454B5C;
+    --stop: #D2263B;  --stop-soft: #FCE1E4;
+    --ask: #2462C9;   --ask-soft: #DDE8FB;
+    --wow: #D9620A;   --wow-soft: #FDE6D1;
+    --right: #1D7A45; --right-soft: #DCF1E3;
+    --wrong: #B3261E; --wrong-soft: #F9DEDC;
+    --rule: rgba(30,36,51,0.14);
+    --font-display: 'Fredoka', 'Arial Rounded MT Bold', 'Trebuchet MS', sans-serif;
+    --font-body: 'Andika', 'Trebuchet MS', -apple-system, 'Segoe UI', sans-serif;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #17181F; --surface: #23252F; --surface-2: #2B2E3A;
+      --ink: #F5F1E6; --ink-soft: #BABDC9; --road: #5A6072;
+      --stop: #FF6F7D; --stop-soft: #3F1E23;
+      --ask: #7FA9F6;  --ask-soft: #1E2B45;
+      --wow: #FFA457;  --wow-soft: #3F2A16;
+      --right: #72D69D; --right-soft: #17311F;
+      --wrong: #F48D84; --wrong-soft: #3D1F1D;
+      --rule: rgba(245,241,230,0.16);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #17181F; --surface: #23252F; --surface-2: #2B2E3A;
+    --ink: #F5F1E6; --ink-soft: #BABDC9; --road: #5A6072;
+    --stop: #FF6F7D; --stop-soft: #3F1E23;
+    --ask: #7FA9F6;  --ask-soft: #1E2B45;
+    --wow: #FFA457;  --wow-soft: #3F2A16;
+    --right: #72D69D; --right-soft: #17311F;
+    --wrong: #F48D84; --wrong-soft: #3D1F1D;
+    --rule: rgba(245,241,230,0.16);
+  }
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 19px; line-height: 1.55; }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 22px 18px 64px; }
+  :focus-visible { outline: 3px solid var(--ask); outline-offset: 3px; }
+  svg { max-width: 100%; }
+
+  .back-link {
+    display: inline-block; margin: 0 0 20px; padding: 10px 16px; min-height: 44px;
+    font-weight: 700; font-size: 16px; color: var(--ink); text-decoration: none;
+    background: var(--surface); border: 2px solid var(--rule); border-radius: 999px;
+  }
+  h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.1; }
+  h2 { font-size: 30px; margin: 0 0 8px; }
+  section { margin-bottom: 48px; }
+  .sub { color: var(--ink-soft); margin: 0 0 18px; }
+
+  /* end marks, always in their sign colour */
+  .m { font-family: var(--font-display); font-weight: 700; font-size: 1.25em; line-height: 0; }
+  .m.stop { color: var(--stop); } .m.ask { color: var(--ask); } .m.wow { color: var(--wow); }
+  .no { color: var(--wrong); text-decoration: line-through; text-decoration-thickness: 2px; }
+  .yes { color: var(--right); font-weight: 700; }
+
+  /* read-aloud buttons (shown only if the device can speak) */
+  .say {
+    display: none; font: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
+    padding: 6px 12px; min-height: 40px; margin-left: 6px; vertical-align: middle;
+    border-radius: 999px; border: 2px solid var(--ask); background: var(--ask-soft); color: var(--ink);
+  }
+  .can-speak .say { display: inline-block; }
+
+  /* ---------- Hero ---------- */
+  .hero h1 { font-size: clamp(42px, 12vw, 64px); margin: 0 0 12px; }
+  .hero h1 .t1 { color: var(--stop); } .hero h1 .t2 { color: var(--ask); } .hero h1 .t3 { color: var(--wow); }
+  .lead { font-size: 21px; margin: 0 0 18px; }
+  .roadbox { background: var(--surface); border-radius: 22px; padding: 16px 14px 18px; border: 3px solid var(--rule); }
+  .roadbox svg { display: block; width: 100%; height: auto; }
+  .road { fill: var(--road); }
+  .lane { stroke: #FFF3C9; stroke-width: 3; stroke-dasharray: 12 10; }
+  .car-body { fill: var(--ask); } .car-top { fill: var(--ask); opacity: 0.75; } .car-win { fill: #ffffff; opacity: 0.85; }
+  .wheel { fill: #1E2433; }
+  #car { transform-box: view-box; transition: transform 0.9s cubic-bezier(.3,1.2,.5,1); }
+  #car.wobble { animation: wobble 0.5s; }
+  @keyframes wobble { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+  .post { fill: var(--ink-soft); }
+  #signShape { transition: fill 0.3s; fill: var(--surface-2); stroke: var(--ink-soft); stroke-width: 3; }
+  #signMark { font-family: var(--font-display); font-weight: 700; font-size: 34px; text-anchor: middle; fill: var(--ink-soft); }
+  .sentence { font-size: 26px; font-family: var(--font-display); font-weight: 600; text-align: center; margin: 14px 0 12px; min-height: 1.4em; }
+  .sentence .gap { display: inline-block; min-width: 26px; border-bottom: 3px dashed var(--ink-soft); }
+  .signs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .sign-btn {
+    font: inherit; cursor: pointer; border-radius: 16px; padding: 10px 4px 8px; min-height: 92px;
+    border: 3px solid transparent; background: var(--surface-2); color: var(--ink);
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .sign-btn .big { font-family: var(--font-display); font-size: 40px; font-weight: 700; line-height: 1; }
+  .sign-btn .lbl { font-size: 15px; font-weight: 700; }
+  .sign-btn.stop .big { color: var(--stop); } .sign-btn.ask .big { color: var(--ask); } .sign-btn.wow .big { color: var(--wow); }
+  .sign-btn.stop { border-color: var(--stop-soft); } .sign-btn.ask { border-color: var(--ask-soft); } .sign-btn.wow { border-color: var(--wow-soft); }
+  .road-msg { margin: 12px 4px 0; font-size: 18px; min-height: 3em; text-align: center; }
+  .road-msg b.good { color: var(--right); } .road-msg b.try { color: var(--wrong); }
+  .next-btn {
+    display: block; margin: 8px auto 0; font: inherit; font-weight: 700; font-size: 17px; cursor: pointer;
+    padding: 10px 20px; min-height: 48px; border-radius: 999px; border: none; background: var(--ink); color: var(--bg);
+  }
+  .next-btn[hidden] { display: none; }
+
+  /* ---------- Rule ---------- */
+  .steps { display: grid; gap: 12px; }
+  .step { background: var(--surface); border-radius: 18px; padding: 16px 18px; display: flex; gap: 14px; align-items: flex-start; }
+  .step .n { flex: 0 0 auto; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 24px; font-weight: 700; background: var(--ink); color: var(--bg); }
+  .step p { margin: 0; font-size: 20px; }
+  .step .hint { font-size: 17px; color: var(--ink-soft); margin-top: 4px; }
+
+  /* ---------- Trap ---------- */
+  .trap { background: var(--surface); border-radius: 18px; padding: 18px; border-left: 8px solid var(--wrong); }
+  .trap p { margin: 0 0 10px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 14px; padding: 0; list-style: none; }
+  .chips li { font-family: var(--font-display); font-weight: 600; font-size: 20px; padding: 4px 14px; border-radius: 999px; background: var(--ask-soft); color: var(--ink); }
+  .eg { font-size: 22px; margin: 0 0 6px !important; }
+
+  /* ---------- Signs ---------- */
+  .sign-cards { display: grid; gap: 14px; }
+  .sign-card { background: var(--surface); border-radius: 20px; padding: 16px 18px; display: grid; grid-template-columns: 70px 1fr; gap: 14px; align-items: start; }
+  .sign-card svg { width: 70px; height: 70px; }
+  .sign-card h3 { margin: 2px 0 4px; font-size: 24px; }
+  .sign-card p { margin: 0 0 6px; font-size: 19px; }
+  .sign-card .ex { font-size: 20px; }
+
+  /* ---------- Practice + summary ---------- */
+  .pin { background: var(--surface); border-radius: 22px; padding: 20px; border: 3px solid var(--rule); }
+  .pin ul { margin: 0; padding-left: 22px; font-size: 20px; line-height: 1.7; }
+  .chant { margin: 16px 0 0; padding: 16px; border-radius: 16px; text-align: center; background: var(--wow-soft);
+    font-family: var(--font-display); font-weight: 600; font-size: 24px; line-height: 1.3; }
+  footer { text-align: center; font-size: 14px; color: var(--ink-soft); margin-top: 32px; }
+  @media (prefers-reduced-motion: reduce) { #car { transition: none; } #car.wobble { animation: none; } }
+
+  /* ================= QUIZ BANK ENGINE (shared by every lesson; qb- prefix avoids clashes) ================= */
+  .qb { --qb-cols: 2; }
+  .qb-bar {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 3;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 10px 16px; margin: 0 0 18px; border-radius: var(--qb-radius);
+    background: var(--qb-bar); color: var(--qb-bar-ink);
+  }
+  .qb-label { font-size: 12.5px; opacity: 0.8; }
+  .qb-score { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 28px; line-height: 1.05; }
+  .qb-progress { font-size: 12.5px; opacity: 0.85; margin-top: 2px; }
+  .qb-new {
+    font: inherit; font-weight: 700; font-size: 14px; padding: 10px 16px; min-height: 44px;
+    border-radius: 999px; border: 2px solid currentColor; background: transparent; color: inherit; cursor: pointer;
+  }
+  .qb-list, .qb-summary { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 96px); }
+  .qb-card {
+    background: var(--qb-card); border: var(--qb-card-border); box-shadow: var(--qb-card-shadow);
+    border-radius: var(--qb-radius); padding: 16px 16px 14px; margin: 0 0 14px; color: var(--qb-ink);
+  }
+  .qb-speak {
+    float: right; margin: -4px 0 6px 10px; font: inherit; font-size: 13.5px; font-weight: 700;
+    padding: 7px 12px; min-height: 38px; border-radius: 999px; cursor: pointer;
+    border: 2px solid var(--qb-accent); background: var(--qb-accent-soft); color: var(--qb-ink);
+  }
+  .qb-num { font-size: 12.5px; color: var(--qb-soft); margin: 0 0 4px; }
+  .qb-ask { font-size: 13.5px; font-weight: 700; color: var(--qb-accent); margin: 0 0 6px; }
+  .qb-text { font-size: var(--qb-text-size, 16.5px); line-height: 1.6; margin: 0 0 14px; }
+  .qb-blank {
+    display: inline-block; min-width: 60px; padding: 0 3px; text-align: center;
+    border-bottom: 2.5px dashed var(--qb-soft); color: var(--qb-soft);
+  }
+  .qb-blank.qb-filled { border-bottom-style: solid; border-bottom-color: var(--qb-accent); color: var(--qb-accent); font-weight: 700; }
+  .qb-blank.qb-none { font-style: italic; font-weight: 400; }
+  .qb-opts { display: flex; flex-direction: column; gap: 9px; }
+  .qb-opts.qb-row { display: grid; grid-template-columns: repeat(var(--qb-cols), minmax(0, 1fr)); }
+  .qb-opt {
+    font: inherit; font-size: var(--qb-opt-size, 15.5px); line-height: 1.45; text-align: left; color: var(--qb-ink);
+    padding: 11px 14px; min-height: var(--qb-tap, 46px); border-radius: var(--qb-radius-opt);
+    border: 2px solid var(--qb-rule); background: var(--qb-page); cursor: pointer;
+  }
+  .qb-row .qb-opt { text-align: center; font-weight: 600; padding-left: 6px; padding-right: 6px; }
+  .qb-opt:not(:disabled):hover { border-color: var(--qb-accent); }
+  .qb-opt:disabled, .qb-part:disabled { cursor: default; }
+  .qb-letter { font-family: var(--qb-font); font-weight: var(--qb-font-weight); margin-right: 10px; color: var(--qb-accent); }
+  .qb-note { font-size: 12.5px; font-weight: 400; color: var(--qb-soft); }
+  .qb-punct { font-size: 22px; line-height: 0; font-weight: 700; }
+  .qb-spot { display: flex; flex-wrap: wrap; gap: 8px 6px; margin: 0 0 4px; }
+  .qb-part {
+    font: inherit; font-size: var(--qb-opt-size, 16px); line-height: 1.35; text-align: left; color: var(--qb-ink); cursor: pointer;
+    background: var(--qb-accent-soft); border: none; border-bottom: 3px dashed var(--qb-accent);
+    border-radius: 4px 4px 0 0; padding: 7px 9px; min-height: 40px;
+  }
+  .qb-opt.qb-correct, .qb-opt.qb-reveal { background: var(--qb-right-soft); border-color: var(--qb-right); }
+  .qb-opt.qb-incorrect { background: var(--qb-wrong-soft); border-color: var(--qb-wrong); }
+  .qb-part.qb-correct, .qb-part.qb-reveal { background: var(--qb-right-soft); border-bottom: 3px solid var(--qb-right); }
+  .qb-part.qb-incorrect { background: var(--qb-wrong-soft); border-bottom: 3px solid var(--qb-wrong); }
+  .qb-feedback { display: none; margin-top: 12px; padding-top: 12px; border-top: 2px dashed var(--qb-rule); font-size: 14px; line-height: 1.55; }
+  .qb-feedback.qb-show { display: block; }
+  .qb-verdict { display: block; font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 18px; margin-bottom: 2px; }
+  .qb-fb-ok .qb-verdict { color: var(--qb-right); }
+  .qb-fb-no .qb-verdict { color: var(--qb-wrong); }
+  .qb-summary {
+    background: var(--qb-card); color: var(--qb-ink); border: 3px solid var(--qb-accent);
+    border-radius: var(--qb-radius); padding: 18px 20px; margin-top: 8px;
+  }
+  .qb-summary h3 { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 30px; line-height: 1.1; margin: 0 0 6px; color: var(--qb-accent); }
+  .qb-summary p { margin: 0 0 10px; line-height: 1.55; }
+  .qb-sum-label { font-weight: 700; margin-top: 14px !important; }
+  .qb-areas { list-style: none; margin: 0 0 12px; padding: 0; }
+  .qb-areas li { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--qb-rule); }
+  .qb-areas a { color: var(--qb-ink); font-weight: 600; }
+  .qb-areas span { color: var(--qb-wrong); font-weight: 700; white-space: nowrap; }
+  .qb-meta { font-size: 13px; color: var(--qb-soft); }
+  .qb-go {
+    font: inherit; font-weight: 700; font-size: 16px; width: 100%; min-height: 50px; margin-top: 4px; cursor: pointer;
+    border: none; border-radius: var(--qb-radius); background: var(--qb-accent); color: var(--qb-on-accent);
+  }
+
+  :root {
+    --qb-page: var(--surface-2);
+    --qb-card: var(--surface);
+    --qb-ink: var(--ink);
+    --qb-soft: var(--ink-soft);
+    --qb-accent: var(--ask);
+    --qb-accent-soft: var(--ask-soft);
+    --qb-on-accent: var(--surface);
+    --qb-right: var(--right);
+    --qb-right-soft: var(--right-soft);
+    --qb-wrong: var(--wrong);
+    --qb-wrong-soft: var(--wrong-soft);
+    --qb-rule: var(--rule);
+    --qb-bar: var(--ink);
+    --qb-bar-ink: var(--bg);
+    --qb-font: var(--font-display);
+    --qb-font-weight: 700;
+    --qb-radius: 18px;
+    --qb-radius-opt: 14px;
+    --qb-card-border: none;
+    --qb-card-shadow: none;
+    --qb-text-size: 21px;
+    --qb-opt-size: 19px;
+    --qb-tap: 56px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back-link" href="index.html#lower">← Back to the shelf</a>
+
+  <!-- 1. HERO -->
+  <header class="hero">
+    <h1><span class="t1">Stop,</span> <span class="t2">Ask</span> or <span class="t3">Wow?</span></h1>
+    <p class="lead">A sentence is like a little car. At the end of the road, it must stop. You choose the sign! <button class="say" type="button" data-say="A sentence is like a little car. At the end of the road, it must stop. You choose the sign!">🔊</button></p>
+
+    <div class="roadbox">
+      <svg viewBox="0 0 340 100" role="img" aria-label="A little car on a road, driving towards a sign">
+        <rect class="road" x="0" y="58" width="340" height="34" rx="6"/>
+        <line class="lane" x1="8" y1="75" x2="260" y2="75"/>
+        <rect class="post" x="300" y="34" width="6" height="58" rx="3"/>
+        <circle id="signShape" cx="303" cy="30" r="24"/>
+        <text id="signMark" x="303" y="42">?</text>
+        <g id="car">
+          <rect class="car-top" x="22" y="32" width="38" height="18" rx="7"/>
+          <rect class="car-win" x="28" y="36" width="12" height="10" rx="3"/>
+          <rect class="car-win" x="43" y="36" width="12" height="10" rx="3"/>
+          <rect class="car-body" x="10" y="46" width="64" height="20" rx="8"/>
+          <circle class="wheel" cx="24" cy="68" r="7"/><circle class="wheel" cx="60" cy="68" r="7"/>
+        </g>
+      </svg>
+      <p class="sentence" id="roadSentence" aria-live="polite"></p>
+      <div class="signs" role="group" aria-label="Choose the sign">
+        <button class="sign-btn stop" type="button" data-mark="."><span class="big">.</span><span class="lbl">Stop</span></button>
+        <button class="sign-btn ask" type="button" data-mark="?"><span class="big">?</span><span class="lbl">Ask</span></button>
+        <button class="sign-btn wow" type="button" data-mark="!"><span class="big">!</span><span class="lbl">Wow</span></button>
+      </div>
+      <p class="road-msg" id="roadMsg" aria-live="polite">Read the sentence. Then tap a sign.</p>
+      <button class="next-btn" id="roadNext" type="button" hidden>Next sentence →</button>
+    </div>
+  </header>
+
+  <!-- 2. THE RULE -->
+  <section id="rule">
+    <h2>Two steps</h2>
+    <p class="sub">Do this at the end of every sentence.</p>
+    <div class="steps">
+      <div class="step"><span class="n">1</span><div><p>Read the sentence out loud. <button class="say" type="button" data-say="Step one. Read the sentence out loud.">🔊</button></p></div></div>
+      <div class="step"><span class="n">2</span><div><p>Ask yourself: is it <b>telling</b>, <b>asking</b> or saying <b>wow</b>? <button class="say" type="button" data-say="Step two. Ask yourself: is it telling, asking, or saying wow?">🔊</button></p>
+        <p class="hint">Telling → <span class="m stop">.</span> &nbsp; Asking → <span class="m ask">?</span> &nbsp; Wow → <span class="m wow">!</span></p></div></div>
+    </div>
+  </section>
+
+  <!-- 3. THE TRAP -->
+  <section id="trap">
+    <h2>Watch out for asking words</h2>
+    <div class="trap">
+      <p>These words often start a question: <button class="say" type="button" data-say="These words often start a question. Who. What. Where. When. Why. How. Can. Do. Is. Are. Will.">🔊</button></p>
+      <ul class="chips"><li>Who</li><li>What</li><li>Where</li><li>When</li><li>Why</li><li>How</li><li>Can</li><li>Do</li><li>Is</li><li>Are</li><li>Will</li></ul>
+      <p class="eg"><span class="no">Where is my bag.</span></p>
+      <p class="eg"><span class="yes">Where is my bag<span class="m ask">?</span></span></p>
+      <p>If it asks something, it needs a question mark.</p>
+    </div>
+  </section>
+
+  <!-- 4. THE THREE SIGNS -->
+  <section id="signs">
+    <h2>The three signs</h2>
+    <p class="sub">Each kind of sentence has its own sign.</p>
+    <div class="sign-cards">
+      <div class="sign-card">
+        <svg viewBox="0 0 70 70" aria-hidden="true"><polygon points="21,3 49,3 67,21 67,49 49,67 21,67 3,49 3,21" style="fill:var(--stop)"/><circle cx="35" cy="35" r="7" fill="#fff"/></svg>
+        <div><h3>Stop: full stop <span class="m stop">.</span></h3>
+          <p>For a <b>telling</b> sentence. <button class="say" type="button" data-say="Stop. A full stop is for a telling sentence. My cat is sleeping. We play at recess.">🔊</button></p>
+          <p class="ex">My cat is sleeping<span class="m stop">.</span></p>
+          <p class="ex">We play at recess<span class="m stop">.</span></p></div>
+      </div>
+      <div class="sign-card">
+        <svg viewBox="0 0 70 70" aria-hidden="true"><circle cx="35" cy="35" r="32" style="fill:var(--ask)"/><text x="35" y="49" text-anchor="middle" font-size="40" font-weight="700" fill="#fff" font-family="Fredoka, sans-serif">?</text></svg>
+        <div><h3>Ask: question mark <span class="m ask">?</span></h3>
+          <p>For an <b>asking</b> sentence. <button class="say" type="button" data-say="Ask. A question mark is for an asking sentence. Do you like ice cream? Where is Mum?">🔊</button></p>
+          <p class="ex">Do you like ice cream<span class="m ask">?</span></p>
+          <p class="ex">Where is Mum<span class="m ask">?</span></p></div>
+      </div>
+      <div class="sign-card">
+        <svg viewBox="0 0 70 70" aria-hidden="true"><polygon points="35,4 67,64 3,64" style="fill:var(--wow)"/><text x="35" y="58" text-anchor="middle" font-size="36" font-weight="700" fill="#fff" font-family="Fredoka, sans-serif">!</text></svg>
+        <div><h3>Wow: exclamation mark <span class="m wow">!</span></h3>
+          <p>For a <b>big feeling</b>: surprise, joy, fear or a shout. <button class="say" type="button" data-say="Wow. An exclamation mark is for a big feeling, like surprise, joy, fear, or a shout. Wow, a rainbow! Watch out!">🔊</button></p>
+          <p class="ex">Wow, a rainbow<span class="m wow">!</span></p>
+          <p class="ex">Watch out<span class="m wow">!</span></p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. PRACTICE -->
+  <section id="practice">
+    <h2>Your turn!</h2>
+    <p class="sub">Answer 10 questions. Tap 🔊 to hear each one. Every time you play, you get new questions!</p>
+    <div class="qb" id="qb">
+      <div class="qb-bar">
+        <div><div class="qb-label">Your score</div><div class="qb-score" id="qbScore">0 / 20</div><div class="qb-progress" id="qbProgress">0 of 20 answered</div></div>
+        <button class="qb-new" id="qbNew" type="button">New quiz</button>
+      </div>
+      <div class="qb-list" id="qbList"></div>
+      <div class="qb-summary" id="qbSummary" hidden></div>
+    </div>
+  </section>
+
+  <!-- 7. PIN THIS UP -->
+  <section class="pin">
+    <h2>Pin This Up</h2>
+    <ul>
+      <li>Telling sentence → full stop <span class="m stop">.</span></li>
+      <li>Asking sentence → question mark <span class="m ask">?</span></li>
+      <li>Big feeling → exclamation mark <span class="m wow">!</span></li>
+      <li>Starts with an asking word? Check for <span class="m ask">?</span></li>
+    </ul>
+    <p class="chant">A dot to tell, a hook to ask,<br>a stick and a dot for WOW: that's the task!</p>
+  </section>
+
+  <footer>My Grammar Shelf · Lower shelf, Lesson 01</footer>
+</div>
+
+<script>
+(function () {
+  /* ---------- Read-aloud for the lesson text ---------- */
+  const canSpeak = !!window.speechSynthesis && typeof window.speechSynthesis.speak === 'function' && typeof SpeechSynthesisUtterance !== 'undefined';
+  function sayIt(text) {
+    try { window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'en-GB'; u.rate = 0.9; window.speechSynthesis.speak(u); } catch (e) {}
+  }
+  if (canSpeak) {
+    document.body.classList.add('can-speak');
+    document.querySelectorAll('.say').forEach(b => {
+      b.setAttribute('aria-label', 'Read this aloud');
+      b.addEventListener('click', () => sayIt(b.dataset.say));
+    });
+  }
+
+  /* ---------- Hero: drive the car to the right sign ---------- */
+  const ROAD = [
+    { text: 'The cat is asleep', mark: '.', kind: 'telling' },
+    { text: 'Where is my hat', mark: '?', kind: 'asking' },
+    { text: 'Wow, a rainbow', mark: '!', kind: 'wow' },
+    { text: 'Can I have a turn', mark: '?', kind: 'asking' },
+    { text: 'We have PE today', mark: '.', kind: 'telling' },
+    { text: 'Hooray, we won', mark: '!', kind: 'wow' }
+  ];
+  const SIGN = { '.': { fill: 'var(--stop)', name: 'full stop' }, '?': { fill: 'var(--ask)', name: 'question mark' }, '!': { fill: 'var(--wow)', name: 'exclamation mark' } };
+  const car = document.getElementById('car'), shape = document.getElementById('signShape'), markEl = document.getElementById('signMark');
+  const sentEl = document.getElementById('roadSentence'), msg = document.getElementById('roadMsg'), next = document.getElementById('roadNext');
+  let r = 0, solved = false;
+  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  function showRoad() {
+    const it = ROAD[r]; solved = false;
+    car.style.transform = 'translateX(0)';
+    shape.style.fill = ''; markEl.textContent = '?'; markEl.style.fill = '';
+    sentEl.innerHTML = esc(it.text) + '<span class="gap"></span>';
+    msg.innerHTML = 'Read the sentence. Then tap a sign.';
+    next.hidden = true;
+  }
+  document.querySelectorAll('.sign-btn').forEach(b => b.addEventListener('click', () => {
+    if (solved) return;
+    const it = ROAD[r], pick = b.dataset.mark;
+    if (pick === it.mark) {
+      solved = true;
+      car.style.transform = 'translateX(196px)';
+      shape.style.fill = SIGN[pick].fill; markEl.textContent = pick; markEl.style.fill = '#fff';
+      const cls = pick === '.' ? 'stop' : pick === '?' ? 'ask' : 'wow';
+      sentEl.innerHTML = esc(it.text) + '<span class="m ' + cls + '">' + pick + '</span>';
+      msg.innerHTML = '<b class="good">Yes!</b> It is ' + (it.kind === 'wow' ? 'a wow sentence' : 'an ' + it.kind + ' sentence').replace('an telling', 'a telling') + ', so it ends with a ' + SIGN[pick].name + '.';
+      next.hidden = false;
+      if (canSpeak) sayIt(it.text);
+    } else {
+      car.classList.remove('wobble'); void car.getBoundingClientRect(); car.classList.add('wobble');
+      msg.innerHTML = '<b class="try">Not that sign.</b> Is it telling, asking or wow? Try again!';
+    }
+  }));
+  next.addEventListener('click', () => { r = (r + 1) % ROAD.length; showRoad(); });
+  showRoad();
+
+    { /* qb-start: quiz engine in its own scope, so its names can't clash with the lesson's */
+  /* ================= QUIZ: question bank (63 questions) ================= */
+  const LESSON_KEY = "shelf-lower-01";
+  const QB_BANDS = [4, 4, 2];
+  const QB_TEXT = {"speak": true, "right": ["Well done!", "Great job!", "You got it!", "Super!"], "wrong": "Good try!", "summary": {"perfect": "All correct! You are a sentence superstar. Try a new set!", "high": "Great work! Look at the part below, then try a new set.", "mid": "Good effort! Read the parts below again, then try a new set.", "low": "Let's look at the lesson again together, then try a new set.", "review": "Have another look at"}, "ask": {"check": "Is the end mark right?", "pick": "Which one is right?", "fill": "Which mark goes at the end?"}, "yn": ["Wrong", "Right"]};
+  const TAGS = {
+    tell: { label: "Telling sentences: full stop", href: '#signs' },
+    ask: { label: "Asking sentences: question mark", href: '#signs' },
+    wow: { label: "Big feelings: exclamation mark", href: '#signs' },
+    qwords: { label: "Asking words like where, what, can", href: '#trap' },
+  };
+  const BANK = [
+    {"id": "f01", "t": "fill", "d": 1, "tag": "tell", "q": "The cat is sleeping___", "o": [".", "?"], "why": "It tells you something, so it ends with a full stop."},
+    {"id": "f02", "t": "fill", "d": 1, "tag": "tell", "q": "I have a red bag___", "o": [".", "?"], "why": "It tells you something: full stop."},
+    {"id": "f03", "t": "fill", "d": 1, "tag": "tell", "q": "My mum is at home___", "o": [".", "?"], "why": "A telling sentence ends with a full stop."},
+    {"id": "f04", "t": "fill", "d": 1, "tag": "tell", "q": "We play at recess___", "o": [".", "?"], "why": "It tells, so it stops with a full stop."},
+    {"id": "f05", "t": "fill", "d": 1, "tag": "tell", "q": "The flowers are pretty___", "o": [".", "?"], "why": "It tells you something: full stop."},
+    {"id": "f06", "t": "fill", "d": 2, "tag": "tell", "q": "Grandpa reads the newspaper every morning___", "o": [".", "?"], "why": "It tells you something, so it needs a full stop."},
+    {"id": "f07", "t": "fill", "d": 2, "tag": "tell", "q": "The bus is late today___", "o": [".", "?"], "why": "A telling sentence ends with a full stop."},
+    {"id": "f08", "t": "fill", "d": 3, "tag": "tell", "q": "It is not my turn yet___", "o": [".", "?"], "why": "It tells you something. It does not ask."},
+    {"id": "f09", "t": "fill", "d": 1, "tag": "ask", "q": "Where is my water bottle___", "o": ["?", "."], "why": "It asks something, so it needs a question mark."},
+    {"id": "f10", "t": "fill", "d": 1, "tag": "ask", "q": "Do you like ice cream___", "o": ["?", "."], "why": "It asks, so it ends with a question mark."},
+    {"id": "f11", "t": "fill", "d": 1, "tag": "ask", "q": "What is your name___", "o": ["?", "."], "why": "It asks a question: question mark."},
+    {"id": "f12", "t": "fill", "d": 2, "tag": "ask", "q": "Can I sit next to you___", "o": ["?", "."], "why": "It asks, so it needs a question mark."},
+    {"id": "f13", "t": "fill", "d": 2, "tag": "ask", "q": "Is it raining outside___", "o": ["?", ".", "!"], "why": "It asks a question: question mark."},
+    {"id": "f14", "t": "fill", "d": 2, "tag": "ask", "q": "Why are you crying___", "o": ["?", ".", "!"], "why": "It asks something: question mark."},
+    {"id": "f15", "t": "fill", "d": 1, "tag": "wow", "q": "Wow, look at that rainbow___", "o": ["!", "?"], "why": "\"Wow\" shows surprise: exclamation mark."},
+    {"id": "f16", "t": "fill", "d": 1, "tag": "wow", "q": "Hooray, we won___", "o": ["!", "?"], "why": "\"Hooray\" shows joy: exclamation mark."},
+    {"id": "f17", "t": "fill", "d": 2, "tag": "wow", "q": "Ouch, that hurts___", "o": ["!", "?"], "why": "\"Ouch\" is a big feeling: exclamation mark."},
+    {"id": "f18", "t": "fill", "d": 2, "tag": "wow", "q": "Watch out, a ball is coming___", "o": ["!", "?"], "why": "A shout needs an exclamation mark."},
+    {"id": "f19", "t": "fill", "d": 2, "tag": "wow", "q": "Yay, it's the holidays___", "o": ["!", "?"], "why": "\"Yay\" shows joy: exclamation mark."},
+    {"id": "f20", "t": "fill", "d": 3, "tag": "wow", "q": "Oh no, I dropped my ice cream___", "o": ["!", "?"], "why": "\"Oh no\" is a big feeling: exclamation mark."},
+    {"id": "f21", "t": "fill", "d": 3, "tag": "wow", "q": "Help, my kite is stuck in the tree___", "o": ["!", "?"], "why": "\"Help\" is a shout: exclamation mark."},
+    {"id": "f22", "t": "fill", "d": 2, "tag": "qwords", "q": "When is your birthday___", "o": ["?", "."], "why": "\"When\" starts a question: question mark."},
+    {"id": "f23", "t": "fill", "d": 3, "tag": "qwords", "q": "How old is your sister___", "o": ["?", "."], "why": "\"How\" starts a question: question mark."},
+    {"id": "f24", "t": "fill", "d": 3, "tag": "qwords", "q": "Who ate my sandwich___", "o": ["?", "."], "why": "\"Who\" starts a question: question mark."},
+    {"id": "f25", "t": "fill", "d": 3, "tag": "qwords", "q": "Are we there yet___", "o": ["?", "."], "why": "\"Are\" starts a question here: question mark."},
+    {"id": "f26", "t": "fill", "d": 3, "tag": "qwords", "q": "Will you come to my party___", "o": ["?", "."], "why": "\"Will\" starts a question here: question mark."},
+    {"id": "f27", "t": "fill", "d": 3, "tag": "qwords", "q": "Could I have some water, please___", "o": ["?", "."], "why": "Asking politely is still asking: question mark."},
+    {"id": "c01", "t": "check", "d": 1, "tag": "tell", "q": "I like to eat noodles.", "a": 1, "why": "It tells you something, and it has a full stop."},
+    {"id": "c02", "t": "check", "d": 1, "tag": "tell", "q": "My dog has a long tail?", "a": 0, "why": "It tells, it doesn't ask. Use a full stop."},
+    {"id": "c03", "t": "check", "d": 1, "tag": "tell", "q": "I brush my teeth every night.", "a": 1, "why": "A telling sentence with a full stop."},
+    {"id": "c04", "t": "check", "d": 1, "tag": "ask", "q": "Do you have a pencil?", "a": 1, "why": "It asks, and it has a question mark."},
+    {"id": "c05", "t": "check", "d": 1, "tag": "ask", "q": "Where is the toilet.", "a": 0, "why": "It asks, so it needs a question mark."},
+    {"id": "c06", "t": "check", "d": 1, "tag": "ask", "q": "What is that noise.", "a": 0, "why": "It asks something: question mark."},
+    {"id": "c07", "t": "check", "d": 1, "tag": "wow", "q": "Wow, it is snowing!", "a": 1, "why": "\"Wow\" shows surprise. The exclamation mark is right."},
+    {"id": "c08", "t": "check", "d": 2, "tag": "wow", "q": "Hooray, school is over?", "a": 0, "why": "\"Hooray\" shows joy: exclamation mark."},
+    {"id": "c09", "t": "check", "d": 2, "tag": "wow", "q": "Look out, there's a puddle!", "a": 1, "why": "A shout with an exclamation mark."},
+    {"id": "c10", "t": "check", "d": 2, "tag": "tell", "q": "We went to the zoo on Sunday.", "a": 1, "why": "A telling sentence with a full stop."},
+    {"id": "c11", "t": "check", "d": 2, "tag": "tell", "q": "The baby is sleeping?", "a": 0, "why": "It tells you something: full stop."},
+    {"id": "c12", "t": "check", "d": 2, "tag": "ask", "q": "Can you help me?", "a": 1, "why": "It asks, and it has a question mark."},
+    {"id": "c13", "t": "check", "d": 2, "tag": "ask", "q": "Is this your bag.", "a": 0, "why": "It asks, so it needs a question mark."},
+    {"id": "c14", "t": "check", "d": 2, "tag": "qwords", "q": "What time is it.", "a": 0, "why": "\"What\" starts a question: question mark."},
+    {"id": "c15", "t": "check", "d": 2, "tag": "qwords", "q": "Why is the sky blue?", "a": 1, "why": "\"Why\" asks something, with a question mark."},
+    {"id": "c16", "t": "check", "d": 3, "tag": "qwords", "q": "How did you get here.", "a": 0, "why": "\"How\" starts a question: question mark."},
+    {"id": "c17", "t": "check", "d": 3, "tag": "qwords", "q": "Who is your best friend?", "a": 1, "why": "\"Who\" asks something, with a question mark."},
+    {"id": "c18", "t": "check", "d": 3, "tag": "wow", "q": "Ouch, I bumped my head.", "a": 0, "why": "\"Ouch\" is a big feeling: exclamation mark."},
+    {"id": "c19", "t": "check", "d": 3, "tag": "wow", "q": "Watch out!", "a": 1, "why": "A shout with an exclamation mark."},
+    {"id": "c20", "t": "check", "d": 3, "tag": "tell", "q": "I can see a bird in the tree.", "a": 1, "why": "It tells you what I can see: full stop."},
+    {"id": "c21", "t": "check", "d": 3, "tag": "ask", "q": "Can birds fly?", "a": 1, "why": "It asks something, with a question mark."},
+    {"id": "p01", "t": "pick", "d": 1, "tag": "ask", "ask": "Which one is right?", "o": ["Where are you going?", "Where are you going."], "why": "It asks a question, so it needs a question mark."},
+    {"id": "p02", "t": "pick", "d": 1, "tag": "tell", "ask": "Which one is right?", "o": ["I love my grandma.", "I love my grandma?"], "why": "It tells you something: full stop."},
+    {"id": "p03", "t": "pick", "d": 1, "tag": "wow", "ask": "Which one is right?", "o": ["Yay, it is my birthday!", "Yay, it is my birthday?"], "why": "\"Yay\" shows joy: exclamation mark."},
+    {"id": "p04", "t": "pick", "d": 1, "tag": "ask", "ask": "Which one is right?", "o": ["Is that your cat?", "Is that your cat."], "why": "It asks something: question mark."},
+    {"id": "p05", "t": "pick", "d": 2, "tag": "tell", "ask": "Which one is right?", "o": ["The sun is very hot today.", "The sun is very hot today?", "Is the sun very hot today."], "why": "Telling needs a full stop. Asking needs a question mark."},
+    {"id": "p06", "t": "pick", "d": 2, "tag": "ask", "ask": "Which one is right?", "o": ["Do you want to play?", "Do you want to play.", "Do you want to play!"], "why": "It asks, so it needs a question mark."},
+    {"id": "p07", "t": "pick", "d": 2, "tag": "qwords", "ask": "Which one is right?", "o": ["How many apples are there?", "How many apples are there.", "How many apples are there!"], "why": "\"How\" starts a question: question mark."},
+    {"id": "p08", "t": "pick", "d": 2, "tag": "wow", "ask": "Which one is right?", "o": ["Oh no, the vase broke!", "Oh no, the vase broke?"], "why": "\"Oh no\" is a big feeling: exclamation mark."},
+    {"id": "p09", "t": "pick", "d": 2, "tag": "tell", "ask": "Which one is right?", "o": ["My brother is six years old.", "My brother is six years old?"], "why": "It tells you something: full stop."},
+    {"id": "p10", "t": "pick", "d": 2, "tag": "qwords", "ask": "Which one is right?", "o": ["Where do you live?", "Where do you live."], "why": "\"Where\" starts a question: question mark."},
+    {"id": "p11", "t": "pick", "d": 3, "tag": "qwords", "ask": "Which one is right?", "o": ["Who left the door open?", "Who left the door open."], "why": "\"Who\" starts a question: question mark."},
+    {"id": "p12", "t": "pick", "d": 3, "tag": "wow", "ask": "Which one is right?", "o": ["Help, I am stuck!", "Help, I am stuck?"], "why": "\"Help\" is a shout: exclamation mark."},
+    {"id": "p13", "t": "pick", "d": 3, "tag": "tell", "ask": "Which sentence is telling you something?", "o": ["I have two cats.", "Do you have two cats?", "Wow, two cats!"], "why": "It tells you something, and ends with a full stop."},
+    {"id": "p14", "t": "pick", "d": 3, "tag": "ask", "ask": "Which sentence is asking?", "o": ["Is it time for lunch?", "It is time for lunch.", "Hooray, it is time for lunch!"], "why": "It asks something, so it has a question mark."},
+    {"id": "p15", "t": "pick", "d": 3, "tag": "wow", "ask": "Which sentence shows a big feeling?", "o": ["Wow, a shooting star!", "There is a star.", "Is that a star?"], "why": "\"Wow\" shows surprise, with an exclamation mark."},
+  ];
+
+  /* ================= QUIZ BANK ENGINE (shared by every lesson) =================
+     Needs, defined above it: LESSON_KEY, TAGS, BANK.
+     Optional: QB_BANDS = [easy, medium, tricky] questions per attempt (default 7/7/6 = 20);
+     QB_TEXT = { ask: {...}, yn: [...], right: [...], wrong: '...', speak: true, summary: {...} }.
+     Each attempt draws BAND_SIZES questions (easy, medium, tricky). The draw builds many
+     candidate quizzes and keeps the best: every tag present, 3+ of each type, balanced
+     check answers, unseen questions first. Options are shuffled; ids seen are remembered. */
+  const BAND_SIZES = (typeof QB_BANDS !== 'undefined') ? QB_BANDS : [7, 7, 6];
+  const DRAW = BAND_SIZES.reduce((a, b) => a + b, 0);
+  const TYPE_TARGET = Math.max(1, Math.min(3, Math.floor(DRAW / new Set(BANK.map(q => q.t)).size)));   // e.g. 20 Qs → 3 of each type, 10 Qs with 4 types → 2
+  const QBT = (typeof QB_TEXT !== 'undefined') ? QB_TEXT : {};
+  const ASK = Object.assign({
+    check: 'Is this sentence correct?',
+    pick:  'Pick the correct sentence.',
+    fill:  'Which choice fills the gap correctly?',
+    spot:  'Tap the part with the mistake.'
+  }, QBT.ask || {});
+  const YN = QBT.yn || ['Needs fixing', 'Correct'];
+  const RIGHT = QBT.right || ['Correct!'];
+  const WRONG = QBT.wrong || 'Not quite.';
+  const SUM = Object.assign({
+    perfect: 'A perfect run! Try another set to make sure it sticks.',
+    high: 'Strong work. Have a quick look at the areas below, then try a fresh set.',
+    mid: 'Good progress. Re-read the parts below before your next attempt.',
+    low: 'Worth another look at the lesson. Start with the areas below, then try a fresh set.',
+    review: 'Areas to review'
+  }, QBT.summary || {});
+  const CAN_SPEAK = !!QBT.speak && typeof window !== 'undefined' && !!window.speechSynthesis &&
+    typeof window.speechSynthesis.speak === 'function' && typeof SpeechSynthesisUtterance !== 'undefined';
+  function speak(text) {
+    try {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-GB'; u.rate = 0.9;
+      window.speechSynthesis.speak(u);
+    } catch (e) { /* no speech on this device */ }
+  }
+
+  const store = {
+    get(k, fallback) { try { const v = localStorage.getItem(LESSON_KEY + ':' + k); return v === null ? fallback : JSON.parse(v); } catch (e) { return fallback; } },
+    set(k, v) { try { localStorage.setItem(LESSON_KEY + ':' + k, JSON.stringify(v)); } catch (e) { /* storage unavailable: quiz still works */ } }
+  };
+  const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  function buildCandidate(seen) {
+    const chosen = [], tagN = {}, typeN = {};
+    let fixN = 0, okN = 0;
+    for (let band = 1; band <= 3; band++) {
+      const picks = [];
+      for (let k = 0; k < BAND_SIZES[band - 1]; k++) {
+        let best = null, bestScore = -Infinity;
+        BANK.forEach(q => {
+          if (q.d !== band || picks.includes(q)) return;
+          let s = Math.random() * 3;
+          if (!seen.has(q.id)) s += 6;
+          if (!tagN[q.tag]) s += 12;
+          s -= (typeN[q.t] || 0) * 1.2;
+          if ((typeN[q.t] || 0) < TYPE_TARGET) s += 3;   // nudge every type up to its target
+          if (q.t === 'check') { const lean = q.a === 0 ? fixN - okN : okN - fixN; if (lean >= 1) s -= 4; }
+          if (s > bestScore) { bestScore = s; best = q; }
+        });
+        if (!best) break;
+        picks.push(best);
+        tagN[best.tag] = (tagN[best.tag] || 0) + 1;
+        typeN[best.t] = (typeN[best.t] || 0) + 1;
+        if (best.t === 'check') { if (best.a === 0) fixN++; else okN++; }
+      }
+      chosen.push(...shuffle(picks));
+    }
+    return chosen;
+  }
+
+  function rateCandidate(c, seen) {
+    const tags = new Set(c.map(q => q.tag)).size;
+    const types = {};
+    c.forEach(q => types[q.t] = (types[q.t] || 0) + 1);
+    const used = [...new Set(BANK.map(q => q.t))];
+    const minType = Math.min(...used.map(t => types[t] || 0));
+    const checks = c.filter(q => q.t === 'check');
+    const lean = Math.abs(checks.filter(q => q.a === 0).length * 2 - checks.length);
+    return (tags === Object.keys(TAGS).length ? 10000 : tags * 500)
+         + (c.length === DRAW ? 5000 : 0)
+         + Math.min(minType, TYPE_TARGET) * 300
+         + (lean <= 2 ? 200 : 0)
+         + c.filter(q => !seen.has(q.id)).length * 10;
+  }
+
+  function drawQuiz() {
+    let seen = new Set(store.get('seen', []));
+    if (BANK.length - seen.size < DRAW) seen = new Set(store.get('last', []));   // new cycle, but skip the last attempt
+    let chosen = null, bestRate = -1;
+    for (let tries = 0; tries < 200; tries++) {
+      const c = buildCandidate(seen), r = rateCandidate(c, seen);
+      if (r > bestRate) { bestRate = r; chosen = c; }
+    }
+    chosen.forEach(q => seen.add(q.id));
+    store.set('seen', [...seen]);
+    store.set('last', chosen.map(q => q.id));
+    return chosen.map(q => {
+      if (q.t === 'pick' || q.t === 'fill') {
+        const opts = shuffle(q.o.map((text, i) => ({ text, ok: i === 0 })));
+        return { q, opts, answer: opts.findIndex(o => o.ok) };
+      }
+      if (q.t === 'check') return { q, opts: YN.map(text => ({ text })), answer: q.a };
+      return { q, opts: null, answer: q.a };
+    });
+  }
+
+  const listEl = document.getElementById('qbList');
+  const scoreEl = document.getElementById('qbScore');
+  const progressEl = document.getElementById('qbProgress');
+  const summaryEl = document.getElementById('qbSummary');
+  let current = [], score = 0, done = 0, missed = [];
+
+  function updateScore() {
+    scoreEl.textContent = score + ' / ' + current.length;
+    progressEl.textContent = done + ' of ' + current.length + ' answered';
+  }
+
+  /* Small or empty options are hard to see on a button, so label them. */
+  function optLabel(text) {
+    const t = text.trim();
+    if (t === '') return '<span class="qb-note">(nothing)</span>';
+    if (t === ',') return '<span class="qb-punct">,</span> <span class="qb-note">(a comma)</span>';
+    if (t === '.') return '<span class="qb-punct">.</span> <span class="qb-note">(a full stop)</span>';
+    if (t === '?') return '<span class="qb-punct">?</span> <span class="qb-note">(a question mark)</span>';
+    if (t === '!') return '<span class="qb-punct">!</span> <span class="qb-note">(an exclamation mark)</span>';
+    return esc(text);
+  }
+  function plainLabel(text) {
+    const t = text.trim();
+    return t === '' ? 'nothing' : t === ',' ? 'a comma' : t === '.' ? 'a full stop'
+      : t === '?' ? 'a question mark' : t === '!' ? 'an exclamation mark' : '"' + t + '"';
+  }
+  function sentenceWithGap(q, text) {
+    let filler = '<span class="qb-blank">___</span>';
+    if (text !== undefined) {
+      filler = text.trim() === ''
+        ? '<span class="qb-blank qb-filled qb-none">(nothing)</span>'
+        : '<span class="qb-blank qb-filled">' + esc(text) + '</span>';
+    }
+    return esc(q.q).replace('___', filler);
+  }
+
+  function render() {
+    listEl.innerHTML = '';
+    summaryEl.hidden = true;
+    current.forEach((item, i) => {
+      const q = item.q;
+      const card = document.createElement('div');
+      card.className = 'qb-card';
+      card.dataset.type = q.t;
+      let body;
+      if (q.t === 'spot') {
+        body = '<div class="qb-spot">' + q.parts.map((p, k) =>
+          '<button type="button" class="qb-part" data-k="' + k + '">' + esc(p) + '</button>').join('') + '</div>';
+      } else if (q.t === 'fill') {
+        const cols = item.opts.length;
+        body = '<p class="qb-text">' + sentenceWithGap(q) + '</p><div class="qb-opts qb-row" style="--qb-cols:' + cols + '"></div>';
+      } else if (q.t === 'check') {
+        body = '<p class="qb-text">' + esc(q.q) + '</p><div class="qb-opts qb-row"></div>';
+      } else {
+        body = (q.q ? '<p class="qb-text">' + esc(q.q) + '</p>' : '') + '<div class="qb-opts"></div>';
+      }
+      card.innerHTML =
+        (CAN_SPEAK ? '<button type="button" class="qb-speak" aria-label="Read this question aloud">🔊 Read it to me</button>' : '') +
+        '<p class="qb-num">Question ' + (i + 1) + ' of ' + current.length + '</p>' +
+        '<p class="qb-ask">' + esc(q.ask || ASK[q.t]) + '</p>' + body +
+        '<div class="qb-feedback" role="status"></div>';
+      if (CAN_SPEAK) {
+        const bits = [q.ask || ASK[q.t]];
+        if (q.t === 'spot') bits.push(q.parts.join(' '));
+        else if (q.q) bits.push(q.q.replace('___', 'blank'));
+        const sayOpt = t => { const x = t.trim(); return x === '' ? 'nothing' : x === '.' ? 'full stop' : x === ',' ? 'comma' : x === '?' ? 'question mark' : x === '!' ? 'exclamation mark' : x; };
+        if (q.t === 'pick' || q.t === 'fill') item.opts.forEach((o, j) => bits.push((q.t === 'pick' ? String.fromCharCode(65 + j) + ': ' : '') + sayOpt(o.text)));
+        if (q.t === 'check') bits.push(YN.join(', or '));
+        const spoken = bits.map(t => t.trim().replace(/[.\s]+$/, '')).filter(Boolean)
+          .map(t => /[?!]$/.test(t) ? t : t + '.').join(' ');
+        card.querySelector('.qb-speak').addEventListener('click', () => speak(spoken));
+      }
+      if (q.t === 'spot') {
+        card.querySelectorAll('.qb-part').forEach(b => b.addEventListener('click', () => answer(i, +b.dataset.k, card)));
+      } else {
+        const opts = card.querySelector('.qb-opts');
+        item.opts.forEach((o, j) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'qb-opt';
+          b.innerHTML = (q.t === 'pick' ? '<span class="qb-letter">' + String.fromCharCode(65 + j) + '</span>' : '') + optLabel(o.text);
+          b.addEventListener('click', () => answer(i, j, card));
+          opts.appendChild(b);
+        });
+      }
+      listEl.appendChild(card);
+    });
+    updateScore();
+  }
+
+  function answer(i, j, card) {
+    const item = current[i];
+    if (item.done) return;
+    item.done = true; done++;
+    const q = item.q, ok = j === item.answer;
+    if (ok) score++; else missed.push(q.tag);
+    card.querySelectorAll(q.t === 'spot' ? '.qb-part' : '.qb-opt').forEach((b, k) => {
+      b.disabled = true;
+      if (k === j) b.classList.add(ok ? 'qb-correct' : 'qb-incorrect');
+      else if (k === item.answer && !ok) b.classList.add('qb-reveal');
+    });
+    if (q.t === 'fill') card.querySelector('.qb-text').innerHTML = sentenceWithGap(q, item.opts[j].text);
+    let right;
+    if (q.t === 'spot') right = 'The mistake is in "' + esc(q.parts[item.answer]) + '".';
+    else if (q.t === 'pick') right = 'The answer is ' + String.fromCharCode(65 + item.answer) + '.';
+    else right = 'The answer is ' + esc(plainLabel(item.opts[item.answer].text)) + '.';
+    const fb = card.querySelector('.qb-feedback');
+    fb.classList.add('qb-show', ok ? 'qb-fb-ok' : 'qb-fb-no');
+    fb.innerHTML = '<span class="qb-verdict">' + (ok ? RIGHT[Math.floor(Math.random() * RIGHT.length)] : WRONG + ' ' + right) + '</span>' + esc(q.why);
+    updateScore();
+    if (done === current.length) showSummary();
+  }
+
+  function showSummary() {
+    const best = Math.max(store.get('best', 0), score);
+    store.set('best', best);
+    const attempts = store.get('attempts', 0) + 1;
+    store.set('attempts', attempts);
+    const counts = {};
+    missed.forEach(t => counts[t] = (counts[t] || 0) + 1);
+    const areas = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+    const n = current.length;
+    let msg;
+    if (score === n) msg = SUM.perfect;
+    else if (score >= Math.ceil(n * 0.8)) msg = SUM.high;
+    else if (score >= Math.ceil(n * 0.6)) msg = SUM.mid;
+    else msg = SUM.low;
+    summaryEl.innerHTML =
+      '<h3>You scored ' + score + ' / ' + n + '</h3><p>' + msg + '</p>' +
+      (areas.length ? '<p class="qb-sum-label">' + esc(SUM.review) + '</p><ul class="qb-areas">' + areas.map(t =>
+        '<li><a href="' + TAGS[t].href + '">' + esc(TAGS[t].label) + '</a><span>' + counts[t] + ' wrong</span></li>').join('') + '</ul>' : '') +
+      '<p class="qb-meta">Attempts on this device: ' + attempts + ' · Best score: ' + best + ' / ' + n + '</p>' +
+      '<button type="button" class="qb-go" id="qbAgain">Try ' + n + ' new questions</button>';
+    summaryEl.hidden = false;
+    document.getElementById('qbAgain').addEventListener('click', () => { newQuiz(); listEl.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    summaryEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function newQuiz() {
+    current = drawQuiz(); score = 0; done = 0; missed = [];
+    render();
+  }
+
+  const bankEl = document.getElementById('qbBank'), drawEl = document.getElementById('qbDraw');
+  if (bankEl) bankEl.textContent = BANK.length;
+  if (drawEl) drawEl.textContent = DRAW;
+  document.getElementById('qbNew').addEventListener('click', () => {
+    newQuiz();
+    listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  newQuiz();
+  } /* qb-end */
+})();
+</script>
+</body>
+</html>

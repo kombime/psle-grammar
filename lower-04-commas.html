@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Comma Fences: Commas</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐄</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chewy&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #E2F0FB;
+    --surface: #FFFFFF;
+    --surface-2: #F2F8FD;
+    --ink: #1C2633;
+    --ink-soft: #4E5B6B;
+    --barn: #B83227;   --barn-soft: #FADEDB;   /* commas: barn red */
+    --wood: #8A5A2B;   --wood-soft: #F3E6D6;   /* the fence */
+    --grass: #2F7D3A;  --grass-soft: #DDF0DE;  /* the items / "and" */
+    --right: #1D7A45; --right-soft: #DCF1E3;
+    --wrong: #B3261E; --wrong-soft: #F9DEDC;
+    --rule: rgba(28,38,51,0.14);
+    --font-display: 'Chewy', 'Arial Rounded MT Bold', 'Trebuchet MS', sans-serif;
+    --font-body: 'Lexend', -apple-system, 'Segoe UI', sans-serif;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #121A23; --surface: #1C2733; --surface-2: #233140;
+      --ink: #EAF2FA; --ink-soft: #AFBCCB;
+      --barn: #FF8A7E; --barn-soft: #3D1F1C;
+      --wood: #E0A86A; --wood-soft: #33261A;
+      --grass: #7FD18B; --grass-soft: #18301B;
+      --right: #72D69D; --right-soft: #17311F;
+      --wrong: #F48D84; --wrong-soft: #3D1F1D;
+      --rule: rgba(234,242,250,0.16);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #121A23; --surface: #1C2733; --surface-2: #233140;
+    --ink: #EAF2FA; --ink-soft: #AFBCCB;
+    --barn: #FF8A7E; --barn-soft: #3D1F1C;
+    --wood: #E0A86A; --wood-soft: #33261A;
+    --grass: #7FD18B; --grass-soft: #18301B;
+    --right: #72D69D; --right-soft: #17311F;
+    --wrong: #F48D84; --wrong-soft: #3D1F1D;
+    --rule: rgba(234,242,250,0.16);
+  }
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 19px; line-height: 1.55; }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 22px 18px 64px; }
+  :focus-visible { outline: 3px solid var(--barn); outline-offset: 3px; }
+
+  .back-link {
+    display: inline-block; margin: 0 0 20px; padding: 10px 16px; min-height: 44px;
+    font-weight: 700; font-size: 16px; color: var(--ink); text-decoration: none;
+    background: var(--surface); border: 2px solid var(--rule); border-radius: 999px;
+  }
+  h1, h2, h3 { font-family: var(--font-display); font-weight: 400; line-height: 1.1; letter-spacing: 0.01em; }
+  h2 { font-size: 34px; margin: 0 0 8px; }
+  section { margin-bottom: 48px; }
+  .sub { color: var(--ink-soft); margin: 0 0 18px; }
+
+  .cm { color: var(--barn); font-weight: 700; font-size: 1.25em; line-height: 0; }   /* a comma */
+  .and { color: var(--grass); font-weight: 700; }
+  .no { color: var(--wrong); text-decoration: line-through; text-decoration-thickness: 2px; }
+  .yes { color: var(--right); font-weight: 700; }
+
+  .say {
+    display: none; font: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
+    padding: 6px 12px; min-height: 40px; margin-left: 6px; vertical-align: middle;
+    border-radius: 999px; border: 2px solid var(--barn); background: var(--barn-soft); color: var(--ink);
+  }
+  .can-speak .say { display: inline-block; }
+
+  /* ---------- Hero ---------- */
+  .hero h1 { font-size: clamp(48px, 13vw, 70px); margin: 0 0 12px; }
+  .hero h1 .c { color: var(--barn); }
+  .lead { font-size: 21px; margin: 0 0 18px; }
+  .farm { background: var(--surface); border-radius: 22px; padding: 16px 14px 18px; border: 3px solid var(--rule); }
+  .farm-q { text-align: center; font-weight: 700; margin: 0 0 4px; }
+  .left { text-align: center; color: var(--ink-soft); margin: 0 0 10px; font-size: 17px; min-height: 1.4em; }
+  .row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px 4px; font-size: 22px; }
+  .item { display: inline-flex; flex-direction: column; align-items: center; padding: 4px 6px; border-radius: 12px; background: var(--grass-soft); }
+  .item .e { font-size: 34px; line-height: 1.1; }
+  .item .w { font-weight: 600; font-size: 17px; }
+  .plain { font-weight: 600; padding: 0 2px; }
+  .gap {
+    font: inherit; cursor: pointer; width: 40px; height: 52px; border-radius: 10px;
+    border: 2px dashed var(--wood); background: var(--wood-soft); color: var(--wood);
+    display: inline-flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700;
+  }
+  .gap.fenced { border-style: solid; background: var(--barn-soft); border-color: var(--barn); cursor: default; }
+  .gap.fenced svg { width: 30px; height: 40px; }
+  .gap.shake { animation: shake 0.4s; }
+  @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+  .result { text-align: center; font-size: 22px; font-weight: 600; margin: 14px 0 0; min-height: 1.5em; }
+  .farm-msg { margin: 10px 4px 0; font-size: 18px; min-height: 3em; text-align: center; }
+  .farm-msg b.good { color: var(--right); } .farm-msg b.try { color: var(--wrong); }
+  .next-btn {
+    display: block; margin: 8px auto 0; font: inherit; font-weight: 700; font-size: 17px; cursor: pointer;
+    padding: 10px 20px; min-height: 48px; border-radius: 999px; border: none; background: var(--barn); color: var(--surface);
+  }
+  .next-btn[hidden] { display: none; }
+
+  /* ---------- Rule ---------- */
+  .steps { display: grid; gap: 12px; }
+  .step { background: var(--surface); border-radius: 18px; padding: 16px 18px; display: flex; gap: 14px; align-items: flex-start; }
+  .step .n { flex: 0 0 auto; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 26px; background: var(--wood); color: var(--surface); }
+  .step p { margin: 0; font-size: 20px; }
+  .step .hint { font-size: 19px; margin-top: 6px; }
+
+  .trap { background: var(--surface); border-radius: 18px; padding: 18px; border-left: 8px solid var(--wrong); }
+  .trap p { margin: 0 0 10px; }
+  .eg { font-size: 22px; margin: 0 0 6px !important; }
+
+  .cards { display: grid; gap: 12px; }
+  .card { background: var(--surface); border-radius: 20px; padding: 16px 18px; }
+  .card h3 { margin: 0 0 6px; font-size: 28px; }
+  .card p { margin: 0 0 6px; font-size: 19px; }
+  .card .ex { font-size: 21px; }
+
+  .special { background: var(--surface-2); border-radius: 20px; padding: 16px 18px; border: 2px dashed var(--wood); }
+  .special h3 { margin: 0 0 6px; font-size: 26px; }
+  .special p { margin: 0 0 6px; }
+
+  .pin { background: var(--surface); border-radius: 22px; padding: 20px; border: 3px solid var(--rule); }
+  .pin ul { margin: 0; padding-left: 22px; font-size: 20px; line-height: 1.7; }
+  .chant { margin: 16px 0 0; padding: 16px; border-radius: 16px; text-align: center; background: var(--wood-soft);
+    font-family: var(--font-display); font-size: 26px; line-height: 1.3; }
+  footer { text-align: center; font-size: 14px; color: var(--ink-soft); margin-top: 32px; }
+  @media (prefers-reduced-motion: reduce) { .gap.shake { animation: none; } }
+
+  /* ================= QUIZ BANK ENGINE (shared by every lesson; qb- prefix avoids clashes) ================= */
+  .qb { --qb-cols: 2; }
+  .qb-bar {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 3;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 10px 16px; margin: 0 0 18px; border-radius: var(--qb-radius);
+    background: var(--qb-bar); color: var(--qb-bar-ink);
+  }
+  .qb-label { font-size: 12.5px; opacity: 0.8; }
+  .qb-score { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 28px; line-height: 1.05; }
+  .qb-progress { font-size: 12.5px; opacity: 0.85; margin-top: 2px; }
+  .qb-new {
+    font: inherit; font-weight: 700; font-size: 14px; padding: 10px 16px; min-height: 44px;
+    border-radius: 999px; border: 2px solid currentColor; background: transparent; color: inherit; cursor: pointer;
+  }
+  .qb-list, .qb-summary { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 96px); }
+  .qb-card {
+    background: var(--qb-card); border: var(--qb-card-border); box-shadow: var(--qb-card-shadow);
+    border-radius: var(--qb-radius); padding: 16px 16px 14px; margin: 0 0 14px; color: var(--qb-ink);
+  }
+  .qb-speak {
+    float: right; margin: -4px 0 6px 10px; font: inherit; font-size: 13.5px; font-weight: 700;
+    padding: 7px 12px; min-height: 38px; border-radius: 999px; cursor: pointer;
+    border: 2px solid var(--qb-accent); background: var(--qb-accent-soft); color: var(--qb-ink);
+  }
+  .qb-num { font-size: 12.5px; color: var(--qb-soft); margin: 0 0 4px; }
+  .qb-ask { font-size: 13.5px; font-weight: 700; color: var(--qb-accent); margin: 0 0 6px; }
+  .qb-text { font-size: var(--qb-text-size, 16.5px); line-height: 1.6; margin: 0 0 14px; }
+  .qb-blank {
+    display: inline-block; min-width: 60px; padding: 0 3px; text-align: center;
+    border-bottom: 2.5px dashed var(--qb-soft); color: var(--qb-soft);
+  }
+  .qb-blank.qb-filled { border-bottom-style: solid; border-bottom-color: var(--qb-accent); color: var(--qb-accent); font-weight: 700; }
+  .qb-blank.qb-none { font-style: italic; font-weight: 400; }
+  .qb-opts { display: flex; flex-direction: column; gap: 9px; }
+  .qb-opts.qb-row { display: grid; grid-template-columns: repeat(var(--qb-cols), minmax(0, 1fr)); }
+  .qb-opt {
+    font: inherit; font-size: var(--qb-opt-size, 15.5px); line-height: 1.45; text-align: left; color: var(--qb-ink);
+    padding: 11px 14px; min-height: var(--qb-tap, 46px); border-radius: var(--qb-radius-opt);
+    border: 2px solid var(--qb-rule); background: var(--qb-page); cursor: pointer;
+  }
+  .qb-row .qb-opt { text-align: center; font-weight: 600; padding-left: 6px; padding-right: 6px; }
+  .qb-opt:not(:disabled):hover { border-color: var(--qb-accent); }
+  .qb-opt:disabled, .qb-part:disabled { cursor: default; }
+  .qb-letter { font-family: var(--qb-font); font-weight: var(--qb-font-weight); margin-right: 10px; color: var(--qb-accent); }
+  .qb-note { font-size: 12.5px; font-weight: 400; color: var(--qb-soft); }
+  .qb-punct { font-size: 22px; line-height: 0; font-weight: 700; }
+  .qb-spot { display: flex; flex-wrap: wrap; gap: 8px 6px; margin: 0 0 4px; }
+  .qb-part {
+    font: inherit; font-size: var(--qb-opt-size, 16px); line-height: 1.35; text-align: left; color: var(--qb-ink); cursor: pointer;
+    background: var(--qb-accent-soft); border: none; border-bottom: 3px dashed var(--qb-accent);
+    border-radius: 4px 4px 0 0; padding: 7px 9px; min-height: 40px;
+  }
+  .qb-opt.qb-correct, .qb-opt.qb-reveal { background: var(--qb-right-soft); border-color: var(--qb-right); }
+  .qb-opt.qb-incorrect { background: var(--qb-wrong-soft); border-color: var(--qb-wrong); }
+  .qb-part.qb-correct, .qb-part.qb-reveal { background: var(--qb-right-soft); border-bottom: 3px solid var(--qb-right); }
+  .qb-part.qb-incorrect { background: var(--qb-wrong-soft); border-bottom: 3px solid var(--qb-wrong); }
+  .qb-feedback { display: none; margin-top: 12px; padding-top: 12px; border-top: 2px dashed var(--qb-rule); font-size: 14px; line-height: 1.55; }
+  .qb-feedback.qb-show { display: block; }
+  .qb-verdict { display: block; font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 18px; margin-bottom: 2px; }
+  .qb-fb-ok .qb-verdict { color: var(--qb-right); }
+  .qb-fb-no .qb-verdict { color: var(--qb-wrong); }
+  .qb-summary {
+    background: var(--qb-card); color: var(--qb-ink); border: 3px solid var(--qb-accent);
+    border-radius: var(--qb-radius); padding: 18px 20px; margin-top: 8px;
+  }
+  .qb-summary h3 { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 30px; line-height: 1.1; margin: 0 0 6px; color: var(--qb-accent); }
+  .qb-summary p { margin: 0 0 10px; line-height: 1.55; }
+  .qb-sum-label { font-weight: 700; margin-top: 14px !important; }
+  .qb-areas { list-style: none; margin: 0 0 12px; padding: 0; }
+  .qb-areas li { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--qb-rule); }
+  .qb-areas a { color: var(--qb-ink); font-weight: 600; }
+  .qb-areas span { color: var(--qb-wrong); font-weight: 700; white-space: nowrap; }
+  .qb-meta { font-size: 13px; color: var(--qb-soft); }
+  .qb-go {
+    font: inherit; font-weight: 700; font-size: 16px; width: 100%; min-height: 50px; margin-top: 4px; cursor: pointer;
+    border: none; border-radius: var(--qb-radius); background: var(--qb-accent); color: var(--qb-on-accent);
+  }
+
+  :root {
+    --qb-page: var(--surface-2);
+    --qb-card: var(--surface);
+    --qb-ink: var(--ink);
+    --qb-soft: var(--ink-soft);
+    --qb-accent: var(--barn);
+    --qb-accent-soft: var(--barn-soft);
+    --qb-on-accent: var(--surface);
+    --qb-right: var(--right);
+    --qb-right-soft: var(--right-soft);
+    --qb-wrong: var(--wrong);
+    --qb-wrong-soft: var(--wrong-soft);
+    --qb-rule: var(--rule);
+    --qb-bar: var(--wood);
+    --qb-bar-ink: var(--surface);
+    --qb-font: var(--font-display);
+    --qb-font-weight: 400;
+    --qb-radius: 18px;
+    --qb-radius-opt: 14px;
+    --qb-card-border: none;
+    --qb-card-shadow: none;
+    --qb-text-size: 21px;
+    --qb-opt-size: 19px;
+    --qb-tap: 56px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back-link" href="index.html#lower">← Back to the shelf</a>
+
+  <!-- 1. HERO -->
+  <header class="hero">
+    <h1><span class="c">Comma</span> Fences</h1>
+    <p class="lead">A comma <span class="cm">,</span> is a little fence. It keeps each thing in a list in its own space. <button class="say" type="button" data-say="A comma is a little fence. It keeps each thing in a list in its own space.">🔊</button></p>
+    <div class="farm">
+      <p class="farm-q">Tap the gaps that need a fence.</p>
+      <p class="left" id="left"></p>
+      <div class="row" id="row" aria-live="polite"></div>
+      <p class="result" id="result"></p>
+      <p class="farm-msg" id="farmMsg" aria-live="polite"></p>
+      <button class="next-btn" id="farmNext" type="button" hidden>Next list →</button>
+    </div>
+  </header>
+
+  <!-- 2. THE RULE -->
+  <section id="rule">
+    <h2>Two steps for a list</h2>
+    <p class="sub">A list is three or more things.</p>
+    <div class="steps">
+      <div class="step"><span class="n">1</span><div><p>Put a comma fence between the things. <button class="say" type="button" data-say="Step one. Put a comma fence between the things. Apples, oranges, mangoes.">🔊</button></p>
+        <p class="hint">apples<span class="cm">,</span> oranges<span class="cm">,</span> mangoes …</p></div></div>
+      <div class="step"><span class="n">2</span><div><p>Before the last thing, just say <span class="and">and</span>. <button class="say" type="button" data-say="Step two. Before the last thing, just say and. Apples, oranges, mangoes and pears.">🔊</button></p>
+        <p class="hint">apples<span class="cm">,</span> oranges<span class="cm">,</span> mangoes <span class="and">and</span> pears.</p></div></div>
+    </div>
+  </section>
+
+  <!-- 3. THE TRAP -->
+  <section id="trap">
+    <h2>Don't forget the fences</h2>
+    <div class="trap">
+      <p>Without fences, the things all bump into each other. <button class="say" type="button" data-say="Without fences, the things all bump into each other. I like cats, dogs and fish.">🔊</button></p>
+      <p class="eg"><span class="no">I like cats dogs and fish.</span></p>
+      <p class="eg"><span class="yes">I like cats<span class="cm">,</span> dogs and fish.</span></p>
+    </div>
+  </section>
+
+  <!-- 4. WHERE FENCES GO -->
+  <section id="cards">
+    <h2>Three places for a comma</h2>
+    <div class="cards">
+      <div class="card"><h3>🧺 In a list</h3>
+        <p>Between the things, with <span class="and">and</span> before the last one. <button class="say" type="button" data-say="In a list. Between the things, with and before the last one. We saw lions, tigers and bears.">🔊</button></p>
+        <p class="ex">We saw lions<span class="cm">,</span> tigers and bears.</p>
+        <p class="ex">I need a pen<span class="cm">,</span> a ruler and a book.</p></div>
+      <div class="card"><h3>👍 After Yes or No</h3>
+        <p>Put a comma after "Yes" or "No" at the start. <button class="say" type="button" data-say="After yes or no. Put a comma after yes or no at the start. Yes, you can. No, thank you.">🔊</button></p>
+        <p class="ex">Yes<span class="cm">,</span> you can.</p>
+        <p class="ex">No<span class="cm">,</span> thank you.</p></div>
+      <div class="card"><h3>💬 Before speech marks</h3>
+        <p>Put a comma after "said" or "asked", before someone talks. <button class="say" type="button" data-say="Before speech marks. Put a comma after said or asked, before someone talks. Jane said, I like flowers.">🔊</button></p>
+        <p class="ex">Jane said<span class="cm">,</span> "I like flowers."</p>
+        <p class="ex">Tom asked<span class="cm">,</span> "Can I play?"</p></div>
+    </div>
+  </section>
+
+  <!-- 5. SPECIAL CASE -->
+  <section id="specials">
+    <h2>Only two things?</h2>
+    <div class="special">
+      <h3>✌️ No fence needed</h3>
+      <p>With just two things, <span class="and">and</span> is enough. No comma! <button class="say" type="button" data-say="With just two things, and is enough. No comma. Cats and dogs. Bread and butter.">🔊</button></p>
+      <p class="eg"><span class="no">cats, and dogs</span> → <span class="yes">cats and dogs</span></p>
+      <p class="eg"><span class="yes">bread and butter</span></p>
+    </div>
+  </section>
+
+  <!-- 6. PRACTICE -->
+  <section id="practice">
+    <h2>Your turn!</h2>
+    <p class="sub">Answer 10 questions. Tap 🔊 to hear each one. Every time you play, you get new questions!</p>
+    <div class="qb" id="qb">
+      <div class="qb-bar">
+        <div><div class="qb-label">Your score</div><div class="qb-score" id="qbScore">0 / 20</div><div class="qb-progress" id="qbProgress">0 of 20 answered</div></div>
+        <button class="qb-new" id="qbNew" type="button">New quiz</button>
+      </div>
+      <div class="qb-list" id="qbList"></div>
+      <div class="qb-summary" id="qbSummary" hidden></div>
+    </div>
+  </section>
+
+  <!-- 7. PIN THIS UP -->
+  <section class="pin">
+    <h2>Pin This Up</h2>
+    <ul>
+      <li>A list: commas between the things, <span class="and">and</span> before the last one.</li>
+      <li>Two things: just <span class="and">and</span>, no comma.</li>
+      <li>After "Yes" or "No" at the start: a comma.</li>
+      <li>Before speech marks, after "said": a comma.</li>
+    </ul>
+    <p class="chant">A fence between each thing in line,<br>then "and" at the end, and the list looks fine!</p>
+  </section>
+
+  <footer>My Grammar Shelf · Lower shelf, Lesson 04</footer>
+</div>
+
+<script>
+(function () {
+  /* ---------- Read-aloud for the lesson text ---------- */
+  const canSpeak = !!window.speechSynthesis && typeof window.speechSynthesis.speak === 'function' && typeof SpeechSynthesisUtterance !== 'undefined';
+  function sayIt(text) {
+    try { window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'en-GB'; u.rate = 0.9; window.speechSynthesis.speak(u); } catch (e) {}
+  }
+  if (canSpeak) {
+    document.body.classList.add('can-speak');
+    document.querySelectorAll('.say').forEach(b => {
+      b.setAttribute('aria-label', 'Read this aloud');
+      b.addEventListener('click', () => sayIt(b.dataset.say));
+    });
+  }
+
+  /* ---------- Hero: put up the comma fences ---------- */
+  /* parts: ['t', text] plain text · ['i', emoji, word] an item · ['g', true] gap needing a fence · ['g', false, why] gap that doesn't */
+  const FARM = [
+    { parts: [['t', 'We saw'], ['i', '🐄', 'a cow'], ['g', true], ['i', '🐖', 'a pig'], ['g', true], ['i', '🐐', 'a goat'], ['g', false, '"and" is already here, so no fence is needed.'], ['t', 'and'], ['i', '🐔', 'a hen.']],
+      text: 'We saw a cow, a pig, a goat and a hen.' },
+    { parts: [['t', 'I bought'], ['i', '🍎', 'apples'], ['g', true], ['i', '🍊', 'oranges'], ['g', false, '"and" is already here, so no fence is needed.'], ['t', 'and'], ['i', '🍐', 'pears.']],
+      text: 'I bought apples, oranges and pears.' },
+    { parts: [['t', 'I like'], ['i', '🐱', 'cats'], ['g', false, 'Only two things! "and" is enough, so no fence.'], ['t', 'and'], ['i', '🐶', 'dogs.']],
+      text: 'I like cats and dogs.', none: true },
+    { parts: [['t', 'My bag has'], ['i', '📕', 'a book'], ['g', true], ['i', '✏️', 'a pencil'], ['g', true], ['i', '📏', 'a ruler'], ['g', false, '"and" is already here, so no fence is needed.'], ['t', 'and'], ['i', '🧃', 'a drink.']],
+      text: 'My bag has a book, a pencil, a ruler and a drink.' }
+  ];
+  const FENCE = '<svg viewBox="0 0 30 40" aria-hidden="true"><rect x="4" y="6" width="5" height="32" rx="2" fill="currentColor"/><rect x="21" y="6" width="5" height="32" rx="2" fill="currentColor"/><rect x="2" y="14" width="26" height="4" rx="2" fill="currentColor"/><rect x="2" y="26" width="26" height="4" rx="2" fill="currentColor"/><text x="15" y="12" text-anchor="middle" font-size="18" font-weight="700" fill="currentColor">,</text></svg>';
+  const row = document.getElementById('row'), msg = document.getElementById('farmMsg'), res = document.getElementById('result');
+  const leftEl = document.getElementById('left'), next = document.getElementById('farmNext');
+  let f = 0;
+  function need() { return [...row.querySelectorAll('.gap[data-ok="1"]:not(.fenced)')].length; }
+  function showLeft() {
+    const n = need();
+    leftEl.textContent = FARM[f].none ? 'How many fences? Look carefully!' : (n ? n + (n === 1 ? ' fence' : ' fences') + ' to put up' : '');
+  }
+  function done() {
+    res.textContent = FARM[f].text;
+    next.hidden = false;
+    if (canSpeak) sayIt(FARM[f].text);
+  }
+  function showFarm() {
+    row.innerHTML = ''; res.textContent = ''; msg.innerHTML = ''; next.hidden = true;
+    FARM[f].parts.forEach(p => {
+      if (p[0] === 't') { const s = document.createElement('span'); s.className = 'plain'; s.textContent = p[1]; row.appendChild(s); }
+      else if (p[0] === 'i') { const s = document.createElement('span'); s.className = 'item'; s.innerHTML = '<span class="e">' + p[1] + '</span><span class="w">' + p[2] + '</span>'; row.appendChild(s); }
+      else {
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'gap'; b.dataset.ok = p[1] ? '1' : '0'; b.setAttribute('aria-label', 'gap');
+        b.textContent = '?';
+        b.addEventListener('click', () => {
+          if (b.classList.contains('fenced')) return;
+          if (p[1]) {
+            b.classList.add('fenced'); b.innerHTML = FENCE; b.setAttribute('aria-label', 'comma');
+            msg.innerHTML = '<b class="good">Fence up!</b> A comma keeps these two apart.';
+            showLeft();
+            if (!need()) { msg.innerHTML = '<b class="good">All the fences are up!</b>'; done(); }
+          } else {
+            b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake');
+            msg.innerHTML = '<b class="try">No fence here.</b> ' + p[2];
+          }
+        });
+        row.appendChild(b);
+      }
+    });
+    if (FARM[f].none) {
+      const ok = document.createElement('button');
+      ok.type = 'button'; ok.className = 'next-btn'; ok.style.display = 'block'; ok.textContent = 'No fences needed!';
+      ok.addEventListener('click', () => { ok.remove(); msg.innerHTML = '<b class="good">That\'s right!</b> Two things only need "and".'; done(); });
+      row.after(ok);
+      ok.dataset.extra = '1';
+    }
+    showLeft();
+  }
+  next.addEventListener('click', () => {
+    document.querySelectorAll('[data-extra="1"]').forEach(x => x.remove());
+    f = (f + 1) % FARM.length; showFarm();
+  });
+  showFarm();
+
+    { /* qb-start: quiz engine in its own scope, so its names can't clash with the lesson's */
+  /* ================= QUIZ: question bank (62 questions) ================= */
+  const LESSON_KEY = "shelf-lower-04";
+  const QB_BANDS = [4, 4, 2];
+  const QB_TEXT = {"speak": true, "right": ["Well done!", "Great job!", "You got it!", "Super!"], "wrong": "Good try!", "summary": {"perfect": "All correct! Your fences are perfect. Try a new set!", "high": "Great work! Look at the part below, then try a new set.", "mid": "Good effort! Read the parts below again, then try a new set.", "low": "Let's look at the lesson again together, then try a new set.", "review": "Have another look at"}, "ask": {"check": "Are the commas right?", "pick": "Which one is right?", "fill": "Comma or no comma?"}, "yn": ["Wrong", "Right"]};
+  const TAGS = {
+    list: { label: "Commas in a list", href: '#cards' },
+    two: { label: "Only two things: no comma", href: '#specials' },
+    yesno: { label: "After Yes or No", href: '#cards' },
+    speech: { label: "Before speech marks", href: '#cards' },
+  };
+  const BANK = [
+    {"id": "f01", "t": "fill", "d": 1, "tag": "list", "q": "I like apples___ oranges and pears.", "o": [",", ""], "why": "Apples and oranges are things in a list: put a fence between them."},
+    {"id": "f02", "t": "fill", "d": 1, "tag": "list", "q": "We saw lions___ tigers and bears.", "o": [",", ""], "why": "A list of three: a comma between the first two."},
+    {"id": "f03", "t": "fill", "d": 1, "tag": "list", "q": "My bag has a book___ a pen and a ruler.", "o": [",", ""], "why": "A comma fence goes between the things in a list."},
+    {"id": "f04", "t": "fill", "d": 1, "tag": "list", "q": "I need eggs___ milk and bread.", "o": [",", ""], "why": "A list of three things: a comma after \"eggs\"."},
+    {"id": "f05", "t": "fill", "d": 2, "tag": "list", "q": "Mum bought rice___ fish and vegetables.", "o": [",", ""], "why": "A list of three: a comma between the first two."},
+    {"id": "f06", "t": "fill", "d": 2, "tag": "list", "q": "We played tag, hopscotch___ chapteh and catch.", "o": [",", ""], "why": "Put a fence between each thing, until \"and\"."},
+    {"id": "f07", "t": "fill", "d": 2, "tag": "list", "q": "Red, blue___ green and yellow are my favourite colours.", "o": [",", ""], "why": "Between the things in a list: a comma."},
+    {"id": "f08", "t": "fill", "d": 3, "tag": "list", "q": "At the zoo, we saw monkeys, zebras___ giraffes and penguins.", "o": [",", ""], "why": "Each thing gets a fence, until the \"and\"."},
+    {"id": "f09", "t": "fill", "d": 1, "tag": "two", "q": "I like cats___ and dogs.", "o": ["", ","], "why": "Only two things: \"and\" is enough, no comma."},
+    {"id": "f10", "t": "fill", "d": 1, "tag": "two", "q": "We had bread___ and butter.", "o": ["", ","], "why": "Two things only need \"and\"."},
+    {"id": "f11", "t": "fill", "d": 2, "tag": "two", "q": "Mei___ and Ali are friends.", "o": ["", ","], "why": "Two people joined by \"and\": no comma."},
+    {"id": "f12", "t": "fill", "d": 2, "tag": "two", "q": "I want a pencil___ and an eraser.", "o": ["", ","], "why": "Only two things: no fence needed."},
+    {"id": "f13", "t": "fill", "d": 3, "tag": "two", "q": "We visited Grandma___ and Grandpa.", "o": ["", ","], "why": "Two people, joined by \"and\": no comma."},
+    {"id": "f14", "t": "fill", "d": 1, "tag": "yesno", "q": "Yes___ you can.", "o": [",", ""], "why": "After \"Yes\" at the start, put a comma."},
+    {"id": "f15", "t": "fill", "d": 1, "tag": "yesno", "q": "No___ thank you.", "o": [",", ""], "why": "After \"No\" at the start, put a comma."},
+    {"id": "f16", "t": "fill", "d": 2, "tag": "yesno", "q": "Yes___ I am ready.", "o": [",", ""], "why": "After \"Yes\" at the start: a comma."},
+    {"id": "f17", "t": "fill", "d": 2, "tag": "yesno", "q": "No___ it is not my turn.", "o": [",", ""], "why": "After \"No\" at the start: a comma."},
+    {"id": "f18", "t": "fill", "d": 3, "tag": "yesno", "q": "Yes___ I would like some water.", "o": [",", ""], "why": "\"Yes\" at the start is followed by a comma."},
+    {"id": "f19", "t": "fill", "d": 2, "tag": "speech", "q": "Jane said___ \"I like flowers.\"", "o": [",", ""], "why": "Before someone talks, put a comma after \"said\"."},
+    {"id": "f20", "t": "fill", "d": 2, "tag": "speech", "q": "Tom asked___ \"Can I play?\"", "o": [",", ""], "why": "A comma goes after \"asked\", before the speech marks."},
+    {"id": "f21", "t": "fill", "d": 3, "tag": "speech", "q": "Mum called___ \"Dinner is ready!\"", "o": [",", ""], "why": "Before the speech marks, put a comma."},
+    {"id": "f22", "t": "fill", "d": 3, "tag": "speech", "q": "The teacher said___ \"Sit down, please.\"", "o": [",", ""], "why": "After \"said\", before someone talks: a comma."},
+    {"id": "c01", "t": "check", "d": 1, "tag": "list", "q": "I like red, blue and green.", "a": 1, "why": "Commas between the things, and \"and\" before the last. Right!"},
+    {"id": "c02", "t": "check", "d": 1, "tag": "list", "q": "We ate rice fish and soup.", "a": 0, "why": "A list needs fences: rice, fish and soup."},
+    {"id": "c03", "t": "check", "d": 1, "tag": "list", "q": "I have a cat, a dog and a fish.", "a": 1, "why": "Fences between the things, \"and\" before the last. Right!"},
+    {"id": "c04", "t": "check", "d": 1, "tag": "list", "q": "She bought pens pencils and paper.", "a": 0, "why": "A list needs commas: pens, pencils and paper."},
+    {"id": "c05", "t": "check", "d": 2, "tag": "list", "q": "We saw ducks, swans and geese at the pond.", "a": 1, "why": "A list with commas, and \"and\" before the last. Right!"},
+    {"id": "c06", "t": "check", "d": 2, "tag": "list", "q": "Ali Ben and Sam came to my party.", "a": 0, "why": "Three names in a list need commas: Ali, Ben and Sam."},
+    {"id": "c07", "t": "check", "d": 3, "tag": "list", "q": "I packed a towel a hat and some water.", "a": 0, "why": "Fences between the things: a towel, a hat and some water."},
+    {"id": "c08", "t": "check", "d": 1, "tag": "two", "q": "I like milk and cookies.", "a": 1, "why": "Only two things, so no comma. Right!"},
+    {"id": "c09", "t": "check", "d": 2, "tag": "two", "q": "Mum, and Dad came to watch me.", "a": 0, "why": "Only two people: no comma. Mum and Dad."},
+    {"id": "c10", "t": "check", "d": 2, "tag": "two", "q": "We need salt and sugar.", "a": 1, "why": "Two things with \"and\": no comma needed. Right!"},
+    {"id": "c11", "t": "check", "d": 3, "tag": "two", "q": "I saw a frog, and a fish.", "a": 0, "why": "Only two things: \"and\" is enough, no comma."},
+    {"id": "c12", "t": "check", "d": 1, "tag": "yesno", "q": "Yes, you can go.", "a": 1, "why": "A comma after \"Yes\" at the start. Right!"},
+    {"id": "c13", "t": "check", "d": 1, "tag": "yesno", "q": "No thank you.", "a": 0, "why": "After \"No\" at the start, put a comma: No, thank you."},
+    {"id": "c14", "t": "check", "d": 2, "tag": "yesno", "q": "Yes I want to play.", "a": 0, "why": "After \"Yes\" at the start, put a comma: Yes, I want to play."},
+    {"id": "c15", "t": "check", "d": 2, "tag": "yesno", "q": "No, I am not tired.", "a": 1, "why": "A comma after \"No\" at the start. Right!"},
+    {"id": "c16", "t": "check", "d": 2, "tag": "speech", "q": "Mei said, \"I am hungry.\"", "a": 1, "why": "A comma after \"said\", before the speech marks. Right!"},
+    {"id": "c17", "t": "check", "d": 2, "tag": "speech", "q": "Ben asked \"Where is my bag?\"", "a": 0, "why": "Before someone talks, put a comma: Ben asked, \"Where is my bag?\""},
+    {"id": "c18", "t": "check", "d": 3, "tag": "speech", "q": "Dad said \"Let's go to the park.\"", "a": 0, "why": "A comma goes after \"said\": Dad said, \"Let's go to the park.\""},
+    {"id": "c19", "t": "check", "d": 3, "tag": "speech", "q": "Grandma said, \"You have grown so tall!\"", "a": 1, "why": "A comma after \"said\", before the speech marks. Right!"},
+    {"id": "p01", "t": "pick", "d": 1, "tag": "list", "ask": "Which one is right?", "o": ["I like cakes, sweets and ice cream.", "I like cakes sweets and ice cream."], "why": "Put fences between the things in a list."},
+    {"id": "p02", "t": "pick", "d": 1, "tag": "yesno", "ask": "Which one is right?", "o": ["Yes, please.", "Yes please."], "why": "After \"Yes\" at the start: a comma."},
+    {"id": "p03", "t": "pick", "d": 1, "tag": "two", "ask": "Which one is right?", "o": ["I have a cat and a dog.", "I have a cat, and a dog."], "why": "Only two things: no comma."},
+    {"id": "p04", "t": "pick", "d": 1, "tag": "list", "ask": "Which one is right?", "o": ["We need cups, plates and spoons.", "We need cups plates and spoons."], "why": "A list needs commas between the things."},
+    {"id": "p05", "t": "pick", "d": 2, "tag": "speech", "ask": "Which one is right?", "o": ["Sam said, \"I won!\"", "Sam said \"I won!\""], "why": "Before someone talks, put a comma after \"said\"."},
+    {"id": "p06", "t": "pick", "d": 2, "tag": "yesno", "ask": "Which one is right?", "o": ["No, it is not raining.", "No it is not raining."], "why": "After \"No\" at the start: a comma."},
+    {"id": "p07", "t": "pick", "d": 2, "tag": "list", "ask": "Which one is right?", "o": ["My friends are Ali, Mei and Raju.", "My friends are Ali Mei and Raju.", "My friends are, Ali Mei and Raju."], "why": "Commas go between the names in the list, not before it."},
+    {"id": "p08", "t": "pick", "d": 2, "tag": "two", "ask": "Which one is right?", "o": ["Mei and I went home.", "Mei, and I went home."], "why": "Two people joined by \"and\": no comma."},
+    {"id": "p09", "t": "pick", "d": 2, "tag": "list", "ask": "Which list is right?", "o": ["apples, bananas and grapes", "apples bananas and grapes", "apples, bananas, grapes"], "why": "Fences between the things, and \"and\" before the last one."},
+    {"id": "p10", "t": "pick", "d": 3, "tag": "speech", "ask": "Which one is right?", "o": ["Mum asked, \"Are you hungry?\"", "Mum asked \"Are you hungry?\"", "Mum, asked \"Are you hungry?\""], "why": "The comma goes after \"asked\", just before the speech marks."},
+    {"id": "p11", "t": "pick", "d": 3, "tag": "list", "ask": "Which one is right?", "o": ["We saw a bus, a car and a lorry.", "We saw a bus a car and a lorry.", "We saw, a bus a car and a lorry."], "why": "Commas go between the things in the list."},
+    {"id": "p12", "t": "pick", "d": 3, "tag": "two", "ask": "Which one needs a comma?", "o": ["I ate rice, eggs and beans.", "I ate rice and beans.", "I ate rice."], "why": "Only the list of three things needs a comma fence."},
+    {"id": "p13", "t": "pick", "d": 3, "tag": "yesno", "ask": "Which one is right?", "o": ["Yes, I can help you.", "Yes I can help you.", "Yes I, can help you."], "why": "After \"Yes\" at the start: a comma."},
+    {"id": "f23", "t": "fill", "d": 3, "tag": "list", "q": "For the picnic, we packed sandwiches___ fruit and juice.", "o": [",", ""], "why": "A list of three things: a comma between the first two."},
+    {"id": "f24", "t": "fill", "d": 3, "tag": "two", "q": "My cousin and I like swimming___ and cycling.", "o": ["", ","], "why": "Only two things are being listed: no comma."},
+    {"id": "c20", "t": "check", "d": 3, "tag": "list", "q": "I visited Japan, Korea and China.", "a": 1, "why": "Commas between the places, and \"and\" before the last. Right!"},
+    {"id": "c21", "t": "check", "d": 3, "tag": "yesno", "q": "No, we cannot go out in the rain.", "a": 1, "why": "A comma after \"No\" at the start. Right!"},
+    {"id": "c22", "t": "check", "d": 3, "tag": "speech", "q": "Miss Chin said \"Open your books.\"", "a": 0, "why": "After \"said\", before someone talks: a comma."},
+    {"id": "p14", "t": "pick", "d": 3, "tag": "list", "ask": "Which one is right?", "o": ["I can see a bird, a bee and a butterfly.", "I can see a bird a bee and a butterfly.", "I can see a bird, a bee, and, a butterfly."], "why": "Fences between the things, \"and\" before the last, and no extra commas."},
+    {"id": "p15", "t": "pick", "d": 3, "tag": "speech", "ask": "Which one is right?", "o": ["Ravi shouted, \"Watch out!\"", "Ravi shouted \"Watch out!\"", "Ravi, shouted \"Watch out!\""], "why": "The comma goes after \"shouted\", just before the speech marks."},
+    {"id": "p16", "t": "pick", "d": 3, "tag": "two", "ask": "Which one is right?", "o": ["We played football and tag.", "We played football, and tag.", "We played, football and tag."], "why": "Only two games: \"and\" is enough, no comma."},
+  ];
+
+  /* ================= QUIZ BANK ENGINE (shared by every lesson) =================
+     Needs, defined above it: LESSON_KEY, TAGS, BANK.
+     Optional: QB_BANDS = [easy, medium, tricky] questions per attempt (default 7/7/6 = 20);
+     QB_TEXT = { ask: {...}, yn: [...], right: [...], wrong: '...', speak: true, summary: {...} }.
+     Each attempt draws BAND_SIZES questions (easy, medium, tricky). The draw builds many
+     candidate quizzes and keeps the best: every tag present, 3+ of each type, balanced
+     check answers, unseen questions first. Options are shuffled; ids seen are remembered. */
+  const BAND_SIZES = (typeof QB_BANDS !== 'undefined') ? QB_BANDS : [7, 7, 6];
+  const DRAW = BAND_SIZES.reduce((a, b) => a + b, 0);
+  const TYPE_TARGET = Math.max(1, Math.min(3, Math.floor(DRAW / new Set(BANK.map(q => q.t)).size)));   // e.g. 20 Qs → 3 of each type, 10 Qs with 4 types → 2
+  const QBT = (typeof QB_TEXT !== 'undefined') ? QB_TEXT : {};
+  const ASK = Object.assign({
+    check: 'Is this sentence correct?',
+    pick:  'Pick the correct sentence.',
+    fill:  'Which choice fills the gap correctly?',
+    spot:  'Tap the part with the mistake.'
+  }, QBT.ask || {});
+  const YN = QBT.yn || ['Needs fixing', 'Correct'];
+  const RIGHT = QBT.right || ['Correct!'];
+  const WRONG = QBT.wrong || 'Not quite.';
+  const SUM = Object.assign({
+    perfect: 'A perfect run! Try another set to make sure it sticks.',
+    high: 'Strong work. Have a quick look at the areas below, then try a fresh set.',
+    mid: 'Good progress. Re-read the parts below before your next attempt.',
+    low: 'Worth another look at the lesson. Start with the areas below, then try a fresh set.',
+    review: 'Areas to review'
+  }, QBT.summary || {});
+  const CAN_SPEAK = !!QBT.speak && typeof window !== 'undefined' && !!window.speechSynthesis &&
+    typeof window.speechSynthesis.speak === 'function' && typeof SpeechSynthesisUtterance !== 'undefined';
+  function speak(text) {
+    try {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-GB'; u.rate = 0.9;
+      window.speechSynthesis.speak(u);
+    } catch (e) { /* no speech on this device */ }
+  }
+
+  const store = {
+    get(k, fallback) { try { const v = localStorage.getItem(LESSON_KEY + ':' + k); return v === null ? fallback : JSON.parse(v); } catch (e) { return fallback; } },
+    set(k, v) { try { localStorage.setItem(LESSON_KEY + ':' + k, JSON.stringify(v)); } catch (e) { /* storage unavailable: quiz still works */ } }
+  };
+  const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  function buildCandidate(seen) {
+    const chosen = [], tagN = {}, typeN = {};
+    let fixN = 0, okN = 0;
+    for (let band = 1; band <= 3; band++) {
+      const picks = [];
+      for (let k = 0; k < BAND_SIZES[band - 1]; k++) {
+        let best = null, bestScore = -Infinity;
+        BANK.forEach(q => {
+          if (q.d !== band || picks.includes(q)) return;
+          let s = Math.random() * 3;
+          if (!seen.has(q.id)) s += 6;
+          if (!tagN[q.tag]) s += 12;
+          s -= (typeN[q.t] || 0) * 1.2;
+          if ((typeN[q.t] || 0) < TYPE_TARGET) s += 3;   // nudge every type up to its target
+          if (q.t === 'check') { const lean = q.a === 0 ? fixN - okN : okN - fixN; if (lean >= 1) s -= 4; }
+          if (s > bestScore) { bestScore = s; best = q; }
+        });
+        if (!best) break;
+        picks.push(best);
+        tagN[best.tag] = (tagN[best.tag] || 0) + 1;
+        typeN[best.t] = (typeN[best.t] || 0) + 1;
+        if (best.t === 'check') { if (best.a === 0) fixN++; else okN++; }
+      }
+      chosen.push(...shuffle(picks));
+    }
+    return chosen;
+  }
+
+  function rateCandidate(c, seen) {
+    const tags = new Set(c.map(q => q.tag)).size;
+    const types = {};
+    c.forEach(q => types[q.t] = (types[q.t] || 0) + 1);
+    const used = [...new Set(BANK.map(q => q.t))];
+    const minType = Math.min(...used.map(t => types[t] || 0));
+    const checks = c.filter(q => q.t === 'check');
+    const lean = Math.abs(checks.filter(q => q.a === 0).length * 2 - checks.length);
+    return (tags === Object.keys(TAGS).length ? 10000 : tags * 500)
+         + (c.length === DRAW ? 5000 : 0)
+         + Math.min(minType, TYPE_TARGET) * 300
+         + (lean <= 2 ? 200 : 0)
+         + c.filter(q => !seen.has(q.id)).length * 10;
+  }
+
+  function drawQuiz() {
+    let seen = new Set(store.get('seen', []));
+    if (BANK.length - seen.size < DRAW) seen = new Set(store.get('last', []));   // new cycle, but skip the last attempt
+    let chosen = null, bestRate = -1;
+    for (let tries = 0; tries < 200; tries++) {
+      const c = buildCandidate(seen), r = rateCandidate(c, seen);
+      if (r > bestRate) { bestRate = r; chosen = c; }
+    }
+    chosen.forEach(q => seen.add(q.id));
+    store.set('seen', [...seen]);
+    store.set('last', chosen.map(q => q.id));
+    return chosen.map(q => {
+      if (q.t === 'pick' || q.t === 'fill') {
+        const opts = shuffle(q.o.map((text, i) => ({ text, ok: i === 0 })));
+        return { q, opts, answer: opts.findIndex(o => o.ok) };
+      }
+      if (q.t === 'check') return { q, opts: YN.map(text => ({ text })), answer: q.a };
+      return { q, opts: null, answer: q.a };
+    });
+  }
+
+  const listEl = document.getElementById('qbList');
+  const scoreEl = document.getElementById('qbScore');
+  const progressEl = document.getElementById('qbProgress');
+  const summaryEl = document.getElementById('qbSummary');
+  let current = [], score = 0, done = 0, missed = [];
+
+  function updateScore() {
+    scoreEl.textContent = score + ' / ' + current.length;
+    progressEl.textContent = done + ' of ' + current.length + ' answered';
+  }
+
+  /* Small or empty options are hard to see on a button, so label them. */
+  function optLabel(text) {
+    const t = text.trim();
+    if (t === '') return '<span class="qb-note">(nothing)</span>';
+    if (t === ',') return '<span class="qb-punct">,</span> <span class="qb-note">(a comma)</span>';
+    if (t === '.') return '<span class="qb-punct">.</span> <span class="qb-note">(a full stop)</span>';
+    if (t === '?') return '<span class="qb-punct">?</span> <span class="qb-note">(a question mark)</span>';
+    if (t === '!') return '<span class="qb-punct">!</span> <span class="qb-note">(an exclamation mark)</span>';
+    return esc(text);
+  }
+  function plainLabel(text) {
+    const t = text.trim();
+    return t === '' ? 'nothing' : t === ',' ? 'a comma' : t === '.' ? 'a full stop'
+      : t === '?' ? 'a question mark' : t === '!' ? 'an exclamation mark' : '"' + t + '"';
+  }
+  function sentenceWithGap(q, text) {
+    let filler = '<span class="qb-blank">___</span>';
+    if (text !== undefined) {
+      filler = text.trim() === ''
+        ? '<span class="qb-blank qb-filled qb-none">(nothing)</span>'
+        : '<span class="qb-blank qb-filled">' + esc(text) + '</span>';
+    }
+    return esc(q.q).replace('___', filler);
+  }
+
+  function render() {
+    listEl.innerHTML = '';
+    summaryEl.hidden = true;
+    current.forEach((item, i) => {
+      const q = item.q;
+      const card = document.createElement('div');
+      card.className = 'qb-card';
+      card.dataset.type = q.t;
+      let body;
+      if (q.t === 'spot') {
+        body = '<div class="qb-spot">' + q.parts.map((p, k) =>
+          '<button type="button" class="qb-part" data-k="' + k + '">' + esc(p) + '</button>').join('') + '</div>';
+      } else if (q.t === 'fill') {
+        const cols = item.opts.length;
+        body = '<p class="qb-text">' + sentenceWithGap(q) + '</p><div class="qb-opts qb-row" style="--qb-cols:' + cols + '"></div>';
+      } else if (q.t === 'check') {
+        body = '<p class="qb-text">' + esc(q.q) + '</p><div class="qb-opts qb-row"></div>';
+      } else {
+        body = (q.q ? '<p class="qb-text">' + esc(q.q) + '</p>' : '') + '<div class="qb-opts"></div>';
+      }
+      card.innerHTML =
+        (CAN_SPEAK ? '<button type="button" class="qb-speak" aria-label="Read this question aloud">🔊 Read it to me</button>' : '') +
+        '<p class="qb-num">Question ' + (i + 1) + ' of ' + current.length + '</p>' +
+        '<p class="qb-ask">' + esc(q.ask || ASK[q.t]) + '</p>' + body +
+        '<div class="qb-feedback" role="status"></div>';
+      if (CAN_SPEAK) {
+        const bits = [q.ask || ASK[q.t]];
+        if (q.t === 'spot') bits.push(q.parts.join(' '));
+        else if (q.q) bits.push(q.q.replace('___', 'blank'));
+        const sayOpt = t => { const x = t.trim(); return x === '' ? 'nothing' : x === '.' ? 'full stop' : x === ',' ? 'comma' : x === '?' ? 'question mark' : x === '!' ? 'exclamation mark' : x; };
+        if (q.t === 'pick' || q.t === 'fill') item.opts.forEach((o, j) => bits.push((q.t === 'pick' ? String.fromCharCode(65 + j) + ': ' : '') + sayOpt(o.text)));
+        if (q.t === 'check') bits.push(YN.join(', or '));
+        const spoken = bits.map(t => t.trim().replace(/[.\s]+$/, '')).filter(Boolean)
+          .map(t => /[?!]$/.test(t) ? t : t + '.').join(' ');
+        card.querySelector('.qb-speak').addEventListener('click', () => speak(spoken));
+      }
+      if (q.t === 'spot') {
+        card.querySelectorAll('.qb-part').forEach(b => b.addEventListener('click', () => answer(i, +b.dataset.k, card)));
+      } else {
+        const opts = card.querySelector('.qb-opts');
+        item.opts.forEach((o, j) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'qb-opt';
+          b.innerHTML = (q.t === 'pick' ? '<span class="qb-letter">' + String.fromCharCode(65 + j) + '</span>' : '') + optLabel(o.text);
+          b.addEventListener('click', () => answer(i, j, card));
+          opts.appendChild(b);
+        });
+      }
+      listEl.appendChild(card);
+    });
+    updateScore();
+  }
+
+  function answer(i, j, card) {
+    const item = current[i];
+    if (item.done) return;
+    item.done = true; done++;
+    const q = item.q, ok = j === item.answer;
+    if (ok) score++; else missed.push(q.tag);
+    card.querySelectorAll(q.t === 'spot' ? '.qb-part' : '.qb-opt').forEach((b, k) => {
+      b.disabled = true;
+      if (k === j) b.classList.add(ok ? 'qb-correct' : 'qb-incorrect');
+      else if (k === item.answer && !ok) b.classList.add('qb-reveal');
+    });
+    if (q.t === 'fill') card.querySelector('.qb-text').innerHTML = sentenceWithGap(q, item.opts[j].text);
+    let right;
+    if (q.t === 'spot') right = 'The mistake is in "' + esc(q.parts[item.answer]) + '".';
+    else if (q.t === 'pick') right = 'The answer is ' + String.fromCharCode(65 + item.answer) + '.';
+    else right = 'The answer is ' + esc(plainLabel(item.opts[item.answer].text)) + '.';
+    const fb = card.querySelector('.qb-feedback');
+    fb.classList.add('qb-show', ok ? 'qb-fb-ok' : 'qb-fb-no');
+    fb.innerHTML = '<span class="qb-verdict">' + (ok ? RIGHT[Math.floor(Math.random() * RIGHT.length)] : WRONG + ' ' + right) + '</span>' + esc(q.why);
+    updateScore();
+    if (done === current.length) showSummary();
+  }
+
+  function showSummary() {
+    const best = Math.max(store.get('best', 0), score);
+    store.set('best', best);
+    const attempts = store.get('attempts', 0) + 1;
+    store.set('attempts', attempts);
+    const counts = {};
+    missed.forEach(t => counts[t] = (counts[t] || 0) + 1);
+    const areas = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+    const n = current.length;
+    let msg;
+    if (score === n) msg = SUM.perfect;
+    else if (score >= Math.ceil(n * 0.8)) msg = SUM.high;
+    else if (score >= Math.ceil(n * 0.6)) msg = SUM.mid;
+    else msg = SUM.low;
+    summaryEl.innerHTML =
+      '<h3>You scored ' + score + ' / ' + n + '</h3><p>' + msg + '</p>' +
+      (areas.length ? '<p class="qb-sum-label">' + esc(SUM.review) + '</p><ul class="qb-areas">' + areas.map(t =>
+        '<li><a href="' + TAGS[t].href + '">' + esc(TAGS[t].label) + '</a><span>' + counts[t] + ' wrong</span></li>').join('') + '</ul>' : '') +
+      '<p class="qb-meta">Attempts on this device: ' + attempts + ' · Best score: ' + best + ' / ' + n + '</p>' +
+      '<button type="button" class="qb-go" id="qbAgain">Try ' + n + ' new questions</button>';
+    summaryEl.hidden = false;
+    document.getElementById('qbAgain').addEventListener('click', () => { newQuiz(); listEl.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    summaryEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function newQuiz() {
+    current = drawQuiz(); score = 0; done = 0; missed = [];
+    render();
+  }
+
+  const bankEl = document.getElementById('qbBank'), drawEl = document.getElementById('qbDraw');
+  if (bankEl) bankEl.textContent = BANK.length;
+  if (drawEl) drawEl.textContent = DRAW;
+  document.getElementById('qbNew').addEventListener('click', () => {
+    newQuiz();
+    listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  newQuiz();
+  } /* qb-end */
+})();
+</script>
+</body>
+</html>
