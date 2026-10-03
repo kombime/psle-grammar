@@ -189,6 +189,103 @@
   .summary ul { margin: 0; padding-left: 20px; line-height: 1.8; }
   .chant { margin: 18px 0 0; padding: 12px 16px; background: var(--past-soft); border-radius: 4px; font-family: var(--font-display); font-size: 25px; line-height: 1.35; text-align: center; }
   footer { text-align: center; color: var(--ink-soft); font-size: 13px; margin-top: 30px; }
+
+  /* ================= QUIZ BANK ENGINE (shared by every lesson; qb- prefix avoids clashes) ================= */
+  .qb { --qb-cols: 2; }
+  .qb-bar {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 3;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 10px 16px; margin: 0 0 18px; border-radius: var(--qb-radius);
+    background: var(--qb-bar); color: var(--qb-bar-ink);
+  }
+  .qb-label { font-size: 12.5px; opacity: 0.8; }
+  .qb-score { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 28px; line-height: 1.05; }
+  .qb-progress { font-size: 12.5px; opacity: 0.85; margin-top: 2px; }
+  .qb-new {
+    font: inherit; font-weight: 700; font-size: 14px; padding: 10px 16px; min-height: 44px;
+    border-radius: 999px; border: 2px solid currentColor; background: transparent; color: inherit; cursor: pointer;
+  }
+  .qb-list, .qb-summary { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 96px); }
+  .qb-card {
+    background: var(--qb-card); border: var(--qb-card-border); box-shadow: var(--qb-card-shadow);
+    border-radius: var(--qb-radius); padding: 16px 16px 14px; margin: 0 0 14px; color: var(--qb-ink);
+  }
+  .qb-num { font-size: 12.5px; color: var(--qb-soft); margin: 0 0 4px; }
+  .qb-ask { font-size: 13.5px; font-weight: 700; color: var(--qb-accent); margin: 0 0 6px; }
+  .qb-text { font-size: 16.5px; line-height: 1.6; margin: 0 0 14px; }
+  .qb-blank {
+    display: inline-block; min-width: 60px; padding: 0 3px; text-align: center;
+    border-bottom: 2.5px dashed var(--qb-soft); color: var(--qb-soft);
+  }
+  .qb-blank.qb-filled { border-bottom-style: solid; border-bottom-color: var(--qb-accent); color: var(--qb-accent); font-weight: 700; }
+  .qb-blank.qb-none { font-style: italic; font-weight: 400; }
+  .qb-opts { display: flex; flex-direction: column; gap: 9px; }
+  .qb-opts.qb-row { display: grid; grid-template-columns: repeat(var(--qb-cols), minmax(0, 1fr)); }
+  .qb-opt {
+    font: inherit; font-size: 15.5px; line-height: 1.45; text-align: left; color: var(--qb-ink);
+    padding: 11px 14px; min-height: 46px; border-radius: var(--qb-radius-opt);
+    border: 2px solid var(--qb-rule); background: var(--qb-page); cursor: pointer;
+  }
+  .qb-row .qb-opt { text-align: center; font-weight: 600; padding-left: 6px; padding-right: 6px; }
+  .qb-opt:not(:disabled):hover { border-color: var(--qb-accent); }
+  .qb-opt:disabled, .qb-part:disabled { cursor: default; }
+  .qb-letter { font-family: var(--qb-font); font-weight: var(--qb-font-weight); margin-right: 10px; color: var(--qb-accent); }
+  .qb-note { font-size: 12.5px; font-weight: 400; color: var(--qb-soft); }
+  .qb-punct { font-size: 22px; line-height: 0; font-weight: 700; }
+  .qb-spot { display: flex; flex-wrap: wrap; gap: 8px 6px; margin: 0 0 4px; }
+  .qb-part {
+    font: inherit; font-size: 16px; line-height: 1.35; text-align: left; color: var(--qb-ink); cursor: pointer;
+    background: var(--qb-accent-soft); border: none; border-bottom: 3px dashed var(--qb-accent);
+    border-radius: 4px 4px 0 0; padding: 7px 9px; min-height: 40px;
+  }
+  .qb-opt.qb-correct, .qb-opt.qb-reveal { background: var(--qb-right-soft); border-color: var(--qb-right); }
+  .qb-opt.qb-incorrect { background: var(--qb-wrong-soft); border-color: var(--qb-wrong); }
+  .qb-part.qb-correct, .qb-part.qb-reveal { background: var(--qb-right-soft); border-bottom: 3px solid var(--qb-right); }
+  .qb-part.qb-incorrect { background: var(--qb-wrong-soft); border-bottom: 3px solid var(--qb-wrong); }
+  .qb-feedback { display: none; margin-top: 12px; padding-top: 12px; border-top: 2px dashed var(--qb-rule); font-size: 14px; line-height: 1.55; }
+  .qb-feedback.qb-show { display: block; }
+  .qb-verdict { display: block; font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 18px; margin-bottom: 2px; }
+  .qb-fb-ok .qb-verdict { color: var(--qb-right); }
+  .qb-fb-no .qb-verdict { color: var(--qb-wrong); }
+  .qb-summary {
+    background: var(--qb-card); color: var(--qb-ink); border: 3px solid var(--qb-accent);
+    border-radius: var(--qb-radius); padding: 18px 20px; margin-top: 8px;
+  }
+  .qb-summary h3 { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 30px; line-height: 1.1; margin: 0 0 6px; color: var(--qb-accent); }
+  .qb-summary p { margin: 0 0 10px; line-height: 1.55; }
+  .qb-sum-label { font-weight: 700; margin-top: 14px !important; }
+  .qb-areas { list-style: none; margin: 0 0 12px; padding: 0; }
+  .qb-areas li { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--qb-rule); }
+  .qb-areas a { color: var(--qb-ink); font-weight: 600; }
+  .qb-areas span { color: var(--qb-wrong); font-weight: 700; white-space: nowrap; }
+  .qb-meta { font-size: 13px; color: var(--qb-soft); }
+  .qb-go {
+    font: inherit; font-weight: 700; font-size: 16px; width: 100%; min-height: 50px; margin-top: 4px; cursor: pointer;
+    border: none; border-radius: var(--qb-radius); background: var(--qb-accent); color: var(--qb-on-accent);
+  }
+
+  :root {
+    --qb-page: var(--bg);
+    --qb-card: var(--surface);
+    --qb-ink: var(--ink);
+    --qb-soft: var(--ink-soft);
+    --qb-accent: var(--past);
+    --qb-accent-soft: var(--past-soft);
+    --qb-on-accent: var(--surface);
+    --qb-right: var(--right);
+    --qb-right-soft: var(--right-soft);
+    --qb-wrong: var(--wrong);
+    --qb-wrong-soft: var(--wrong-soft);
+    --qb-rule: var(--rule);
+    --qb-bar: var(--ink);
+    --qb-bar-ink: var(--surface);
+    --qb-font: var(--font-display);
+    --qb-font-weight: 400;
+    --qb-radius: 4px;
+    --qb-radius-opt: 4px;
+    --qb-card-border: none;
+    --qb-card-shadow: 0 2px 6px var(--shadow);
+  }
 </style>
 </head>
 <body>
@@ -221,7 +318,7 @@
   </header>
 
   <!-- 2. THE RULE -->
-  <section>
+  <section id="rule">
     <h2>The album check</h2>
     <p class="sub">Run these three checks on every verb in a story.</p>
     <div class="steps">
@@ -244,7 +341,7 @@
   </section>
 
   <!-- 3. TRAPS -->
-  <section>
+  <section id="traps">
     <h2>Three traps</h2>
     <p class="sub">All three come straight from real compositions.</p>
 
@@ -273,7 +370,7 @@
   </section>
 
   <!-- 4. CATEGORIES -->
-  <section>
+  <section id="cases">
     <h2>What goes on each page</h2>
     <p class="sub">There are four kinds of verb in a story, and each has its own job.</p>
     <div class="pages">
@@ -314,7 +411,7 @@
   </section>
 
   <!-- 5. SPECIAL CASES -->
-  <section>
+  <section id="specials">
     <h2>Special pages</h2>
     <p class="sub">The quiz checks these too. They come up a lot in PSLE stories.</p>
     <div class="grid-3">
@@ -344,12 +441,15 @@
   <!-- 6. PRACTICE -->
   <section>
     <h2>Fix the album</h2>
-    <p class="sub">Every question is part of a story told in the past. Some ask you to fill a blank, some to check a sentence, and some to pick the best version. The questions get trickier as you go.</p>
-    <div class="scoreboard">
-      <div><div class="label">Your score</div><div class="score" id="scoreDisplay">0 / 30</div></div>
-      <button class="reset-btn" id="resetBtn" type="button">Start over</button>
+    <p class="sub">Each attempt draws <span id="qbDraw">20</span> questions from a bank of <span id="qbBank">120</span>, so every try is different. Every question is part of a story told in the past. You'll fill blanks, check sentences, pick the best version and spot mistakes, and the questions get trickier as you go. Finish them all to see which areas to review.</p>
+    <div class="qb" id="qb">
+      <div class="qb-bar">
+        <div><div class="qb-label">Your score</div><div class="qb-score" id="qbScore">0 / 20</div><div class="qb-progress" id="qbProgress">0 of 20 answered</div></div>
+        <button class="qb-new" id="qbNew" type="button">New quiz</button>
+      </div>
+      <div class="qb-list" id="qbList"></div>
+      <div class="qb-summary" id="qbSummary" hidden></div>
     </div>
-    <div id="quizContainer"></div>
   </section>
 
   <!-- 7. PIN THIS UP -->
@@ -404,112 +504,371 @@
     }
   });
 
-  /* ---------- Quiz ---------- */
-  const FILL = "Choose the verb that fits the story.";
-  const CHECK = "Is the tense correct?";
-  const PICK = "Pick the version that keeps the story's tenses right.";
-  const CN = ["Correct", "Needs fixing"];
-  const QUESTIONS = [
-    { ask: FILL, text: "Ms Goh told us that Youth Day was coming. My hand ___ up at once.", options: ["shot", "shoots"], answer: 0, why: "This is a caption of something that already happened, so it takes the past: “shot”." },
-    { ask: FILL, text: "Yesterday, the canteen ___ so crowded that we could not find a seat.", options: ["is", "was"], answer: 1, why: "“Yesterday” tells you it's over. Little verbs slip easily, so check “is” and change it to “was”." },
-    { ask: FILL, text: "I ran to the bus stop, but the bus ___ already left.", options: ["had", "has"], answer: 0, why: "The bus left before I arrived. That's an older photo, so it takes “had left”." },
-    { ask: CHECK, text: "The bell rang, and we rushed to the hall where the principal was waiting.", options: CN, answer: 0, why: "Every caption is past: rang, rushed, was waiting. The tense is consistent." },
-    { ask: FILL, text: "“I am going to the toilet,” I ___ to my friends.", options: ["say", "said"], answer: 1, why: "The speech is a recording, so “am” is fine. The caption around it stays past: “said”." },
-    { ask: PICK, text: "Arjun forgot his water bottle, so Mr Tan let him buy a drink.", options: ["Arjun forgot his water bottle, so Mr Tan lets him buy a drink.", "Arjun forgets his water bottle, so Mr Tan let him buy a drink.", "Arjun forgot his water bottle, so Mr Tan let him buy a drink.", "Arjun forgot his water bottle, so Mr Tan has let him buy a drink."], answer: 2, why: "Both actions are captions of something already over, so both stay in the simple past." },
-    { ask: FILL, text: "When I reached home, I realised that I ___ my wallet on the bus.", options: ["had left", "left"], answer: 0, why: "Leaving the wallet happened before realising it. That's an older photo: “had left”." },
-    { ask: FILL, text: "Finally, I had ___ it! My origami swan was perfect.", options: ["did", "done"], answer: 1, why: "After the helper “had”, use the “done” form, never “did”." },
-    { ask: CHECK, text: "We searched everywhere, but we can not find the keys.", options: CN, answer: 1, why: "“Can” slipped into the present. In a past story, it should be “could not”." },
-    { ask: FILL, text: "My brother managed to ___ the vase before it hit the floor.", options: ["catch", "caught"], answer: 0, why: "After “to”, use the plain verb. The past is already shown by “managed”." },
-
-    { ask: PICK, text: "Ms Goh explained that Youth Day was coming. Each class ___ twelve dancers.", options: ["Each class needs twelve dancers.", "Each class needed twelve dancers.", "Each class need twelve dancers.", "Each class is needing twelve dancers."], answer: 1, why: "This is still part of the past story, so “needs” must become “needed”." },
-    { ask: CHECK, text: "Mum remembered that there was another theme park nearby, and it is called DisneySea.", options: CN, answer: 1, why: "“Is” slipped into the present. The caption should say “and it was called DisneySea”." },
-    { ask: FILL, text: "I noticed mould on the marshmallows, so I ___ the other packets in the box.", options: ["had checked", "checked"], answer: 1, why: "Checking came next, after noticing the mould. The next step takes the simple past, not “had”." },
-    { ask: PICK, text: "Which line keeps the thought and the caption right?", options: ["“What should I do?” I wonder.", "“What should I do?” I wondered.", "“What should I did?” I wondered."], answer: 1, why: "The thought in speech marks is a recording, so “should I do” stays. The caption “wondered” is past." },
-    { ask: FILL, text: "By the time the firemen arrived, the fire ___ already spread to the next flat.", options: ["had", "has"], answer: 0, why: "“By the time” signals an older photo. The spreading happened before the firemen arrived." },
-    { ask: CHECK, text: "“I can't find my book anywhere!” Nurul cried.", options: CN, answer: 0, why: "“Can't” is inside speech marks, so it's a recording and stays as spoken. “Cried” is a past caption." },
-    { ask: FILL, text: "Even after the teacher spoke to him, Levin did not ___ to Ariel.", options: ["apologise", "apologised"], answer: 0, why: "After the helper “did not”, use the plain verb: “did not apologise”." },
-    { ask: FILL, text: "Mum was upset because I ___ not finished my homework before dinner.", options: ["have", "had"], answer: 1, why: "Not finishing the homework came before Mum was upset. That's an older photo, so it needs “had”." },
-    { ask: PICK, text: "As the date of the concert drew closer, I ___ to panic.", options: ["As the date of the concert drew closer, I start to panic.", "As the date of the concert draws closer, I started to panic.", "As the date of the concert drew closer, I started to panic.", "As the date of the concert drew closer, I had started to panic."], answer: 2, why: "Both parts happen at the same time in the story, so both take the simple past. “Had” would wrongly make one earlier." },
-    { ask: CHECK, text: "I had never seen so many people in one place before.", options: CN, answer: 0, why: "“Never … before” looks back over everything earlier, so “had seen” is exactly right." },
-
-    { ask: FILL, text: "Levin insisted that he ___ not pushed Ariel.", options: ["had", "has"], answer: 0, why: "This is reported speech about an earlier action. “I did not push her” steps back to “had not pushed”." },
-    { ask: PICK, text: "Report what Ms Goh said: “Each class needs twelve representatives.”", options: ["Ms Goh said that each class needs twelve representatives.", "Ms Goh said that each class needed twelve representatives.", "Ms Goh said that each class need twelve representatives."], answer: 1, why: "Without speech marks, it's a caption, not a recording. “Needs” steps back to “needed”." },
-    { ask: FILL, text: "If I wanted to play with my friends, I ___ have to skip the toilet queue, I thought.", options: ["will", "would"], answer: 1, why: "In a past story, imagining takes past after “if” and “would” in the result." },
-    { ask: PICK, text: "The narrator is too scared to help. Which sentence fits the story?", options: ["If I stood up to the bully, I would get hurt.", "If I stand up to the bully, I would get hurt.", "If I stood up to the bully, I will get hurt.", "If I stand up to the bully, I would got hurt."], answer: 0, why: "An imagined situation in a past story uses past after “if” (“stood”) and “would” + plain verb." },
-    { ask: FILL, text: "From this incident, I learnt that honesty ___ always the best policy.", options: ["is", "was"], answer: 0, why: "The lesson at the end is true today and always, so it stays present: “is”." },
-    { ask: CHECK, text: "That day, I learnt that we must never give up on our dreams.", options: CN, answer: 0, why: "“Learnt” is a past caption, and the lesson itself is always true, so “must” stays present." },
-    { ask: PICK, text: "Report what he said: “I will meet you at the station.”", options: ["He told me he would meet me at the station.", "He told me he will meet me at the station.", "He tells me he would meet me at the station.", "He told me he would met me at the station."], answer: 0, why: "Reported speech steps back: “will” becomes “would”, followed by the plain verb “meet”." },
-    { ask: FILL, text: "Levin looked surprised and said that he ___ not done it.", options: ["had", "did"], answer: 0, why: "Reported speech about an earlier action steps back to “had not done”. “Did not done” is never right." },
-    { ask: PICK, text: "Pick the best ending to the origami story.", options: ["I looked down at my swan. I had did it! I finally mastered origami.", "I look down at my swan. I had done it! I had finally mastered origami.", "I looked down at my swan. I have done it! I have finally mastered origami.", "I looked down at my swan. I had done it! I had finally mastered origami."], answer: 3, why: "“Looked” is a past caption. The folding was finished before she looked, so both use “had done” forms." },
-    { ask: PICK, text: "Pick the version with every tense right.", options: ["Mum promised she will come on time. On the day, she was late because the restaurant had been very busy.", "Mum promised she would come on time. On the day, she is late because the restaurant had been very busy.", "Mum promised she would come on time. On the day, she was late because the restaurant had been very busy.", "Mum promised she would come on time. On the day, she was late because the restaurant has been very busy."], answer: 2, why: "Reported “would”, a past caption “was”, and the earlier cause “had been” are all in the right place." }
+    /* ================= QUIZ: question bank (125 questions) ================= */
+  const LESSON_KEY = "shelf-l07";
+  const QB_TEXT = {"ask": {"check": "This is from a story told in the past. Are the verbs correct?", "pick": "Pick the version that keeps the story in the right tense.", "fill": "Which verb fits the story?", "spot": "Tap the part with the wrong verb."}, "yn": ["Needs fixing", "Correct"]};
+  const TAGS = {
+    past: { label: "Past captions: keeping the story in the past", href: '#rule' },
+    slip: { label: "Trap: little verbs slipping into the present", href: '#traps' },
+    older: { label: "Older photos: had + done", href: '#cases' },
+    nexthad: { label: "Trap: \"had\" used for the next photo", href: '#traps' },
+    helper: { label: "Trap: the verb after had, to, did, could", href: '#traps' },
+    speech: { label: "Recordings: words inside speech marks", href: '#cases' },
+    reported: { label: "Reported speech steps back", href: '#specials' },
+    ifpast: { label: "\"If\" in a past story", href: '#specials' },
+    lesson: { label: "The lesson at the end stays present", href: '#specials' },
+  };
+  const BANK = [
+    {"id": "f01", "t": "fill", "d": 1, "tag": "past", "q": "The bell rang, and we ___ to the hall.", "o": ["rushed", "rush", "rushes"], "why": "The story is told in the past, so every caption uses the past: rushed."},
+    {"id": "f02", "t": "fill", "d": 1, "tag": "past", "q": "Yesterday, Arjun ___ me a card trick.", "o": ["showed", "shows", "show"], "why": "\"Yesterday\" tells you it's a past caption: showed."},
+    {"id": "f03", "t": "fill", "d": 1, "tag": "past", "q": "When we reached the beach, the sun ___ shining brightly.", "o": ["was", "is", "are"], "why": "A caption in a past story: was."},
+    {"id": "f04", "t": "fill", "d": 1, "tag": "past", "q": "I opened the box and ___ a puppy inside!", "o": ["found", "find", "finds"], "why": "The story happened already, so: found."},
+    {"id": "f05", "t": "fill", "d": 1, "tag": "past", "q": "Last Saturday, my family ___ to the zoo.", "o": ["went", "go", "goes"], "why": "\"Last Saturday\" means it's over: went."},
+    {"id": "f06", "t": "fill", "d": 1, "tag": "slip", "q": "Ms Goh told us that Youth Day was coming. Each class ___ twelve dancers.", "o": ["needed", "needs", "need"], "why": "The whole story is past, so \"needs\" must become \"needed\"."},
+    {"id": "f07", "t": "fill", "d": 1, "tag": "slip", "q": "We searched everywhere, but we ___ find the keys.", "o": ["couldn't", "can't", "cannot"], "why": "\"Can't\" slips into the present. In a past story: couldn't."},
+    {"id": "f08", "t": "fill", "d": 2, "tag": "slip", "q": "I looked out of the window. It ___ raining heavily.", "o": ["was", "is", "has"], "why": "\"Is\" is a live video in the album. Keep the caption past: was."},
+    {"id": "f09", "t": "fill", "d": 2, "tag": "slip", "q": "The children were excited because the holidays ___ starting soon.", "o": ["were", "are", "is"], "why": "Keep the little verbs past: were."},
+    {"id": "f10", "t": "fill", "d": 2, "tag": "slip", "q": "Mum said that dinner was ready, so we ___ to the table.", "o": ["went", "go", "will go"], "why": "A caption in a past story: went."},
+    {"id": "f11", "t": "fill", "d": 2, "tag": "slip", "q": "I knew that I ___ have to apologise.", "o": ["would", "will", "shall"], "why": "\"Will\" slips into the present. In a past story: would."},
+    {"id": "f12", "t": "fill", "d": 2, "tag": "past", "q": "While I was waiting in the queue, Arjun ___ my shoulder.", "o": ["tapped", "taps", "tap"], "why": "The main story is past: tapped."},
+    {"id": "f13", "t": "fill", "d": 2, "tag": "older", "q": "When I reached the bus stop, the bus ___ already left.", "o": ["had", "has", "have"], "why": "The bus left even earlier than the moment you're describing: had left."},
+    {"id": "f14", "t": "fill", "d": 2, "tag": "older", "q": "When I reached home, I realised that I ___ my wallet on the bus.", "o": ["had left", "have left", "leave"], "why": "Leaving the wallet happened earlier than realising: had left."},
+    {"id": "f15", "t": "fill", "d": 2, "tag": "older", "q": "By the time we arrived, the movie ___ started.", "o": ["had", "has", "have"], "why": "\"By the time\" points to something earlier: had started."},
+    {"id": "f16", "t": "fill", "d": 2, "tag": "older", "q": "When I entered the stadium, I gasped. I ___ never seen so many people in one place before.", "o": ["had", "have", "has"], "why": "\"Never … before\" in a past story takes had + done: had never seen."},
+    {"id": "f17", "t": "fill", "d": 3, "tag": "older", "q": "She was upset because someone ___ her pencil case.", "o": ["had taken", "has taken", "takes"], "why": "The taking happened before she was upset: had taken."},
+    {"id": "f18", "t": "fill", "d": 3, "tag": "older", "q": "I remembered that I ___ to feed the cat.", "o": ["had forgotten", "have forgotten", "forget"], "why": "\"Remembered that\" points back to something earlier: had forgotten."},
+    {"id": "f19", "t": "fill", "d": 2, "tag": "nexthad", "q": "I noticed mould on the marshmallows. I then ___ the other packets too.", "o": ["checked", "had checked", "check"], "why": "Checking came after noticing: the next photo, so simple past."},
+    {"id": "f20", "t": "fill", "d": 2, "tag": "nexthad", "q": "I opened the door and ___ into the room.", "o": ["walked", "had walked", "walk"], "why": "Walking in came next, not earlier: walked."},
+    {"id": "f21", "t": "fill", "d": 3, "tag": "nexthad", "q": "The fire alarm rang. We quickly ___ the building.", "o": ["left", "had left", "leave"], "why": "Leaving came after the alarm: the next photo, simple past."},
+    {"id": "f22", "t": "fill", "d": 3, "tag": "nexthad", "q": "Mum called my name, so I ___ downstairs.", "o": ["ran", "had run", "run"], "why": "Running downstairs happened next: ran."},
+    {"id": "f23", "t": "fill", "d": 2, "tag": "helper", "q": "I had ___ it all by myself!", "o": ["done", "did", "do"], "why": "After \"had\", use the \"done\" form: had done."},
+    {"id": "f24", "t": "fill", "d": 2, "tag": "helper", "q": "We managed to ___ time with our cousins.", "o": ["spend", "spent", "spending"], "why": "After \"to\", use the plain verb: to spend."},
+    {"id": "f25", "t": "fill", "d": 2, "tag": "helper", "q": "He did not ___ for breaking my ruler.", "o": ["apologise", "apologised", "apologising"], "why": "After \"did not\", use the plain verb: did not apologise."},
+    {"id": "f26", "t": "fill", "d": 2, "tag": "helper", "q": "From the top of the hill, we could ___ the whole town.", "o": ["see", "saw", "seen"], "why": "After \"could\", use the plain verb: could see."},
+    {"id": "f27", "t": "fill", "d": 3, "tag": "helper", "q": "By noon, we had ___ all the sandwiches.", "o": ["eaten", "ate", "eat"], "why": "After \"had\", use the \"done\" form: had eaten."},
+    {"id": "f28", "t": "fill", "d": 3, "tag": "helper", "q": "I wanted to ___ the competition so badly.", "o": ["win", "won", "winning"], "why": "After \"to\", use the plain verb: to win."},
+    {"id": "f29", "t": "fill", "d": 3, "tag": "helper", "q": "She had ___ to the market before we woke up.", "o": ["gone", "went", "go"], "why": "After \"had\", use the \"done\" form: had gone."},
+    {"id": "f30", "t": "fill", "d": 2, "tag": "speech", "q": "\"I ___ so nervous right now!\" I whispered.", "o": ["am", "was", "were"], "why": "Inside speech marks, keep the words as they were spoken. \"Right now\" shows they were present: \"I am so nervous right now!\""},
+    {"id": "f31", "t": "fill", "d": 2, "tag": "speech", "q": "\"Look! There ___ a rainbow!\" Mei shouted.", "o": ["is", "was", "were"], "why": "\"Look!\" shows Mei is talking about right now, and a recording keeps her words: \"There is a rainbow!\""},
+    {"id": "f32", "t": "fill", "d": 3, "tag": "speech", "q": "\"Hurry up! The bus ___ coming!\" Mum shouted.", "o": ["is", "was", "were"], "why": "\"Hurry up!\" shows Mum is talking about right now. The recording keeps her words: \"The bus is coming!\""},
+    {"id": "f33", "t": "fill", "d": 3, "tag": "reported", "q": "Ms Goh said that each class ___ twelve dancers.", "o": ["needed", "needs", "need"], "why": "Without speech marks, it's a caption, so each verb steps back: needed."},
+    {"id": "f34", "t": "fill", "d": 3, "tag": "reported", "q": "He said he ___ call me.", "o": ["would", "will", "shall"], "why": "Reported speech steps back: \"will\" becomes \"would\"."},
+    {"id": "f35", "t": "fill", "d": 3, "tag": "reported", "q": "Levin said that he ___ not done it.", "o": ["had", "has", "have"], "why": "\"I did not do it\" steps back to \"had not done\"."},
+    {"id": "f36", "t": "fill", "d": 3, "tag": "ifpast", "q": "If I stood up to the bully, I ___ get hurt.", "o": ["would", "will", "can"], "why": "In a past story, use the past after \"if\" and \"would\" in the result."},
+    {"id": "f37", "t": "fill", "d": 3, "tag": "ifpast", "q": "If I ___ up to the bully, I would get hurt.", "o": ["stood", "stand", "stands"], "why": "After \"if\" in a past story, use the past: stood."},
+    {"id": "f38", "t": "fill", "d": 3, "tag": "lesson", "q": "That day, I learnt that honesty ___ always the best policy.", "o": ["is", "was", "were"], "why": "A lesson that's always true stays in the present, even after \"I learnt\"."},
+    {"id": "f39", "t": "fill", "d": 3, "tag": "lesson", "q": "From then on, I knew that we must never ___ up.", "o": ["give", "gave", "given"], "why": "A lasting lesson stays present: we must never give up."},
+    {"id": "c01", "t": "check", "d": 1, "tag": "past", "q": "Last Sunday, we go to the beach.", "a": 0, "why": "\"Last Sunday\" is over, so the caption must be past: went."},
+    {"id": "c02", "t": "check", "d": 1, "tag": "past", "q": "Last Sunday, we went to the beach.", "a": 1, "why": "A past caption: correct."},
+    {"id": "c03", "t": "check", "d": 1, "tag": "past", "q": "The bell rang, and we rushed to the hall.", "a": 1, "why": "Both verbs are past: correct."},
+    {"id": "c04", "t": "check", "d": 1, "tag": "past", "q": "I opened my present and see a new bicycle.", "a": 0, "why": "Keep the story in the past: saw."},
+    {"id": "c05", "t": "check", "d": 1, "tag": "slip", "q": "We searched everywhere, but we can't find the keys.", "a": 0, "why": "\"Can't\" slips into the present: couldn't."},
+    {"id": "c06", "t": "check", "d": 1, "tag": "slip", "q": "We searched everywhere, but we couldn't find the keys.", "a": 1, "why": "Every verb stays past: correct."},
+    {"id": "c07", "t": "check", "d": 2, "tag": "slip", "q": "Ms Goh told us that Youth Day was coming. Each class needs twelve dancers.", "a": 0, "why": "\"Needs\" is a live video in the album: needed."},
+    {"id": "c08", "t": "check", "d": 2, "tag": "slip", "q": "It was a hot day, and everyone is thirsty.", "a": 0, "why": "\"Is\" slips into the present: everyone was thirsty."},
+    {"id": "c09", "t": "check", "d": 2, "tag": "slip", "q": "The class was noisy because the teacher was late.", "a": 1, "why": "Every verb is past: correct."},
+    {"id": "c10", "t": "check", "d": 2, "tag": "older", "q": "When I reached the bus stop, the bus had already left.", "a": 1, "why": "The bus left earlier than the moment described: had left. Correct."},
+    {"id": "c11", "t": "check", "d": 2, "tag": "older", "q": "When I reached the bus stop, the bus has already left.", "a": 0, "why": "\"Has left\" is present. For an earlier moment in a past story: had left."},
+    {"id": "c12", "t": "check", "d": 2, "tag": "older", "q": "By the time we got there, the shop had closed.", "a": 1, "why": "\"By the time\" points to something earlier: had closed. Correct."},
+    {"id": "c13", "t": "check", "d": 3, "tag": "older", "q": "I realised that I have left my wallet on the bus.", "a": 0, "why": "Leaving the wallet happened before realising: had left."},
+    {"id": "c14", "t": "check", "d": 2, "tag": "nexthad", "q": "I noticed mould on the marshmallows. I had checked the other packets too.", "a": 0, "why": "Checking came after noticing, so it's the next photo: I then checked."},
+    {"id": "c15", "t": "check", "d": 2, "tag": "nexthad", "q": "I noticed mould on the marshmallows. I then checked the other packets too.", "a": 1, "why": "The next photo takes the simple past: correct."},
+    {"id": "c16", "t": "check", "d": 3, "tag": "nexthad", "q": "The door creaked open, and a cat had walked in.", "a": 0, "why": "The cat walked in next, not earlier: a cat walked in."},
+    {"id": "c17", "t": "check", "d": 2, "tag": "helper", "q": "I had did it!", "a": 0, "why": "After \"had\", use the \"done\" form: had done."},
+    {"id": "c18", "t": "check", "d": 2, "tag": "helper", "q": "We managed to spent time with our cousins.", "a": 0, "why": "After \"to\", use the plain verb: to spend."},
+    {"id": "c19", "t": "check", "d": 2, "tag": "helper", "q": "We managed to spend time with our cousins.", "a": 1, "why": "Plain verb after \"to\": correct."},
+    {"id": "c20", "t": "check", "d": 2, "tag": "helper", "q": "He did not apologised to me.", "a": 0, "why": "After \"did not\", use the plain verb: did not apologise."},
+    {"id": "c21", "t": "check", "d": 3, "tag": "helper", "q": "From the window, I could saw the fireworks.", "a": 0, "why": "After \"could\", use the plain verb: could see."},
+    {"id": "c22", "t": "check", "d": 3, "tag": "helper", "q": "By then, we had eaten all the cake.", "a": 1, "why": "\"Had\" + the \"done\" form: correct."},
+    {"id": "c23", "t": "check", "d": 2, "tag": "speech", "q": "\"I am so nervous!\" I whispered.", "a": 1, "why": "The words inside speech marks stay as spoken, and the caption is past: correct."},
+    {"id": "c24", "t": "check", "d": 2, "tag": "speech", "q": "\"I can't find my book!\" Nurul cried.", "a": 1, "why": "A recording keeps its present words: correct."},
+    {"id": "c25", "t": "check", "d": 3, "tag": "speech", "q": "\"I am going to the toilet,\" I say.", "a": 0, "why": "The words in speech marks can stay present, but the caption around them must be past: I said."},
+    {"id": "c26", "t": "check", "d": 3, "tag": "reported", "q": "Ms Goh said that each class needs twelve dancers.", "a": 0, "why": "Without speech marks, it's a caption, so the verb steps back: needed."},
+    {"id": "c27", "t": "check", "d": 3, "tag": "reported", "q": "He said he would call me.", "a": 1, "why": "\"Will\" steps back to \"would\": correct."},
+    {"id": "c28", "t": "check", "d": 3, "tag": "reported", "q": "Levin said that he had not done it.", "a": 1, "why": "\"I did not do it\" steps back to \"had not done\": correct."},
+    {"id": "c29", "t": "check", "d": 3, "tag": "ifpast", "q": "If I stand up to the bully, I would get hurt.", "a": 0, "why": "In a past story, use the past after \"if\": If I stood up…"},
+    {"id": "c30", "t": "check", "d": 3, "tag": "ifpast", "q": "If I stood up to the bully, I would get hurt.", "a": 1, "why": "Past after \"if\", \"would\" in the result: correct."},
+    {"id": "c31", "t": "check", "d": 3, "tag": "lesson", "q": "I learnt that honesty is always the best policy.", "a": 1, "why": "A lesson that's always true stays present: correct."},
+    {"id": "c32", "t": "check", "d": 3, "tag": "lesson", "q": "That day, I learnt that we must never give up.", "a": 1, "why": "A lasting lesson stays present: correct."},
+    {"id": "p01", "t": "pick", "d": 1, "tag": "past", "q": "We go to the zoo last week and see the pandas.", "o": ["We went to the zoo last week and saw the pandas.", "We go to the zoo last week and saw the pandas.", "We went to the zoo last week and see the pandas.", "We had went to the zoo last week and saw the pandas."], "why": "\"Last week\" is over: every caption is past."},
+    {"id": "p02", "t": "pick", "d": 1, "tag": "slip", "q": "I wanted to play, but it is raining.", "o": ["I wanted to play, but it was raining.", "I want to play, but it was raining.", "I wanted to play, but it is rain.", "I wanted to play, but it had rain."], "why": "\"Is\" slips into the present. Keep it past: was raining."},
+    {"id": "p03", "t": "pick", "d": 1, "tag": "past", "ask": "Which sentence is correct?", "o": ["The bus stopped, and the driver opened the door.", "The bus stops, and the driver opened the door.", "The bus stopped, and the driver opens the door.", "The bus stopped, and the driver had opened the door."], "why": "Both actions are past captions, one after the other: stopped, opened."},
+    {"id": "p04", "t": "pick", "d": 2, "tag": "older", "ask": "Which sentence is correct?", "o": ["When we arrived, the concert had already started.", "When we arrived, the concert has already started.", "When we arrive, the concert had already started.", "When we arrived, the concert already starts."], "why": "The concert started earlier than the arrival: had already started."},
+    {"id": "p05", "t": "pick", "d": 2, "tag": "nexthad", "ask": "Which sentence is correct?", "o": ["I heard a crash, so I ran to the kitchen.", "I heard a crash, so I had run to the kitchen.", "I hear a crash, so I ran to the kitchen.", "I heard a crash, so I run to the kitchen."], "why": "Running came next: simple past, not \"had run\"."},
+    {"id": "p06", "t": "pick", "d": 2, "tag": "helper", "ask": "Which sentence is correct?", "o": ["I had done my homework before dinner.", "I had did my homework before dinner.", "I had do my homework before dinner.", "I have did my homework before dinner."], "why": "After \"had\", use the \"done\" form."},
+    {"id": "p07", "t": "pick", "d": 2, "tag": "helper", "ask": "Which sentence is correct?", "o": ["We tried to open the jar, but it was stuck.", "We tried to opened the jar, but it was stuck.", "We tried to open the jar, but it is stuck.", "We try to opened the jar, but it was stuck."], "why": "Plain verb after \"to\", and the story stays past."},
+    {"id": "p08", "t": "pick", "d": 2, "tag": "speech", "ask": "Which sentence is correct?", "o": ["\"I can do it!\" I told myself.", "\"I could do it!\" I tell myself.", "\"I can do it!\" I tell myself.", "\"I could did it!\" I told myself."], "why": "The recording keeps its present words, and the caption is past: told."},
+    {"id": "p09", "t": "pick", "d": 2, "tag": "slip", "q": "It was late and the streets are empty.", "o": ["It was late and the streets were empty.", "It is late and the streets were empty.", "It was late and the streets are emptied.", "It was late and the streets had empty."], "why": "Keep the little verbs past: were."},
+    {"id": "p10", "t": "pick", "d": 3, "tag": "reported", "q": "\"I will help you,\" Dad said.", "ask": "Report it without speech marks.", "o": ["Dad said that he would help me.", "Dad said that he will help me.", "Dad says that he would help me.", "Dad said that he would helped me."], "why": "Reported speech steps back: \"will\" becomes \"would\"."},
+    {"id": "p11", "t": "pick", "d": 3, "tag": "reported", "q": "\"Each class needs twelve dancers,\" Ms Goh said.", "ask": "Report it without speech marks.", "o": ["Ms Goh said that each class needed twelve dancers.", "Ms Goh said that each class needs twelve dancers.", "Ms Goh says that each class needed twelve dancers.", "Ms Goh said that each class had need twelve dancers."], "why": "Without speech marks, it's a caption: \"needs\" steps back to \"needed\"."},
+    {"id": "p12", "t": "pick", "d": 3, "tag": "ifpast", "ask": "Which sentence fits a story told in the past?", "o": ["If I told the teacher, the bully would be angry.", "If I tell the teacher, the bully would be angry.", "If I told the teacher, the bully will be angry.", "If I tells the teacher, the bully would be angry."], "why": "Past after \"if\", and \"would\" in the result."},
+    {"id": "p13", "t": "pick", "d": 3, "tag": "lesson", "ask": "Which ending is correct?", "o": ["I learnt that it is important to be kind.", "I learnt that it was important to be kind.", "I learn that it was important to be kind.", "I had learnt that it is important to be kind."], "why": "\"I learnt\" is past, but a lesson that's always true stays present: it is important."},
+    {"id": "p14", "t": "pick", "d": 3, "tag": "older", "ask": "Which sentence is correct?", "o": ["I realised that I had forgotten my water bottle.", "I realised that I have forgotten my water bottle.", "I realise that I had forgotten my water bottle.", "I realised that I had forget my water bottle."], "why": "Forgetting happened before realising: had forgotten."},
+    {"id": "p15", "t": "pick", "d": 3, "tag": "nexthad", "ask": "Which sentence needs fixing?", "o": ["The lights went out. Everyone had screamed.", "The lights went out. Everyone screamed.", "The lights went out because the fuse had blown.", "When the lights went out, everyone screamed."], "why": "Screaming came after the lights went out: the next photo, simple past."},
+    {"id": "p16", "t": "pick", "d": 3, "tag": "helper", "ask": "Which sentence needs fixing?", "o": ["I did not wanted to go home.", "I did not want to go home.", "I didn't want to go home.", "I wanted to stay longer."], "why": "After \"did not\", use the plain verb: want."},
+    {"id": "p17", "t": "pick", "d": 2, "tag": "slip", "ask": "Which sentence needs fixing?", "o": ["We waited for an hour, but nobody comes.", "We waited for an hour, but nobody came.", "We waited for an hour before the bus came.", "Nobody came, so we went home."], "why": "\"Comes\" slips into the present: came."},
+    {"id": "p18", "t": "pick", "d": 2, "tag": "speech", "ask": "Which sentence needs fixing?", "o": ["\"Where are you going?\" Mum asks.", "\"Where are you going?\" Mum asked.", "Mum asked where I was going.", "\"I'm going out,\" I replied."], "why": "The caption around the speech must be past: Mum asked."},
+    {"id": "s01", "t": "spot", "d": 1, "tag": "past", "parts": ["Last week,", "my class", "visits", "the Science Centre."], "a": 2, "why": "\"Last week\" is over: visited."},
+    {"id": "s02", "t": "spot", "d": 1, "tag": "past", "parts": ["The bell rang,", "and everyone", "runs", "out of the classroom."], "a": 2, "why": "Keep the story in the past: ran."},
+    {"id": "s03", "t": "spot", "d": 1, "tag": "slip", "parts": ["We looked everywhere,", "but we", "can't", "find the cat."], "a": 2, "why": "\"Can't\" slips into the present: couldn't."},
+    {"id": "s04", "t": "spot", "d": 1, "tag": "slip", "parts": ["I woke up late", "and realised", "that I am", "late for school."], "a": 2, "why": "\"Am\" is a live video: was."},
+    {"id": "s05", "t": "spot", "d": 2, "tag": "slip", "parts": ["The hall was packed,", "and the audience", "is", "cheering loudly."], "a": 2, "why": "Keep the little verbs past: was cheering."},
+    {"id": "s06", "t": "spot", "d": 2, "tag": "slip", "parts": ["When Mum came home,", "she said", "that she will", "cook dinner."], "a": 2, "why": "Reported words step back: \"will\" becomes \"would\"."},
+    {"id": "s07", "t": "spot", "d": 2, "tag": "older", "parts": ["By the time", "the ambulance arrived,", "the man", "has fainted."], "a": 3, "why": "He fainted earlier than the arrival: had fainted."},
+    {"id": "s08", "t": "spot", "d": 2, "tag": "older", "parts": ["I was sad", "because my best friend", "has moved", "to Canada."], "a": 2, "why": "The move happened earlier than being sad: had moved."},
+    {"id": "s09", "t": "spot", "d": 2, "tag": "nexthad", "parts": ["I picked up the phone", "and had dialled", "my grandmother's", "number."], "a": 1, "why": "Dialling came next: dialled, not \"had dialled\"."},
+    {"id": "s10", "t": "spot", "d": 2, "tag": "helper", "parts": ["I had", "ate", "all the cookies", "before dinner."], "a": 1, "why": "After \"had\", use the \"done\" form: had eaten."},
+    {"id": "s11", "t": "spot", "d": 2, "tag": "helper", "parts": ["We managed", "to finished", "the puzzle", "in time."], "a": 1, "why": "After \"to\", use the plain verb: to finish."},
+    {"id": "s12", "t": "spot", "d": 2, "tag": "helper", "parts": ["She could not", "believed", "what she", "was seeing."], "a": 1, "why": "After \"could not\", use the plain verb: believe."},
+    {"id": "s13", "t": "spot", "d": 3, "tag": "helper", "parts": ["He did not", "knew", "the answer,", "so he guessed."], "a": 1, "why": "After \"did not\", use the plain verb: did not know."},
+    {"id": "s14", "t": "spot", "d": 3, "tag": "speech", "parts": ["\"I am scared,\"", "whispers", "my little brother", "in the dark."], "a": 1, "why": "The words inside speech marks stay present, but the caption is past: whispered."},
+    {"id": "s15", "t": "spot", "d": 3, "tag": "reported", "parts": ["Mr Tan told us", "that the test", "is", "on Friday."], "a": 2, "why": "Without speech marks, it's a caption, so \"is\" steps back: was."},
+    {"id": "s16", "t": "spot", "d": 3, "tag": "reported", "parts": ["My friend said", "that she", "will", "come to my party."], "a": 2, "why": "Reported speech: \"will\" steps back to \"would\"."},
+    {"id": "s17", "t": "spot", "d": 3, "tag": "ifpast", "parts": ["I was afraid.", "If I jump", "from the wall,", "I would hurt myself."], "a": 1, "why": "In a past story, use the past after \"if\": If I jumped."},
+    {"id": "s18", "t": "spot", "d": 3, "tag": "lesson", "parts": ["Looking back,", "I learnt", "that honesty", "was always the best policy."], "a": 3, "why": "A lesson that's always true stays present: is always the best policy."},
+    {"id": "s19", "t": "spot", "d": 3, "tag": "nexthad", "parts": ["The thunder roared,", "and the baby", "had started", "to cry."], "a": 2, "why": "Crying came after the thunder: the next photo, so \"started\"."},
+    {"id": "s20", "t": "spot", "d": 3, "tag": "older", "parts": ["When I opened the fridge,", "I saw", "that someone", "has eaten my cake."], "a": 3, "why": "Someone ate it before you opened the fridge: had eaten."},
+    {"id": "s21", "t": "spot", "d": 1, "tag": "past", "parts": ["Yesterday,", "Grandma", "bakes", "a chocolate cake."], "a": 2, "why": "\"Yesterday\" is over: baked."},
+    {"id": "s22", "t": "spot", "d": 2, "tag": "past", "parts": ["While we were walking home,", "it", "starts", "to rain."], "a": 2, "why": "Keep the story in the past: started."},
+    {"id": "f40", "t": "fill", "d": 1, "tag": "past", "q": "Yesterday, we ___ a big sandcastle at the beach.", "o": ["built", "build", "builds"], "why": "\"Yesterday\" means it's over: built."},
+    {"id": "f41", "t": "fill", "d": 1, "tag": "past", "q": "After lunch, Grandpa ___ a nap on the sofa.", "o": ["took", "takes", "take"], "why": "A past caption: took."},
+    {"id": "f42", "t": "fill", "d": 1, "tag": "slip", "q": "The movie ended, and everyone ___ clapping.", "o": ["was", "is", "are"], "why": "Keep the little verbs past: was."},
+    {"id": "f43", "t": "fill", "d": 1, "tag": "past", "q": "My brother ___ his knee when he fell off his bike.", "o": ["hurt", "hurts", "hurting"], "why": "A past caption: hurt."},
+    {"id": "c33", "t": "check", "d": 1, "tag": "past", "q": "We played football until it got dark.", "a": 1, "why": "Both verbs are past: correct."},
+    {"id": "c34", "t": "check", "d": 1, "tag": "slip", "q": "I was hungry, so I eat two sandwiches.", "a": 0, "why": "\"Eat\" slips into the present: ate."},
+    {"id": "c35", "t": "check", "d": 1, "tag": "past", "q": "Mum cooks my favourite dish last night.", "a": 0, "why": "\"Last night\" is over: cooked."},
+    {"id": "s23", "t": "spot", "d": 1, "tag": "past", "parts": ["On Monday,", "our teacher", "gives us", "a spelling test."], "a": 2, "why": "\"On Monday\" in a past story: gave us."},
+    {"id": "p19", "t": "pick", "d": 1, "tag": "past", "ask": "Which sentence is correct?", "o": ["The dog barked, and the baby woke up.", "The dog barks, and the baby woke up.", "The dog barked, and the baby wakes up.", "The dog barked, and the baby had woke up."], "why": "Both actions are past captions: barked, woke."},
+    {"id": "s24", "t": "spot", "d": 1, "tag": "slip", "parts": ["The shop was closed,", "so we", "can't", "buy anything."], "a": 2, "why": "\"Can't\" slips into the present: couldn't."},
+    {"id": "c36", "t": "check", "d": 3, "tag": "ifpast", "q": "If I had wings, I would fly over the traffic jam.", "a": 1, "why": "Past after \"if\", \"would\" in the result: correct."},
+    {"id": "s25", "t": "spot", "d": 3, "tag": "ifpast", "parts": ["I wondered what to do.", "If I tell Mum,", "she would", "be upset."], "a": 1, "why": "In a past story, use the past after \"if\": If I told Mum."},
+    {"id": "c37", "t": "check", "d": 3, "tag": "lesson", "q": "I learnt that it was important to listen to others.", "a": 0, "why": "A lesson that's always true stays present: it is important."},
+    {"id": "f44", "t": "fill", "d": 3, "tag": "lesson", "q": "After that day, I understood that friends ___ each other.", "o": ["help", "helped", "helping"], "why": "A lasting truth stays present: friends help each other."},
   ];
 
-  const container = document.getElementById('quizContainer');
-  const scoreEl = document.getElementById('scoreDisplay');
-  let score = 0, answered = [];
+  /* ================= QUIZ BANK ENGINE (shared by every lesson) =================
+     Needs, defined above it: LESSON_KEY, TAGS, BANK. Optional: QB_TEXT = { ask: {...}, yn: [...] }.
+     Each attempt draws BAND_SIZES questions (easy, medium, tricky). The draw builds many
+     candidate quizzes and keeps the best: every tag present, 3+ of each type, balanced
+     check answers, unseen questions first. Options are shuffled; ids seen are remembered. */
+  const BAND_SIZES = [7, 7, 6];
+  const DRAW = BAND_SIZES.reduce((a, b) => a + b, 0);
+  const QBT = (typeof QB_TEXT !== 'undefined') ? QB_TEXT : {};
+  const ASK = Object.assign({
+    check: 'Is this sentence correct?',
+    pick:  'Pick the correct sentence.',
+    fill:  'Which choice fills the gap correctly?',
+    spot:  'Tap the part with the mistake.'
+  }, QBT.ask || {});
+  const YN = QBT.yn || ['Needs fixing', 'Correct'];
 
-  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const store = {
+    get(k, fallback) { try { const v = localStorage.getItem(LESSON_KEY + ':' + k); return v === null ? fallback : JSON.parse(v); } catch (e) { return fallback; } },
+    set(k, v) { try { localStorage.setItem(LESSON_KEY + ':' + k, JSON.stringify(v)); } catch (e) { /* storage unavailable: quiz still works */ } }
+  };
+  const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-  function updateScore() { scoreEl.textContent = score + ' / ' + QUESTIONS.length; }
+  function buildCandidate(seen) {
+    const chosen = [], tagN = {}, typeN = {};
+    let fixN = 0, okN = 0;
+    for (let band = 1; band <= 3; band++) {
+      const picks = [];
+      for (let k = 0; k < BAND_SIZES[band - 1]; k++) {
+        let best = null, bestScore = -Infinity;
+        BANK.forEach(q => {
+          if (q.d !== band || picks.includes(q)) return;
+          let s = Math.random() * 3;
+          if (!seen.has(q.id)) s += 6;
+          if (!tagN[q.tag]) s += 12;
+          s -= (typeN[q.t] || 0) * 1.2;
+          if ((typeN[q.t] || 0) < 3) s += 2;   // nudge every type up to 3
+          if (q.t === 'check') { const lean = q.a === 0 ? fixN - okN : okN - fixN; if (lean >= 1) s -= 4; }
+          if (s > bestScore) { bestScore = s; best = q; }
+        });
+        if (!best) break;
+        picks.push(best);
+        tagN[best.tag] = (tagN[best.tag] || 0) + 1;
+        typeN[best.t] = (typeN[best.t] || 0) + 1;
+        if (best.t === 'check') { if (best.a === 0) fixN++; else okN++; }
+      }
+      chosen.push(...shuffle(picks));
+    }
+    return chosen;
+  }
+
+  function rateCandidate(c, seen) {
+    const tags = new Set(c.map(q => q.tag)).size;
+    const types = {};
+    c.forEach(q => types[q.t] = (types[q.t] || 0) + 1);
+    const used = [...new Set(BANK.map(q => q.t))];
+    const minType = Math.min(...used.map(t => types[t] || 0));
+    const checks = c.filter(q => q.t === 'check');
+    const lean = Math.abs(checks.filter(q => q.a === 0).length * 2 - checks.length);
+    return (tags === Object.keys(TAGS).length ? 10000 : tags * 500)
+         + (c.length === DRAW ? 5000 : 0)
+         + Math.min(minType, 3) * 300
+         + (lean <= 2 ? 200 : 0)
+         + c.filter(q => !seen.has(q.id)).length * 10;
+  }
+
+  function drawQuiz() {
+    let seen = new Set(store.get('seen', []));
+    if (BANK.length - seen.size < DRAW) seen = new Set(store.get('last', []));   // new cycle, but skip the last attempt
+    let chosen = null, bestRate = -1;
+    for (let tries = 0; tries < 200; tries++) {
+      const c = buildCandidate(seen), r = rateCandidate(c, seen);
+      if (r > bestRate) { bestRate = r; chosen = c; }
+    }
+    chosen.forEach(q => seen.add(q.id));
+    store.set('seen', [...seen]);
+    store.set('last', chosen.map(q => q.id));
+    return chosen.map(q => {
+      if (q.t === 'pick' || q.t === 'fill') {
+        const opts = shuffle(q.o.map((text, i) => ({ text, ok: i === 0 })));
+        return { q, opts, answer: opts.findIndex(o => o.ok) };
+      }
+      if (q.t === 'check') return { q, opts: YN.map(text => ({ text })), answer: q.a };
+      return { q, opts: null, answer: q.a };
+    });
+  }
+
+  const listEl = document.getElementById('qbList');
+  const scoreEl = document.getElementById('qbScore');
+  const progressEl = document.getElementById('qbProgress');
+  const summaryEl = document.getElementById('qbSummary');
+  let current = [], score = 0, done = 0, missed = [];
+
+  function updateScore() {
+    scoreEl.textContent = score + ' / ' + current.length;
+    progressEl.textContent = done + ' of ' + current.length + ' answered';
+  }
+
+  /* Small or empty options are hard to see on a button, so label them. */
+  function optLabel(text) {
+    const t = text.trim();
+    if (t === '') return '<span class="qb-note">(nothing)</span>';
+    if (t === ',') return '<span class="qb-punct">,</span> <span class="qb-note">(a comma)</span>';
+    if (t === '.') return '<span class="qb-punct">.</span> <span class="qb-note">(a full stop)</span>';
+    return esc(text);
+  }
+  function plainLabel(text) {
+    const t = text.trim();
+    return t === '' ? 'nothing' : t === ',' ? 'a comma' : t === '.' ? 'a full stop' : '"' + t + '"';
+  }
+  function sentenceWithGap(q, text) {
+    let filler = '<span class="qb-blank">___</span>';
+    if (text !== undefined) {
+      filler = text.trim() === ''
+        ? '<span class="qb-blank qb-filled qb-none">(nothing)</span>'
+        : '<span class="qb-blank qb-filled">' + esc(text) + '</span>';
+    }
+    return esc(q.q).replace('___', filler);
+  }
 
   function render() {
-    container.innerHTML = '';
-    answered = QUESTIONS.map(() => false);
-    QUESTIONS.forEach((q, i) => {
+    listEl.innerHTML = '';
+    summaryEl.hidden = true;
+    current.forEach((item, i) => {
+      const q = item.q;
       const card = document.createElement('div');
-      card.className = 'quiz-card';
-      const hasBlank = q.text.includes('___');
-      const short = q.options.every(o => o.length <= 14);
+      card.className = 'qb-card';
+      card.dataset.type = q.t;
+      let body;
+      if (q.t === 'spot') {
+        body = '<div class="qb-spot">' + q.parts.map((p, k) =>
+          '<button type="button" class="qb-part" data-k="' + k + '">' + esc(p) + '</button>').join('') + '</div>';
+      } else if (q.t === 'fill') {
+        const cols = item.opts.length;
+        body = '<p class="qb-text">' + sentenceWithGap(q) + '</p><div class="qb-opts qb-row" style="--qb-cols:' + cols + '"></div>';
+      } else if (q.t === 'check') {
+        body = '<p class="qb-text">' + esc(q.q) + '</p><div class="qb-opts qb-row"></div>';
+      } else {
+        body = (q.q ? '<p class="qb-text">' + esc(q.q) + '</p>' : '') + '<div class="qb-opts"></div>';
+      }
       card.innerHTML =
-        '<p class="quiz-num">Question ' + (i + 1) + ' of ' + QUESTIONS.length + '</p>' +
-        (q.ask ? '<p class="quiz-ask">' + esc(q.ask) + '</p>' : '') +
-        '<p class="quiz-text">' + esc(q.text).replace('___', '<span class="blank">___</span>') + '</p>' +
-        '<div class="opts' + (short ? ' row' : '') + '"></div>' +
-        '<div class="feedback" role="status"></div>';
-      const opts = card.querySelector('.opts');
-      q.options.forEach((o, j) => {
-        const b = document.createElement('button');
-        b.type = 'button';
-        b.className = 'opt';
-        b.innerHTML = (short ? '' : '<span class="tag">' + String.fromCharCode(65 + j) + '</span>') + esc(o);
-        b.addEventListener('click', () => answer(i, j, card, hasBlank, short));
-        opts.appendChild(b);
-      });
-      container.appendChild(card);
+        '<p class="qb-num">Question ' + (i + 1) + ' of ' + current.length + '</p>' +
+        '<p class="qb-ask">' + esc(q.ask || ASK[q.t]) + '</p>' + body +
+        '<div class="qb-feedback" role="status"></div>';
+      if (q.t === 'spot') {
+        card.querySelectorAll('.qb-part').forEach(b => b.addEventListener('click', () => answer(i, +b.dataset.k, card)));
+      } else {
+        const opts = card.querySelector('.qb-opts');
+        item.opts.forEach((o, j) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'qb-opt';
+          b.innerHTML = (q.t === 'pick' ? '<span class="qb-letter">' + String.fromCharCode(65 + j) + '</span>' : '') + optLabel(o.text);
+          b.addEventListener('click', () => answer(i, j, card));
+          opts.appendChild(b);
+        });
+      }
+      listEl.appendChild(card);
     });
     updateScore();
   }
 
-  function answer(i, j, card, hasBlank, short) {
-    if (answered[i]) return;
-    answered[i] = true;
-    const q = QUESTIONS[i], ok = j === q.answer;
-    if (ok) score++;
-    updateScore();
-    if (hasBlank && short) {
-      const blank = card.querySelector('.blank');
-      blank.textContent = q.options[j];
-      blank.classList.add('filled');
-    }
-    card.querySelectorAll('.opt').forEach((b, k) => {
+  function answer(i, j, card) {
+    const item = current[i];
+    if (item.done) return;
+    item.done = true; done++;
+    const q = item.q, ok = j === item.answer;
+    if (ok) score++; else missed.push(q.tag);
+    card.querySelectorAll(q.t === 'spot' ? '.qb-part' : '.qb-opt').forEach((b, k) => {
       b.disabled = true;
-      if (k === j) b.classList.add(ok ? 'correct' : 'incorrect');
-      else if (k === q.answer && !ok) b.classList.add('reveal');
+      if (k === j) b.classList.add(ok ? 'qb-correct' : 'qb-incorrect');
+      else if (k === item.answer && !ok) b.classList.add('qb-reveal');
     });
-    const fb = card.querySelector('.feedback');
-    fb.classList.add('show', ok ? 'fb-ok' : 'fb-no');
-    fb.innerHTML = '<span class="verdict">' +
-      (ok ? 'Correct!' : 'Not quite. The answer is ' + (short ? '"' + esc(q.options[q.answer]) + '"' : String.fromCharCode(65 + q.answer)) + '.') +
-      '</span>' + esc(q.why);
+    if (q.t === 'fill') card.querySelector('.qb-text').innerHTML = sentenceWithGap(q, item.opts[j].text);
+    let right;
+    if (q.t === 'spot') right = 'The mistake is in "' + esc(q.parts[item.answer]) + '".';
+    else if (q.t === 'pick') right = 'The answer is ' + String.fromCharCode(65 + item.answer) + '.';
+    else right = 'The answer is ' + esc(plainLabel(item.opts[item.answer].text)) + '.';
+    const fb = card.querySelector('.qb-feedback');
+    fb.classList.add('qb-show', ok ? 'qb-fb-ok' : 'qb-fb-no');
+    fb.innerHTML = '<span class="qb-verdict">' + (ok ? 'Correct!' : 'Not quite. ' + right) + '</span>' + esc(q.why);
+    updateScore();
+    if (done === current.length) showSummary();
   }
 
-  document.getElementById('resetBtn').addEventListener('click', () => {
-    score = 0;
-    render();
-    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
+  function showSummary() {
+    const best = Math.max(store.get('best', 0), score);
+    store.set('best', best);
+    const attempts = store.get('attempts', 0) + 1;
+    store.set('attempts', attempts);
+    const counts = {};
+    missed.forEach(t => counts[t] = (counts[t] || 0) + 1);
+    const areas = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+    const n = current.length;
+    let msg;
+    if (score === n) msg = 'A perfect run! Try another set to make sure it sticks.';
+    else if (score >= Math.ceil(n * 0.8)) msg = 'Strong work. Have a quick look at the areas below, then try a fresh set.';
+    else if (score >= Math.ceil(n * 0.6)) msg = 'Good progress. Re-read the parts below before your next attempt.';
+    else msg = 'Worth another look at the lesson. Start with the areas below, then try a fresh set.';
+    summaryEl.innerHTML =
+      '<h3>You scored ' + score + ' / ' + n + '</h3><p>' + msg + '</p>' +
+      (areas.length ? '<p class="qb-sum-label">Areas to review</p><ul class="qb-areas">' + areas.map(t =>
+        '<li><a href="' + TAGS[t].href + '">' + esc(TAGS[t].label) + '</a><span>' + counts[t] + ' wrong</span></li>').join('') + '</ul>' : '') +
+      '<p class="qb-meta">Attempts on this device: ' + attempts + ' · Best score: ' + best + ' / ' + n + '</p>' +
+      '<button type="button" class="qb-go" id="qbAgain">Try ' + n + ' new questions</button>';
+    summaryEl.hidden = false;
+    document.getElementById('qbAgain').addEventListener('click', () => { newQuiz(); listEl.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    summaryEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 
-  render();
+  function newQuiz() {
+    current = drawQuiz(); score = 0; done = 0; missed = [];
+    render();
+  }
+
+  const bankEl = document.getElementById('qbBank'), drawEl = document.getElementById('qbDraw');
+  if (bankEl) bankEl.textContent = BANK.length;
+  if (drawEl) drawEl.textContent = DRAW;
+  document.getElementById('qbNew').addEventListener('click', () => {
+    newQuiz();
+    listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  newQuiz();
 })();
 </script>
 </body>

@@ -180,6 +180,103 @@
   .chant { margin: 18px 0 0; padding: 14px 16px; background: var(--gold-soft); border-radius: 8px; font-family: var(--font-display); font-size: 18px; line-height: 1.45; text-align: center; }
   footer { text-align: center; color: var(--ink-soft); font-size: 13px; margin-top: 30px; }
   @media (prefers-reduced-motion: reduce) { .hero h1 .pass { transform: none; } }
+
+  /* ================= QUIZ BANK ENGINE (shared by every lesson; qb- prefix avoids clashes) ================= */
+  .qb { --qb-cols: 2; }
+  .qb-bar {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 3;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 10px 16px; margin: 0 0 18px; border-radius: var(--qb-radius);
+    background: var(--qb-bar); color: var(--qb-bar-ink);
+  }
+  .qb-label { font-size: 12.5px; opacity: 0.8; }
+  .qb-score { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 28px; line-height: 1.05; }
+  .qb-progress { font-size: 12.5px; opacity: 0.85; margin-top: 2px; }
+  .qb-new {
+    font: inherit; font-weight: 700; font-size: 14px; padding: 10px 16px; min-height: 44px;
+    border-radius: 999px; border: 2px solid currentColor; background: transparent; color: inherit; cursor: pointer;
+  }
+  .qb-list, .qb-summary { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 96px); }
+  .qb-card {
+    background: var(--qb-card); border: var(--qb-card-border); box-shadow: var(--qb-card-shadow);
+    border-radius: var(--qb-radius); padding: 16px 16px 14px; margin: 0 0 14px; color: var(--qb-ink);
+  }
+  .qb-num { font-size: 12.5px; color: var(--qb-soft); margin: 0 0 4px; }
+  .qb-ask { font-size: 13.5px; font-weight: 700; color: var(--qb-accent); margin: 0 0 6px; }
+  .qb-text { font-size: 16.5px; line-height: 1.6; margin: 0 0 14px; }
+  .qb-blank {
+    display: inline-block; min-width: 60px; padding: 0 3px; text-align: center;
+    border-bottom: 2.5px dashed var(--qb-soft); color: var(--qb-soft);
+  }
+  .qb-blank.qb-filled { border-bottom-style: solid; border-bottom-color: var(--qb-accent); color: var(--qb-accent); font-weight: 700; }
+  .qb-blank.qb-none { font-style: italic; font-weight: 400; }
+  .qb-opts { display: flex; flex-direction: column; gap: 9px; }
+  .qb-opts.qb-row { display: grid; grid-template-columns: repeat(var(--qb-cols), minmax(0, 1fr)); }
+  .qb-opt {
+    font: inherit; font-size: 15.5px; line-height: 1.45; text-align: left; color: var(--qb-ink);
+    padding: 11px 14px; min-height: 46px; border-radius: var(--qb-radius-opt);
+    border: 2px solid var(--qb-rule); background: var(--qb-page); cursor: pointer;
+  }
+  .qb-row .qb-opt { text-align: center; font-weight: 600; padding-left: 6px; padding-right: 6px; }
+  .qb-opt:not(:disabled):hover { border-color: var(--qb-accent); }
+  .qb-opt:disabled, .qb-part:disabled { cursor: default; }
+  .qb-letter { font-family: var(--qb-font); font-weight: var(--qb-font-weight); margin-right: 10px; color: var(--qb-accent); }
+  .qb-note { font-size: 12.5px; font-weight: 400; color: var(--qb-soft); }
+  .qb-punct { font-size: 22px; line-height: 0; font-weight: 700; }
+  .qb-spot { display: flex; flex-wrap: wrap; gap: 8px 6px; margin: 0 0 4px; }
+  .qb-part {
+    font: inherit; font-size: 16px; line-height: 1.35; text-align: left; color: var(--qb-ink); cursor: pointer;
+    background: var(--qb-accent-soft); border: none; border-bottom: 3px dashed var(--qb-accent);
+    border-radius: 4px 4px 0 0; padding: 7px 9px; min-height: 40px;
+  }
+  .qb-opt.qb-correct, .qb-opt.qb-reveal { background: var(--qb-right-soft); border-color: var(--qb-right); }
+  .qb-opt.qb-incorrect { background: var(--qb-wrong-soft); border-color: var(--qb-wrong); }
+  .qb-part.qb-correct, .qb-part.qb-reveal { background: var(--qb-right-soft); border-bottom: 3px solid var(--qb-right); }
+  .qb-part.qb-incorrect { background: var(--qb-wrong-soft); border-bottom: 3px solid var(--qb-wrong); }
+  .qb-feedback { display: none; margin-top: 12px; padding-top: 12px; border-top: 2px dashed var(--qb-rule); font-size: 14px; line-height: 1.55; }
+  .qb-feedback.qb-show { display: block; }
+  .qb-verdict { display: block; font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 18px; margin-bottom: 2px; }
+  .qb-fb-ok .qb-verdict { color: var(--qb-right); }
+  .qb-fb-no .qb-verdict { color: var(--qb-wrong); }
+  .qb-summary {
+    background: var(--qb-card); color: var(--qb-ink); border: 3px solid var(--qb-accent);
+    border-radius: var(--qb-radius); padding: 18px 20px; margin-top: 8px;
+  }
+  .qb-summary h3 { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 30px; line-height: 1.1; margin: 0 0 6px; color: var(--qb-accent); }
+  .qb-summary p { margin: 0 0 10px; line-height: 1.55; }
+  .qb-sum-label { font-weight: 700; margin-top: 14px !important; }
+  .qb-areas { list-style: none; margin: 0 0 12px; padding: 0; }
+  .qb-areas li { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--qb-rule); }
+  .qb-areas a { color: var(--qb-ink); font-weight: 600; }
+  .qb-areas span { color: var(--qb-wrong); font-weight: 700; white-space: nowrap; }
+  .qb-meta { font-size: 13px; color: var(--qb-soft); }
+  .qb-go {
+    font: inherit; font-weight: 700; font-size: 16px; width: 100%; min-height: 50px; margin-top: 4px; cursor: pointer;
+    border: none; border-radius: var(--qb-radius); background: var(--qb-accent); color: var(--qb-on-accent);
+  }
+
+  :root {
+    --qb-page: var(--bg);
+    --qb-card: var(--surface);
+    --qb-ink: var(--ink);
+    --qb-soft: var(--ink-soft);
+    --qb-accent: var(--vip);
+    --qb-accent-soft: var(--vip-soft);
+    --qb-on-accent: var(--surface);
+    --qb-right: var(--right);
+    --qb-right-soft: var(--right-soft);
+    --qb-wrong: var(--wrong);
+    --qb-wrong-soft: var(--wrong-soft);
+    --qb-rule: var(--rule);
+    --qb-bar: var(--ink);
+    --qb-bar-ink: var(--bg);
+    --qb-font: var(--font-display);
+    --qb-font-weight: 400;
+    --qb-radius: 10px;
+    --qb-radius-opt: 8px;
+    --qb-card-border: none;
+    --qb-card-shadow: none;
+  }
 </style>
 </head>
 <body>
@@ -204,7 +301,7 @@
   </header>
 
   <!-- 2. THE RULE -->
-  <section>
+  <section id="rule">
     <h2>The door check</h2>
     <p class="sub">Ask these two questions about any word. If the answer to either one is yes, the word gets a capital letter.</p>
     <div class="checks">
@@ -231,7 +328,7 @@
   </section>
 
   <!-- 3. TRAPS -->
-  <section>
+  <section id="traps">
     <h2>Three traps at the gate</h2>
     <p class="sub">The first two are opposites: forgetting a pass, and handing one out when it isn't needed. The third catches words in the middle of a sentence.</p>
 
@@ -261,7 +358,7 @@
   </section>
 
   <!-- 4. CATEGORIES -->
-  <section>
+  <section id="cases">
     <h2>Who's on the VIP list</h2>
     <p class="sub">Special names come in four main groups. If a name has more than one word, every main word gets a pass.</p>
     <div class="lists">
@@ -293,7 +390,7 @@
   </section>
 
   <!-- 5. SPECIAL CASES -->
-  <section>
+  <section id="specials">
     <h2>Special guests</h2>
     <p class="sub">The quiz checks these too. They follow their own small rules.</p>
     <div class="grid-2">
@@ -326,12 +423,15 @@
   <!-- 6. PRACTICE -->
   <section>
     <h2>Run the door</h2>
-    <p class="sub">Three kinds of question: fill the blank, check a sentence, or pick the correctly capitalised version. You'll see straight away if you're right, and why. The questions get trickier as you go.</p>
-    <div class="scoreboard">
-      <div><div class="label">Your score</div><div class="score" id="scoreDisplay">0 / 30</div></div>
-      <button class="reset-btn" id="resetBtn" type="button">Start over</button>
+    <p class="sub">Each attempt draws <span id="qbDraw">20</span> questions from a bank of <span id="qbBank">120</span>, so every try is different. You'll fill gaps, check sentences, pick the right version and spot mistakes, and the questions get trickier as you go. Finish them all to see which areas to review.</p>
+    <div class="qb" id="qb">
+      <div class="qb-bar">
+        <div><div class="qb-label">Your score</div><div class="qb-score" id="qbScore">0 / 20</div><div class="qb-progress" id="qbProgress">0 of 20 answered</div></div>
+        <button class="qb-new" id="qbNew" type="button">New quiz</button>
+      </div>
+      <div class="qb-list" id="qbList"></div>
+      <div class="qb-summary" id="qbSummary" hidden></div>
     </div>
-    <div id="quizContainer"></div>
   </section>
 
   <!-- 7. PIN THIS UP -->
@@ -403,113 +503,368 @@
   document.getElementById('gateReset').addEventListener('click', drawGate);
   drawGate();
 
-  /* ---------- Quiz ---------- */
-  const FILL = "Pick the right word for the blank.";
-  const CHECK = "Is the capitalisation correct?";
-  const PICK = "Pick the correctly capitalised version.";
-  const CN = ["Correct", "Needs fixing"];
-  const QUESTIONS = [
-    { ask: FILL, text: "My family went to ___ for the December holidays.", options: ["Japan", "japan"], answer: 0, why: "Japan is the special name of one particular country, so it gets a pass." },
-    { ask: FILL, text: "We bought a new rice cooker at the ___ on Saturday.", options: ["Mall", "mall"], answer: 1, why: "“Mall” is a general word here. It doesn't name one particular mall, so it stays small." },
-    { ask: FILL, text: "Our class party is on the last Friday of ___.", options: ["November", "november"], answer: 0, why: "Months are special names, so November always gets a pass." },
-    { ask: PICK, text: "mrs lin is my english teacher.", options: ["Mrs lin is my English teacher.", "Mrs Lin is my english teacher.", "Mrs Lin is My English Teacher.", "Mrs Lin is my English teacher."], answer: 3, why: "“Mrs Lin” is a name and “English” is a language. “My” and “teacher” are general words." },
-    { ask: FILL, text: "On Saturday, ___ cycled with my brother at East Coast Park.", options: ["I", "i"], answer: 0, why: "The word “I” always gets a pass, wherever it stands in the sentence." },
-    { ask: FILL, text: "Arjun is the tallest boy in ___ 5F.", options: ["Primary", "primary"], answer: 0, why: "“Primary 5F” is the name of one particular class, so “Primary” gets a pass." },
-    { ask: PICK, text: "last wednesday, mr tan asked for volunteers.", options: ["Last wednesday, Mr Tan asked for volunteers.", "last Wednesday, Mr Tan asked for volunteers.", "Last Wednesday, Mr Tan asked for volunteers.", "Last Wednesday, Mr Tan Asked for Volunteers."], answer: 2, why: "“Last” starts the sentence. “Wednesday” and “Mr Tan” are special names. Nothing else needs a pass." },
-    { ask: FILL, text: "My cousin plays badminton at a ___ in Tampines.", options: ["Community Club", "community club"], answer: 1, why: "“A community club” could be any one, so it's a description and stays small." },
-    { ask: FILL, text: "Next week, our school will celebrate ___.", options: ["racial harmony day", "Racial Harmony Day"], answer: 1, why: "It's the name of a special event, so every main word gets a pass." },
-    { ask: CHECK, text: "We took photos with the Merlion at Marina Bay.", options: CN, answer: 0, why: "“Merlion” and “Marina Bay” are special names, and “the” stays small in the middle of a sentence." },
-
-    { ask: CHECK, text: "I do not know why so many singaporeans love durians.", options: CN, answer: 1, why: "“Singaporeans” comes from the name Singapore, so it needs a capital S." },
-    { ask: PICK, text: "i bought a present for my mum.", options: ["I bought a present for my Mum.", "I bought a present for my mum.", "I Bought a present for my mum.", "i bought a present for my mum."], answer: 1, why: "After “my”, mum is a description, not a name. Only the first word “I” gets a pass." },
-    { ask: FILL, text: "“Thank you, ___!” I said as I hugged her.", options: ["Mum", "mum"], answer: 0, why: "Here “Mum” is used as her name, as you're speaking to her, so it gets a pass." },
-    { ask: PICK, text: "“we are back!” my parents exclaimed.", options: ["“We are back!” My parents exclaimed.", "“We are back!” my parents exclaimed.", "“we are back!” my parents exclaimed.", "“We are back!” my Parents exclaimed."], answer: 1, why: "“We” starts the speech. The tag “my parents exclaimed” continues the same sentence, so it stays small." },
-    { ask: CHECK, text: "After signing the consent form, what must I do?", options: CN, answer: 0, why: "A comma doesn't start a new sentence, so “what” correctly stays small. Only “I” needs a pass." },
-    { ask: FILL, text: "We went to the ___ to watch a musical.", options: ["Esplanade", "esplanade"], answer: 0, why: "The Esplanade is the name of one particular building, so it gets a pass. “The” stays small." },
-    { ask: PICK, text: "my mum called out, “dinner is ready.”", options: ["My mum called out, “dinner is ready.”", "My mum called out, “Dinner is ready.”", "My Mum called out, “Dinner is ready.”", "my mum called out, “Dinner is ready.”"], answer: 1, why: "Both the sentence and the speech start with capitals. “Mum” after “my” is a description, so it stays small." },
-    { ask: FILL, text: "My brother will start at a ___ school next year.", options: ["Secondary", "secondary"], answer: 1, why: "“A secondary school” could be any school. It's a description, not a name." },
-    { ask: CHECK, text: "We bought kueh lapis for Hari Raya Puasa.", options: CN, answer: 0, why: "Hari Raya Puasa is the name of a festival, so every word gets a pass." },
-    { ask: PICK, text: "the library is at the corner of orchard road.", options: ["The library is at the corner of Orchard road.", "The Library is at the corner of Orchard Road.", "The library is at the corner of Orchard Road.", "The library is at the Corner of Orchard Road."], answer: 2, why: "“Orchard Road” is the full name, so both words get a pass. “Library” and “corner” are general words." },
-
-    { ask: PICK, text: "Which closing for a formal letter is correct?", options: ["Yours Sincerely,", "yours sincerely,", "Yours sincerely,"], answer: 2, why: "In a letter closing, only the first word gets a pass: “Yours sincerely,”." },
-    { ask: PICK, text: "Which greeting for a formal letter is correct?", options: ["Dear sir/madam,", "dear Sir/Madam,", "Dear Sir/madam,", "Dear Sir/Madam,"], answer: 3, why: "“Dear” opens the letter, and both titles, Sir and Madam, get a pass." },
-    { ask: FILL, text: "We flew to Tokyo in ___ and saw snow for the first time.", options: ["Winter", "winter"], answer: 1, why: "Seasons are not special names, so “winter” stays small." },
-    { ask: CHECK, text: "Our trip to Korea in Spring was our best holiday ever.", options: CN, answer: 1, why: "“Korea” is right, but seasons stay small. It should be “in spring”." },
-    { ask: PICK, text: "Which book title is capitalised correctly?", options: ["The Secret of the Old Kampong", "The Secret Of The Old Kampong", "the Secret of the old Kampong", "The secret of the old kampong"], answer: 0, why: "The first word and the main words get passes. “Of” and “the” stay small because they don't come first." },
-    { ask: PICK, text: "Which song title is capitalised correctly?", options: ["Dancing in the Rain", "Dancing In The Rain", "dancing in the rain", "Dancing in the rain"], answer: 0, why: "Main words like “Dancing” and “Rain” get passes. Small words like “in” and “the” stay small." },
-    { ask: PICK, text: "during chinese new year, we visited my grandmother in malaysia.", options: ["During Chinese New Year, we visited my Grandmother in Malaysia.", "During Chinese new year, we visited my grandmother in Malaysia.", "During Chinese New Year, we visited my grandmother in Malaysia.", "during Chinese New Year, we visited my grandmother in Malaysia."], answer: 2, why: "The festival and the country are special names. “My grandmother” is a description, so it stays small." },
-    { ask: CHECK, text: "“And next up is Jack!” The host exclaimed.", options: CN, answer: 1, why: "The speech tag continues the sentence, so it should be “the host exclaimed”." },
-    { ask: PICK, text: "the primary one pupils followed their buddies to the canteen.", options: ["The primary one pupils followed their buddies to the canteen.", "The Primary One Pupils followed their buddies to the canteen.", "The Primary One pupils followed their Buddies to the Canteen.", "The Primary One pupils followed their buddies to the canteen."], answer: 3, why: "“Primary One” names a school level, so it gets passes. Pupils, buddies and canteen are general words." },
-    { ask: PICK, text: "on youth day, ms goh told us, “you were all amazing!”", options: ["On Youth Day, Ms Goh told us, “You were all amazing!”", "On youth day, Ms Goh told us, “You were all amazing!”", "On Youth Day, Ms Goh told us, “you were all amazing!”", "On Youth Day, Ms Goh Told Us, “You Were All Amazing!”"], answer: 0, why: "Passes go to the first word, the event, the name, and the first word of the speech. Nothing else." }
+    /* ================= QUIZ: question bank (121 questions) ================= */
+  const LESSON_KEY = "shelf-l06";
+  const QB_TEXT = {"ask": {"check": "Are the capital letters correct?", "pick": "Pick the correctly capitalised version.", "fill": "Which one fits the gap?", "spot": "Tap the part with the capital letter mistake."}, "yn": ["Needs fixing", "Correct"]};
+  const TAGS = {
+    first: { label: "Pass 1: the first word, and \"I\"", href: '#rule' },
+    names: { label: "Names of people and places", href: '#cases' },
+    days: { label: "Days, months, festivals and events", href: '#cases' },
+    groups: { label: "Languages, nationalities, classes and clubs", href: '#cases' },
+    desc: { label: "Trap: a name or just a description?", href: '#traps' },
+    mid: { label: "Trap: no capital after a comma or before a speech tag", href: '#traps' },
+    the: { label: "\"The\" stays small", href: '#specials' },
+    seasons: { label: "Seasons stay small", href: '#specials' },
+    titles: { label: "Titles of books, songs and shows", href: '#specials' },
+    letters: { label: "Opening and closing a letter", href: '#specials' },
+  };
+  const BANK = [
+    {"id": "f01", "t": "fill", "d": 1, "tag": "first", "q": "___ week, my mum called out, \"Dinner is ready!\"", "o": ["Last", "last"], "why": "The first word of a sentence always gets a capital."},
+    {"id": "f02", "t": "fill", "d": 1, "tag": "first", "q": "My mum called out, \"___ is ready!\"", "o": ["Dinner", "dinner"], "why": "The first word inside speech marks starts a sentence, so it gets a capital."},
+    {"id": "f03", "t": "fill", "d": 1, "tag": "first", "q": "Arjun and ___ went to the library after school.", "o": ["I", "i"], "why": "The word \"I\" always gets a capital, wherever it stands."},
+    {"id": "f04", "t": "fill", "d": 1, "tag": "first", "q": "Can ___ borrow your pencil?", "o": ["I", "i"], "why": "\"I\" is always a capital, even in the middle of a sentence."},
+    {"id": "f05", "t": "fill", "d": 1, "tag": "names", "q": "We met ___ at the bus stop.", "o": ["Ms Goh", "ms Goh", "Ms goh"], "why": "A person's name and title both get a capital: Ms Goh."},
+    {"id": "f06", "t": "fill", "d": 1, "tag": "names", "q": "My uncle works at ___ Airport.", "o": ["Changi", "changi"], "why": "Changi Airport is a special name of one place."},
+    {"id": "f07", "t": "fill", "d": 1, "tag": "names", "q": "We drove along ___ to the hotel.", "o": ["Orchard Road", "orchard road", "Orchard road"], "why": "Every main word of a road's name gets a capital."},
+    {"id": "f08", "t": "fill", "d": 2, "tag": "names", "q": "Last year, my family visited ___.", "o": ["Japan", "japan"], "why": "Countries are special names: Japan."},
+    {"id": "f09", "t": "fill", "d": 2, "tag": "names", "q": "We took the ferry from ___ to Batam.", "o": ["Singapore", "singapore"], "why": "Singapore is the name of one particular place."},
+    {"id": "f10", "t": "fill", "d": 1, "tag": "days", "q": "We have PE every ___.", "o": ["Monday", "monday"], "why": "Days of the week always get a capital."},
+    {"id": "f11", "t": "fill", "d": 1, "tag": "days", "q": "My birthday is in ___.", "o": ["December", "december"], "why": "Months always get a capital."},
+    {"id": "f12", "t": "fill", "d": 2, "tag": "days", "q": "We wore traditional costumes for ___.", "o": ["Racial Harmony Day", "racial harmony day", "Racial harmony day"], "why": "A named event: every main word gets a capital."},
+    {"id": "f13", "t": "fill", "d": 2, "tag": "days", "q": "We visit my grandparents during ___.", "o": ["Chinese New Year", "chinese new year", "Chinese new year"], "why": "A festival's name: every main word gets a capital."},
+    {"id": "f14", "t": "fill", "d": 2, "tag": "days", "q": "Our family celebrates ___ with ketupat and rendang.", "o": ["Hari Raya Puasa", "hari raya puasa", "Hari raya puasa"], "why": "Festivals are special names: Hari Raya Puasa."},
+    {"id": "f15", "t": "fill", "d": 2, "tag": "groups", "q": "Our ___ teacher also speaks Japanese.", "o": ["English", "english"], "why": "Languages always get a capital."},
+    {"id": "f16", "t": "fill", "d": 2, "tag": "groups", "q": "Many ___ enjoy chicken rice.", "o": ["Singaporeans", "singaporeans"], "why": "A word made from a place name keeps the capital: Singapore → Singaporeans."},
+    {"id": "f17", "t": "fill", "d": 2, "tag": "groups", "q": "Arjun is in ___.", "o": ["Primary 5F", "primary 5F"], "why": "A class name is a special name: Primary 5F."},
+    {"id": "f18", "t": "fill", "d": 2, "tag": "groups", "q": "My cousin speaks fluent ___.", "o": ["Malay", "malay"], "why": "Languages always get a capital."},
+    {"id": "f19", "t": "fill", "d": 2, "tag": "desc", "q": "My ___ and I went to the supermarket.", "o": ["mum", "Mum"], "why": "After \"my\", \"mum\" is just a description, so it stays small."},
+    {"id": "f20", "t": "fill", "d": 2, "tag": "desc", "q": "\"Thank you, ___!\" I said, hugging her.", "o": ["Mum", "mum"], "why": "Here \"Mum\" is used as her name, so it gets a capital."},
+    {"id": "f21", "t": "fill", "d": 2, "tag": "desc", "q": "We walked to the community club near our ___.", "o": ["school", "School"], "why": "\"Our school\" is a description, not a name, so it stays small."},
+    {"id": "f22", "t": "fill", "d": 3, "tag": "desc", "q": "We went to ___ for the carnival.", "o": ["Casuarina Community Club", "casuarina community club", "Casuarina community club"], "why": "The full name of one particular place: every main word gets a capital."},
+    {"id": "f23", "t": "fill", "d": 3, "tag": "desc", "q": "My ___ lives in Malacca.", "o": ["grandmother", "Grandmother"], "why": "After \"my\", \"grandmother\" is a description: small."},
+    {"id": "f24", "t": "fill", "d": 2, "tag": "mid", "q": "After signing the consent form, ___ must I do?", "o": ["what", "What"], "why": "A comma doesn't start a new sentence, so the next word stays small."},
+    {"id": "f25", "t": "fill", "d": 2, "tag": "mid", "q": "\"We are back!\" ___ parents exclaimed.", "o": ["my", "My"], "why": "The speech tag after a quote belongs to the same sentence: small."},
+    {"id": "f26", "t": "fill", "d": 3, "tag": "mid", "q": "\"Where is my bag?\" ___ asked.", "o": ["Nurul", "nurul"], "why": "Nurul is a name, so it keeps its capital, even in a speech tag."},
+    {"id": "f27", "t": "fill", "d": 3, "tag": "mid", "q": "\"Hurry up!\" ___ shouted.", "o": ["he", "He"], "why": "The speech tag continues the sentence, so \"he\" stays small."},
+    {"id": "f28", "t": "fill", "d": 3, "tag": "the", "q": "We took photos with ___ Merlion.", "o": ["the", "The"], "why": "In the middle of a sentence, \"the\" stays small. Only the name gets a pass."},
+    {"id": "f29", "t": "fill", "d": 3, "tag": "the", "q": "We watched a show at ___ Esplanade.", "o": ["the", "The"], "why": "\"The\" stays small mid-sentence: the Esplanade."},
+    {"id": "f30", "t": "fill", "d": 3, "tag": "seasons", "q": "We flew to Korea in ___.", "o": ["winter", "Winter"], "why": "Seasons are not special names, so they stay small."},
+    {"id": "f31", "t": "fill", "d": 3, "tag": "seasons", "q": "The cherry blossoms bloom in ___.", "o": ["spring", "Spring"], "why": "Seasons stay small."},
+    {"id": "f32", "t": "fill", "d": 3, "tag": "titles", "q": "My favourite book is ___.", "o": ["The Secret of the Old Kampong", "The Secret Of The Old Kampong", "the secret of the old kampong"], "why": "Capitalise the first word and the main words. Small words like \"of\" and \"the\" stay small."},
+    {"id": "f33", "t": "fill", "d": 3, "tag": "titles", "q": "We sang ___ at the concert.", "o": ["Home in My Heart", "Home In My Heart", "home in my heart"], "why": "In a title, small words like \"in\" stay small unless they come first."},
+    {"id": "f34", "t": "fill", "d": 3, "tag": "letters", "q": "___ Sir/Madam,", "o": ["Dear", "dear"], "why": "A letter opens with \"Dear\", with a capital."},
+    {"id": "f35", "t": "fill", "d": 3, "tag": "letters", "q": "___ sincerely,", "o": ["Yours", "yours"], "why": "The closing starts with a capital, and only the first word gets one."},
+    {"id": "f36", "t": "fill", "d": 3, "tag": "letters", "q": "Yours ___,", "o": ["faithfully", "Faithfully"], "why": "In a letter's closing, only the first word gets a capital: Yours faithfully,"},
+    {"id": "c01", "t": "check", "d": 1, "tag": "first", "q": "i like to read comics.", "a": 0, "why": "\"I\" always gets a capital, and so does the first word of a sentence."},
+    {"id": "c02", "t": "check", "d": 1, "tag": "first", "q": "My brother and I went swimming.", "a": 1, "why": "Capital for the first word and for \"I\": correct."},
+    {"id": "c03", "t": "check", "d": 1, "tag": "first", "q": "my sister plays the violin.", "a": 0, "why": "The first word of a sentence needs a capital: \"My sister…\""},
+    {"id": "c04", "t": "check", "d": 1, "tag": "names", "q": "We visited singapore zoo on Saturday.", "a": 0, "why": "Singapore Zoo is a special name: every main word gets a capital."},
+    {"id": "c05", "t": "check", "d": 1, "tag": "names", "q": "We met Mr Lim at Parkway Parade.", "a": 1, "why": "A person's name and a mall's name both get capitals: correct."},
+    {"id": "c06", "t": "check", "d": 1, "tag": "days", "q": "My birthday is on a monday in june.", "a": 0, "why": "Days and months always get capitals: Monday, June."},
+    {"id": "c07", "t": "check", "d": 1, "tag": "days", "q": "Sports Day is on Friday.", "a": 1, "why": "A named event and a day: correct."},
+    {"id": "c08", "t": "check", "d": 2, "tag": "names", "q": "I visited Singapore in December and saw the Esplanade.", "a": 1, "why": "Country, month and building all get capitals, and \"the\" stays small: correct."},
+    {"id": "c09", "t": "check", "d": 2, "tag": "names", "q": "My uncle drives along bukit timah road every day.", "a": 0, "why": "A road's name gets capitals: Bukit Timah Road."},
+    {"id": "c10", "t": "check", "d": 2, "tag": "groups", "q": "Our english teacher speaks japanese too.", "a": 0, "why": "Languages always get capitals: English, Japanese."},
+    {"id": "c11", "t": "check", "d": 2, "tag": "groups", "q": "Many Japanese tourists visit Singapore.", "a": 1, "why": "A nationality and a country: correct."},
+    {"id": "c12", "t": "check", "d": 2, "tag": "groups", "q": "Arjun from primary 5F asked for help.", "a": 0, "why": "A class name gets a capital: Primary 5F."},
+    {"id": "c13", "t": "check", "d": 2, "tag": "days", "q": "We celebrate Deepavali with my cousins.", "a": 1, "why": "A festival's name gets a capital: correct."},
+    {"id": "c14", "t": "check", "d": 2, "tag": "desc", "q": "My Mum and I went to the Community Club near our School.", "a": 0, "why": "After \"my\" and \"our\", these words are descriptions: \"my mum\", \"the community club\", \"our school\"."},
+    {"id": "c15", "t": "check", "d": 2, "tag": "desc", "q": "My mum and I went to the community club near our school.", "a": 1, "why": "Descriptions stay small: correct."},
+    {"id": "c16", "t": "check", "d": 2, "tag": "desc", "q": "Can I go to the park, Dad?", "a": 1, "why": "\"Dad\" is used as a name here, so it gets a capital: correct."},
+    {"id": "c17", "t": "check", "d": 2, "tag": "desc", "q": "I gave the card to my Teacher.", "a": 0, "why": "\"My teacher\" is a description, so \"teacher\" stays small."},
+    {"id": "c18", "t": "check", "d": 2, "tag": "mid", "q": "After signing the consent form, What must I do?", "a": 0, "why": "A comma doesn't start a new sentence: \"…form, what must I do?\""},
+    {"id": "c19", "t": "check", "d": 2, "tag": "mid", "q": "\"We are back!\" My parents exclaimed.", "a": 0, "why": "The speech tag still belongs to the sentence: \"my parents exclaimed\"."},
+    {"id": "c20", "t": "check", "d": 3, "tag": "mid", "q": "\"We are back!\" my parents exclaimed.", "a": 1, "why": "The speech tag stays small: correct."},
+    {"id": "c21", "t": "check", "d": 3, "tag": "mid", "q": "When the bell rang, We rushed to the canteen.", "a": 0, "why": "A comma doesn't start a new sentence: \"we\" stays small."},
+    {"id": "c22", "t": "check", "d": 3, "tag": "the", "q": "We took photos with The Merlion.", "a": 0, "why": "In the middle of a sentence, \"the\" stays small: the Merlion."},
+    {"id": "c23", "t": "check", "d": 3, "tag": "the", "q": "We watched a show at the Esplanade.", "a": 1, "why": "\"The\" stays small mid-sentence, and the name gets a capital: correct."},
+    {"id": "c24", "t": "check", "d": 3, "tag": "seasons", "q": "We flew to Korea in Winter.", "a": 0, "why": "Seasons stay small: winter."},
+    {"id": "c25", "t": "check", "d": 3, "tag": "seasons", "q": "We flew to Korea in winter, in December.", "a": 1, "why": "Season small, month capital: correct."},
+    {"id": "c26", "t": "check", "d": 3, "tag": "titles", "q": "I read The Secret Of The Old Kampong.", "a": 0, "why": "Small words in a title stay small: The Secret of the Old Kampong."},
+    {"id": "c27", "t": "check", "d": 3, "tag": "titles", "q": "I read The Secret of the Old Kampong.", "a": 1, "why": "First word and main words capitalised, small words small: correct."},
+    {"id": "c28", "t": "check", "d": 3, "tag": "letters", "q": "Yours Sincerely,", "a": 0, "why": "Only the first word of the closing gets a capital: Yours sincerely,"},
+    {"id": "c29", "t": "check", "d": 3, "tag": "letters", "q": "Dear Sir/Madam,", "a": 1, "why": "Both titles get a capital in the greeting: correct."},
+    {"id": "c30", "t": "check", "d": 3, "tag": "letters", "q": "yours faithfully,", "a": 0, "why": "The closing starts with a capital: Yours faithfully,"},
+    {"id": "p01", "t": "pick", "d": 1, "tag": "first", "q": "i think my friend is late.", "o": ["I think my friend is late.", "i think my friend is late.", "I think My friend is late.", "I Think my friend is late."], "why": "Capital for the first word \"I\", and nothing else needs one."},
+    {"id": "p02", "t": "pick", "d": 1, "tag": "names", "q": "we went to sentosa with uncle ben.", "o": ["We went to Sentosa with Uncle Ben.", "We went to sentosa with uncle Ben.", "We went to Sentosa with uncle ben.", "we went to Sentosa with Uncle Ben."], "why": "First word, a place name and a person's name all get capitals."},
+    {"id": "p03", "t": "pick", "d": 1, "tag": "days", "q": "my exam is on tuesday in may.", "o": ["My exam is on Tuesday in May.", "My exam is on tuesday in may.", "My Exam is on Tuesday in May.", "my exam is on Tuesday in May."], "why": "First word, day and month: capitals. \"exam\" is ordinary."},
+    {"id": "p04", "t": "pick", "d": 2, "tag": "groups", "q": "ms tan teaches us english and malay.", "o": ["Ms Tan teaches us English and Malay.", "Ms tan teaches us English and Malay.", "Ms Tan teaches us english and malay.", "Ms Tan Teaches us English and Malay."], "why": "A name, and two languages, get capitals."},
+    {"id": "p05", "t": "pick", "d": 2, "tag": "days", "q": "we celebrated national day at marina bay.", "o": ["We celebrated National Day at Marina Bay.", "We celebrated national day at Marina Bay.", "We celebrated National Day at marina bay.", "We Celebrated National Day at Marina Bay."], "why": "An event and a place name: every main word gets a capital."},
+    {"id": "p06", "t": "pick", "d": 2, "tag": "desc", "ask": "Which sentence is correct?", "o": ["My grandmother lives near our school.", "My Grandmother lives near our School.", "My grandmother lives near our School.", "my grandmother lives near our school."], "why": "After \"my\" and \"our\", these are descriptions: small letters."},
+    {"id": "p07", "t": "pick", "d": 2, "tag": "desc", "ask": "Which sentence is correct?", "o": ["\"Good morning, Grandma!\" I said.", "\"Good morning, grandma!\" I said.", "\"good morning, Grandma!\" I said.", "\"Good morning, Grandma!\" i said."], "why": "\"Grandma\" is used as a name here, so it gets a capital."},
+    {"id": "p08", "t": "pick", "d": 2, "tag": "mid", "ask": "Which sentence is correct?", "o": ["\"Watch out!\" my brother shouted.", "\"Watch out!\" My brother shouted.", "\"watch out!\" my brother shouted.", "\"Watch Out!\" my brother shouted."], "why": "The speech starts with a capital, but the tag after it stays small."},
+    {"id": "p09", "t": "pick", "d": 2, "tag": "mid", "ask": "Which sentence is correct?", "o": ["Before lunch, we washed our hands.", "Before lunch, We washed our hands.", "before lunch, we washed our hands.", "Before Lunch, we washed our hands."], "why": "Only the first word gets a capital. The comma doesn't start a new sentence."},
+    {"id": "p10", "t": "pick", "d": 3, "tag": "the", "ask": "Which sentence is correct?", "o": ["We visited the Singapore Flyer and the Merlion.", "We visited The Singapore Flyer and The Merlion.", "We visited the singapore flyer and the merlion.", "We visited the Singapore flyer and the Merlion."], "why": "\"The\" stays small mid-sentence, and every main word of each name gets a capital."},
+    {"id": "p11", "t": "pick", "d": 3, "tag": "seasons", "ask": "Which sentence is correct?", "o": ["In autumn, the leaves in Japan turn red.", "In Autumn, the leaves in Japan turn red.", "In autumn, the leaves in japan turn red.", "in autumn, the leaves in Japan turn red."], "why": "Seasons stay small, the country gets a capital, and so does the first word."},
+    {"id": "p12", "t": "pick", "d": 3, "tag": "titles", "ask": "Which title is written correctly?", "o": ["The Boy in the Striped Pyjamas", "The Boy In The Striped Pyjamas", "the boy in the striped pyjamas", "The boy in the striped pyjamas"], "why": "First word and main words get capitals. \"in\" and \"the\" stay small."},
+    {"id": "p13", "t": "pick", "d": 3, "tag": "titles", "ask": "Which title is written correctly?", "o": ["A Day at the Zoo", "A Day At The Zoo", "a day at the zoo", "A day at the Zoo"], "why": "\"A\" comes first, so it gets a capital. \"at\" and \"the\" stay small."},
+    {"id": "p14", "t": "pick", "d": 3, "tag": "letters", "ask": "Which letter closing is correct?", "o": ["Yours sincerely,", "Yours Sincerely,", "yours sincerely,", "YOURS sincerely,"], "why": "Only the first word of the closing gets a capital."},
+    {"id": "p15", "t": "pick", "d": 3, "tag": "letters", "ask": "Which letter greeting is correct?", "o": ["Dear Sir/Madam,", "dear Sir/Madam,", "Dear sir/madam,", "Dear Sir/madam,"], "why": "In the greeting, \"Dear\" and both titles get capitals."},
+    {"id": "p16", "t": "pick", "d": 2, "tag": "names", "ask": "Which sentence needs fixing?", "o": ["We had lunch at vivocity.", "We had lunch at VivoCity.", "We had lunch at a mall.", "We had lunch at the mall near our home."], "why": "VivoCity is the special name of one mall, so it needs a capital."},
+    {"id": "p17", "t": "pick", "d": 2, "tag": "days", "ask": "Which sentence needs fixing?", "o": ["The holidays start in november.", "The holidays start in November.", "The holidays start next month.", "The holidays start in winter."], "why": "Months always get a capital: November."},
+    {"id": "p18", "t": "pick", "d": 3, "tag": "groups", "ask": "Which sentence needs fixing?", "o": ["My cousin is in primary six.", "My cousin is in Primary Six.", "My cousin is in the same class as me.", "My cousin is in Primary 6B."], "why": "A class level used as a name gets capitals: Primary Six."},
+    {"id": "p19", "t": "pick", "d": 3, "tag": "first", "ask": "Which sentence needs fixing?", "o": ["My friends and i went cycling.", "My friends and I went cycling.", "We went cycling.", "I went cycling with my friends."], "why": "\"I\" always gets a capital."},
+    {"id": "p20", "t": "pick", "d": 1, "tag": "names", "q": "my dog is called max.", "o": ["My dog is called Max.", "My Dog is called Max.", "my dog is called Max.", "My dog is called max."], "why": "First word and the dog's name get capitals. \"dog\" is ordinary."},
+    {"id": "s01", "t": "spot", "d": 1, "tag": "first", "parts": ["yesterday,", "my class", "went", "to the museum."], "a": 0, "why": "The first word of a sentence needs a capital: \"Yesterday\"."},
+    {"id": "s02", "t": "spot", "d": 1, "tag": "first", "parts": ["My brother", "and i", "played", "chess."], "a": 1, "why": "\"I\" always gets a capital."},
+    {"id": "s03", "t": "spot", "d": 1, "tag": "names", "parts": ["We visited", "gardens by the bay", "with", "my cousins."], "a": 1, "why": "A place name: every main word gets a capital: Gardens by the Bay."},
+    {"id": "s04", "t": "spot", "d": 1, "tag": "days", "parts": ["My birthday party", "is on", "saturday", "afternoon."], "a": 2, "why": "Days always get a capital: Saturday."},
+    {"id": "s05", "t": "spot", "d": 1, "tag": "names", "parts": ["Our new neighbour", "is", "mrs Lim", "from Penang."], "a": 2, "why": "Titles in names get a capital: Mrs Lim."},
+    {"id": "s06", "t": "spot", "d": 2, "tag": "days", "parts": ["The school holidays", "begin", "in june", "this year."], "a": 2, "why": "Months always get a capital: June."},
+    {"id": "s07", "t": "spot", "d": 2, "tag": "groups", "parts": ["My friend", "can speak", "tamil", "and English."], "a": 2, "why": "Languages always get a capital: Tamil."},
+    {"id": "s08", "t": "spot", "d": 2, "tag": "groups", "parts": ["The tourists", "were", "japanese", "and very friendly."], "a": 2, "why": "Nationalities get a capital: Japanese."},
+    {"id": "s09", "t": "spot", "d": 2, "tag": "desc", "parts": ["Last Sunday,", "my Dad", "took us", "to the beach."], "a": 1, "why": "After \"my\", \"dad\" is a description: \"my dad\"."},
+    {"id": "s10", "t": "spot", "d": 2, "tag": "desc", "parts": ["We played", "in the Park", "near", "our flat."], "a": 1, "why": "\"The park\" is a description, not a name, so it stays small."},
+    {"id": "s11", "t": "spot", "d": 2, "tag": "desc", "parts": ["After school,", "I visited", "my Grandmother", "in hospital."], "a": 2, "why": "After \"my\", \"grandmother\" is a description: small."},
+    {"id": "s12", "t": "spot", "d": 2, "tag": "mid", "parts": ["\"Let's go!\"", "My sister", "said", "excitedly."], "a": 1, "why": "The speech tag continues the sentence, so \"my sister\" stays small."},
+    {"id": "s13", "t": "spot", "d": 2, "tag": "mid", "parts": ["As soon as I reached home,", "I", "Took off", "my shoes."], "a": 2, "why": "Only the first word of a sentence gets a capital: \"took off\"."},
+    {"id": "s14", "t": "spot", "d": 3, "tag": "mid", "parts": ["\"I'm hungry,\"", "Said", "Ben", "quietly."], "a": 1, "why": "The speech tag stays small: \"said Ben\"."},
+    {"id": "s15", "t": "spot", "d": 3, "tag": "the", "parts": ["At the zoo,", "we saw the pandas", "and visited", "The Night Safari."], "a": 3, "why": "In the middle of a sentence, \"the\" stays small: the Night Safari."},
+    {"id": "s16", "t": "spot", "d": 3, "tag": "seasons", "parts": ["In Summer,", "my family", "went to", "London."], "a": 0, "why": "Seasons stay small: \"In summer\"."},
+    {"id": "s17", "t": "spot", "d": 3, "tag": "seasons", "parts": ["We visited", "Korea", "in Winter", "last December."], "a": 2, "why": "Seasons stay small: winter. Months keep their capital."},
+    {"id": "s18", "t": "spot", "d": 3, "tag": "titles", "parts": ["Have you read", "the book", "Charlotte's web", "yet?"], "a": 2, "why": "Every main word in a title gets a capital: Charlotte's Web."},
+    {"id": "s19", "t": "spot", "d": 3, "tag": "titles", "parts": ["We watched", "the movie", "The Lion And The Mouse", "last night."], "a": 2, "why": "Small words like \"and\" and \"the\" stay small in a title: The Lion and the Mouse."},
+    {"id": "s20", "t": "spot", "d": 3, "tag": "letters", "parts": ["I look forward to your reply.", "Yours Faithfully,", "Nurul", "Aisyah"], "a": 1, "why": "Only the first word of the closing gets a capital: Yours faithfully,"},
+    {"id": "s21", "t": "spot", "d": 3, "tag": "names", "parts": ["My father", "works at", "the national library", "on Victoria Street."], "a": 2, "why": "The National Library is the name of one building: every main word gets a capital."},
+    {"id": "s22", "t": "spot", "d": 2, "tag": "days", "parts": ["We gave our teachers cards", "on", "teachers' day", "this year."], "a": 2, "why": "A named event: Teachers' Day."},
+    {"id": "s23", "t": "spot", "d": 3, "tag": "groups", "parts": ["Last year,", "Wei Ling", "joined", "the singapore youth choir."], "a": 3, "why": "A named group is a special name: the Singapore Youth Choir (and \"the\" stays small)."},
+    {"id": "f37", "t": "fill", "d": 1, "tag": "first", "q": "___ love eating durians.", "o": ["I", "i"], "why": "\"I\" always gets a capital, and here it's also the first word."},
+    {"id": "f38", "t": "fill", "d": 1, "tag": "names", "q": "My best friend is ___.", "o": ["Priya", "priya"], "why": "A person's name always gets a capital."},
+    {"id": "f39", "t": "fill", "d": 1, "tag": "days", "q": "School starts again on ___.", "o": ["Wednesday", "wednesday"], "why": "Days of the week always get a capital."},
+    {"id": "c31", "t": "check", "d": 1, "tag": "names", "q": "My cousin lives in malaysia.", "a": 0, "why": "Countries are special names: Malaysia."},
+    {"id": "c32", "t": "check", "d": 1, "tag": "first", "q": "we went to the beach yesterday.", "a": 0, "why": "The first word of a sentence needs a capital: \"We went…\""},
+    {"id": "c33", "t": "check", "d": 1, "tag": "days", "q": "We go to the library every Saturday.", "a": 1, "why": "The day gets a capital, and nothing else needs one: correct."},
+    {"id": "s24", "t": "spot", "d": 1, "tag": "names", "parts": ["On Sunday,", "my family", "visited", "jurong bird park."], "a": 3, "why": "A place name: every main word gets a capital: Jurong Bird Park."},
+    {"id": "p21", "t": "pick", "d": 1, "tag": "days", "q": "we have swimming lessons on thursday.", "o": ["We have swimming lessons on Thursday.", "We have Swimming Lessons on Thursday.", "we have swimming lessons on Thursday.", "We have swimming lessons on thursday."], "why": "The first word and the day get capitals. \"swimming lessons\" is ordinary."},
+    {"id": "c34", "t": "check", "d": 3, "tag": "the", "q": "We had a picnic at the Botanic Gardens.", "a": 1, "why": "\"The\" stays small mid-sentence, and the name gets capitals: correct."},
+    {"id": "f40", "t": "fill", "d": 3, "tag": "the", "q": "Our class visited ___ National Museum.", "o": ["the", "The"], "why": "In the middle of a sentence, \"the\" stays small."},
+    {"id": "s25", "t": "spot", "d": 2, "tag": "desc", "parts": ["On Saturday,", "our Teacher", "took us", "to the zoo."], "a": 1, "why": "\"Our teacher\" is a description, so \"teacher\" stays small."},
+    {"id": "c35", "t": "check", "d": 2, "tag": "groups", "q": "Ravi is the captain of the Primary 5F football team.", "a": 1, "why": "The class name gets a capital, and \"football team\" is ordinary: correct."},
   ];
 
-  const container = document.getElementById('quizContainer');
-  const scoreEl = document.getElementById('scoreDisplay');
-  let score = 0, answered = [];
+  /* ================= QUIZ BANK ENGINE (shared by every lesson) =================
+     Needs, defined above it: LESSON_KEY, TAGS, BANK. Optional: QB_TEXT = { ask: {...}, yn: [...] }.
+     Each attempt draws BAND_SIZES questions (easy, medium, tricky). The draw builds many
+     candidate quizzes and keeps the best: every tag present, 3+ of each type, balanced
+     check answers, unseen questions first. Options are shuffled; ids seen are remembered. */
+  const BAND_SIZES = [7, 7, 6];
+  const DRAW = BAND_SIZES.reduce((a, b) => a + b, 0);
+  const QBT = (typeof QB_TEXT !== 'undefined') ? QB_TEXT : {};
+  const ASK = Object.assign({
+    check: 'Is this sentence correct?',
+    pick:  'Pick the correct sentence.',
+    fill:  'Which choice fills the gap correctly?',
+    spot:  'Tap the part with the mistake.'
+  }, QBT.ask || {});
+  const YN = QBT.yn || ['Needs fixing', 'Correct'];
 
-  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const store = {
+    get(k, fallback) { try { const v = localStorage.getItem(LESSON_KEY + ':' + k); return v === null ? fallback : JSON.parse(v); } catch (e) { return fallback; } },
+    set(k, v) { try { localStorage.setItem(LESSON_KEY + ':' + k, JSON.stringify(v)); } catch (e) { /* storage unavailable: quiz still works */ } }
+  };
+  const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-  function updateScore() { scoreEl.textContent = score + ' / ' + QUESTIONS.length; }
+  function buildCandidate(seen) {
+    const chosen = [], tagN = {}, typeN = {};
+    let fixN = 0, okN = 0;
+    for (let band = 1; band <= 3; band++) {
+      const picks = [];
+      for (let k = 0; k < BAND_SIZES[band - 1]; k++) {
+        let best = null, bestScore = -Infinity;
+        BANK.forEach(q => {
+          if (q.d !== band || picks.includes(q)) return;
+          let s = Math.random() * 3;
+          if (!seen.has(q.id)) s += 6;
+          if (!tagN[q.tag]) s += 12;
+          s -= (typeN[q.t] || 0) * 1.2;
+          if ((typeN[q.t] || 0) < 3) s += 2;   // nudge every type up to 3
+          if (q.t === 'check') { const lean = q.a === 0 ? fixN - okN : okN - fixN; if (lean >= 1) s -= 4; }
+          if (s > bestScore) { bestScore = s; best = q; }
+        });
+        if (!best) break;
+        picks.push(best);
+        tagN[best.tag] = (tagN[best.tag] || 0) + 1;
+        typeN[best.t] = (typeN[best.t] || 0) + 1;
+        if (best.t === 'check') { if (best.a === 0) fixN++; else okN++; }
+      }
+      chosen.push(...shuffle(picks));
+    }
+    return chosen;
+  }
+
+  function rateCandidate(c, seen) {
+    const tags = new Set(c.map(q => q.tag)).size;
+    const types = {};
+    c.forEach(q => types[q.t] = (types[q.t] || 0) + 1);
+    const used = [...new Set(BANK.map(q => q.t))];
+    const minType = Math.min(...used.map(t => types[t] || 0));
+    const checks = c.filter(q => q.t === 'check');
+    const lean = Math.abs(checks.filter(q => q.a === 0).length * 2 - checks.length);
+    return (tags === Object.keys(TAGS).length ? 10000 : tags * 500)
+         + (c.length === DRAW ? 5000 : 0)
+         + Math.min(minType, 3) * 300
+         + (lean <= 2 ? 200 : 0)
+         + c.filter(q => !seen.has(q.id)).length * 10;
+  }
+
+  function drawQuiz() {
+    let seen = new Set(store.get('seen', []));
+    if (BANK.length - seen.size < DRAW) seen = new Set(store.get('last', []));   // new cycle, but skip the last attempt
+    let chosen = null, bestRate = -1;
+    for (let tries = 0; tries < 200; tries++) {
+      const c = buildCandidate(seen), r = rateCandidate(c, seen);
+      if (r > bestRate) { bestRate = r; chosen = c; }
+    }
+    chosen.forEach(q => seen.add(q.id));
+    store.set('seen', [...seen]);
+    store.set('last', chosen.map(q => q.id));
+    return chosen.map(q => {
+      if (q.t === 'pick' || q.t === 'fill') {
+        const opts = shuffle(q.o.map((text, i) => ({ text, ok: i === 0 })));
+        return { q, opts, answer: opts.findIndex(o => o.ok) };
+      }
+      if (q.t === 'check') return { q, opts: YN.map(text => ({ text })), answer: q.a };
+      return { q, opts: null, answer: q.a };
+    });
+  }
+
+  const listEl = document.getElementById('qbList');
+  const scoreEl = document.getElementById('qbScore');
+  const progressEl = document.getElementById('qbProgress');
+  const summaryEl = document.getElementById('qbSummary');
+  let current = [], score = 0, done = 0, missed = [];
+
+  function updateScore() {
+    scoreEl.textContent = score + ' / ' + current.length;
+    progressEl.textContent = done + ' of ' + current.length + ' answered';
+  }
+
+  /* Small or empty options are hard to see on a button, so label them. */
+  function optLabel(text) {
+    const t = text.trim();
+    if (t === '') return '<span class="qb-note">(nothing)</span>';
+    if (t === ',') return '<span class="qb-punct">,</span> <span class="qb-note">(a comma)</span>';
+    if (t === '.') return '<span class="qb-punct">.</span> <span class="qb-note">(a full stop)</span>';
+    return esc(text);
+  }
+  function plainLabel(text) {
+    const t = text.trim();
+    return t === '' ? 'nothing' : t === ',' ? 'a comma' : t === '.' ? 'a full stop' : '"' + t + '"';
+  }
+  function sentenceWithGap(q, text) {
+    let filler = '<span class="qb-blank">___</span>';
+    if (text !== undefined) {
+      filler = text.trim() === ''
+        ? '<span class="qb-blank qb-filled qb-none">(nothing)</span>'
+        : '<span class="qb-blank qb-filled">' + esc(text) + '</span>';
+    }
+    return esc(q.q).replace('___', filler);
+  }
 
   function render() {
-    container.innerHTML = '';
-    answered = QUESTIONS.map(() => false);
-    QUESTIONS.forEach((q, i) => {
+    listEl.innerHTML = '';
+    summaryEl.hidden = true;
+    current.forEach((item, i) => {
+      const q = item.q;
       const card = document.createElement('div');
-      card.className = 'quiz-card';
-      const hasBlank = q.text.includes('___');
-      const short = q.options.every(o => o.length <= 14);
+      card.className = 'qb-card';
+      card.dataset.type = q.t;
+      let body;
+      if (q.t === 'spot') {
+        body = '<div class="qb-spot">' + q.parts.map((p, k) =>
+          '<button type="button" class="qb-part" data-k="' + k + '">' + esc(p) + '</button>').join('') + '</div>';
+      } else if (q.t === 'fill') {
+        const cols = item.opts.length;
+        body = '<p class="qb-text">' + sentenceWithGap(q) + '</p><div class="qb-opts qb-row" style="--qb-cols:' + cols + '"></div>';
+      } else if (q.t === 'check') {
+        body = '<p class="qb-text">' + esc(q.q) + '</p><div class="qb-opts qb-row"></div>';
+      } else {
+        body = (q.q ? '<p class="qb-text">' + esc(q.q) + '</p>' : '') + '<div class="qb-opts"></div>';
+      }
       card.innerHTML =
-        '<p class="quiz-num">Question ' + (i + 1) + ' of ' + QUESTIONS.length + '</p>' +
-        (q.ask ? '<p class="quiz-ask">' + esc(q.ask) + '</p>' : '') +
-        '<p class="quiz-text">' + esc(q.text).replace('___', '<span class="blank">___</span>') + '</p>' +
-        '<div class="opts' + (short ? ' row' : '') + '"></div>' +
-        '<div class="feedback" role="status"></div>';
-      const opts = card.querySelector('.opts');
-      q.options.forEach((o, j) => {
-        const b = document.createElement('button');
-        b.type = 'button';
-        b.className = 'opt';
-        b.innerHTML = (short ? '' : '<span class="tag">' + String.fromCharCode(65 + j) + '</span>') + esc(o);
-        b.addEventListener('click', () => answer(i, j, card, hasBlank));
-        opts.appendChild(b);
-      });
-      container.appendChild(card);
+        '<p class="qb-num">Question ' + (i + 1) + ' of ' + current.length + '</p>' +
+        '<p class="qb-ask">' + esc(q.ask || ASK[q.t]) + '</p>' + body +
+        '<div class="qb-feedback" role="status"></div>';
+      if (q.t === 'spot') {
+        card.querySelectorAll('.qb-part').forEach(b => b.addEventListener('click', () => answer(i, +b.dataset.k, card)));
+      } else {
+        const opts = card.querySelector('.qb-opts');
+        item.opts.forEach((o, j) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'qb-opt';
+          b.innerHTML = (q.t === 'pick' ? '<span class="qb-letter">' + String.fromCharCode(65 + j) + '</span>' : '') + optLabel(o.text);
+          b.addEventListener('click', () => answer(i, j, card));
+          opts.appendChild(b);
+        });
+      }
+      listEl.appendChild(card);
     });
     updateScore();
   }
 
-  function answer(i, j, card, hasBlank) {
-    if (answered[i]) return;
-    answered[i] = true;
-    const q = QUESTIONS[i], ok = j === q.answer;
-    if (ok) score++;
-    updateScore();
-    if (hasBlank) {
-      const blank = card.querySelector('.blank');
-      blank.textContent = q.options[j];
-      blank.classList.add('filled');
-    }
-    const short = q.options.every(o => o.length <= 14);
-    card.querySelectorAll('.opt').forEach((b, k) => {
+  function answer(i, j, card) {
+    const item = current[i];
+    if (item.done) return;
+    item.done = true; done++;
+    const q = item.q, ok = j === item.answer;
+    if (ok) score++; else missed.push(q.tag);
+    card.querySelectorAll(q.t === 'spot' ? '.qb-part' : '.qb-opt').forEach((b, k) => {
       b.disabled = true;
-      if (k === j) b.classList.add(ok ? 'correct' : 'incorrect');
-      else if (k === q.answer && !ok) b.classList.add('reveal');
+      if (k === j) b.classList.add(ok ? 'qb-correct' : 'qb-incorrect');
+      else if (k === item.answer && !ok) b.classList.add('qb-reveal');
     });
-    const fb = card.querySelector('.feedback');
-    fb.classList.add('show', ok ? 'fb-ok' : 'fb-no');
-    fb.innerHTML = '<span class="verdict">' +
-      (ok ? 'Correct!' : 'Not quite. The answer is ' + (short ? '"' + esc(q.options[q.answer]) + '"' : String.fromCharCode(65 + q.answer)) + '.') +
-      '</span>' + esc(q.why);
+    if (q.t === 'fill') card.querySelector('.qb-text').innerHTML = sentenceWithGap(q, item.opts[j].text);
+    let right;
+    if (q.t === 'spot') right = 'The mistake is in "' + esc(q.parts[item.answer]) + '".';
+    else if (q.t === 'pick') right = 'The answer is ' + String.fromCharCode(65 + item.answer) + '.';
+    else right = 'The answer is ' + esc(plainLabel(item.opts[item.answer].text)) + '.';
+    const fb = card.querySelector('.qb-feedback');
+    fb.classList.add('qb-show', ok ? 'qb-fb-ok' : 'qb-fb-no');
+    fb.innerHTML = '<span class="qb-verdict">' + (ok ? 'Correct!' : 'Not quite. ' + right) + '</span>' + esc(q.why);
+    updateScore();
+    if (done === current.length) showSummary();
   }
 
-  document.getElementById('resetBtn').addEventListener('click', () => {
-    score = 0;
-    render();
-    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
+  function showSummary() {
+    const best = Math.max(store.get('best', 0), score);
+    store.set('best', best);
+    const attempts = store.get('attempts', 0) + 1;
+    store.set('attempts', attempts);
+    const counts = {};
+    missed.forEach(t => counts[t] = (counts[t] || 0) + 1);
+    const areas = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+    const n = current.length;
+    let msg;
+    if (score === n) msg = 'A perfect run! Try another set to make sure it sticks.';
+    else if (score >= Math.ceil(n * 0.8)) msg = 'Strong work. Have a quick look at the areas below, then try a fresh set.';
+    else if (score >= Math.ceil(n * 0.6)) msg = 'Good progress. Re-read the parts below before your next attempt.';
+    else msg = 'Worth another look at the lesson. Start with the areas below, then try a fresh set.';
+    summaryEl.innerHTML =
+      '<h3>You scored ' + score + ' / ' + n + '</h3><p>' + msg + '</p>' +
+      (areas.length ? '<p class="qb-sum-label">Areas to review</p><ul class="qb-areas">' + areas.map(t =>
+        '<li><a href="' + TAGS[t].href + '">' + esc(TAGS[t].label) + '</a><span>' + counts[t] + ' wrong</span></li>').join('') + '</ul>' : '') +
+      '<p class="qb-meta">Attempts on this device: ' + attempts + ' · Best score: ' + best + ' / ' + n + '</p>' +
+      '<button type="button" class="qb-go" id="qbAgain">Try ' + n + ' new questions</button>';
+    summaryEl.hidden = false;
+    document.getElementById('qbAgain').addEventListener('click', () => { newQuiz(); listEl.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    summaryEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 
-  render();
+  function newQuiz() {
+    current = drawQuiz(); score = 0; done = 0; missed = [];
+    render();
+  }
+
+  const bankEl = document.getElementById('qbBank'), drawEl = document.getElementById('qbDraw');
+  if (bankEl) bankEl.textContent = BANK.length;
+  if (drawEl) drawEl.textContent = DRAW;
+  document.getElementById('qbNew').addEventListener('click', () => {
+    newQuiz();
+    listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  newQuiz();
 })();
 </script>
 </body>

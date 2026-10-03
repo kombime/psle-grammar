@@ -201,6 +201,40 @@
   .feedback.fb-ok .verdict-q { color: var(--go); }
   .feedback.fb-no .verdict-q { color: var(--stop); }
 
+  /* ---------- Quiz bank additions ---------- */
+  .scoreboard .progress { font-size: 12.5px; opacity: 0.85; margin-top: 2px; }
+  .opts.fill-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .opts.fill-row .opt { padding-left: 6px; padding-right: 6px; font-weight: 600; text-align: center; }
+  .spot-line { display: flex; flex-wrap: wrap; gap: 8px 6px; }
+  .spot-part {
+    font: inherit; font-size: 16px; line-height: 1.35; color: var(--ink); cursor: pointer; text-align: left;
+    background: var(--surface-2); border: none; border-bottom: 3px dashed var(--coupler); border-radius: 4px 4px 0 0;
+    padding: 7px 9px; min-height: 40px;
+  }
+  #quizContainer, .quiz-summary { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 96px); }
+  .spot-part:not(:disabled):hover { background: var(--coupler-soft); }
+  .spot-part:disabled { cursor: default; }
+  .spot-part.correct, .spot-part.reveal { background: var(--go-soft); border-bottom: 2.5px solid var(--go); }
+  .spot-part.incorrect { background: var(--stop-soft); border-bottom: 2.5px solid var(--stop); }
+  .quiz-summary {
+    background: var(--surface); border: 3px solid var(--carriage); border-radius: 8px;
+    padding: 18px 20px; margin-top: 8px;
+  }
+  .quiz-summary h3 { margin: 0 0 6px; font-size: 32px; color: var(--carriage); }
+  .quiz-summary p { margin: 0 0 10px; }
+  .quiz-summary .sum-label { font-weight: 700; margin: 14px 0 6px; }
+  .sum-areas { list-style: none; margin: 0 0 12px; padding: 0; }
+  .sum-areas li { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--rule); }
+  .sum-areas a { color: var(--ink); font-weight: 600; }
+  .sum-areas span { color: var(--stop); font-weight: 700; white-space: nowrap; }
+  .punct { font-size: 22px; line-height: 0; }
+  .punct-note { font-size: 12.5px; font-weight: 400; color: var(--ink-soft); }
+  .sum-meta { font-size: 13px; color: var(--ink-soft); }
+  .new-quiz-btn {
+    font: inherit; font-weight: 700; font-size: 16px; width: 100%; min-height: 50px; margin-top: 4px;
+    border: none; border-radius: 6px; background: var(--carriage); color: var(--carriage-ink); cursor: pointer;
+  }
+
   /* ---------- Summary ---------- */
   .summary { background: var(--surface); border-radius: 8px; padding: 20px; border: 2px solid var(--ink); }
   .summary h2 { margin-bottom: 12px; }
@@ -211,6 +245,103 @@
     font-family: var(--font-display); font-weight: 800; font-size: 24px; line-height: 1.2; letter-spacing: 0.02em;
   }
   footer { text-align: center; font-size: 12.5px; color: var(--ink-soft); margin-top: 36px; }
+
+  /* ================= QUIZ BANK ENGINE (shared by every lesson; qb- prefix avoids clashes) ================= */
+  .qb { --qb-cols: 2; }
+  .qb-bar {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 3;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 10px 16px; margin: 0 0 18px; border-radius: var(--qb-radius);
+    background: var(--qb-bar); color: var(--qb-bar-ink);
+  }
+  .qb-label { font-size: 12.5px; opacity: 0.8; }
+  .qb-score { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 28px; line-height: 1.05; }
+  .qb-progress { font-size: 12.5px; opacity: 0.85; margin-top: 2px; }
+  .qb-new {
+    font: inherit; font-weight: 700; font-size: 14px; padding: 10px 16px; min-height: 44px;
+    border-radius: 999px; border: 2px solid currentColor; background: transparent; color: inherit; cursor: pointer;
+  }
+  .qb-list, .qb-summary { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 96px); }
+  .qb-card {
+    background: var(--qb-card); border: var(--qb-card-border); box-shadow: var(--qb-card-shadow);
+    border-radius: var(--qb-radius); padding: 16px 16px 14px; margin: 0 0 14px; color: var(--qb-ink);
+  }
+  .qb-num { font-size: 12.5px; color: var(--qb-soft); margin: 0 0 4px; }
+  .qb-ask { font-size: 13.5px; font-weight: 700; color: var(--qb-accent); margin: 0 0 6px; }
+  .qb-text { font-size: 16.5px; line-height: 1.6; margin: 0 0 14px; }
+  .qb-blank {
+    display: inline-block; min-width: 60px; padding: 0 3px; text-align: center;
+    border-bottom: 2.5px dashed var(--qb-soft); color: var(--qb-soft);
+  }
+  .qb-blank.qb-filled { border-bottom-style: solid; border-bottom-color: var(--qb-accent); color: var(--qb-accent); font-weight: 700; }
+  .qb-blank.qb-none { font-style: italic; font-weight: 400; }
+  .qb-opts { display: flex; flex-direction: column; gap: 9px; }
+  .qb-opts.qb-row { display: grid; grid-template-columns: repeat(var(--qb-cols), minmax(0, 1fr)); }
+  .qb-opt {
+    font: inherit; font-size: 15.5px; line-height: 1.45; text-align: left; color: var(--qb-ink);
+    padding: 11px 14px; min-height: 46px; border-radius: var(--qb-radius-opt);
+    border: 2px solid var(--qb-rule); background: var(--qb-page); cursor: pointer;
+  }
+  .qb-row .qb-opt { text-align: center; font-weight: 600; padding-left: 6px; padding-right: 6px; }
+  .qb-opt:not(:disabled):hover { border-color: var(--qb-accent); }
+  .qb-opt:disabled, .qb-part:disabled { cursor: default; }
+  .qb-letter { font-family: var(--qb-font); font-weight: var(--qb-font-weight); margin-right: 10px; color: var(--qb-accent); }
+  .qb-note { font-size: 12.5px; font-weight: 400; color: var(--qb-soft); }
+  .qb-punct { font-size: 22px; line-height: 0; font-weight: 700; }
+  .qb-spot { display: flex; flex-wrap: wrap; gap: 8px 6px; margin: 0 0 4px; }
+  .qb-part {
+    font: inherit; font-size: 16px; line-height: 1.35; text-align: left; color: var(--qb-ink); cursor: pointer;
+    background: var(--qb-accent-soft); border: none; border-bottom: 3px dashed var(--qb-accent);
+    border-radius: 4px 4px 0 0; padding: 7px 9px; min-height: 40px;
+  }
+  .qb-opt.qb-correct, .qb-opt.qb-reveal { background: var(--qb-right-soft); border-color: var(--qb-right); }
+  .qb-opt.qb-incorrect { background: var(--qb-wrong-soft); border-color: var(--qb-wrong); }
+  .qb-part.qb-correct, .qb-part.qb-reveal { background: var(--qb-right-soft); border-bottom: 3px solid var(--qb-right); }
+  .qb-part.qb-incorrect { background: var(--qb-wrong-soft); border-bottom: 3px solid var(--qb-wrong); }
+  .qb-feedback { display: none; margin-top: 12px; padding-top: 12px; border-top: 2px dashed var(--qb-rule); font-size: 14px; line-height: 1.55; }
+  .qb-feedback.qb-show { display: block; }
+  .qb-verdict { display: block; font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 18px; margin-bottom: 2px; }
+  .qb-fb-ok .qb-verdict { color: var(--qb-right); }
+  .qb-fb-no .qb-verdict { color: var(--qb-wrong); }
+  .qb-summary {
+    background: var(--qb-card); color: var(--qb-ink); border: 3px solid var(--qb-accent);
+    border-radius: var(--qb-radius); padding: 18px 20px; margin-top: 8px;
+  }
+  .qb-summary h3 { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 30px; line-height: 1.1; margin: 0 0 6px; color: var(--qb-accent); }
+  .qb-summary p { margin: 0 0 10px; line-height: 1.55; }
+  .qb-sum-label { font-weight: 700; margin-top: 14px !important; }
+  .qb-areas { list-style: none; margin: 0 0 12px; padding: 0; }
+  .qb-areas li { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--qb-rule); }
+  .qb-areas a { color: var(--qb-ink); font-weight: 600; }
+  .qb-areas span { color: var(--qb-wrong); font-weight: 700; white-space: nowrap; }
+  .qb-meta { font-size: 13px; color: var(--qb-soft); }
+  .qb-go {
+    font: inherit; font-weight: 700; font-size: 16px; width: 100%; min-height: 50px; margin-top: 4px; cursor: pointer;
+    border: none; border-radius: var(--qb-radius); background: var(--qb-accent); color: var(--qb-on-accent);
+  }
+
+  :root {
+    --qb-page: var(--bg);
+    --qb-card: var(--surface);
+    --qb-ink: var(--ink);
+    --qb-soft: var(--ink-soft);
+    --qb-accent: var(--coupler);
+    --qb-accent-soft: var(--coupler-soft);
+    --qb-on-accent: var(--surface);
+    --qb-right: var(--go);
+    --qb-right-soft: var(--go-soft);
+    --qb-wrong: var(--stop);
+    --qb-wrong-soft: var(--stop-soft);
+    --qb-rule: var(--rule);
+    --qb-bar: var(--carriage);
+    --qb-bar-ink: var(--carriage-ink);
+    --qb-font: var(--font-display);
+    --qb-font-weight: 800;
+    --qb-radius: 6px;
+    --qb-radius-opt: 4px;
+    --qb-card-border: none;
+    --qb-card-shadow: none;
+  }
 </style>
 </head>
 <body>
@@ -268,7 +399,7 @@
   </header>
 
   <!-- 2. THE RULE -->
-  <section>
+  <section id="rule">
     <h2>The three-step coupling check</h2>
     <p class="sub">Use this whenever you put a comma in the middle of a long sentence.</p>
     <ol class="steps">
@@ -295,7 +426,7 @@
   </section>
 
   <!-- 3. TRAPS -->
-  <section>
+  <section id="traps">
     <h2>Three traps on the line</h2>
     <p class="sub">These show up in almost every composition. Learn to spot them in your own writing.</p>
 
@@ -325,7 +456,7 @@
   </section>
 
   <!-- 4. CATEGORIES -->
-  <section>
+  <section id="fixes">
     <h2>Three proper couplers, and commas that are fine</h2>
     <p class="sub">Any of the first three fixes a comma splice. Pick the one that best shows how the ideas connect.</p>
     <div class="fixes">
@@ -365,7 +496,7 @@
   </section>
 
   <!-- 5. SPECIAL CASES -->
-  <section>
+  <section id="specials">
     <h2>Two more places splices hide</h2>
     <p class="sub">The quiz includes these. They follow the same rule, but they're easy to miss.</p>
     <div class="specials">
@@ -385,14 +516,17 @@
   </section>
 
   <!-- 6. PRACTICE -->
-  <section>
+  <section id="practice">
     <h2>Check the couplings</h2>
-    <p class="sub">Some questions ask whether a sentence needs fixing. Others ask you to pick the correctly joined version. You'll see straight away if you're right, and why. The questions get trickier as you go.</p>
-    <div class="scoreboard">
-      <div><div class="label">Your score</div><div class="score" id="scoreDisplay">0 / 30</div></div>
-      <button class="reset-btn" id="resetBtn" type="button">Start over</button>
+    <p class="sub">Each attempt draws <span id="qbDraw">20</span> questions from a bank of <span id="qbBank">120</span>, so every try is different. You'll meet four kinds of question, and they get trickier as you go. Finish them all to see which areas to review.</p>
+    <div class="qb" id="qb">
+      <div class="qb-bar">
+        <div><div class="qb-label">Your score</div><div class="qb-score" id="qbScore">0 / 20</div><div class="qb-progress" id="qbProgress">0 of 20 answered</div></div>
+        <button class="qb-new" id="qbNew" type="button">New quiz</button>
+      </div>
+      <div class="qb-list" id="qbList"></div>
+      <div class="qb-summary" id="qbSummary" hidden></div>
     </div>
-    <div id="quizContainer"></div>
   </section>
 
   <!-- 7. PIN THIS UP -->
@@ -441,110 +575,378 @@
   }));
   setMode('comma');
 
-  /* ---------- Quiz ---------- */
-  const CHECK = "Does this sentence need fixing?";
-  const PICK = "Pick the correctly joined version.";
-  const YN = ["Needs fixing", "Correct"];
-  const QUESTIONS = [
-    { ask: CHECK, text: "The bell rang, we ran to class.", options: YN, answer: 0, why: "Two engines (\"The bell rang\" and \"we ran to class\") joined by only a comma: a splice." },
-    { ask: CHECK, text: "The bell rang, so we ran to class.", options: YN, answer: 1, why: "The joining word \"so\" couples the two engines, with the comma before it." },
-    { ask: CHECK, text: "My mum was angry, she scolded me for being late.", options: YN, answer: 0, why: "\"She scolded me\" has its own engine. A new subject after a comma is the splice alarm." },
-    { ask: CHECK, text: "I packed my bag and waited for the school bus.", options: YN, answer: 1, why: "\"I\" is the only engine, doing two actions. One engine needs no coupler." },
-    { ask: PICK, text: "It was raining, we stayed indoors.", options: ["It was raining we stayed indoors.", "It was raining. We stayed indoors.", "It was raining, we stayed indoors!", "It was raining. we stayed indoors."], answer: 1, why: "A full stop makes two separate sentences, and the second one starts with a capital letter." },
-    { ask: CHECK, text: "When the bell rang, we ran to class.", options: YN, answer: 1, why: "\"When the bell rang\" can't stand alone. The linking part comes first, so a comma after it is right." },
-    { ask: CHECK, text: "Nurul loves drawing, she wants to be an artist.", options: YN, answer: 0, why: "Two engines (\"Nurul loves drawing\" and \"she wants…\") with only a comma between them." },
-    { ask: PICK, text: "Arjun was hungry, he ate two plates of chicken rice.", options: ["Arjun was hungry, so he ate two plates of chicken rice.", "Arjun was hungry, he ate two plates of chicken rice.", "Arjun was hungry, he ate two plates of chicken rice!", "Arjun was hungry so, he ate two plates of chicken rice."], answer: 0, why: "Comma + \"so\" couples the engines. The comma goes before the joining word, not after it." },
-    { ask: CHECK, text: "We bought snacks, drinks and balloons for the party.", options: YN, answer: 1, why: "These commas separate items in a list. There's only one engine (\"We bought\")." },
-    { ask: CHECK, text: "The library was quiet, everyone was reading.", options: YN, answer: 0, why: "\"Everyone was reading\" can stand alone, so it's a second engine joined by only a comma." },
+    /* ================= QUIZ: Lesson 04 question bank ================= */
+  const LESSON_KEY = 'shelf-l04';
+  const QB_TEXT = { ask: { check: 'Does this sentence need fixing?', pick: 'Pick the correctly joined version.' } };
+  const TAGS = {
+    splice:  { label: 'Spotting comma splices',       href: '#rule' },
+    stop:    { label: 'Fix 1: full stop',             href: '#fixes' },
+    join:    { label: 'Fix 2: comma + joining word',  href: '#fixes' },
+    link:    { label: 'Fix 3: linking words',         href: '#fixes' },
+    fine:    { label: 'Commas that are fine',         href: '#fixes' },
+    then:    { label: 'Trap: "then"',                 href: '#traps' },
+    however: { label: 'Trap: "however"',              href: '#traps' },
+    speech:  { label: 'Splices inside speech',        href: '#specials' },
+    runon:   { label: 'Run-on sentences',             href: '#specials' }
+  };
 
-    { ask: PICK, text: "I wanted to play outside, it was too hot.", options: ["I wanted to play outside, but it was too hot.", "I wanted to play outside but, it was too hot.", "I wanted to play outside, it was too hot.", "I wanted to play outside. but it was too hot."], answer: 0, why: "Comma + \"but\" is a proper coupler. The comma sits before \"but\", not after it." },
-    { ask: CHECK, text: "Although it was raining, the match went on.", options: YN, answer: 1, why: "\"Although it was raining\" can't stand alone. A linking part first, then a comma, is correct." },
-    { ask: CHECK, text: "The canteen was crowded, there were no empty seats.", options: YN, answer: 0, why: "\"There were no empty seats\" is a full sentence. \"There\" after a comma is a splice alarm." },
-    { ask: PICK, text: "Marcus forgot his homework, Ms Goh was not pleased.", options: ["Marcus forgot his homework, Ms Goh was not pleased.", "Marcus forgot his homework Ms Goh was not pleased.", "Marcus forgot his homework, and Ms Goh was not pleased.", "Marcus forgot his homework, and, Ms Goh was not pleased."], answer: 2, why: "Comma + \"and\" couples the two engines. No extra comma after the joining word." },
-    { ask: CHECK, text: "I finished my homework before I watched TV.", options: YN, answer: 1, why: "\"Before\" is a linking word in the middle of the sentence, so no comma is needed." },
-    { ask: PICK, text: "Grandma was tired, she took a nap after lunch.", options: ["Grandma was tired, she took a nap after lunch.", "Grandma was tired she took a nap after lunch.", "Grandma took a nap after lunch, because, she was tired.", "Grandma took a nap after lunch because she was tired."], answer: 3, why: "\"Because\" links the ideas. In the middle of a sentence, a linking word usually needs no commas." },
-    { ask: CHECK, text: "Wei Ling smiled, she had won first prize.", options: YN, answer: 0, why: "\"She had won first prize\" has its own engine. The ideas are connected, but a comma alone can't join them." },
-    { ask: CHECK, text: "If you finish early, you may read a book.", options: YN, answer: 1, why: "\"If you finish early\" can't stand alone. A linking part first, then a comma, is correct." },
-    { ask: PICK, text: "Our team practised hard, we won the final.", options: ["Our team practised hard, we won the final.", "Our team practised hard so, we won the final.", "Our team practised hard. we won the final.", "Our team practised hard, so we won the final."], answer: 3, why: "Comma + \"so\" couples the engines and shows the result. The comma goes before \"so\"." },
-    { ask: CHECK, text: "My brother is in Primary 3, my sister is in Primary 6.", options: YN, answer: 0, why: "Two complete sentences with only a comma between them. Add \"and\" or use a full stop." },
+  const BANK = [
+    /* ---------- check: does it need fixing? ---------- */
+    { id: 'c01', t: 'check', d: 1, tag: 'splice', q: "The bell rang, we ran to class.", a: 0, why: "Two engines (\"The bell rang\" and \"we ran to class\") joined by only a comma." },
+    { id: 'c02', t: 'check', d: 1, tag: 'splice', q: "My mum was angry, she scolded me for being late.", a: 0, why: "\"She scolded me\" has its own engine. A new subject after a comma is the splice alarm." },
+    { id: 'c03', t: 'check', d: 1, tag: 'splice', q: "Nurul loves drawing, she wants to be an artist.", a: 0, why: "Two engines (\"Nurul loves drawing\" and \"she wants…\") with only a comma between them." },
+    { id: 'c04', t: 'check', d: 1, tag: 'splice', q: "The library was quiet, everyone was reading.", a: 0, why: "\"Everyone was reading\" can stand alone, so it's a second engine joined by only a comma." },
+    { id: 'c05', t: 'check', d: 1, tag: 'splice', q: "It was very hot, we bought ice cream.", a: 0, why: "\"We bought ice cream\" is a full sentence. It needs \", so\" or a full stop." },
+    { id: 'c06', t: 'check', d: 2, tag: 'splice', q: "Wei Ling smiled, she had won first prize.", a: 0, why: "The ideas are connected, but \"she had won first prize\" is its own engine." },
+    { id: 'c07', t: 'check', d: 2, tag: 'splice', q: "The canteen was crowded, there were no empty seats.", a: 0, why: "\"There were no empty seats\" is a full sentence. \"There\" after a comma is a splice alarm." },
+    { id: 'c08', t: 'check', d: 2, tag: 'splice', q: "My brother is in Primary 3, my sister is in Primary 6.", a: 0, why: "Two complete sentences with only a comma between them. Add \"and\" or use a full stop." },
+    { id: 'c09', t: 'check', d: 1, tag: 'splice', q: "The puppy was tired, it fell asleep on the sofa.", a: 0, why: "\"It fell asleep\" has its own engine. \"It\" after a comma is the splice alarm." },
+    { id: 'c10', t: 'check', d: 1, tag: 'splice', q: "Our class won the quiz, we were so proud.", a: 0, why: "\"We were so proud\" is a full sentence, so a comma alone can't join it." },
+    { id: 'c11', t: 'check', d: 2, tag: 'splice', q: "The MRT train was packed, I had to stand all the way.", a: 0, why: "\"I had to stand all the way\" has its own engine. Use \", so\" or a full stop." },
+    { id: 'c12', t: 'check', d: 2, tag: 'splice', q: "Mr Tan is our form teacher, he teaches Maths too.", a: 0, why: "\"He teaches Maths too\" can stand alone, so it's a second engine." },
+    { id: 'c13', t: 'check', d: 1, tag: 'join', q: "The bell rang, so we ran to class.", a: 1, why: "The joining word \"so\" couples the two engines, with the comma before it." },
+    { id: 'c14', t: 'check', d: 1, tag: 'join', q: "It was very hot, so we bought ice cream.", a: 1, why: "Comma + \"so\" is a proper coupler." },
+    { id: 'c15', t: 'check', d: 1, tag: 'join', q: "I wanted to swim, but the pool was closed.", a: 1, why: "Comma + \"but\" is a proper coupler." },
+    { id: 'c16', t: 'check', d: 2, tag: 'join', q: "You can take the bus, or you can walk.", a: 1, why: "Comma + \"or\" is a proper coupler." },
+    { id: 'c17', t: 'check', d: 1, tag: 'fine', q: "I packed my bag and waited for the school bus.", a: 1, why: "\"I\" is the only engine, doing two actions. One engine needs no coupler." },
+    { id: 'c18', t: 'check', d: 1, tag: 'fine', q: "We bought snacks, drinks and balloons for the party.", a: 1, why: "These commas separate items in a list. There's only one engine." },
+    { id: 'c19', t: 'check', d: 2, tag: 'fine', q: "Yes, I will help you with the posters.", a: 1, why: "A comma after \"Yes\" is fine. There's only one engine: \"I will help you\"." },
+    { id: 'c20', t: 'check', d: 2, tag: 'fine', q: "No, we cannot go to the beach today.", a: 1, why: "A comma after \"No\" is fine. There's only one engine." },
+    { id: 'c21', t: 'check', d: 2, tag: 'fine', q: "Oh, I forgot my water bottle at home.", a: 1, why: "A comma after \"Oh\" is fine. There's only one engine: \"I forgot\"." },
+    { id: 'c22', t: 'check', d: 2, tag: 'fine', q: "Arjun opened the door and walked into the hall.", a: 1, why: "\"Arjun\" is the only engine, doing two actions. No coupler needed." },
+    { id: 'c23', t: 'check', d: 1, tag: 'link', q: "When the bell rang, we ran to class.", a: 1, why: "\"When the bell rang\" can't stand alone. A linking part first, then a comma, is correct." },
+    { id: 'c24', t: 'check', d: 2, tag: 'link', q: "Although it was raining, the match went on.", a: 1, why: "\"Although it was raining\" can't stand alone, so the comma after it is right." },
+    { id: 'c25', t: 'check', d: 2, tag: 'link', q: "I finished my homework before I watched TV.", a: 1, why: "\"Before\" is a linking word in the middle, so no comma is needed." },
+    { id: 'c26', t: 'check', d: 1, tag: 'link', q: "If you finish early, you may read a book.", a: 1, why: "\"If you finish early\" can't stand alone. Linking part first, then a comma: correct." },
+    { id: 'c27', t: 'check', d: 2, tag: 'link', q: "Before the concert started, the pupils warmed up.", a: 1, why: "\"Before the concert started\" can't stand alone, so the comma after it is correct." },
+    { id: 'c28', t: 'check', d: 1, tag: 'link', q: "We stayed indoors because it was raining.", a: 1, why: "\"Because\" links the two ideas. In the middle of a sentence it needs no comma." },
+    { id: 'c29', t: 'check', d: 2, tag: 'link', q: "While Mum cooked dinner, I set the table.", a: 1, why: "\"While Mum cooked dinner\" can't stand alone, so the comma after it is right." },
+    { id: 'c30', t: 'check', d: 1, tag: 'stop', q: "The water was cold. It made me shiver.", a: 1, why: "A full stop and a capital letter make two separate, complete sentences." },
+    { id: 'c31', t: 'check', d: 1, tag: 'stop', q: "The library was quiet. Everyone was reading.", a: 1, why: "Two separate trains, each with its own full stop: correct." },
+    { id: 'c32', t: 'check', d: 3, tag: 'then', q: "We had dinner, then we went for a walk.", a: 0, why: "\"Then\" is not a coupler. Use \", and then\" or start a new sentence with \"Then\"." },
+    { id: 'c33', t: 'check', d: 3, tag: 'then', q: "I finished my homework, then I played games.", a: 0, why: "\"Then\" can't join two engines. Add \"and\" before it, or use a full stop." },
+    { id: 'c34', t: 'check', d: 3, tag: 'then', q: "We had dinner, and then we went for a walk.", a: 1, why: "\"And\" is the coupler here. \"And then\" is fine." },
+    { id: 'c35', t: 'check', d: 3, tag: 'then', q: "I washed my hands. Then I sat down to eat.", a: 1, why: "A full stop before \"Then\" makes two separate sentences: correct." },
+    { id: 'c36', t: 'check', d: 3, tag: 'however', q: "It was raining heavily, however we still went to the beach.", a: 0, why: "\"However\" is not a coupler. It needs a full stop before it: \"…heavily. However, we…\"" },
+    { id: 'c37', t: 'check', d: 3, tag: 'however', q: "The test was hard, however I passed.", a: 0, why: "\"However\" can't join engines. Use \", but\" or \". However,\"." },
+    { id: 'c38', t: 'check', d: 3, tag: 'however', q: "The test was hard. However, I passed.", a: 1, why: "Full stop before \"However\" and a comma after it: correct." },
+    { id: 'c39', t: 'check', d: 3, tag: 'however', q: "The shop was closed, therefore we went home.", a: 0, why: "\"Therefore\" works like \"however\": it isn't a coupler. Use \". Therefore,\" or \", so\"." },
+    { id: 'c40', t: 'check', d: 2, tag: 'however', q: "The test was hard, but I passed.", a: 1, why: "\"But\" means the same as \"however\", and it IS a coupler. Comma + but is correct." },
+    { id: 'c41', t: 'check', d: 3, tag: 'speech', q: "Nurul said, \"I am hungry, I skipped breakfast.\"", a: 0, why: "Inside the quote are two engines: \"I am hungry\" and \"I skipped breakfast\"." },
+    { id: 'c42', t: 'check', d: 3, tag: 'speech', q: "\"I am tired. I want to go home,\" Ben said.", a: 1, why: "The two engines inside the quote are split by a full stop, and the comma before the tag is right." },
+    { id: 'c43', t: 'check', d: 3, tag: 'speech', q: "Dad said, \"The car is ready, we can leave now.\"", a: 0, why: "Speech follows the same rule. \"We can leave now\" is a second engine inside the quote." },
+    { id: 'c44', t: 'check', d: 3, tag: 'runon', q: "The movie ended we all clapped.", a: 0, why: "Two engines with nothing between them: a run-on. It needs a full stop or a coupler." },
+    { id: 'c45', t: 'check', d: 3, tag: 'runon', q: "It started to rain we ran for shelter.", a: 0, why: "A run-on: \"It started to rain\" and \"we ran for shelter\" have nothing joining them." },
+    { id: 'c46', t: 'check', d: 3, tag: 'runon', q: "The movie ended, and we all clapped.", a: 1, why: "Comma + \"and\" couples the two engines: correct." },
 
-    { ask: CHECK, text: "We had dinner, then we went for a walk.", options: YN, answer: 0, why: "\"Then\" is not a coupler. Use \", and then\" or start a new sentence with \"Then\"." },
-    { ask: PICK, text: "I brushed my teeth, then I went to bed.", options: ["I brushed my teeth, then I went to bed.", "I brushed my teeth, and then I went to bed.", "I brushed my teeth then, I went to bed.", "I brushed my teeth, then, I went to bed."], answer: 1, why: "\"Then\" can't join engines by itself. Adding \"and\" before it makes a proper coupler." },
-    { ask: CHECK, text: "It was raining heavily, however we still went to the beach.", options: YN, answer: 0, why: "\"However\" is not a coupler. It needs a full stop before it: \"…heavily. However, we…\"" },
-    { ask: PICK, text: "The test was difficult, however I did well.", options: ["The test was difficult, however I did well.", "The test was difficult, however, I did well.", "The test was difficult. However, I did well.", "The test was difficult however I did well."], answer: 2, why: "\"However\" needs a full stop before it and a comma after it. Extra commas alone don't fix the splice." },
-    { ask: CHECK, text: "The movie ended we all clapped.", options: YN, answer: 0, why: "Two engines with nothing between them make a run-on sentence. It needs a full stop or a coupler." },
-    { ask: PICK, text: "Tom was late he missed the bus.", options: ["Tom was late he missed the bus.", "Tom was late, he missed the bus.", "Tom was late, so he missed the bus.", "Tom was late so, he missed the bus."], answer: 2, why: "A run-on needs a real coupler. Adding just a comma would make a splice, so use \", so\"." },
-    { ask: PICK, text: "\"The bus is late, we will miss the show,\" Dad sighed.", options: ["\"The bus is late, we will miss the show,\" Dad sighed.", "\"The bus is late. We will miss the show,\" Dad sighed.", "\"The bus is late. we will miss the show,\" Dad sighed.", "\"The bus is late, we will miss the show.\" Dad sighed."], answer: 1, why: "Two engines inside speech marks still need a full stop and a capital. The comma before the tag stays." },
-    { ask: CHECK, text: "Nurul said, \"I am hungry, I skipped breakfast.\"", options: YN, answer: 0, why: "Inside the quote are two engines: \"I am hungry\" and \"I skipped breakfast\". They need a full stop or a coupler." },
-    { ask: CHECK, text: "Before the concert started, the pupils warmed up.", options: YN, answer: 1, why: "\"Before the concert started\" can't stand alone. The linking part comes first, so the comma is correct." },
-    { ask: CHECK, text: "Yes, I will help you with the posters.", options: YN, answer: 1, why: "A comma after \"Yes\" is fine. There's only one engine: \"I will help you\"." }
+    /* ---------- pick: choose the correct version (correct option first) ---------- */
+    { id: 'p01', t: 'pick', d: 1, tag: 'stop', q: "It was raining, we stayed indoors.", o: ["It was raining. We stayed indoors.", "It was raining we stayed indoors.", "It was raining, we stayed indoors!", "It was raining. we stayed indoors."], why: "A full stop makes two sentences, and the second starts with a capital letter." },
+    { id: 'p02', t: 'pick', d: 1, tag: 'join', q: "Arjun was hungry, he ate two plates of chicken rice.", o: ["Arjun was hungry, so he ate two plates of chicken rice.", "Arjun was hungry, he ate two plates of chicken rice.", "Arjun was hungry so, he ate two plates of chicken rice.", "Arjun was hungry, he ate two plates of chicken rice!"], why: "Comma + \"so\". The comma goes before the joining word, not after it." },
+    { id: 'p03', t: 'pick', d: 1, tag: 'join', q: "I wanted to play outside, it was too hot.", o: ["I wanted to play outside, but it was too hot.", "I wanted to play outside but, it was too hot.", "I wanted to play outside, it was too hot.", "I wanted to play outside. but it was too hot."], why: "Comma + \"but\" is a proper coupler, with the comma before \"but\"." },
+    { id: 'p04', t: 'pick', d: 2, tag: 'join', q: "Marcus forgot his homework, Ms Goh was not pleased.", o: ["Marcus forgot his homework, and Ms Goh was not pleased.", "Marcus forgot his homework, Ms Goh was not pleased.", "Marcus forgot his homework Ms Goh was not pleased.", "Marcus forgot his homework, and, Ms Goh was not pleased."], why: "Comma + \"and\" couples the engines. No extra comma after the joining word." },
+    { id: 'p05', t: 'pick', d: 2, tag: 'link', q: "Grandma was tired, she took a nap after lunch.", o: ["Grandma took a nap after lunch because she was tired.", "Grandma was tired, she took a nap after lunch.", "Grandma was tired she took a nap after lunch.", "Grandma took a nap after lunch, because, she was tired."], why: "\"Because\" links the ideas. In the middle of a sentence it usually needs no commas." },
+    { id: 'p06', t: 'pick', d: 2, tag: 'join', q: "Our team practised hard, we won the final.", o: ["Our team practised hard, so we won the final.", "Our team practised hard, we won the final.", "Our team practised hard so, we won the final.", "Our team practised hard. we won the final."], why: "Comma + \"so\" couples the engines and shows the result." },
+    { id: 'p07', t: 'pick', d: 1, tag: 'stop', q: "The puppy was tired, it fell asleep.", o: ["The puppy was tired. It fell asleep.", "The puppy was tired, it fell asleep.", "The puppy was tired. it fell asleep.", "The puppy was tired it fell asleep."], why: "Full stop, then a capital letter to start the new sentence." },
+    { id: 'p08', t: 'pick', d: 2, tag: 'link', q: "It was raining, the match went on.", o: ["Although it was raining, the match went on.", "Although it was raining the match, went on.", "It was raining, the match went on.", "Although, it was raining, the match went on."], why: "\"Although\" turns the first part into a trailer. Put one comma after the whole linking part." },
+    { id: 'p09', t: 'pick', d: 2, tag: 'link', q: "The bell rang, we ran to class.", o: ["When the bell rang, we ran to class.", "When the bell rang we, ran to class.", "The bell rang, we ran to class.", "When, the bell rang, we ran to class."], why: "\"When the bell rang\" is a linking part. One comma goes after it, before the engine." },
+    { id: 'p10', t: 'pick', d: 1, tag: 'join', q: "You can come with us, you can stay at home.", o: ["You can come with us, or you can stay at home.", "You can come with us or, you can stay at home.", "You can come with us, you can stay at home.", "You can come with us. or you can stay at home."], why: "Comma + \"or\" is a proper coupler." },
+    { id: 'p11', t: 'pick', d: 2, tag: 'stop', q: "Mr Tan is our form teacher, he teaches Maths too.", o: ["Mr Tan is our form teacher. He teaches Maths too.", "Mr Tan is our form teacher, he teaches Maths too.", "Mr Tan is our form teacher he teaches Maths too.", "Mr Tan is our form teacher. he teaches Maths too."], why: "Two separate sentences: full stop, then a capital \"He\"." },
+    { id: 'p12', t: 'pick', d: 2, tag: 'fine', ask: 'Which sentence is correct?', o: ["We bought pens, rulers and erasers.", "We bought pens, they were cheap.", "We bought pens, then we went home.", "We bought pens we went home."], why: "List commas are fine. The others join two engines with a comma, \"then\", or nothing." },
+    { id: 'p13', t: 'pick', d: 2, tag: 'fine', ask: 'Which sentence is correct?', o: ["Yes, I finished my homework.", "Yes, I finished my homework, it was easy.", "I finished my homework, it was easy.", "I finished my homework it was easy."], why: "A comma after \"Yes\" is fine. The others have two engines with no proper coupler." },
+    { id: 'p14', t: 'pick', d: 3, tag: 'then', q: "I brushed my teeth, then I went to bed.", o: ["I brushed my teeth, and then I went to bed.", "I brushed my teeth, then I went to bed.", "I brushed my teeth then, I went to bed.", "I brushed my teeth, then, I went to bed."], why: "\"Then\" can't join engines alone. Adding \"and\" before it makes a proper coupler." },
+    { id: 'p15', t: 'pick', d: 3, tag: 'then', q: "We visited the museum, then we had lunch.", o: ["We visited the museum. Then we had lunch.", "We visited the museum, then we had lunch.", "We visited the museum. then we had lunch.", "We visited the museum then, we had lunch."], why: "Start a new sentence with a capital \"Then\"." },
+    { id: 'p16', t: 'pick', d: 3, tag: 'however', q: "The test was difficult, however I did well.", o: ["The test was difficult. However, I did well.", "The test was difficult, however I did well.", "The test was difficult, however, I did well.", "The test was difficult however I did well."], why: "\"However\" needs a full stop before it and a comma after it." },
+    { id: 'p17', t: 'pick', d: 3, tag: 'however', q: "The queue was long, however we waited patiently.", o: ["The queue was long, but we waited patiently.", "The queue was long, however we waited patiently.", "The queue was long however, we waited patiently.", "The queue was long, however, we waited patiently."], why: "Swap \"however\" for \"but\", which is a real coupler." },
+    { id: 'p18', t: 'pick', d: 3, tag: 'however', q: "It was late, therefore we took a taxi.", o: ["It was late. Therefore, we took a taxi.", "It was late, therefore we took a taxi.", "It was late, therefore, we took a taxi.", "It was late therefore we took a taxi."], why: "Like \"however\", \"therefore\" needs a full stop before it and a comma after it." },
+    { id: 'p19', t: 'pick', d: 3, tag: 'speech', q: "\"The bus is late, we will miss the show,\" Dad sighed.", o: ["\"The bus is late. We will miss the show,\" Dad sighed.", "\"The bus is late, we will miss the show,\" Dad sighed.", "\"The bus is late. we will miss the show,\" Dad sighed.", "\"The bus is late, we will miss the show.\" Dad sighed."], why: "Two engines in the speech need a full stop and a capital. The comma before the tag stays." },
+    { id: 'p20', t: 'pick', d: 3, tag: 'speech', q: "Mum said, \"Dinner is ready, it is your favourite.\"", o: ["Mum said, \"Dinner is ready. It is your favourite.\"", "Mum said, \"Dinner is ready, it is your favourite.\"", "Mum said, \"Dinner is ready. it is your favourite.\"", "Mum said \"Dinner is ready, it is your favourite.\""], why: "Split the two engines inside the quote with a full stop and a capital \"It\"." },
+    { id: 'p21', t: 'pick', d: 3, tag: 'runon', q: "Tom was late he missed the bus.", o: ["Tom was late, so he missed the bus.", "Tom was late he missed the bus.", "Tom was late, he missed the bus.", "Tom was late so, he missed the bus."], why: "A run-on needs a real coupler. Just adding a comma would make a splice." },
+    { id: 'p22', t: 'pick', d: 3, tag: 'runon', q: "The lights went out everyone screamed.", o: ["The lights went out. Everyone screamed.", "The lights went out everyone screamed.", "The lights went out, everyone screamed.", "The lights went out. everyone screamed."], why: "Split the run-on with a full stop and a capital letter." },
+    { id: 'p23', t: 'pick', d: 1, tag: 'stop', q: "Nurul loves drawing, she wants to be an artist.", o: ["Nurul loves drawing. She wants to be an artist.", "Nurul loves drawing, she wants to be an artist.", "Nurul loves drawing she wants to be an artist.", "Nurul loves drawing. she wants to be an artist."], why: "Full stop, then a capital \"She\" to start the new sentence." },
+    { id: 'p24', t: 'pick', d: 2, tag: 'link', q: "Wei Ling was sick, she stayed at home.", o: ["Wei Ling stayed at home because she was sick.", "Wei Ling was sick, she stayed at home.", "Wei Ling stayed at home, because, she was sick.", "Wei Ling was sick she stayed at home."], why: "\"Because\" links the ideas and needs no commas in the middle." },
+    { id: 'p25', t: 'pick', d: 2, tag: 'join', q: "The cake looked delicious, it tasted terrible.", o: ["The cake looked delicious, but it tasted terrible.", "The cake looked delicious but, it tasted terrible.", "The cake looked delicious, it tasted terrible.", "The cake looked delicious, but, it tasted terrible."], why: "Comma + \"but\" couples opposite ideas. No comma after \"but\"." },
+    { id: 'p26', t: 'pick', d: 1, tag: 'join', q: "I fed the cat, my sister walked the dog.", o: ["I fed the cat, and my sister walked the dog.", "I fed the cat, my sister walked the dog.", "I fed the cat and, my sister walked the dog.", "I fed the cat my sister walked the dog."], why: "Comma + \"and\" is a proper coupler." },
+    { id: 'p27', t: 'pick', d: 2, tag: 'splice', ask: 'Which sentence has a comma splice?', o: ["The sky turned dark, it began to rain.", "The sky turned dark, and it began to rain.", "When the sky turned dark, it began to rain.", "The sky turned dark. It began to rain."], why: "Only this one joins two engines with a comma alone. The others use a coupler or a full stop." },
+    { id: 'p28', t: 'pick', d: 3, tag: 'splice', ask: 'Which sentence has a comma splice?', o: ["After school, I went home, I was tired.", "After school, I went home because I was tired.", "After school, I went home and rested.", "After school, I went home. I was tired."], why: "\"After school,\" is fine, but \"I was tired\" is a second engine joined by a comma alone." },
+
+    /* ---------- fill: choose what goes in the gap (correct option first) ---------- */
+    { id: 'f01', t: 'fill', d: 1, tag: 'join', q: "It was late___ we went home.", o: [", so", ",", ", then"], why: "Comma + \"so\" is a coupler. A comma alone, or \"then\", can't join two engines." },
+    { id: 'f02', t: 'fill', d: 1, tag: 'join', q: "I wanted to swim___ the pool was closed.", o: [", but", ",", ", however"], why: "\"But\" is a coupler. \"However\" isn't, even though it means the same." },
+    { id: 'f03', t: 'fill', d: 1, tag: 'join', q: "You can have rice___ you can have noodles.", o: [", or", ",", ", then"], why: "Comma + \"or\" couples two choices." },
+    { id: 'f04', t: 'fill', d: 2, tag: 'join', q: "Ali studied hard___ he passed the test.", o: [", so", ", therefore", ","], why: "\"So\" is a coupler. \"Therefore\" works like \"however\" and can't join engines with a comma." },
+    { id: 'f05', t: 'fill', d: 2, tag: 'link', q: "We waited inside___ the rain stopped.", o: [" until", ", then", ", however"], why: "\"Until\" is a linking word, so no comma is needed. The others make a splice." },
+    { id: 'f06', t: 'fill', d: 2, tag: 'link', q: "___ it was raining, the match went on.", o: ["Although", "However", "Then"], why: "\"Although\" makes the first part a trailer. \"However\" and \"then\" can't do that." },
+    { id: 'f07', t: 'fill', d: 1, tag: 'link', q: "I was late___ I missed the bus.", o: [" because", ", then", ","], why: "\"Because\" links the ideas. A comma alone, or \"then\", makes a splice." },
+    { id: 'f08', t: 'fill', d: 2, tag: 'link', q: "Mum read the newspaper___ Dad cooked lunch.", o: [" while", ",", ", then"], why: "\"While\" is a linking word that joins the two actions." },
+    { id: 'f09', t: 'fill', d: 3, tag: 'then', q: "We had lunch___ we went to the zoo.", o: [", and then", ", then", " then,"], why: "\"Then\" needs \"and\" in front of it to work as a coupler." },
+    { id: 'f10', t: 'fill', d: 3, tag: 'then', q: "First, we lined up___ we marched into the hall.", o: [", and then", ", then", ","], why: "\", and then\" is a proper coupler. \", then\" on its own is a splice." },
+    { id: 'f11', t: 'fill', d: 3, tag: 'however', q: "The shop was closed___ we bought snacks elsewhere.", o: [", so", ", however", ", therefore"], why: "\"So\" is the only real coupler here." },
+    { id: 'f12', t: 'fill', d: 3, tag: 'however', q: "The food was cold___ we ate it anyway.", o: [", but", ", however", ","], why: "\"But\" is a coupler. \"However\" needs a full stop before it." },
+    { id: 'f13', t: 'fill', d: 3, tag: 'however', q: "The test was hard___ I passed.", o: [". However,", ", however", ", however,"], why: "\"However\" starts a new sentence: full stop before it, comma after it." },
+    { id: 'f14', t: 'fill', d: 2, tag: 'join', q: "The hall was noisy___ nobody could hear the principal.", o: [", so", ",", ", then"], why: "Comma + \"so\" shows the result and couples the engines." },
+    { id: 'f15', t: 'fill', d: 2, tag: 'join', q: "My sister likes cats___ I prefer dogs.", o: [", but", ",", ", however"], why: "Comma + \"but\" couples opposite ideas." },
+    { id: 'f16', t: 'fill', d: 1, tag: 'link', q: "___ the bell rang, we ran to class.", o: ["When", "Then", "However"], why: "\"When\" turns the first part into a trailer, so the comma after it is fine." },
+    { id: 'f17', t: 'fill', d: 2, tag: 'link', q: "I will help you___ you help me first.", o: [" if", ", then", ","], why: "\"If\" is a linking word, so no comma is needed in the middle." },
+    { id: 'f18', t: 'fill', d: 2, tag: 'join', q: "The phone rang___ nobody answered it.", o: [", but", ",", " however"], why: "Comma + \"but\" is a proper coupler." },
+    { id: 'f19', t: 'fill', d: 3, tag: 'speech', q: "\"I lost my wallet___ you help me?\" Marcus asked.", o: [". Can", ", can", ","], why: "Two engines inside the quote: full stop, then a capital \"Can\" starts the question." },
+    { id: 'f20', t: 'fill', d: 3, tag: 'speech', q: "Mum said, \"The cake is in the oven___ smells lovely.\"", o: [". It", ", it", " it"], why: "Inside speech, split two engines with a full stop and a capital letter." },
+    { id: 'f21', t: 'fill', d: 1, tag: 'stop', q: "The puppy was tired___ fell asleep.", o: [". It", ", it", ". it"], why: "Full stop, then a capital \"It\" to start the new sentence." },
+    { id: 'f22', t: 'fill', d: 2, tag: 'stop', q: "Our team won___ celebrated with pizza.", o: [". We", ", we", " we"], why: "Full stop and a capital \"We\" make two complete sentences." },
+    { id: 'f23', t: 'fill', d: 1, tag: 'join', q: "The movie was long___ it was very funny.", o: [", but", ",", " but,"], why: "Comma before \"but\", never after it." },
+    { id: 'f24', t: 'fill', d: 2, tag: 'link', q: "Wei Ling stayed at home___ she was sick.", o: [" because", ",", ", however"], why: "\"Because\" links the reason. A comma alone or \"however\" makes a splice." },
+
+    /* ---------- spot: tap the part with the mistake ---------- */
+    { id: 's01', t: 'spot', d: 1, tag: 'splice', parts: ["After recess,", "the bell rang", "loudly", ", we ran back to class."], a: 3, why: "\"We ran back to class\" is a new engine, and a comma alone can't join it." },
+    { id: 's02', t: 'spot', d: 1, tag: 'splice', parts: ["My cat is fluffy", "and friendly", ", she loves", "to be cuddled."], a: 2, why: "\"She loves to be cuddled\" is a new engine joined by a comma alone." },
+    { id: 's03', t: 'spot', d: 2, tag: 'splice', parts: ["When I got home,", "I was hungry", ", there was", "no food left."], a: 2, why: "\"There was no food left\" is a new engine. \"There\" after a comma is the splice alarm." },
+    { id: 's04', t: 'spot', d: 2, tag: 'fine', parts: ["Ms Goh gave us", "pencils, rulers and erasers", "for the test", ", they were brand new."], a: 3, why: "The list commas are fine. \"They were brand new\" is a second engine joined by a comma alone." },
+    { id: 's05', t: 'spot', d: 2, tag: 'splice', parts: ["The hawker centre was busy", ", we waited", "for a table", "near the stall."], a: 1, why: "\"We waited for a table\" is a second engine joined by only a comma." },
+    { id: 's06', t: 'spot', d: 2, tag: 'splice', parts: ["Arjun scored a goal", ", his team", "cheered", "loudly."], a: 1, why: "\"His team cheered loudly\" has its own engine, so a comma can't join it." },
+    { id: 's07', t: 'spot', d: 2, tag: 'link', parts: ["Although it was late,", "we kept reading", "because the story was exciting", ", it had a surprise ending."], a: 3, why: "The first comma and \"because\" are fine. \"It had a surprise ending\" is a spliced-on engine." },
+    { id: 's08', t: 'spot', d: 3, tag: 'then', parts: ["We bought our tickets,", "and we found our seats", ", then the", "movie started."], a: 2, why: "\", and we\" is fine. \", then\" can't join \"the movie started\" on its own." },
+    { id: 's09', t: 'spot', d: 3, tag: 'then', parts: ["I woke up early", ", then I", "brushed my teeth", "and changed my clothes."], a: 1, why: "\"Then\" is not a coupler. Use \", and then I\" or a full stop." },
+    { id: 's10', t: 'spot', d: 3, tag: 'then', parts: ["After the assembly,", "we went to class", ", then Ms Goh", "took attendance."], a: 2, why: "\"After the assembly,\" is fine. \", then\" can't couple the second engine." },
+    { id: 's11', t: 'spot', d: 3, tag: 'however', parts: ["The forecast said it would rain", ", however we", "still went", "to the beach."], a: 1, why: "\"However\" needs a full stop before it. Or use \", but we\"." },
+    { id: 's12', t: 'spot', d: 3, tag: 'however', parts: ["I studied hard", "for the test", ", however I", "forgot one answer."], a: 2, why: "\"However\" isn't a coupler. Use \". However, I\" or \", but I\"." },
+    { id: 's13', t: 'spot', d: 3, tag: 'however', parts: ["The road was flooded", ", therefore we", "took", "another route."], a: 1, why: "\"Therefore\" isn't a coupler. Use \". Therefore, we\" or \", so we\"." },
+    { id: 's14', t: 'spot', d: 3, tag: 'speech', parts: ["Ben said,", "\"I am tired", ", I want", "to go home.\""], a: 2, why: "Inside the quote, \"I want to go home\" is a second engine. It needs a full stop." },
+    { id: 's15', t: 'spot', d: 3, tag: 'speech', parts: ["\"The food is ready", ", it smells", "delicious,\"", "Mum said."], a: 1, why: "\"It smells delicious\" is a second engine inside the speech, so it needs a full stop." },
+    { id: 's16', t: 'spot', d: 3, tag: 'runon', parts: ["After lunch,", "it stopped raining", "the sun came out", "and we went outside."], a: 2, why: "Nothing joins \"it stopped raining\" and \"the sun came out\". That's a run-on." },
+    { id: 's17', t: 'spot', d: 3, tag: 'runon', parts: ["I opened the box", "a frog jumped out", "and hopped", "across the floor."], a: 1, why: "\"A frog jumped out\" starts a new engine with nothing joining it: a run-on." },
+    { id: 's18', t: 'spot', d: 1, tag: 'splice', parts: ["We went to Sentosa", ", we built", "sandcastles", "on the beach."], a: 1, why: "\"We built sandcastles\" is a second engine joined by a comma alone." },
+    { id: 's19', t: 'spot', d: 2, tag: 'join', parts: ["The test was easy,", "so I finished early", ", I checked", "my answers."], a: 2, why: "\", so I\" is a proper coupler. \", I checked\" is not." },
+    { id: 's20', t: 'spot', d: 1, tag: 'splice', parts: ["It was my birthday", ", my parents", "bought me", "a cake."], a: 1, why: "\"My parents bought me a cake\" is a new engine joined by a comma alone." },
+    { id: 's21', t: 'spot', d: 2, tag: 'splice', parts: ["Nurul opened the door", "and gasped", ", her friends", "had thrown a party."], a: 2, why: "\"Her friends had thrown a party\" is a second engine joined by only a comma." },
+    { id: 's22', t: 'spot', d: 1, tag: 'splice', parts: ["The canteen auntie smiled", ", she gave", "me", "extra fries."], a: 1, why: "\"She gave me extra fries\" has its own engine. \"She\" after a comma is the alarm." },
+    { id: 's23', t: 'spot', d: 3, tag: 'however', parts: ["The tickets were expensive", "for my family", ", however we", "bought them anyway."], a: 2, why: "\"However\" can't join engines. Use \", but we\" or \". However, we\"." },
+    { id: 's24', t: 'spot', d: 2, tag: 'fine', parts: ["Oh,", "I left my bag", "at school", ", it has my homework in it."], a: 3, why: "\"Oh,\" is fine. \"It has my homework in it\" is a second engine spliced on." },
+    { id: 's25', t: 'spot', d: 3, tag: 'then', parts: ["We did our warm-up", ", then we", "ran", "two laps."], a: 1, why: "\"Then\" isn't a coupler. Use \", and then we\" or a full stop." },
+    { id: 's26', t: 'spot', d: 2, tag: 'link', parts: ["Before the test,", "I was nervous", ", my hands", "were shaking."], a: 2, why: "\"Before the test,\" is fine. \"My hands were shaking\" is a spliced-on engine." }
   ];
 
-  const container = document.getElementById('quizContainer');
-  const scoreEl = document.getElementById('scoreDisplay');
-  let score = 0, answered = [];
-  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  /* ================= QUIZ BANK ENGINE (shared by every lesson) =================
+     Needs, defined above it: LESSON_KEY, TAGS, BANK. Optional: QB_TEXT = { ask: {...}, yn: [...] }.
+     Each attempt draws BAND_SIZES questions (easy, medium, tricky). The draw builds many
+     candidate quizzes and keeps the best: every tag present, 3+ of each type, balanced
+     check answers, unseen questions first. Options are shuffled; ids seen are remembered. */
+  const BAND_SIZES = [7, 7, 6];
+  const DRAW = BAND_SIZES.reduce((a, b) => a + b, 0);
+  const QBT = (typeof QB_TEXT !== 'undefined') ? QB_TEXT : {};
+  const ASK = Object.assign({
+    check: 'Is this sentence correct?',
+    pick:  'Pick the correct sentence.',
+    fill:  'Which choice fills the gap correctly?',
+    spot:  'Tap the part with the mistake.'
+  }, QBT.ask || {});
+  const YN = QBT.yn || ['Needs fixing', 'Correct'];
 
-  function updateScore() { scoreEl.textContent = score + ' / ' + QUESTIONS.length; }
+  const store = {
+    get(k, fallback) { try { const v = localStorage.getItem(LESSON_KEY + ':' + k); return v === null ? fallback : JSON.parse(v); } catch (e) { return fallback; } },
+    set(k, v) { try { localStorage.setItem(LESSON_KEY + ':' + k, JSON.stringify(v)); } catch (e) { /* storage unavailable: quiz still works */ } }
+  };
+  const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  function buildCandidate(seen) {
+    const chosen = [], tagN = {}, typeN = {};
+    let fixN = 0, okN = 0;
+    for (let band = 1; band <= 3; band++) {
+      const picks = [];
+      for (let k = 0; k < BAND_SIZES[band - 1]; k++) {
+        let best = null, bestScore = -Infinity;
+        BANK.forEach(q => {
+          if (q.d !== band || picks.includes(q)) return;
+          let s = Math.random() * 3;
+          if (!seen.has(q.id)) s += 6;
+          if (!tagN[q.tag]) s += 12;
+          s -= (typeN[q.t] || 0) * 1.2;
+          if ((typeN[q.t] || 0) < 3) s += 2;   // nudge every type up to 3
+          if (q.t === 'check') { const lean = q.a === 0 ? fixN - okN : okN - fixN; if (lean >= 1) s -= 4; }
+          if (s > bestScore) { bestScore = s; best = q; }
+        });
+        if (!best) break;
+        picks.push(best);
+        tagN[best.tag] = (tagN[best.tag] || 0) + 1;
+        typeN[best.t] = (typeN[best.t] || 0) + 1;
+        if (best.t === 'check') { if (best.a === 0) fixN++; else okN++; }
+      }
+      chosen.push(...shuffle(picks));
+    }
+    return chosen;
+  }
+
+  function rateCandidate(c, seen) {
+    const tags = new Set(c.map(q => q.tag)).size;
+    const types = {};
+    c.forEach(q => types[q.t] = (types[q.t] || 0) + 1);
+    const used = [...new Set(BANK.map(q => q.t))];
+    const minType = Math.min(...used.map(t => types[t] || 0));
+    const checks = c.filter(q => q.t === 'check');
+    const lean = Math.abs(checks.filter(q => q.a === 0).length * 2 - checks.length);
+    return (tags === Object.keys(TAGS).length ? 10000 : tags * 500)
+         + (c.length === DRAW ? 5000 : 0)
+         + Math.min(minType, 3) * 300
+         + (lean <= 2 ? 200 : 0)
+         + c.filter(q => !seen.has(q.id)).length * 10;
+  }
+
+  function drawQuiz() {
+    let seen = new Set(store.get('seen', []));
+    if (BANK.length - seen.size < DRAW) seen = new Set(store.get('last', []));   // new cycle, but skip the last attempt
+    let chosen = null, bestRate = -1;
+    for (let tries = 0; tries < 200; tries++) {
+      const c = buildCandidate(seen), r = rateCandidate(c, seen);
+      if (r > bestRate) { bestRate = r; chosen = c; }
+    }
+    chosen.forEach(q => seen.add(q.id));
+    store.set('seen', [...seen]);
+    store.set('last', chosen.map(q => q.id));
+    return chosen.map(q => {
+      if (q.t === 'pick' || q.t === 'fill') {
+        const opts = shuffle(q.o.map((text, i) => ({ text, ok: i === 0 })));
+        return { q, opts, answer: opts.findIndex(o => o.ok) };
+      }
+      if (q.t === 'check') return { q, opts: YN.map(text => ({ text })), answer: q.a };
+      return { q, opts: null, answer: q.a };
+    });
+  }
+
+  const listEl = document.getElementById('qbList');
+  const scoreEl = document.getElementById('qbScore');
+  const progressEl = document.getElementById('qbProgress');
+  const summaryEl = document.getElementById('qbSummary');
+  let current = [], score = 0, done = 0, missed = [];
+
+  function updateScore() {
+    scoreEl.textContent = score + ' / ' + current.length;
+    progressEl.textContent = done + ' of ' + current.length + ' answered';
+  }
+
+  /* Small or empty options are hard to see on a button, so label them. */
+  function optLabel(text) {
+    const t = text.trim();
+    if (t === '') return '<span class="qb-note">(nothing)</span>';
+    if (t === ',') return '<span class="qb-punct">,</span> <span class="qb-note">(a comma)</span>';
+    if (t === '.') return '<span class="qb-punct">.</span> <span class="qb-note">(a full stop)</span>';
+    return esc(text);
+  }
+  function plainLabel(text) {
+    const t = text.trim();
+    return t === '' ? 'nothing' : t === ',' ? 'a comma' : t === '.' ? 'a full stop' : '"' + t + '"';
+  }
+  function sentenceWithGap(q, text) {
+    let filler = '<span class="qb-blank">___</span>';
+    if (text !== undefined) {
+      filler = text.trim() === ''
+        ? '<span class="qb-blank qb-filled qb-none">(nothing)</span>'
+        : '<span class="qb-blank qb-filled">' + esc(text) + '</span>';
+    }
+    return esc(q.q).replace('___', filler);
+  }
 
   function render() {
-    container.innerHTML = '';
-    answered = QUESTIONS.map(() => false);
-    QUESTIONS.forEach((q, i) => {
+    listEl.innerHTML = '';
+    summaryEl.hidden = true;
+    current.forEach((item, i) => {
+      const q = item.q;
       const card = document.createElement('div');
-      card.className = 'quiz-card';
-      const hasBlank = q.text.includes('___');
-      const short = q.options.every(o => o.length <= 14);
+      card.className = 'qb-card';
+      card.dataset.type = q.t;
+      let body;
+      if (q.t === 'spot') {
+        body = '<div class="qb-spot">' + q.parts.map((p, k) =>
+          '<button type="button" class="qb-part" data-k="' + k + '">' + esc(p) + '</button>').join('') + '</div>';
+      } else if (q.t === 'fill') {
+        const cols = item.opts.length;
+        body = '<p class="qb-text">' + sentenceWithGap(q) + '</p><div class="qb-opts qb-row" style="--qb-cols:' + cols + '"></div>';
+      } else if (q.t === 'check') {
+        body = '<p class="qb-text">' + esc(q.q) + '</p><div class="qb-opts qb-row"></div>';
+      } else {
+        body = (q.q ? '<p class="qb-text">' + esc(q.q) + '</p>' : '') + '<div class="qb-opts"></div>';
+      }
       card.innerHTML =
-        '<p class="quiz-num">Question ' + (i + 1) + ' of ' + QUESTIONS.length + '</p>' +
-        (q.ask ? '<p class="quiz-ask">' + esc(q.ask) + '</p>' : '') +
-        '<p class="quiz-text">' + esc(q.text).replace('___', '<span class="blank">___</span>') + '</p>' +
-        '<div class="opts' + (short ? ' row' : '') + '"></div>' +
-        '<div class="feedback" role="status"></div>';
-      const opts = card.querySelector('.opts');
-      q.options.forEach((o, j) => {
-        const b = document.createElement('button');
-        b.type = 'button';
-        b.className = 'opt';
-        b.innerHTML = (short ? '' : '<span class="tag">' + String.fromCharCode(65 + j) + '</span>') + esc(o);
-        b.addEventListener('click', () => answer(i, j, card, hasBlank, short));
-        opts.appendChild(b);
-      });
-      container.appendChild(card);
+        '<p class="qb-num">Question ' + (i + 1) + ' of ' + current.length + '</p>' +
+        '<p class="qb-ask">' + esc(q.ask || ASK[q.t]) + '</p>' + body +
+        '<div class="qb-feedback" role="status"></div>';
+      if (q.t === 'spot') {
+        card.querySelectorAll('.qb-part').forEach(b => b.addEventListener('click', () => answer(i, +b.dataset.k, card)));
+      } else {
+        const opts = card.querySelector('.qb-opts');
+        item.opts.forEach((o, j) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'qb-opt';
+          b.innerHTML = (q.t === 'pick' ? '<span class="qb-letter">' + String.fromCharCode(65 + j) + '</span>' : '') + optLabel(o.text);
+          b.addEventListener('click', () => answer(i, j, card));
+          opts.appendChild(b);
+        });
+      }
+      listEl.appendChild(card);
     });
     updateScore();
   }
 
-  function answer(i, j, card, hasBlank, short) {
-    if (answered[i]) return;
-    answered[i] = true;
-    const q = QUESTIONS[i], ok = j === q.answer;
-    if (ok) score++;
-    updateScore();
-    if (hasBlank) {
-      const blank = card.querySelector('.blank');
-      blank.textContent = q.options[j];
-      blank.classList.add('filled');
-    }
-    card.querySelectorAll('.opt').forEach((b, k) => {
+  function answer(i, j, card) {
+    const item = current[i];
+    if (item.done) return;
+    item.done = true; done++;
+    const q = item.q, ok = j === item.answer;
+    if (ok) score++; else missed.push(q.tag);
+    card.querySelectorAll(q.t === 'spot' ? '.qb-part' : '.qb-opt').forEach((b, k) => {
       b.disabled = true;
-      if (k === j) b.classList.add(ok ? 'correct' : 'incorrect');
-      else if (k === q.answer && !ok) b.classList.add('reveal');
+      if (k === j) b.classList.add(ok ? 'qb-correct' : 'qb-incorrect');
+      else if (k === item.answer && !ok) b.classList.add('qb-reveal');
     });
-    const fb = card.querySelector('.feedback');
-    fb.classList.add('show', ok ? 'fb-ok' : 'fb-no');
-    fb.innerHTML = '<span class="verdict-q">' +
-      (ok ? 'Correct!' : 'Not quite. The answer is ' + (short ? '"' + esc(q.options[q.answer]) + '"' : String.fromCharCode(65 + q.answer)) + '.') +
-      '</span>' + esc(q.why);
+    if (q.t === 'fill') card.querySelector('.qb-text').innerHTML = sentenceWithGap(q, item.opts[j].text);
+    let right;
+    if (q.t === 'spot') right = 'The mistake is in "' + esc(q.parts[item.answer]) + '".';
+    else if (q.t === 'pick') right = 'The answer is ' + String.fromCharCode(65 + item.answer) + '.';
+    else right = 'The answer is ' + esc(plainLabel(item.opts[item.answer].text)) + '.';
+    const fb = card.querySelector('.qb-feedback');
+    fb.classList.add('qb-show', ok ? 'qb-fb-ok' : 'qb-fb-no');
+    fb.innerHTML = '<span class="qb-verdict">' + (ok ? 'Correct!' : 'Not quite. ' + right) + '</span>' + esc(q.why);
+    updateScore();
+    if (done === current.length) showSummary();
   }
 
-  document.getElementById('resetBtn').addEventListener('click', () => {
-    score = 0;
-    render();
-    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
+  function showSummary() {
+    const best = Math.max(store.get('best', 0), score);
+    store.set('best', best);
+    const attempts = store.get('attempts', 0) + 1;
+    store.set('attempts', attempts);
+    const counts = {};
+    missed.forEach(t => counts[t] = (counts[t] || 0) + 1);
+    const areas = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+    const n = current.length;
+    let msg;
+    if (score === n) msg = 'A perfect run! Try another set to make sure it sticks.';
+    else if (score >= Math.ceil(n * 0.8)) msg = 'Strong work. Have a quick look at the areas below, then try a fresh set.';
+    else if (score >= Math.ceil(n * 0.6)) msg = 'Good progress. Re-read the parts below before your next attempt.';
+    else msg = 'Worth another look at the lesson. Start with the areas below, then try a fresh set.';
+    summaryEl.innerHTML =
+      '<h3>You scored ' + score + ' / ' + n + '</h3><p>' + msg + '</p>' +
+      (areas.length ? '<p class="qb-sum-label">Areas to review</p><ul class="qb-areas">' + areas.map(t =>
+        '<li><a href="' + TAGS[t].href + '">' + esc(TAGS[t].label) + '</a><span>' + counts[t] + ' wrong</span></li>').join('') + '</ul>' : '') +
+      '<p class="qb-meta">Attempts on this device: ' + attempts + ' · Best score: ' + best + ' / ' + n + '</p>' +
+      '<button type="button" class="qb-go" id="qbAgain">Try ' + n + ' new questions</button>';
+    summaryEl.hidden = false;
+    document.getElementById('qbAgain').addEventListener('click', () => { newQuiz(); listEl.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    summaryEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 
-  render();
+  function newQuiz() {
+    current = drawQuiz(); score = 0; done = 0; missed = [];
+    render();
+  }
+
+  const bankEl = document.getElementById('qbBank'), drawEl = document.getElementById('qbDraw');
+  if (bankEl) bankEl.textContent = BANK.length;
+  if (drawEl) drawEl.textContent = DRAW;
+  document.getElementById('qbNew').addEventListener('click', () => {
+    newQuiz();
+    listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  newQuiz();
 })();
 </script>
 </body>

@@ -236,6 +236,103 @@
     font-family: var(--font-display); font-weight: 600; font-size: 18px; line-height: 1.45; text-align: center;
   }
   footer { text-align: center; color: var(--ink-soft); font-size: 13px; margin-top: 30px; }
+
+  /* ================= QUIZ BANK ENGINE (shared by every lesson; qb- prefix avoids clashes) ================= */
+  .qb { --qb-cols: 2; }
+  .qb-bar {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 3;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 10px 16px; margin: 0 0 18px; border-radius: var(--qb-radius);
+    background: var(--qb-bar); color: var(--qb-bar-ink);
+  }
+  .qb-label { font-size: 12.5px; opacity: 0.8; }
+  .qb-score { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 28px; line-height: 1.05; }
+  .qb-progress { font-size: 12.5px; opacity: 0.85; margin-top: 2px; }
+  .qb-new {
+    font: inherit; font-weight: 700; font-size: 14px; padding: 10px 16px; min-height: 44px;
+    border-radius: 999px; border: 2px solid currentColor; background: transparent; color: inherit; cursor: pointer;
+  }
+  .qb-list, .qb-summary { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 96px); }
+  .qb-card {
+    background: var(--qb-card); border: var(--qb-card-border); box-shadow: var(--qb-card-shadow);
+    border-radius: var(--qb-radius); padding: 16px 16px 14px; margin: 0 0 14px; color: var(--qb-ink);
+  }
+  .qb-num { font-size: 12.5px; color: var(--qb-soft); margin: 0 0 4px; }
+  .qb-ask { font-size: 13.5px; font-weight: 700; color: var(--qb-accent); margin: 0 0 6px; }
+  .qb-text { font-size: 16.5px; line-height: 1.6; margin: 0 0 14px; }
+  .qb-blank {
+    display: inline-block; min-width: 60px; padding: 0 3px; text-align: center;
+    border-bottom: 2.5px dashed var(--qb-soft); color: var(--qb-soft);
+  }
+  .qb-blank.qb-filled { border-bottom-style: solid; border-bottom-color: var(--qb-accent); color: var(--qb-accent); font-weight: 700; }
+  .qb-blank.qb-none { font-style: italic; font-weight: 400; }
+  .qb-opts { display: flex; flex-direction: column; gap: 9px; }
+  .qb-opts.qb-row { display: grid; grid-template-columns: repeat(var(--qb-cols), minmax(0, 1fr)); }
+  .qb-opt {
+    font: inherit; font-size: 15.5px; line-height: 1.45; text-align: left; color: var(--qb-ink);
+    padding: 11px 14px; min-height: 46px; border-radius: var(--qb-radius-opt);
+    border: 2px solid var(--qb-rule); background: var(--qb-page); cursor: pointer;
+  }
+  .qb-row .qb-opt { text-align: center; font-weight: 600; padding-left: 6px; padding-right: 6px; }
+  .qb-opt:not(:disabled):hover { border-color: var(--qb-accent); }
+  .qb-opt:disabled, .qb-part:disabled { cursor: default; }
+  .qb-letter { font-family: var(--qb-font); font-weight: var(--qb-font-weight); margin-right: 10px; color: var(--qb-accent); }
+  .qb-note { font-size: 12.5px; font-weight: 400; color: var(--qb-soft); }
+  .qb-punct { font-size: 22px; line-height: 0; font-weight: 700; }
+  .qb-spot { display: flex; flex-wrap: wrap; gap: 8px 6px; margin: 0 0 4px; }
+  .qb-part {
+    font: inherit; font-size: 16px; line-height: 1.35; text-align: left; color: var(--qb-ink); cursor: pointer;
+    background: var(--qb-accent-soft); border: none; border-bottom: 3px dashed var(--qb-accent);
+    border-radius: 4px 4px 0 0; padding: 7px 9px; min-height: 40px;
+  }
+  .qb-opt.qb-correct, .qb-opt.qb-reveal { background: var(--qb-right-soft); border-color: var(--qb-right); }
+  .qb-opt.qb-incorrect { background: var(--qb-wrong-soft); border-color: var(--qb-wrong); }
+  .qb-part.qb-correct, .qb-part.qb-reveal { background: var(--qb-right-soft); border-bottom: 3px solid var(--qb-right); }
+  .qb-part.qb-incorrect { background: var(--qb-wrong-soft); border-bottom: 3px solid var(--qb-wrong); }
+  .qb-feedback { display: none; margin-top: 12px; padding-top: 12px; border-top: 2px dashed var(--qb-rule); font-size: 14px; line-height: 1.55; }
+  .qb-feedback.qb-show { display: block; }
+  .qb-verdict { display: block; font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 18px; margin-bottom: 2px; }
+  .qb-fb-ok .qb-verdict { color: var(--qb-right); }
+  .qb-fb-no .qb-verdict { color: var(--qb-wrong); }
+  .qb-summary {
+    background: var(--qb-card); color: var(--qb-ink); border: 3px solid var(--qb-accent);
+    border-radius: var(--qb-radius); padding: 18px 20px; margin-top: 8px;
+  }
+  .qb-summary h3 { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 30px; line-height: 1.1; margin: 0 0 6px; color: var(--qb-accent); }
+  .qb-summary p { margin: 0 0 10px; line-height: 1.55; }
+  .qb-sum-label { font-weight: 700; margin-top: 14px !important; }
+  .qb-areas { list-style: none; margin: 0 0 12px; padding: 0; }
+  .qb-areas li { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--qb-rule); }
+  .qb-areas a { color: var(--qb-ink); font-weight: 600; }
+  .qb-areas span { color: var(--qb-wrong); font-weight: 700; white-space: nowrap; }
+  .qb-meta { font-size: 13px; color: var(--qb-soft); }
+  .qb-go {
+    font: inherit; font-weight: 700; font-size: 16px; width: 100%; min-height: 50px; margin-top: 4px; cursor: pointer;
+    border: none; border-radius: var(--qb-radius); background: var(--qb-accent); color: var(--qb-on-accent);
+  }
+
+  :root {
+    --qb-page: var(--bg);
+    --qb-card: var(--surface);
+    --qb-ink: var(--ink);
+    --qb-soft: var(--ink-soft);
+    --qb-accent: var(--accent);
+    --qb-accent-soft: var(--accent-soft);
+    --qb-on-accent: var(--surface);
+    --qb-right: var(--right);
+    --qb-right-soft: var(--right-soft);
+    --qb-wrong: var(--wrong);
+    --qb-wrong-soft: var(--wrong-soft);
+    --qb-rule: var(--rule);
+    --qb-bar: var(--ink);
+    --qb-bar-ink: var(--bg);
+    --qb-font: var(--font-display);
+    --qb-font-weight: 700;
+    --qb-radius: 6px;
+    --qb-radius-opt: 6px;
+    --qb-card-border: none;
+    --qb-card-shadow: none;
+  }
 </style>
 </head>
 <body>
@@ -258,7 +355,7 @@
   </header>
 
   <!-- 2. THE RULE -->
-  <section>
+  <section id="rule">
     <h2>The three breath marks</h2>
     <p class="sub">Two words you'll see all through this lesson:</p>
     <div class="glossary">
@@ -289,7 +386,7 @@
   </section>
 
   <!-- 3. TRAPS -->
-  <section>
+  <section id="traps">
     <h2>Three traps</h2>
     <p class="sub">These come straight from real compositions. The first one is by far the most common.</p>
 
@@ -318,7 +415,7 @@
   </section>
 
   <!-- 4. CATEGORIES -->
-  <section>
+  <section id="cases">
     <h2>The three breath marks up close</h2>
     <p class="sub">Each breath mark has a few common shapes. Learn to spot them.</p>
 
@@ -353,7 +450,7 @@
   </section>
 
   <!-- 5. SPECIAL CASES -->
-  <section>
+  <section id="specials">
     <h2>Three more things the quiz will check</h2>
     <p class="sub">These aren't one of the three breath marks, but they all turn up in long sentences.</p>
     <div class="grid-2">
@@ -384,12 +481,15 @@
   <!-- 6. PRACTICE -->
   <section>
     <h2>Mark the breaths</h2>
-    <p class="sub">Some questions ask if a sentence needs a comma. Others ask you to pick the version with the commas in the right places. You'll see straight away if you're right, and why. The questions get trickier as you go.</p>
-    <div class="scoreboard">
-      <div><div class="label">Your score</div><div class="score" id="scoreDisplay">0 / 30</div></div>
-      <button class="reset-btn" id="resetBtn" type="button">Start over</button>
+    <p class="sub">Each attempt draws <span id="qbDraw">20</span> questions from a bank of <span id="qbBank">120</span>, so every try is different. You'll decide where to breathe, check sentences, pick the right version and spot mistakes, and the questions get trickier as you go. Finish them all to see which areas to review.</p>
+    <div class="qb" id="qb">
+      <div class="qb-bar">
+        <div><div class="qb-label">Your score</div><div class="qb-score" id="qbScore">0 / 20</div><div class="qb-progress" id="qbProgress">0 of 20 answered</div></div>
+        <button class="qb-new" id="qbNew" type="button">New quiz</button>
+      </div>
+      <div class="qb-list" id="qbList"></div>
+      <div class="qb-summary" id="qbSummary" hidden></div>
     </div>
-    <div id="quizContainer"></div>
   </section>
 
   <!-- 7. PIN THIS UP -->
@@ -452,112 +552,365 @@
   }));
   setMode('off');
 
-  /* ---------- Quiz ---------- */
-  const CHECK = "Does this sentence need a comma?";
-  const PICK = "Pick the version with the commas in the right places.";
-  const YN = ["Needs a comma", "Fine as it is"];
-  const QUESTIONS = [
-    { ask: CHECK, text: "As soon as the bell rang we rushed to the canteen.", options: YN, answer: 0, why: "The intro ends at “rang”. Breathe there, before the singer “we” starts the main sentence." },
-    { ask: CHECK, text: "Suddenly, a loud crash came from the kitchen.", options: YN, answer: 1, why: "“Suddenly” is an opening word, and its breath mark is already in place." },
-    { ask: PICK, text: "When I finished my homework I switched on the iPad.", options: ["When I finished my homework I switched on the iPad.", "When I finished, my homework I switched on the iPad.", "When I finished my homework, I switched on the iPad.", "When I finished my homework I, switched on the iPad."], answer: 2, why: "The intro is “When I finished my homework”. Breathe right after it, before the singer “I”." },
-    { ask: CHECK, text: "Lila sat beside me, folding the paper step by step.", options: YN, answer: 1, why: "“Folding the paper…” is an echo adding Lila's extra action, so the comma before it is right." },
-    { ask: CHECK, text: "We spent more than $30 so the cashier gave us a voucher.", options: YN, answer: 0, why: "“So” brings in a new singer, “the cashier”. That's a new verse, so breathe before “so”." },
-    { ask: PICK, text: "Luckily Dad had recorded my performance.", options: ["Luckily Dad, had recorded my performance.", "Luckily, Dad had recorded my performance.", "Luckily Dad had recorded, my performance.", "Luckily Dad had, recorded my performance."], answer: 1, why: "“Luckily” is an opening word. Breathe after it, and never between the singer “Dad” and the verb." },
-    { ask: CHECK, text: "I groaned crumpling the wrinkled origami paper.", options: YN, answer: 0, why: "“Crumpling the…” is an echo, an extra action. Breathe before it: “I groaned, crumpling…”" },
-    { ask: PICK, text: "Wei Ling wanted to join the race but she had hurt her ankle.", options: ["Wei Ling wanted to join the race but, she had hurt her ankle.", "Wei Ling wanted to join the race, but she had hurt her ankle.", "Wei Ling, wanted to join the race but she had hurt her ankle.", "Wei Ling wanted to join, the race but she had hurt her ankle."], answer: 1, why: "A new singer, “she”, follows “but”. The breath goes before “but”, not after it." },
-    { ask: CHECK, text: "During recess the next day Arjun showed me his new card trick.", options: YN, answer: 0, why: "“During recess the next day” is a time-phrase intro. Breathe after it, before the singer “Arjun”." },
-    { ask: PICK, text: "The bus braked suddenly throwing us all forward.", options: ["The bus braked suddenly throwing us, all forward.", "The bus, braked suddenly throwing us all forward.", "The bus braked suddenly throwing, us all forward.", "The bus braked suddenly, throwing us all forward."], answer: 3, why: "“Throwing us all forward” is an echo showing the result. Breathe just before it." },
-
-    { ask: CHECK, text: "I packed my bag and waited for the school bus.", options: YN, answer: 1, why: "There's only one singer, “I”, doing two actions. No new verse starts, so no breath is needed." },
-    { ask: CHECK, text: "We stayed indoors because it was raining heavily.", options: YN, answer: 1, why: "The linking part comes at the end, not as an intro. The sentence flows without a breath." },
-    { ask: PICK, text: "Dinner was ready so we sat down at the table.", options: ["Dinner was ready so, we sat down at the table.", "Dinner was ready, so we sat down at the table.", "Dinner, was ready so we sat down at the table.", "Dinner was ready so we sat, down at the table."], answer: 1, why: "A new singer, “we”, follows “so”. The breath goes before “so”, never after it." },
-    { ask: CHECK, text: "Hearing the news my brother wiped away his tears and smiled.", options: YN, answer: 0, why: "“Hearing the news” is an -ing opener. Breathe after it, before the singer “my brother”." },
-    { ask: PICK, text: "Although she was nervous Nurul sang the solo beautifully.", options: ["Although, she was nervous Nurul sang the solo beautifully.", "Although she was nervous Nurul, sang the solo beautifully.", "Although she was nervous, Nurul sang the solo beautifully.", "Although she was nervous Nurul sang, the solo beautifully."], answer: 2, why: "The intro is “Although she was nervous”. Breathe after it, just before the singer “Nurul”." },
-    { ask: CHECK, text: "My father played our favourite songs and my brother sang along loudly.", options: YN, answer: 0, why: "“My brother sang” is a new verse with a new singer. Breathe before “and”." },
-    { ask: PICK, text: "The glass vase fell off the shelf shattering into tiny pieces.", options: ["The glass vase fell off, the shelf shattering into tiny pieces.", "The glass vase, fell off the shelf shattering into tiny pieces.", "The glass vase fell off the shelf, shattering into tiny pieces.", "The glass vase fell off the shelf shattering, into tiny pieces."], answer: 2, why: "“Shattering into tiny pieces” is an echo showing the result. The breath goes right before it." },
-    { ask: CHECK, text: "Once I had received the trophy I ran off the stage.", options: YN, answer: 0, why: "“Once I had received the trophy” is an intro. Breathe after “trophy”, before the singer “I”." },
-    { ask: PICK, text: "Marcus forgot his water bottle and Mr Tan let him buy a drink.", options: ["Marcus forgot his water bottle and, Mr Tan let him buy a drink.", "Marcus forgot, his water bottle and Mr Tan let him buy a drink.", "Marcus forgot his water bottle, and Mr Tan let him buy a drink.", "Marcus, forgot his water bottle and Mr Tan let him buy a drink."], answer: 2, why: "A new singer, “Mr Tan”, follows “and”. The breath goes before “and”, not after it." },
-    { ask: CHECK, text: "Mum smiled when she saw my report book.", options: YN, answer: 1, why: "The linking part “when she saw…” comes at the end, so it isn't an intro. No breath needed." },
-
-    { ask: PICK, text: "Our waiter Mr Evan Sim served our pancakes quickly.", options: ["Our waiter, Mr Evan Sim served our pancakes quickly.", "Our waiter, Mr Evan Sim, served our pancakes quickly.", "Our waiter Mr Evan Sim, served our pancakes quickly.", "Our waiter, Mr Evan, Sim served our pancakes quickly."], answer: 1, why: "“Mr Evan Sim” is a side note about the waiter, so it needs a comma on both sides." },
-    { ask: CHECK, text: "I saw a Primary Six boy pushing a younger student.", options: YN, answer: 1, why: "“Pushing a younger student” describes the boy you saw. It isn't an echo of your action, so no breath." },
-    { ask: PICK, text: "At DisneySea we rode rides played games and watched a parade.", options: ["At DisneySea, we rode rides, played games and watched a parade.", "At DisneySea we rode rides played games, and watched a parade.", "At DisneySea, we rode, rides played games and watched a parade.", "At, DisneySea we rode rides, played games and watched a parade."], answer: 0, why: "Breathe after the intro, then separate the three actions in the list. No comma is needed before the final “and”." },
-    { ask: CHECK, text: "The Esplanade, a performing arts centre looks like a giant durian.", options: YN, answer: 0, why: "A side note needs two commas. The closing one after “centre” is missing." },
-    { ask: PICK, text: "Out of the corner of my eye I saw Mum running into the hall.", options: ["Out of the corner of my eye, I saw Mum running into the hall.", "Out of the corner of my eye, I saw Mum running, into the hall.", "Out of the corner of my eye I saw, Mum running into the hall.", "Out of the corner, of my eye I saw Mum running into the hall."], answer: 0, why: "Breathe once the intro ends. “Running into the hall” describes Mum, so no comma goes before it." },
-    { ask: PICK, text: "When the music stopped we bowed and the audience clapped wildly.", options: ["When the music stopped, we bowed, and the audience clapped wildly.", "When the music stopped we bowed, and the audience clapped wildly.", "When the music stopped, we bowed and, the audience clapped wildly.", "When the music, stopped we bowed and the audience clapped wildly."], answer: 0, why: "There are two breaths: one after the intro, and one before “and”, because “the audience” is a new singer." },
-    { ask: CHECK, text: "We bought balloons, streamers, paper cups and a big chocolate cake.", options: YN, answer: 1, why: "This list already has commas between its items, and no comma is needed before the final “and”." },
-    { ask: PICK, text: "Ms Goh my form teacher announced that Youth Day was coming.", options: ["Ms Goh, my form teacher announced that Youth Day was coming.", "Ms Goh my form teacher, announced that Youth Day was coming.", "Ms Goh, my form teacher, announced, that Youth Day was coming.", "Ms Goh, my form teacher, announced that Youth Day was coming."], answer: 3, why: "“My form teacher” is a side note, so it needs two commas. No comma goes after “announced”." },
-    { ask: CHECK, text: "I found my little brother hiding under the bed.", options: YN, answer: 1, why: "“Hiding under the bed” tells you what your brother was doing, so it stays attached to him. No breath." },
-    { ask: PICK, text: "After a long discussion Ikel and I agreed to tell the truth so we walked into the living room nervously.", options: ["After a long discussion, Ikel and I agreed to tell the truth, so we walked into the living room nervously.", "After a long discussion Ikel and I agreed to tell the truth, so we walked into the living room nervously.", "After a long discussion, Ikel and I agreed to tell the truth so, we walked into the living room nervously.", "After a long discussion, Ikel and I, agreed to tell the truth, so we walked into the living room nervously."], answer: 0, why: "Breathe after the intro and before “so”. There's never a breath between the singers “Ikel and I” and their verb." }
+    /* ================= QUIZ: question bank (120 questions) ================= */
+  const LESSON_KEY = "shelf-l05";
+  const QB_TEXT = {"ask": {"check": "Are the commas in this sentence correct?", "pick": "Pick the version with the commas in the right places.", "fill": "Comma or no comma?", "spot": "Tap the part where a comma is missing or wrong."}, "yn": ["Needs fixing", "Correct"]};
+  const TAGS = {
+    intro: { label: "Breath mark 1: after the intro", href: '#cases' },
+    verse: { label: "Breath mark 2: before a new verse", href: '#cases' },
+    echo: { label: "Breath mark 3: before an echo", href: '#cases' },
+    nobreath: { label: "Trap: a comma with no new verse", href: '#traps' },
+    soside: { label: "Trap: the comma on the wrong side of \"so\"", href: '#traps' },
+    sidenote: { label: "A side note needs two commas", href: '#specials' },
+    seeing: { label: "An -ing part that describes who you saw", href: '#specials' },
+    list: { label: "Lists of three or more", href: '#specials' },
+  };
+  const BANK = [
+    {"id": "f01", "t": "fill", "d": 1, "tag": "intro", "q": "As soon as the bell rang___ we rushed to the canteen.", "o": [",", ""], "why": "The intro (\"As soon as the bell rang\") ends before the singer \"we\" appears, so breathe there."},
+    {"id": "f02", "t": "fill", "d": 1, "tag": "intro", "q": "Suddenly___ a ring from the doorbell startled me.", "o": [",", ""], "why": "Short opening words like \"Suddenly\" are an intro too: comma."},
+    {"id": "f03", "t": "fill", "d": 1, "tag": "intro", "q": "When I finished my homework___ I switched on the iPad.", "o": [",", ""], "why": "A linking-word part at the start is an intro: comma before the singer."},
+    {"id": "f04", "t": "fill", "d": 1, "tag": "intro", "q": "Luckily___ Dad had recorded my performance.", "o": [",", ""], "why": "\"Luckily\" is an opening word: breathe after it."},
+    {"id": "f05", "t": "fill", "d": 2, "tag": "intro", "q": "During recess the next day___ Arjun showed me his card trick.", "o": [",", ""], "why": "A time phrase at the start is an intro: comma."},
+    {"id": "f06", "t": "fill", "d": 2, "tag": "intro", "q": "Hearing the news___ my brother wiped away his tears.", "o": [",", ""], "why": "An -ing opener is an intro: comma before the singer."},
+    {"id": "f07", "t": "fill", "d": 2, "tag": "intro", "q": "Although she was nervous___ Nurul sang the solo beautifully.", "o": [",", ""], "why": "A linking part at the start needs a comma before the singer."},
+    {"id": "f08", "t": "fill", "d": 2, "tag": "intro", "q": "From that day on___ I practised every evening.", "o": [",", ""], "why": "A time phrase opening the sentence: comma."},
+    {"id": "f09", "t": "fill", "d": 1, "tag": "verse", "q": "Wei Ling wanted to join the race___ but she had hurt her ankle.", "o": [",", ""], "why": "\"She\" is a new singer after \"but\", so breathe before \"but\"."},
+    {"id": "f10", "t": "fill", "d": 1, "tag": "verse", "q": "Dinner was ready___ so we sat down at the table.", "o": [",", ""], "why": "A new singer (\"we\") comes after \"so\": comma before \"so\"."},
+    {"id": "f11", "t": "fill", "d": 2, "tag": "verse", "q": "My father played our favourite songs___ and my brother sang along loudly.", "o": [",", ""], "why": "A new singer (\"my brother\") after \"and\": comma before \"and\"."},
+    {"id": "f12", "t": "fill", "d": 2, "tag": "verse", "q": "We spent more than $30___ so the cashier gave us a voucher.", "o": [",", ""], "why": "New singer \"the cashier\" after \"so\": comma."},
+    {"id": "f13", "t": "fill", "d": 1, "tag": "nobreath", "q": "I grabbed my umbrella___ and ran to the bus stop.", "o": ["", ","], "why": "Only one singer (\"I\") doing two actions, so there's no new verse: no comma."},
+    {"id": "f14", "t": "fill", "d": 1, "tag": "nobreath", "q": "We stayed indoors___ because it was raining heavily.", "o": ["", ","], "why": "The linking part comes at the end, so it isn't an intro: no comma."},
+    {"id": "f15", "t": "fill", "d": 2, "tag": "nobreath", "q": "My best friend Lila___ folded a paper swan.", "o": ["", ","], "why": "Never put a comma between the singer and the verb."},
+    {"id": "f16", "t": "fill", "d": 2, "tag": "nobreath", "q": "Mum picked up her keys___ and left for work.", "o": ["", ","], "why": "One singer, two actions: no new verse, so no comma."},
+    {"id": "f17", "t": "fill", "d": 2, "tag": "nobreath", "q": "I was late for school___ because I missed the bus.", "o": ["", ","], "why": "A linking part at the end isn't an intro: no comma."},
+    {"id": "f18", "t": "fill", "d": 2, "tag": "nobreath", "q": "The tall boy in the blue shirt___ won the race.", "o": ["", ","], "why": "\"The tall boy in the blue shirt\" is the singer, and \"won\" is his verb: no comma between them."},
+    {"id": "f19", "t": "fill", "d": 1, "tag": "soside", "q": "We were very hungry___ we ordered two plates of chicken rice.", "o": [", so", "so,", ", so,"], "why": "The breath comes before the joining word, never after it."},
+    {"id": "f20", "t": "fill", "d": 2, "tag": "soside", "q": "It started to rain___ we ran for shelter.", "o": [", so", "so,", "so"], "why": "A new singer follows, so breathe before \"so\", not after it."},
+    {"id": "f21", "t": "fill", "d": 2, "tag": "soside", "q": "I wanted to go out___ it was too late.", "o": [", but", "but,", "but"], "why": "Breathe before \"but\", never after it."},
+    {"id": "f22", "t": "fill", "d": 3, "tag": "soside", "q": "Priya studied hard___ she passed with flying colours.", "o": [", so", "so,", ", so,"], "why": "One comma, before \"so\"."},
+    {"id": "f23", "t": "fill", "d": 1, "tag": "echo", "q": "I groaned___ crumpling my wrinkled origami paper.", "o": [",", ""], "why": "\"crumpling…\" adds an extra action at the end: an echo, so breathe before it."},
+    {"id": "f24", "t": "fill", "d": 2, "tag": "echo", "q": "The bus braked suddenly___ throwing us all forward.", "o": [",", ""], "why": "\"throwing us all forward\" is a result of the braking: an echo, with a comma before it."},
+    {"id": "f25", "t": "fill", "d": 2, "tag": "echo", "q": "Lila sat beside me___ folding the paper step by step.", "o": [",", ""], "why": "An extra action at the end: comma before the echo."},
+    {"id": "f26", "t": "fill", "d": 2, "tag": "echo", "q": "The glass vase fell off the shelf___ shattering into tiny pieces.", "o": [",", ""], "why": "\"shattering…\" is the result: comma before the echo."},
+    {"id": "f27", "t": "fill", "d": 3, "tag": "echo", "q": "Mum hugged me tightly___ whispering that it was all right.", "o": [",", ""], "why": "An extra action by the same singer at the end: comma before the echo."},
+    {"id": "f28", "t": "fill", "d": 3, "tag": "seeing", "q": "I saw a Primary Six boy___ pushing a younger student.", "o": ["", ","], "why": "\"pushing…\" describes the boy, not \"I\", so it stays attached: no comma."},
+    {"id": "f29", "t": "fill", "d": 3, "tag": "seeing", "q": "I found my little brother___ hiding under the bed.", "o": ["", ","], "why": "\"hiding…\" tells you what the brother was doing, so no comma."},
+    {"id": "f30", "t": "fill", "d": 3, "tag": "seeing", "q": "We heard a dog___ barking in the distance.", "o": ["", ","], "why": "\"barking…\" describes the dog you heard: no comma."},
+    {"id": "f31", "t": "fill", "d": 3, "tag": "sidenote", "q": "Our waiter, Mr Evan Sim___ took our orders.", "o": [",", ""], "why": "A side note needs commas on both sides: \"Our waiter, Mr Evan Sim, took our orders.\""},
+    {"id": "f32", "t": "fill", "d": 3, "tag": "sidenote", "q": "Ms Goh___ my form teacher, announced the news.", "o": [",", ""], "why": "The side note \"my form teacher\" needs a comma on both sides."},
+    {"id": "f33", "t": "fill", "d": 3, "tag": "sidenote", "q": "My cousin, a talented pianist___ played at the concert.", "o": [",", ""], "why": "Close the side note with a second comma."},
+    {"id": "f34", "t": "fill", "d": 2, "tag": "list", "q": "At the zoo, we saw lions___ tigers and elephants.", "o": [",", ""], "why": "Separate each item in a list of three with a comma."},
+    {"id": "f35", "t": "fill", "d": 2, "tag": "list", "q": "At DisneySea, we rode rides___ played games and watched a parade.", "o": [",", ""], "why": "A list of three actions: a comma after each item except before the final \"and\"."},
+    {"id": "f36", "t": "fill", "d": 3, "tag": "list", "q": "I packed a towel, a hat___ and some sunblock.", "o": ["", ","], "why": "In Singapore schools, you don't usually add a comma before the final \"and\"."},
+    {"id": "c01", "t": "check", "d": 1, "tag": "intro", "q": "As soon as Mrs Lin saw what was happening she stopped the older boy.", "a": 0, "why": "The intro needs a breath before the singer: \"…what was happening, she stopped…\""},
+    {"id": "c02", "t": "check", "d": 1, "tag": "intro", "q": "As soon as Mrs Lin saw what was happening, she stopped the older boy.", "a": 1, "why": "A comma after the intro, before the singer: correct."},
+    {"id": "c03", "t": "check", "d": 1, "tag": "intro", "q": "Suddenly the lights went out.", "a": 0, "why": "\"Suddenly\" is an opening word, so it needs a comma: \"Suddenly, the lights went out.\""},
+    {"id": "c04", "t": "check", "d": 1, "tag": "intro", "q": "When the rain stopped, we went outside to play.", "a": 1, "why": "Comma after the linking-word intro: correct."},
+    {"id": "c05", "t": "check", "d": 2, "tag": "intro", "q": "After the long journey we finally reached the hotel.", "a": 0, "why": "\"After the long journey\" is an intro: it needs a comma before \"we\"."},
+    {"id": "c06", "t": "check", "d": 2, "tag": "intro", "q": "Seeing me struggle, Mum sat down beside me.", "a": 1, "why": "An -ing opener followed by a comma: correct."},
+    {"id": "c07", "t": "check", "d": 1, "tag": "verse", "q": "Wei Ling wanted to join the race, but she had hurt her ankle.", "a": 1, "why": "A new singer after \"but\", with a comma before it: correct."},
+    {"id": "c08", "t": "check", "d": 1, "tag": "verse", "q": "Dinner was ready so we sat down at the table.", "a": 0, "why": "A new singer (\"we\") follows \"so\", so breathe before it: \"…was ready, so we sat…\""},
+    {"id": "c09", "t": "check", "d": 2, "tag": "verse", "q": "The teacher smiled and the class clapped loudly.", "a": 0, "why": "\"The class\" is a new singer after \"and\", so it needs a comma before \"and\"."},
+    {"id": "c10", "t": "check", "d": 2, "tag": "verse", "q": "It was late, so we took a taxi home.", "a": 1, "why": "New singer after \"so\", comma before it: correct."},
+    {"id": "c11", "t": "check", "d": 1, "tag": "nobreath", "q": "I grabbed my umbrella, and ran to the bus stop.", "a": 0, "why": "One singer (\"I\") doing two actions: no new verse, so no comma."},
+    {"id": "c12", "t": "check", "d": 1, "tag": "nobreath", "q": "I grabbed my umbrella and ran to the bus stop.", "a": 1, "why": "One singer, two actions, no comma: correct."},
+    {"id": "c13", "t": "check", "d": 2, "tag": "nobreath", "q": "We stayed indoors, because it was raining heavily.", "a": 0, "why": "The linking part comes at the end, so it isn't an intro: no comma."},
+    {"id": "c14", "t": "check", "d": 2, "tag": "nobreath", "q": "My best friend Lila, folded a swan.", "a": 0, "why": "Never put a comma between the singer and the verb."},
+    {"id": "c15", "t": "check", "d": 2, "tag": "nobreath", "q": "My best friend Lila folded a swan.", "a": 1, "why": "No comma between the singer and the verb: correct."},
+    {"id": "c16", "t": "check", "d": 2, "tag": "nobreath", "q": "We cheered because our team had won.", "a": 1, "why": "A linking part at the end needs no comma: correct."},
+    {"id": "c17", "t": "check", "d": 1, "tag": "soside", "q": "We were very hungry so, we ordered two plates of chicken rice.", "a": 0, "why": "The breath comes before \"so\", not after it: \"…very hungry, so we ordered…\""},
+    {"id": "c18", "t": "check", "d": 2, "tag": "soside", "q": "We were very hungry, so we ordered two plates of chicken rice.", "a": 1, "why": "One comma, before \"so\": correct."},
+    {"id": "c19", "t": "check", "d": 2, "tag": "soside", "q": "I was tired but, I finished my homework.", "a": 0, "why": "Breathe before \"but\", not after it: \"…tired, but I finished…\""},
+    {"id": "c20", "t": "check", "d": 1, "tag": "echo", "q": "I groaned, crumpling my wrinkled origami paper.", "a": 1, "why": "A comma before the echo: correct."},
+    {"id": "c21", "t": "check", "d": 2, "tag": "echo", "q": "The bus braked suddenly throwing us all forward.", "a": 0, "why": "\"throwing us all forward\" is a result echo, so it needs a comma before it."},
+    {"id": "c22", "t": "check", "d": 2, "tag": "echo", "q": "The vase fell off the shelf, shattering into pieces.", "a": 1, "why": "Comma before the result echo: correct."},
+    {"id": "c23", "t": "check", "d": 3, "tag": "echo", "q": "The vase toppled over spilling water everywhere.", "a": 0, "why": "\"spilling water everywhere\" is the result: an echo, so it needs a comma before it."},
+    {"id": "c24", "t": "check", "d": 3, "tag": "seeing", "q": "I saw a Primary Six boy, pushing a younger student.", "a": 0, "why": "\"pushing…\" describes the boy, not \"I\", so no comma."},
+    {"id": "c25", "t": "check", "d": 3, "tag": "seeing", "q": "I saw a Primary Six boy pushing a younger student.", "a": 1, "why": "The -ing part describes the boy, so no comma: correct."},
+    {"id": "c26", "t": "check", "d": 3, "tag": "seeing", "q": "We found the kitten hiding behind the sofa.", "a": 1, "why": "\"hiding…\" tells you what the kitten was doing: no comma, correct."},
+    {"id": "c27", "t": "check", "d": 3, "tag": "sidenote", "q": "Our waiter, Mr Evan Sim took our orders.", "a": 0, "why": "A side note needs a comma on both sides: \"Our waiter, Mr Evan Sim, took our orders.\""},
+    {"id": "c28", "t": "check", "d": 3, "tag": "sidenote", "q": "Ms Goh, my form teacher, announced the news.", "a": 1, "why": "Commas on both sides of the side note: correct."},
+    {"id": "c29", "t": "check", "d": 3, "tag": "sidenote", "q": "My uncle, a pilot flies to Japan every month.", "a": 0, "why": "Close the side note: \"My uncle, a pilot, flies…\""},
+    {"id": "c30", "t": "check", "d": 2, "tag": "list", "q": "At DisneySea, we rode rides played games and watched a parade.", "a": 0, "why": "A list of three actions needs commas: \"rode rides, played games and watched a parade.\""},
+    {"id": "c31", "t": "check", "d": 2, "tag": "list", "q": "We bought pens, rulers and erasers.", "a": 1, "why": "A list of three with commas, and no comma before \"and\": correct."},
+    {"id": "p01", "t": "pick", "d": 1, "tag": "intro", "q": "When the bell rang we packed our bags.", "o": ["When the bell rang, we packed our bags.", "When, the bell rang we packed our bags.", "When the bell rang we, packed our bags.", "When the bell rang we packed, our bags."], "why": "The intro ends before the singer \"we\": comma there."},
+    {"id": "p02", "t": "pick", "d": 1, "tag": "verse", "q": "My sister likes cats but I prefer dogs.", "o": ["My sister likes cats, but I prefer dogs.", "My sister likes cats but, I prefer dogs.", "My sister, likes cats but I prefer dogs.", "My sister likes cats but I, prefer dogs."], "why": "A new singer (\"I\") after \"but\": comma before \"but\"."},
+    {"id": "p03", "t": "pick", "d": 1, "tag": "nobreath", "ask": "Which sentence is correct?", "o": ["Ravi picked up the ball and threw it to me.", "Ravi picked up the ball, and threw it to me.", "Ravi, picked up the ball and threw it to me.", "Ravi picked up, the ball and threw it to me."], "why": "One singer doing two actions: no comma at all."},
+    {"id": "p04", "t": "pick", "d": 1, "tag": "soside", "q": "We missed the bus so we walked home.", "o": ["We missed the bus, so we walked home.", "We missed the bus so, we walked home.", "We missed the bus, so, we walked home.", "We, missed the bus so we walked home."], "why": "The breath comes before \"so\", never after it."},
+    {"id": "p05", "t": "pick", "d": 2, "tag": "intro", "q": "Luckily the fire engine arrived quickly.", "o": ["Luckily, the fire engine arrived quickly.", "Luckily the fire engine, arrived quickly.", "Luckily the fire engine arrived, quickly.", "Luckily the, fire engine arrived quickly."], "why": "\"Luckily\" is an opening word: breathe after it."},
+    {"id": "p06", "t": "pick", "d": 2, "tag": "intro", "q": "Hearing the thunder the children ran inside.", "o": ["Hearing the thunder, the children ran inside.", "Hearing, the thunder the children ran inside.", "Hearing the thunder the children, ran inside.", "Hearing the thunder the children ran, inside."], "why": "An -ing opener ends before the singer: comma there."},
+    {"id": "p07", "t": "pick", "d": 2, "tag": "echo", "q": "The baby cried loudly waking everyone up.", "o": ["The baby cried loudly, waking everyone up.", "The baby, cried loudly waking everyone up.", "The baby cried, loudly waking everyone up.", "The baby cried loudly waking, everyone up."], "why": "\"waking everyone up\" is the result: an echo, so the comma goes just before it."},
+    {"id": "p08", "t": "pick", "d": 2, "tag": "nobreath", "ask": "Which sentence is correct?", "o": ["We went home early because Grandma was unwell.", "We went home early, because Grandma was unwell.", "We, went home early because Grandma was unwell.", "We went home early because, Grandma was unwell."], "why": "A linking part at the end isn't an intro: no comma."},
+    {"id": "p09", "t": "pick", "d": 2, "tag": "verse", "ask": "Which sentence is correct?", "o": ["The lights went out, and everyone screamed.", "The lights went out and, everyone screamed.", "The lights, went out and everyone screamed.", "The lights went out and everyone, screamed."], "why": "A new singer (\"everyone\") after \"and\": comma before \"and\"."},
+    {"id": "p10", "t": "pick", "d": 2, "tag": "list", "q": "We visited Paris London and Rome.", "o": ["We visited Paris, London and Rome.", "We visited, Paris London and Rome.", "We visited Paris London, and Rome.", "We, visited Paris London and Rome."], "why": "Separate the items in a list of three with commas."},
+    {"id": "p11", "t": "pick", "d": 3, "tag": "sidenote", "q": "My neighbour a retired teacher gives free tuition.", "o": ["My neighbour, a retired teacher, gives free tuition.", "My neighbour, a retired teacher gives free tuition.", "My neighbour a retired teacher, gives free tuition.", "My neighbour a retired, teacher gives free tuition."], "why": "A side note needs a comma on both sides."},
+    {"id": "p12", "t": "pick", "d": 3, "tag": "seeing", "ask": "Which sentence is correct?", "o": ["I saw a man climbing over the fence.", "I saw a man, climbing over the fence.", "I, saw a man climbing over the fence.", "I saw, a man climbing over the fence."], "why": "\"climbing…\" describes the man, so there's no comma."},
+    {"id": "p13", "t": "pick", "d": 3, "tag": "echo", "ask": "Which sentence is correct?", "o": ["Mum hugged me tightly, whispering that it was all right.", "Mum hugged me tightly whispering that it was all right.", "Mum, hugged me tightly whispering that it was all right.", "Mum hugged me, tightly whispering that it was all right."], "why": "An extra action at the end is an echo: a comma just before it."},
+    {"id": "p14", "t": "pick", "d": 3, "tag": "intro", "ask": "Which sentence is correct?", "o": ["Although it was late, the children kept playing.", "Although it was late the children kept playing.", "Although, it was late the children kept playing.", "Although it was late the children, kept playing."], "why": "A linking part at the start: comma before the singer."},
+    {"id": "p15", "t": "pick", "d": 3, "tag": "sidenote", "ask": "Which sentence is correct?", "o": ["Mr Lim, our principal, gave a speech.", "Mr Lim, our principal gave a speech.", "Mr Lim our principal, gave a speech.", "Mr Lim, our principal, gave, a speech."], "why": "Commas on both sides of the side note, and none anywhere else."},
+    {"id": "p16", "t": "pick", "d": 3, "tag": "nobreath", "ask": "Which sentence needs fixing?", "o": ["The girl in the red dress, sang beautifully.", "The girl in the red dress sang beautifully.", "In the red dress, the girl sang beautifully.", "The girl sang beautifully, smiling at the crowd."], "why": "\"The girl in the red dress\" is the singer: no comma between her and the verb \"sang\"."},
+    {"id": "p17", "t": "pick", "d": 3, "tag": "soside", "ask": "Which sentence needs fixing?", "o": ["It was raining heavily so, the match was cancelled.", "It was raining heavily, so the match was cancelled.", "Because it was raining heavily, the match was cancelled.", "The match was cancelled because it was raining heavily."], "why": "The comma goes before \"so\", never after it."},
+    {"id": "p18", "t": "pick", "d": 2, "tag": "verse", "ask": "Which sentence needs fixing?", "o": ["I wanted to help but my mother told me to stay away.", "I wanted to help, but my mother told me to stay away.", "I wanted to help but stayed away.", "My mother told me to stay away."], "why": "\"My mother\" is a new singer after \"but\", so it needs a comma before \"but\"."},
+    {"id": "p19", "t": "pick", "d": 2, "tag": "list", "ask": "Which sentence needs fixing?", "o": ["I need eggs flour and sugar.", "I need eggs, flour and sugar.", "I need eggs and flour.", "I need sugar."], "why": "A list of three items needs commas: \"eggs, flour and sugar\"."},
+    {"id": "p20", "t": "pick", "d": 3, "tag": "seeing", "ask": "Which sentence needs fixing?", "o": ["I spotted my brother, hiding behind the curtain.", "I spotted my brother hiding behind the curtain.", "Hiding behind the curtain, my brother giggled.", "My brother giggled, hiding behind the curtain."], "why": "\"hiding…\" describes the brother you spotted, so there should be no comma."},
+    {"id": "s01", "t": "spot", "d": 1, "tag": "intro", "parts": ["As soon as the bell rang", "we rushed", "to the", "canteen."], "a": 0, "why": "The intro ends here, before the singer \"we\": \"As soon as the bell rang, we…\""},
+    {"id": "s02", "t": "spot", "d": 1, "tag": "intro", "parts": ["Suddenly", "a loud bang", "made", "everyone jump."], "a": 0, "why": "\"Suddenly\" is an opening word: it needs a comma after it."},
+    {"id": "s03", "t": "spot", "d": 1, "tag": "nobreath", "parts": ["I picked up the phone,", "and called", "my grandmother", "straight away."], "a": 0, "why": "One singer (\"I\") doing two actions: no comma before \"and\"."},
+    {"id": "s04", "t": "spot", "d": 1, "tag": "soside", "parts": ["We were tired so,", "we went", "to bed", "early."], "a": 0, "why": "The comma goes before \"so\", not after it: \"…tired, so we went…\""},
+    {"id": "s05", "t": "spot", "d": 2, "tag": "verse", "parts": ["The bell rang", "and the pupils", "rushed", "out of class."], "a": 0, "why": "\"The pupils\" is a new singer after \"and\": \"The bell rang, and the pupils…\""},
+    {"id": "s06", "t": "spot", "d": 2, "tag": "intro", "parts": ["During the holidays", "my family", "went", "to Malaysia."], "a": 0, "why": "A time phrase at the start is an intro: comma after \"holidays\"."},
+    {"id": "s07", "t": "spot", "d": 2, "tag": "echo", "parts": ["The car skidded on the wet road", "spinning", "into", "the drain."], "a": 0, "why": "\"spinning into the drain\" is a result echo: comma before it, after \"road\"."},
+    {"id": "s08", "t": "spot", "d": 2, "tag": "nobreath", "parts": ["The boy with the red cap,", "won", "the", "race."], "a": 0, "why": "\"The boy with the red cap\" is the singer, and \"won\" is his verb: no comma between them."},
+    {"id": "s09", "t": "spot", "d": 2, "tag": "nobreath", "parts": ["We cancelled the picnic,", "because", "it was", "raining."], "a": 0, "why": "A linking part at the end isn't an intro: no comma before \"because\"."},
+    {"id": "s10", "t": "spot", "d": 2, "tag": "list", "parts": ["We bought", "apples oranges", "and", "grapes."], "a": 1, "why": "A list of three needs a comma between items: \"apples, oranges and grapes\"."},
+    {"id": "s11", "t": "spot", "d": 2, "tag": "soside", "parts": ["I wanted to watch TV", "but,", "Mum said", "no."], "a": 1, "why": "The comma goes before \"but\", never after it: \"…watch TV, but Mum said no.\""},
+    {"id": "s12", "t": "spot", "d": 3, "tag": "sidenote", "parts": ["Mr Tan,", "our football coach", "blew", "the whistle."], "a": 1, "why": "The side note needs a closing comma: \"Mr Tan, our football coach, blew…\""},
+    {"id": "s13", "t": "spot", "d": 3, "tag": "sidenote", "parts": ["Our class monitor,", "Ben", "collected", "the worksheets."], "a": 1, "why": "The side note \"Ben\" needs a comma on both sides: \"Our class monitor, Ben, collected…\""},
+    {"id": "s14", "t": "spot", "d": 3, "tag": "seeing", "parts": ["I saw a cat,", "chasing", "a mouse", "across the road."], "a": 0, "why": "\"chasing…\" describes the cat, so there's no comma after \"cat\"."},
+    {"id": "s15", "t": "spot", "d": 3, "tag": "echo", "parts": ["The wind blew hard", "knocking", "the umbrella", "out of my hand."], "a": 0, "why": "\"knocking the umbrella out of my hand\" is the result: an echo, so a comma goes after \"hard\"."},
+    {"id": "s16", "t": "spot", "d": 3, "tag": "intro", "parts": ["Seeing the dark clouds", "we", "packed up", "our picnic."], "a": 0, "why": "An -ing opener is an intro: comma after \"clouds\"."},
+    {"id": "s17", "t": "spot", "d": 3, "tag": "verse", "parts": ["My father cooked dinner", "and", "my mother", "washed the dishes."], "a": 0, "why": "\"My mother\" is a new singer after \"and\": comma before \"and\"."},
+    {"id": "s18", "t": "spot", "d": 3, "tag": "seeing", "parts": ["We watched the fireworks", "and saw a child,", "waving", "a sparkler."], "a": 1, "why": "\"waving a sparkler\" describes the child you saw: no comma after \"child\"."},
+    {"id": "s19", "t": "spot", "d": 3, "tag": "list", "parts": ["At the party,", "we sang songs", "played games", "and ate cake."], "a": 1, "why": "A list of three actions needs commas: \"sang songs, played games and ate cake\"."},
+    {"id": "s20", "t": "spot", "d": 1, "tag": "echo", "parts": ["The tree crashed down", "blocking", "the road", "completely."], "a": 0, "why": "\"blocking the road\" is the result of the crash: an echo, so a comma goes after \"down\"."},
+    {"id": "s21", "t": "spot", "d": 2, "tag": "intro", "parts": ["Once we reached the top", "we", "took", "lots of photos."], "a": 0, "why": "A linking part at the start (\"Once we reached the top\") is an intro: comma before \"we\"."},
+    {"id": "f37", "t": "fill", "d": 1, "tag": "verse", "q": "The rain stopped___ and the sun came out.", "o": [",", ""], "why": "\"The sun\" is a new singer after \"and\": comma before \"and\"."},
+    {"id": "c32", "t": "check", "d": 1, "tag": "intro", "q": "At first, I was scared of the dark.", "a": 1, "why": "\"At first\" is an opening phrase with a comma after it: correct."},
+    {"id": "c33", "t": "check", "d": 1, "tag": "list", "q": "We need glue scissors and paper.", "a": 0, "why": "A list of three needs commas: \"glue, scissors and paper\"."},
+    {"id": "f38", "t": "fill", "d": 1, "tag": "intro", "q": "At first___ I was too shy to speak.", "o": [",", ""], "why": "\"At first\" is an intro: breathe before the singer \"I\"."},
+    {"id": "p21", "t": "pick", "d": 1, "tag": "echo", "q": "The balloon popped scaring the baby.", "o": ["The balloon popped, scaring the baby.", "The balloon, popped scaring the baby.", "The balloon popped scaring, the baby.", "The, balloon popped scaring the baby."], "why": "\"scaring the baby\" is the result: an echo, so the comma goes just before it."},
+    {"id": "c34", "t": "check", "d": 2, "tag": "verse", "q": "The movie was long, but it was very funny.", "a": 1, "why": "A new singer (\"it\") after \"but\", with a comma before it: correct."},
+    {"id": "c35", "t": "check", "d": 2, "tag": "soside", "q": "She was thirsty, so she drank some water.", "a": 1, "why": "One comma, before \"so\": correct."},
+    {"id": "s22", "t": "spot", "d": 2, "tag": "verse", "parts": ["The dog barked", "and the baby", "woke", "up."], "a": 0, "why": "\"The baby\" is a new singer after \"and\": \"The dog barked, and the baby woke up.\""},
+    {"id": "f39", "t": "fill", "d": 3, "tag": "sidenote", "q": "Raju___ the new boy in class, sat beside me.", "o": [",", ""], "why": "The side note \"the new boy in class\" needs a comma on both sides."},
+    {"id": "c36", "t": "check", "d": 3, "tag": "seeing", "q": "I heard someone, calling my name.", "a": 0, "why": "\"calling my name\" describes the person you heard, so there's no comma."},
+    {"id": "p22", "t": "pick", "d": 3, "tag": "list", "ask": "Which sentence is correct?", "o": ["At the market, Mum bought fish, vegetables and fruit.", "At the market Mum, bought fish, vegetables and fruit.", "At the market, Mum bought fish vegetables and fruit.", "At the market, Mum bought, fish, vegetables and fruit."], "why": "Comma after the intro, and commas between the list items, but none between \"bought\" and its list."},
+    {"id": "s23", "t": "spot", "d": 3, "tag": "intro", "parts": ["Without saying a word", "the boy", "walked", "away."], "a": 0, "why": "\"Without saying a word\" is an intro: comma before \"the boy\"."},
   ];
 
-  const container = document.getElementById('quizContainer');
-  const scoreEl = document.getElementById('scoreDisplay');
-  let score = 0, answered = [];
+  /* ================= QUIZ BANK ENGINE (shared by every lesson) =================
+     Needs, defined above it: LESSON_KEY, TAGS, BANK. Optional: QB_TEXT = { ask: {...}, yn: [...] }.
+     Each attempt draws BAND_SIZES questions (easy, medium, tricky). The draw builds many
+     candidate quizzes and keeps the best: every tag present, 3+ of each type, balanced
+     check answers, unseen questions first. Options are shuffled; ids seen are remembered. */
+  const BAND_SIZES = [7, 7, 6];
+  const DRAW = BAND_SIZES.reduce((a, b) => a + b, 0);
+  const QBT = (typeof QB_TEXT !== 'undefined') ? QB_TEXT : {};
+  const ASK = Object.assign({
+    check: 'Is this sentence correct?',
+    pick:  'Pick the correct sentence.',
+    fill:  'Which choice fills the gap correctly?',
+    spot:  'Tap the part with the mistake.'
+  }, QBT.ask || {});
+  const YN = QBT.yn || ['Needs fixing', 'Correct'];
 
-  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const store = {
+    get(k, fallback) { try { const v = localStorage.getItem(LESSON_KEY + ':' + k); return v === null ? fallback : JSON.parse(v); } catch (e) { return fallback; } },
+    set(k, v) { try { localStorage.setItem(LESSON_KEY + ':' + k, JSON.stringify(v)); } catch (e) { /* storage unavailable: quiz still works */ } }
+  };
+  const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-  function updateScore() { scoreEl.textContent = score + ' / ' + QUESTIONS.length; }
+  function buildCandidate(seen) {
+    const chosen = [], tagN = {}, typeN = {};
+    let fixN = 0, okN = 0;
+    for (let band = 1; band <= 3; band++) {
+      const picks = [];
+      for (let k = 0; k < BAND_SIZES[band - 1]; k++) {
+        let best = null, bestScore = -Infinity;
+        BANK.forEach(q => {
+          if (q.d !== band || picks.includes(q)) return;
+          let s = Math.random() * 3;
+          if (!seen.has(q.id)) s += 6;
+          if (!tagN[q.tag]) s += 12;
+          s -= (typeN[q.t] || 0) * 1.2;
+          if ((typeN[q.t] || 0) < 3) s += 2;   // nudge every type up to 3
+          if (q.t === 'check') { const lean = q.a === 0 ? fixN - okN : okN - fixN; if (lean >= 1) s -= 4; }
+          if (s > bestScore) { bestScore = s; best = q; }
+        });
+        if (!best) break;
+        picks.push(best);
+        tagN[best.tag] = (tagN[best.tag] || 0) + 1;
+        typeN[best.t] = (typeN[best.t] || 0) + 1;
+        if (best.t === 'check') { if (best.a === 0) fixN++; else okN++; }
+      }
+      chosen.push(...shuffle(picks));
+    }
+    return chosen;
+  }
+
+  function rateCandidate(c, seen) {
+    const tags = new Set(c.map(q => q.tag)).size;
+    const types = {};
+    c.forEach(q => types[q.t] = (types[q.t] || 0) + 1);
+    const used = [...new Set(BANK.map(q => q.t))];
+    const minType = Math.min(...used.map(t => types[t] || 0));
+    const checks = c.filter(q => q.t === 'check');
+    const lean = Math.abs(checks.filter(q => q.a === 0).length * 2 - checks.length);
+    return (tags === Object.keys(TAGS).length ? 10000 : tags * 500)
+         + (c.length === DRAW ? 5000 : 0)
+         + Math.min(minType, 3) * 300
+         + (lean <= 2 ? 200 : 0)
+         + c.filter(q => !seen.has(q.id)).length * 10;
+  }
+
+  function drawQuiz() {
+    let seen = new Set(store.get('seen', []));
+    if (BANK.length - seen.size < DRAW) seen = new Set(store.get('last', []));   // new cycle, but skip the last attempt
+    let chosen = null, bestRate = -1;
+    for (let tries = 0; tries < 200; tries++) {
+      const c = buildCandidate(seen), r = rateCandidate(c, seen);
+      if (r > bestRate) { bestRate = r; chosen = c; }
+    }
+    chosen.forEach(q => seen.add(q.id));
+    store.set('seen', [...seen]);
+    store.set('last', chosen.map(q => q.id));
+    return chosen.map(q => {
+      if (q.t === 'pick' || q.t === 'fill') {
+        const opts = shuffle(q.o.map((text, i) => ({ text, ok: i === 0 })));
+        return { q, opts, answer: opts.findIndex(o => o.ok) };
+      }
+      if (q.t === 'check') return { q, opts: YN.map(text => ({ text })), answer: q.a };
+      return { q, opts: null, answer: q.a };
+    });
+  }
+
+  const listEl = document.getElementById('qbList');
+  const scoreEl = document.getElementById('qbScore');
+  const progressEl = document.getElementById('qbProgress');
+  const summaryEl = document.getElementById('qbSummary');
+  let current = [], score = 0, done = 0, missed = [];
+
+  function updateScore() {
+    scoreEl.textContent = score + ' / ' + current.length;
+    progressEl.textContent = done + ' of ' + current.length + ' answered';
+  }
+
+  /* Small or empty options are hard to see on a button, so label them. */
+  function optLabel(text) {
+    const t = text.trim();
+    if (t === '') return '<span class="qb-note">(nothing)</span>';
+    if (t === ',') return '<span class="qb-punct">,</span> <span class="qb-note">(a comma)</span>';
+    if (t === '.') return '<span class="qb-punct">.</span> <span class="qb-note">(a full stop)</span>';
+    return esc(text);
+  }
+  function plainLabel(text) {
+    const t = text.trim();
+    return t === '' ? 'nothing' : t === ',' ? 'a comma' : t === '.' ? 'a full stop' : '"' + t + '"';
+  }
+  function sentenceWithGap(q, text) {
+    let filler = '<span class="qb-blank">___</span>';
+    if (text !== undefined) {
+      filler = text.trim() === ''
+        ? '<span class="qb-blank qb-filled qb-none">(nothing)</span>'
+        : '<span class="qb-blank qb-filled">' + esc(text) + '</span>';
+    }
+    return esc(q.q).replace('___', filler);
+  }
 
   function render() {
-    container.innerHTML = '';
-    answered = QUESTIONS.map(() => false);
-    QUESTIONS.forEach((q, i) => {
+    listEl.innerHTML = '';
+    summaryEl.hidden = true;
+    current.forEach((item, i) => {
+      const q = item.q;
       const card = document.createElement('div');
-      card.className = 'quiz-card';
-      const hasBlank = q.text.includes('___');
-      const short = q.options.every(o => o.length <= 14);
+      card.className = 'qb-card';
+      card.dataset.type = q.t;
+      let body;
+      if (q.t === 'spot') {
+        body = '<div class="qb-spot">' + q.parts.map((p, k) =>
+          '<button type="button" class="qb-part" data-k="' + k + '">' + esc(p) + '</button>').join('') + '</div>';
+      } else if (q.t === 'fill') {
+        const cols = item.opts.length;
+        body = '<p class="qb-text">' + sentenceWithGap(q) + '</p><div class="qb-opts qb-row" style="--qb-cols:' + cols + '"></div>';
+      } else if (q.t === 'check') {
+        body = '<p class="qb-text">' + esc(q.q) + '</p><div class="qb-opts qb-row"></div>';
+      } else {
+        body = (q.q ? '<p class="qb-text">' + esc(q.q) + '</p>' : '') + '<div class="qb-opts"></div>';
+      }
       card.innerHTML =
-        '<p class="quiz-num">Question ' + (i + 1) + ' of ' + QUESTIONS.length + '</p>' +
-        (q.ask ? '<p class="quiz-ask">' + esc(q.ask) + '</p>' : '') +
-        '<p class="quiz-text">' + esc(q.text).replace('___', '<span class="blank">___</span>') + '</p>' +
-        '<div class="opts' + (short ? ' row' : '') + '"></div>' +
-        '<div class="feedback" role="status"></div>';
-      const opts = card.querySelector('.opts');
-      q.options.forEach((o, j) => {
-        const b = document.createElement('button');
-        b.type = 'button';
-        b.className = 'opt';
-        b.innerHTML = (short ? '' : '<span class="tag">' + String.fromCharCode(65 + j) + '</span>') + esc(o);
-        b.addEventListener('click', () => answer(i, j, card, hasBlank));
-        opts.appendChild(b);
-      });
-      container.appendChild(card);
+        '<p class="qb-num">Question ' + (i + 1) + ' of ' + current.length + '</p>' +
+        '<p class="qb-ask">' + esc(q.ask || ASK[q.t]) + '</p>' + body +
+        '<div class="qb-feedback" role="status"></div>';
+      if (q.t === 'spot') {
+        card.querySelectorAll('.qb-part').forEach(b => b.addEventListener('click', () => answer(i, +b.dataset.k, card)));
+      } else {
+        const opts = card.querySelector('.qb-opts');
+        item.opts.forEach((o, j) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'qb-opt';
+          b.innerHTML = (q.t === 'pick' ? '<span class="qb-letter">' + String.fromCharCode(65 + j) + '</span>' : '') + optLabel(o.text);
+          b.addEventListener('click', () => answer(i, j, card));
+          opts.appendChild(b);
+        });
+      }
+      listEl.appendChild(card);
     });
     updateScore();
   }
 
-  function answer(i, j, card, hasBlank) {
-    if (answered[i]) return;
-    answered[i] = true;
-    const q = QUESTIONS[i], ok = j === q.answer;
-    if (ok) score++;
-    updateScore();
-    if (hasBlank) {
-      const blank = card.querySelector('.blank');
-      blank.textContent = q.options[j];
-      blank.classList.add('filled');
-    }
-    const short = q.options.every(o => o.length <= 14);
-    card.querySelectorAll('.opt').forEach((b, k) => {
+  function answer(i, j, card) {
+    const item = current[i];
+    if (item.done) return;
+    item.done = true; done++;
+    const q = item.q, ok = j === item.answer;
+    if (ok) score++; else missed.push(q.tag);
+    card.querySelectorAll(q.t === 'spot' ? '.qb-part' : '.qb-opt').forEach((b, k) => {
       b.disabled = true;
-      if (k === j) b.classList.add(ok ? 'correct' : 'incorrect');
-      else if (k === q.answer && !ok) b.classList.add('reveal');
+      if (k === j) b.classList.add(ok ? 'qb-correct' : 'qb-incorrect');
+      else if (k === item.answer && !ok) b.classList.add('qb-reveal');
     });
-    const fb = card.querySelector('.feedback');
-    fb.classList.add('show', ok ? 'fb-ok' : 'fb-no');
-    fb.innerHTML = '<span class="verdict">' +
-      (ok ? 'Correct!' : 'Not quite. The answer is ' + (short ? '"' + esc(q.options[q.answer]) + '"' : String.fromCharCode(65 + q.answer)) + '.') +
-      '</span>' + esc(q.why);
+    if (q.t === 'fill') card.querySelector('.qb-text').innerHTML = sentenceWithGap(q, item.opts[j].text);
+    let right;
+    if (q.t === 'spot') right = 'The mistake is in "' + esc(q.parts[item.answer]) + '".';
+    else if (q.t === 'pick') right = 'The answer is ' + String.fromCharCode(65 + item.answer) + '.';
+    else right = 'The answer is ' + esc(plainLabel(item.opts[item.answer].text)) + '.';
+    const fb = card.querySelector('.qb-feedback');
+    fb.classList.add('qb-show', ok ? 'qb-fb-ok' : 'qb-fb-no');
+    fb.innerHTML = '<span class="qb-verdict">' + (ok ? 'Correct!' : 'Not quite. ' + right) + '</span>' + esc(q.why);
+    updateScore();
+    if (done === current.length) showSummary();
   }
 
-  document.getElementById('resetBtn').addEventListener('click', () => {
-    score = 0;
-    render();
-    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
+  function showSummary() {
+    const best = Math.max(store.get('best', 0), score);
+    store.set('best', best);
+    const attempts = store.get('attempts', 0) + 1;
+    store.set('attempts', attempts);
+    const counts = {};
+    missed.forEach(t => counts[t] = (counts[t] || 0) + 1);
+    const areas = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+    const n = current.length;
+    let msg;
+    if (score === n) msg = 'A perfect run! Try another set to make sure it sticks.';
+    else if (score >= Math.ceil(n * 0.8)) msg = 'Strong work. Have a quick look at the areas below, then try a fresh set.';
+    else if (score >= Math.ceil(n * 0.6)) msg = 'Good progress. Re-read the parts below before your next attempt.';
+    else msg = 'Worth another look at the lesson. Start with the areas below, then try a fresh set.';
+    summaryEl.innerHTML =
+      '<h3>You scored ' + score + ' / ' + n + '</h3><p>' + msg + '</p>' +
+      (areas.length ? '<p class="qb-sum-label">Areas to review</p><ul class="qb-areas">' + areas.map(t =>
+        '<li><a href="' + TAGS[t].href + '">' + esc(TAGS[t].label) + '</a><span>' + counts[t] + ' wrong</span></li>').join('') + '</ul>' : '') +
+      '<p class="qb-meta">Attempts on this device: ' + attempts + ' · Best score: ' + best + ' / ' + n + '</p>' +
+      '<button type="button" class="qb-go" id="qbAgain">Try ' + n + ' new questions</button>';
+    summaryEl.hidden = false;
+    document.getElementById('qbAgain').addEventListener('click', () => { newQuiz(); listEl.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    summaryEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 
-  render();
+  function newQuiz() {
+    current = drawQuiz(); score = 0; done = 0; missed = [];
+    render();
+  }
+
+  const bankEl = document.getElementById('qbBank'), drawEl = document.getElementById('qbDraw');
+  if (bankEl) bankEl.textContent = BANK.length;
+  if (drawEl) drawEl.textContent = DRAW;
+  document.getElementById('qbNew').addEventListener('click', () => {
+    newQuiz();
+    listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  newQuiz();
 })();
 </script>
 </body>

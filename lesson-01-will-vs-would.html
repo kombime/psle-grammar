@@ -360,6 +360,103 @@
   }
   .back-link { display:inline-block; margin:0 0 18px; font-family:var(--font-body); font-size:14px; font-weight:600; color:var(--teal); text-decoration:none; padding:6px 12px; border:1px solid var(--rule); border-radius:20px; }
   .back-link:hover, .back-link:focus-visible { border-color:var(--teal); outline:none; }
+
+  /* ================= QUIZ BANK ENGINE (shared by every lesson; qb- prefix avoids clashes) ================= */
+  .qb { --qb-cols: 2; }
+  .qb-bar {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 3;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 10px 16px; margin: 0 0 18px; border-radius: var(--qb-radius);
+    background: var(--qb-bar); color: var(--qb-bar-ink);
+  }
+  .qb-label { font-size: 12.5px; opacity: 0.8; }
+  .qb-score { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 28px; line-height: 1.05; }
+  .qb-progress { font-size: 12.5px; opacity: 0.85; margin-top: 2px; }
+  .qb-new {
+    font: inherit; font-weight: 700; font-size: 14px; padding: 10px 16px; min-height: 44px;
+    border-radius: 999px; border: 2px solid currentColor; background: transparent; color: inherit; cursor: pointer;
+  }
+  .qb-list, .qb-summary { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 96px); }
+  .qb-card {
+    background: var(--qb-card); border: var(--qb-card-border); box-shadow: var(--qb-card-shadow);
+    border-radius: var(--qb-radius); padding: 16px 16px 14px; margin: 0 0 14px; color: var(--qb-ink);
+  }
+  .qb-num { font-size: 12.5px; color: var(--qb-soft); margin: 0 0 4px; }
+  .qb-ask { font-size: 13.5px; font-weight: 700; color: var(--qb-accent); margin: 0 0 6px; }
+  .qb-text { font-size: 16.5px; line-height: 1.6; margin: 0 0 14px; }
+  .qb-blank {
+    display: inline-block; min-width: 60px; padding: 0 3px; text-align: center;
+    border-bottom: 2.5px dashed var(--qb-soft); color: var(--qb-soft);
+  }
+  .qb-blank.qb-filled { border-bottom-style: solid; border-bottom-color: var(--qb-accent); color: var(--qb-accent); font-weight: 700; }
+  .qb-blank.qb-none { font-style: italic; font-weight: 400; }
+  .qb-opts { display: flex; flex-direction: column; gap: 9px; }
+  .qb-opts.qb-row { display: grid; grid-template-columns: repeat(var(--qb-cols), minmax(0, 1fr)); }
+  .qb-opt {
+    font: inherit; font-size: 15.5px; line-height: 1.45; text-align: left; color: var(--qb-ink);
+    padding: 11px 14px; min-height: 46px; border-radius: var(--qb-radius-opt);
+    border: 2px solid var(--qb-rule); background: var(--qb-page); cursor: pointer;
+  }
+  .qb-row .qb-opt { text-align: center; font-weight: 600; padding-left: 6px; padding-right: 6px; }
+  .qb-opt:not(:disabled):hover { border-color: var(--qb-accent); }
+  .qb-opt:disabled, .qb-part:disabled { cursor: default; }
+  .qb-letter { font-family: var(--qb-font); font-weight: var(--qb-font-weight); margin-right: 10px; color: var(--qb-accent); }
+  .qb-note { font-size: 12.5px; font-weight: 400; color: var(--qb-soft); }
+  .qb-punct { font-size: 22px; line-height: 0; font-weight: 700; }
+  .qb-spot { display: flex; flex-wrap: wrap; gap: 8px 6px; margin: 0 0 4px; }
+  .qb-part {
+    font: inherit; font-size: 16px; line-height: 1.35; text-align: left; color: var(--qb-ink); cursor: pointer;
+    background: var(--qb-accent-soft); border: none; border-bottom: 3px dashed var(--qb-accent);
+    border-radius: 4px 4px 0 0; padding: 7px 9px; min-height: 40px;
+  }
+  .qb-opt.qb-correct, .qb-opt.qb-reveal { background: var(--qb-right-soft); border-color: var(--qb-right); }
+  .qb-opt.qb-incorrect { background: var(--qb-wrong-soft); border-color: var(--qb-wrong); }
+  .qb-part.qb-correct, .qb-part.qb-reveal { background: var(--qb-right-soft); border-bottom: 3px solid var(--qb-right); }
+  .qb-part.qb-incorrect { background: var(--qb-wrong-soft); border-bottom: 3px solid var(--qb-wrong); }
+  .qb-feedback { display: none; margin-top: 12px; padding-top: 12px; border-top: 2px dashed var(--qb-rule); font-size: 14px; line-height: 1.55; }
+  .qb-feedback.qb-show { display: block; }
+  .qb-verdict { display: block; font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 18px; margin-bottom: 2px; }
+  .qb-fb-ok .qb-verdict { color: var(--qb-right); }
+  .qb-fb-no .qb-verdict { color: var(--qb-wrong); }
+  .qb-summary {
+    background: var(--qb-card); color: var(--qb-ink); border: 3px solid var(--qb-accent);
+    border-radius: var(--qb-radius); padding: 18px 20px; margin-top: 8px;
+  }
+  .qb-summary h3 { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 30px; line-height: 1.1; margin: 0 0 6px; color: var(--qb-accent); }
+  .qb-summary p { margin: 0 0 10px; line-height: 1.55; }
+  .qb-sum-label { font-weight: 700; margin-top: 14px !important; }
+  .qb-areas { list-style: none; margin: 0 0 12px; padding: 0; }
+  .qb-areas li { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--qb-rule); }
+  .qb-areas a { color: var(--qb-ink); font-weight: 600; }
+  .qb-areas span { color: var(--qb-wrong); font-weight: 700; white-space: nowrap; }
+  .qb-meta { font-size: 13px; color: var(--qb-soft); }
+  .qb-go {
+    font: inherit; font-weight: 700; font-size: 16px; width: 100%; min-height: 50px; margin-top: 4px; cursor: pointer;
+    border: none; border-radius: var(--qb-radius); background: var(--qb-accent); color: var(--qb-on-accent);
+  }
+
+  :root {
+    --qb-page: var(--bg);
+    --qb-card: var(--surface);
+    --qb-ink: var(--ink);
+    --qb-soft: var(--ink-dim);
+    --qb-accent: var(--gold);
+    --qb-accent-soft: var(--gold-soft);
+    --qb-on-accent: var(--bg);
+    --qb-right: var(--right);
+    --qb-right-soft: var(--right-soft);
+    --qb-wrong: var(--wrong);
+    --qb-wrong-soft: var(--wrong-soft);
+    --qb-rule: var(--rule);
+    --qb-bar: var(--surface-raised);
+    --qb-bar-ink: var(--ink);
+    --qb-font: var(--font-display);
+    --qb-font-weight: 700;
+    --qb-radius: 3px;
+    --qb-radius-opt: 12px;
+    --qb-card-border: none;
+    --qb-card-shadow: none;
+  }
 </style>
 </head>
 <body>
@@ -395,7 +492,7 @@
     </div>
   </header>
 
-  <section>
+  <section id="rule">
     <p class="section-label">The Rule</p>
     <h2>Which path is your sentence on?</h2>
     <div class="rule-pair">
@@ -412,7 +509,7 @@
     </div>
   </section>
 
-  <section>
+  <section id="logbook">
     <p class="section-label">From the Logbook</p>
     <h2>Real Mix-Ups, Fixed</h2>
     <p class="lede">These are actual sentences where a writer used "would" for something that was really going to happen.</p>
@@ -431,7 +528,7 @@
     </div>
   </section>
 
-  <section>
+  <section id="specials">
     <p class="section-label">Beyond the Basics</p>
     <h2>Four Special Cases</h2>
     <p class="lede">The quiz below includes a few trickier patterns that aren't just "firm plan" or "if." Here's what to look out for.</p>
@@ -466,17 +563,16 @@
   <section>
     <p class="section-label">Practice</p>
     <h2>Fill the Blank — Will or Would?</h2>
-    <p class="lede">Tap the word you think belongs in each blank. You'll see straight away if you're right, and why.</p>
+    <p class="lede">Each attempt draws <span id="qbDraw">20</span> questions from a bank of <span id="qbBank">120</span>, so every try is different. You'll fill blanks, judge sentences, pick the correct version and spot mistakes, and the questions get trickier as you go. Finish them all to see which areas to review.</p>
 
-    <div class="scoreboard">
-      <div>
-        <div class="label">Your score</div>
-        <div class="score" id="scoreDisplay">0 / 30</div>
+    <div class="qb" id="qb">
+      <div class="qb-bar">
+        <div><div class="qb-label">Your score</div><div class="qb-score" id="qbScore">0 / 20</div><div class="qb-progress" id="qbProgress">0 of 20 answered</div></div>
+        <button class="qb-new" id="qbNew" type="button">New quiz</button>
       </div>
-      <button class="reset-btn" id="resetBtn">Start over</button>
+      <div class="qb-list" id="qbList"></div>
+      <div class="qb-summary" id="qbSummary" hidden></div>
     </div>
-
-    <div id="quizContainer"></div>
   </section>
 
   <section class="cheatsheet">
@@ -494,126 +590,363 @@
 
 <script>
 (function() {
-  const QUESTIONS = [
-    { before: "I ", blank: "___", after: " ask my parents to sign the consent form tomorrow.", answer: "will", why: "A definite plan for tomorrow — a firm promise, not a hypothetical." },
-    { before: "If I had a time machine, I ", blank: "___", after: " visit the dinosaurs.", answer: "would", why: "Starts with \"if\" and describes something impossible right now — a hypothetical." },
-    { before: "We ", blank: "___", after: " meet you at the station tomorrow morning.", answer: "will", why: "A firm, definite plan for tomorrow." },
-    { before: "If I were taller, I ", blank: "___", after: " be able to reach the shelf.", answer: "would", why: "Starts with \"if,\" describing something that isn't true right now." },
-    { before: "Don't worry, Mum. I ", blank: "___", after: " pack my PE attire tonight.", answer: "will", why: "A firm plan the writer is definitely going to carry out tonight." },
-    { before: "If I won the lottery, I ", blank: "___", after: " buy a house for my family.", answer: "would", why: "Starts with \"if,\" imagining something that hasn't happened and may never happen." },
-    { before: "I ", blank: "___", after: " go to the school bookshop tomorrow and buy you a new one.", answer: "will", why: "A firm, definite plan for tomorrow." },
-    { before: "If she practised more, she ", blank: "___", after: " improve quickly.", answer: "would", why: "Starts with \"if,\" describing a condition that isn't guaranteed to happen." },
-    { before: "I ", blank: "___", after: " give you the old book and the new one so you have both.", answer: "will", why: "A real plan the writer is definitely going to carry out." },
-    { before: "Our family ", blank: "___", after: " adopt a dog if we had a bigger flat.", answer: "would", why: "The \"if\" part comes last here, but it's still imagining something that isn't true — a hypothetical." },
-    { before: "I hope you ", blank: "___", after: " reply soon.", answer: "will", why: "A real hope about something that could really happen takes \"will.\"" },
-    { before: "They ", blank: "___", after: " arrive at 3pm, as planned.", answer: "will", why: "A scheduled, definite plan — not a maybe." },
-    { before: "I ", blank: "___", after: " be very happy if you could join us.", answer: "would", why: "A polite, conditional wish — it depends on whether you can actually join." },
-    { before: "I promise I ", blank: "___", after: " return your water bottle tomorrow.", answer: "will", why: "A promise you're making right now about the future is a firm promise — \"will.\"" },
-    { before: "She said that if it rained, she ", blank: "___", after: " bring an umbrella.", answer: "would", why: "Reports a condition (\"if it rained\") from the past — a hypothetical situation." },
-    { before: "My parents ", blank: "___", after: " also write down my medication details on the form.", answer: "will", why: "A concrete, definite plan — not a maybe." },
-    { before: "I ", blank: "___", after: " love to visit Japan one day.", answer: "would", why: "A wish or polite desire, not a firm plan — \"would love to\" is a fixed, hypothetical-sounding phrase." },
-    { before: "Dear Mr Tan, I ", blank: "___", after: " hand in my late assignment by Friday.", answer: "will", why: "A firm promise to a teacher about a real deadline — definitely going to happen." },
-    { before: "He said he ", blank: "___", after: " call me back later.", answer: "would", why: "Reported speech: when you report what someone said in the past, \"will\" shifts back to \"would.\"" },
-    { before: "I hope Mdm Rahimah ", blank: "___", after: " like the card we made for Teachers' Day.", answer: "will", why: "Like \"I hope you will accept me,\" a real hope about a real outcome takes \"will.\"" },
-    { before: "The bus ", blank: "___", after: " leave at exactly 8 o'clock.", answer: "will", why: "A scheduled fact about the future — definite, not conditional." },
-    { before: "If I were you, I ", blank: "___", after: " apologise first.", answer: "would", why: "\"If I were you\" is a classic hypothetical — it's imagined advice, not a real plan." },
-    { before: "The teacher promised the class ", blank: "___", after: " get extra recess on Friday.", answer: "would", why: "This reports a past promise about the future — in reported speech, \"will\" shifts back to \"would.\"" },
-    { before: "Our class excursion to the Science Centre ", blank: "___", after: " start at 9 a.m. on Thursday.", answer: "will", why: "A timetabled event is a scheduled fact, so it takes \"will.\"" },
-    { before: "I ", blank: "___", after: " like to join the Robotics CCA next year.", answer: "would", why: "\"Would like to\" is a polite wish, just like \"would love to\" — not a firm plan." },
-    { before: "I ", blank: "___", after: " definitely recommend this restaurant to my friends.", answer: "will", why: "A firm, confident intention — not hypothetical at all." },
-    { before: "She promised she ", blank: "___", after: " finish the project by Friday.", answer: "would", why: "Reported promise: like reported speech, a past-tense \"promised\" shifts \"will\" back to \"would.\"" },
-    { before: "If I were you, I ", blank: "___", after: " check my answers again before handing in the paper.", answer: "would", why: "\"If I were you\" imagines being in someone else's shoes — always hypothetical, so always \"would.\"" },
-    { before: "Wei Ling told me she ", blank: "___", after: " meet us at the canteen after assembly.", answer: "would", why: "\"Told me\" reports what she said in the past, so her \"will\" shifts back to \"would.\"" },
-    { before: "The Primary 6 prelim exams ", blank: "___", after: " begin next Monday.", answer: "will", why: "A fixed date on the school calendar is a scheduled fact — \"will.\"" }
+    /* ================= QUIZ: question bank (119 questions) ================= */
+  const LESSON_KEY = "shelf-l01";
+  const QB_TEXT = {"ask": {"check": "Is \"will\" or \"would\" used correctly here?", "fill": "Will or would?", "spot": "Tap the part with the wrong word."}};
+  const TAGS = {
+    plan: { label: "Firm plans and promises (will)", href: '#rule' },
+    if: { label: "\"If\" and imagined situations (would)", href: '#rule' },
+    hope: { label: "\"I hope you will…\"", href: '#logbook' },
+    schedule: { label: "Scheduled facts (will)", href: '#specials' },
+    reported: { label: "Reported speech (would)", href: '#specials' },
+    ifiwere: { label: "\"If I were you…\" (would)", href: '#specials' },
+    wish: { label: "Polite wishes: would love, would like", href: '#specials' },
+  };
+  const BANK = [
+    {"id": "f01", "t": "fill", "d": 1, "tag": "plan", "q": "I ___ ask my parents to sign the consent form tomorrow.", "o": ["will", "would"], "why": "A definite plan for tomorrow is a firm plan, so it takes \"will\"."},
+    {"id": "f02", "t": "fill", "d": 1, "tag": "plan", "q": "We ___ meet you at the station tomorrow morning.", "o": ["will", "would"], "why": "A firm plan for tomorrow takes \"will\"."},
+    {"id": "f03", "t": "fill", "d": 1, "tag": "plan", "q": "Don't worry, Mum. I ___ pack my PE attire tonight.", "o": ["will", "would"], "why": "A promise about tonight is a firm plan: \"will\"."},
+    {"id": "f04", "t": "fill", "d": 1, "tag": "plan", "q": "I ___ go to the bookshop after school and buy you a new one.", "o": ["will", "would"], "why": "The writer is definitely going to do this, so: \"will\"."},
+    {"id": "f05", "t": "fill", "d": 1, "tag": "plan", "q": "My parents ___ write my medication details on the form.", "o": ["will", "would"], "why": "A concrete plan, not a maybe: \"will\"."},
+    {"id": "f06", "t": "fill", "d": 1, "tag": "plan", "q": "I promise I ___ return your water bottle tomorrow.", "o": ["will", "would"], "why": "A promise you're making right now is a firm promise: \"will\"."},
+    {"id": "f07", "t": "fill", "d": 2, "tag": "plan", "q": "Dear Mr Tan, I ___ hand in my late assignment by Friday.", "o": ["will", "would"], "why": "A firm promise about a real deadline takes \"will\"."},
+    {"id": "f08", "t": "fill", "d": 2, "tag": "plan", "q": "I ___ definitely recommend this restaurant to my friends.", "o": ["will", "would"], "why": "\"Definitely\" shows a firm intention: \"will\"."},
+    {"id": "f09", "t": "fill", "d": 1, "tag": "plan", "q": "Our class ___ visit the Science Centre next Thursday.", "o": ["will", "would"], "why": "A fixed plan for next Thursday takes \"will\"."},
+    {"id": "f10", "t": "fill", "d": 1, "tag": "if", "q": "If I had a time machine, I ___ visit the dinosaurs.", "o": ["would", "will"], "why": "It starts with \"if\" and imagines something impossible: \"would\"."},
+    {"id": "f11", "t": "fill", "d": 1, "tag": "if", "q": "If I were taller, I ___ be able to reach the top shelf.", "o": ["would", "will"], "why": "\"If\" plus something that isn't true now takes \"would\"."},
+    {"id": "f12", "t": "fill", "d": 1, "tag": "if", "q": "If I won the lottery, I ___ buy a house for my family.", "o": ["would", "will"], "why": "This imagines something that may never happen: \"would\"."},
+    {"id": "f13", "t": "fill", "d": 1, "tag": "if", "q": "If she practised more, she ___ improve quickly.", "o": ["would", "will"], "why": "The \"if\" describes something that isn't happening now: \"would\"."},
+    {"id": "f14", "t": "fill", "d": 2, "tag": "if", "q": "Our family ___ adopt a dog if we had a bigger flat.", "o": ["would", "will"], "why": "The \"if\" part comes last, but it's still imagined: \"would\"."},
+    {"id": "f15", "t": "fill", "d": 1, "tag": "if", "q": "If we lived near the beach, we ___ swim every day.", "o": ["would", "will"], "why": "This imagines a different life: \"would\"."},
+    {"id": "f16", "t": "fill", "d": 2, "tag": "if", "q": "If I could fly, I ___ fly to school every morning.", "o": ["would", "will"], "why": "\"If I could fly\" is impossible, so: \"would\"."},
+    {"id": "f17", "t": "fill", "d": 1, "tag": "hope", "q": "I hope you ___ reply soon.", "o": ["will", "would"], "why": "A real hope about something that could really happen takes \"will\"."},
+    {"id": "f18", "t": "fill", "d": 2, "tag": "hope", "q": "I hope Mdm Rahimah ___ like the card we made for her.", "o": ["will", "would"], "why": "A real hope about a real outcome takes \"will\"."},
+    {"id": "f19", "t": "fill", "d": 2, "tag": "hope", "q": "I hope you ___ accept me into the Robotics CCA.", "o": ["will", "would"], "why": "Just like \"I hope you will accept me in this programme\": \"will\"."},
+    {"id": "f20", "t": "fill", "d": 2, "tag": "hope", "q": "We hope the weather ___ be fine for Sports Day.", "o": ["will", "would"], "why": "A real hope about a real day takes \"will\"."},
+    {"id": "f21", "t": "fill", "d": 1, "tag": "schedule", "q": "The bus ___ leave at exactly 8 o'clock.", "o": ["will", "would"], "why": "A timetable is treated like a certain fact: \"will\"."},
+    {"id": "f22", "t": "fill", "d": 2, "tag": "schedule", "q": "Our excursion ___ start at 9 a.m. on Thursday.", "o": ["will", "would"], "why": "A scheduled event is a certain fact: \"will\"."},
+    {"id": "f23", "t": "fill", "d": 2, "tag": "schedule", "q": "The Primary 6 prelim exams ___ begin next Monday.", "o": ["will", "would"], "why": "A fixed date on the school calendar takes \"will\"."},
+    {"id": "f24", "t": "fill", "d": 2, "tag": "schedule", "q": "The school hall ___ be closed for repairs next week.", "o": ["will", "would"], "why": "A scheduled fact about next week takes \"will\"."},
+    {"id": "f25", "t": "fill", "d": 2, "tag": "schedule", "q": "The movie ___ start at 7.30 p.m.", "o": ["will", "would"], "why": "A showtime is a scheduled fact: \"will\"."},
+    {"id": "f26", "t": "fill", "d": 1, "tag": "wish", "q": "I ___ love to visit Japan one day.", "o": ["would", "will"], "why": "\"Would love to\" is a wish, not a firm plan."},
+    {"id": "f27", "t": "fill", "d": 2, "tag": "wish", "q": "I ___ like to join the Robotics CCA next year.", "o": ["would", "will"], "why": "\"Would like to\" is a polite wish."},
+    {"id": "f28", "t": "fill", "d": 2, "tag": "wish", "q": "I ___ be very happy if you could join us.", "o": ["would", "will"], "why": "A polite wish that depends on whether you can come: \"would\"."},
+    {"id": "f29", "t": "fill", "d": 2, "tag": "wish", "q": "My brother ___ love a puppy for his birthday.", "o": ["would", "will"], "why": "\"Would love\" describes a wish, not a plan."},
+    {"id": "f30", "t": "fill", "d": 3, "tag": "reported", "q": "He said he ___ call me back later.", "o": ["would", "will"], "why": "When you report what someone said in the past, \"will\" shifts back to \"would\"."},
+    {"id": "f31", "t": "fill", "d": 3, "tag": "reported", "q": "The teacher promised the class ___ get extra recess on Friday.", "o": ["would", "will"], "why": "A past promise, reported, takes \"would\"."},
+    {"id": "f32", "t": "fill", "d": 3, "tag": "reported", "q": "She promised she ___ finish the project by Friday.", "o": ["would", "will"], "why": "\"Promised\" is in the past, so \"will\" shifts back to \"would\"."},
+    {"id": "f33", "t": "fill", "d": 3, "tag": "reported", "q": "Wei Ling told me she ___ meet us at the canteen.", "o": ["would", "will"], "why": "\"Told me\" reports what she said in the past: \"would\"."},
+    {"id": "f34", "t": "fill", "d": 3, "tag": "reported", "q": "Dad said that he ___ fetch us after the concert.", "o": ["would", "will"], "why": "Reported speech: \"Dad said that he would…\"."},
+    {"id": "f35", "t": "fill", "d": 3, "tag": "reported", "q": "Arjun said he ___ bring the snacks for the party.", "o": ["would", "will"], "why": "Arjun's words are reported, so \"will\" becomes \"would\"."},
+    {"id": "f36", "t": "fill", "d": 3, "tag": "reported", "q": "She said that if it rained, she ___ bring an umbrella.", "o": ["would", "will"], "why": "This reports a condition from the past: \"would\"."},
+    {"id": "f37", "t": "fill", "d": 3, "tag": "ifiwere", "q": "If I were you, I ___ apologise first.", "o": ["would", "will"], "why": "\"If I were you\" is imagined advice, so it always takes \"would\"."},
+    {"id": "f38", "t": "fill", "d": 3, "tag": "ifiwere", "q": "If I were you, I ___ check my answers again.", "o": ["would", "will"], "why": "\"If I were you\" always takes \"would\"."},
+    {"id": "f39", "t": "fill", "d": 3, "tag": "ifiwere", "q": "If I were you, I ___ tell the teacher what happened.", "o": ["would", "will"], "why": "Imagining being someone else is hypothetical: \"would\"."},
+    {"id": "f40", "t": "fill", "d": 3, "tag": "ifiwere", "q": "If I were in your shoes, I ___ say sorry to her.", "o": ["would", "will"], "why": "\"In your shoes\" means the same as \"If I were you\": \"would\"."},
+    {"id": "c01", "t": "check", "d": 1, "tag": "plan", "q": "I would ask my parents to sign the form tomorrow.", "a": 0, "why": "Asking tomorrow is a firm plan, so it needs \"will\"."},
+    {"id": "c02", "t": "check", "d": 1, "tag": "plan", "q": "I will ask my parents to sign the form tomorrow.", "a": 1, "why": "A firm plan for tomorrow: \"will\" is right."},
+    {"id": "c03", "t": "check", "d": 1, "tag": "plan", "q": "Don't worry, I would bring your book tomorrow.", "a": 0, "why": "This is a promise for tomorrow, so it needs \"will\"."},
+    {"id": "c04", "t": "check", "d": 1, "tag": "plan", "q": "I will use my allowance to buy a new storybook.", "a": 1, "why": "A firm plan: \"will\" is right."},
+    {"id": "c05", "t": "check", "d": 1, "tag": "plan", "q": "I would use my allowance to pay for a new storybook.", "a": 0, "why": "This is a firm promise, not a maybe, so it needs \"will\"."},
+    {"id": "c06", "t": "check", "d": 2, "tag": "plan", "q": "We would meet you at the MRT station at 5 p.m. tomorrow.", "a": 0, "why": "A meeting time for tomorrow is a firm plan: \"will\"."},
+    {"id": "c07", "t": "check", "d": 1, "tag": "plan", "q": "I will finish my homework before dinner.", "a": 1, "why": "A definite plan: \"will\" is right."},
+    {"id": "c08", "t": "check", "d": 2, "tag": "plan", "q": "I would definitely be there on time tomorrow.", "a": 0, "why": "\"Definitely\" shows a firm intention, so it needs \"will\"."},
+    {"id": "c09", "t": "check", "d": 1, "tag": "if", "q": "If I had wings, I would fly to school.", "a": 1, "why": "\"If\" plus something impossible takes \"would\"."},
+    {"id": "c10", "t": "check", "d": 1, "tag": "if", "q": "If I had wings, I will fly to school.", "a": 0, "why": "\"If I had wings\" is imagined, so it needs \"would\"."},
+    {"id": "c11", "t": "check", "d": 2, "tag": "if", "q": "If we had more time, we will visit the museum too.", "a": 0, "why": "\"If we had more time\" isn't true now, so it needs \"would\"."},
+    {"id": "c12", "t": "check", "d": 2, "tag": "if", "q": "If my grandma lived nearby, I would visit her every day.", "a": 1, "why": "This imagines something that isn't true now: \"would\" is right."},
+    {"id": "c13", "t": "check", "d": 2, "tag": "if", "q": "We would go to the beach if it were not raining.", "a": 1, "why": "The \"if\" part comes last, but it's still imagined: \"would\" is right."},
+    {"id": "c14", "t": "check", "d": 1, "tag": "if", "q": "If I were a bird, I would build a nest on our balcony.", "a": 1, "why": "\"If I were a bird\" is impossible, so \"would\" is right."},
+    {"id": "c15", "t": "check", "d": 2, "tag": "hope", "q": "I hope you would accept me in this programme.", "a": 0, "why": "A real hope about a real outcome takes \"will\"."},
+    {"id": "c16", "t": "check", "d": 2, "tag": "hope", "q": "I hope you will accept me in this programme.", "a": 1, "why": "A real hope: \"will\" is right."},
+    {"id": "c17", "t": "check", "d": 2, "tag": "hope", "q": "I hope it would not rain on Sports Day.", "a": 0, "why": "A real hope about a real day takes \"will\"."},
+    {"id": "c18", "t": "check", "d": 2, "tag": "hope", "q": "We hope you will enjoy the concert.", "a": 1, "why": "A real hope: \"will\" is right."},
+    {"id": "c19", "t": "check", "d": 2, "tag": "schedule", "q": "The bus would leave at exactly 8 o'clock.", "a": 0, "why": "A timetable is a certain fact, so it takes \"will\"."},
+    {"id": "c20", "t": "check", "d": 2, "tag": "schedule", "q": "The school concert will start at 7 p.m.", "a": 1, "why": "A scheduled event: \"will\" is right."},
+    {"id": "c21", "t": "check", "d": 2, "tag": "schedule", "q": "Our flight would depart at 10 a.m. tomorrow.", "a": 0, "why": "A flight time is a scheduled fact: \"will\"."},
+    {"id": "c22", "t": "check", "d": 2, "tag": "wish", "q": "I will love to visit Japan one day.", "a": 0, "why": "A wish uses \"would love to\"."},
+    {"id": "c23", "t": "check", "d": 2, "tag": "wish", "q": "I would love to visit Japan one day.", "a": 1, "why": "\"Would love to\" is a wish: correct."},
+    {"id": "c24", "t": "check", "d": 2, "tag": "wish", "q": "I will like to join the choir next year.", "a": 0, "why": "A polite wish uses \"would like to\"."},
+    {"id": "c25", "t": "check", "d": 2, "tag": "wish", "q": "I would be very happy if you could join us.", "a": 1, "why": "A polite, conditional wish: \"would\" is right."},
+    {"id": "c26", "t": "check", "d": 3, "tag": "reported", "q": "Yesterday, Ben said he will call me that evening.", "a": 0, "why": "Ben's words are reported from the past, so \"will\" shifts back to \"would\"."},
+    {"id": "c27", "t": "check", "d": 3, "tag": "reported", "q": "Yesterday, Ben said he would call me that evening.", "a": 1, "why": "Reported speech: \"would\" is right."},
+    {"id": "c28", "t": "check", "d": 3, "tag": "reported", "q": "The teacher promised that we would get extra recess.", "a": 1, "why": "A past promise, reported: \"would\" is right."},
+    {"id": "c29", "t": "check", "d": 3, "tag": "reported", "q": "Last Monday, she promised she will finish the project by Friday.", "a": 0, "why": "\"Promised\" is in the past, so it needs \"would\"."},
+    {"id": "c30", "t": "check", "d": 3, "tag": "reported", "q": "Mum told me that she would buy me a new bag.", "a": 1, "why": "\"Told me\" reports past speech: \"would\" is right."},
+    {"id": "c31", "t": "check", "d": 3, "tag": "ifiwere", "q": "If I were you, I will apologise first.", "a": 0, "why": "\"If I were you\" always takes \"would\"."},
+    {"id": "c32", "t": "check", "d": 3, "tag": "ifiwere", "q": "If I were you, I would apologise first.", "a": 1, "why": "\"If I were you\" takes \"would\": correct."},
+    {"id": "c33", "t": "check", "d": 3, "tag": "ifiwere", "q": "If I were you, I would study harder for the test.", "a": 1, "why": "Imagined advice takes \"would\": correct."},
+    {"id": "c34", "t": "check", "d": 3, "tag": "ifiwere", "q": "If I were you, I will not eat so many sweets.", "a": 0, "why": "\"If I were you\" always takes \"would\"."},
+    {"id": "p01", "t": "pick", "d": 1, "tag": "plan", "ask": "Which sentence is correct?", "o": ["I will see you at recess tomorrow.", "If I had a dog, I will walk it every day.", "I hope you would come to my party.", "I will love to try that cake."], "why": "Seeing you tomorrow is a firm plan, so \"will\" fits. The \"if\" sentence needs \"would\", the hope needs \"will\", and the wish needs \"would\"."},
+    {"id": "p02", "t": "pick", "d": 1, "tag": "if", "ask": "Which sentence is correct?", "o": ["If I were rich, I would buy a big house.", "If I were rich, I will buy a big house.", "I would go to school tomorrow as usual.", "I would hand in my homework later, I promise."], "why": "\"If I were rich\" is imagined, so \"would\" fits. The others mix up \"will\" and \"would\"."},
+    {"id": "p03", "t": "pick", "d": 1, "tag": "plan", "ask": "Which sentence is correct?", "o": ["I will tidy my room after lunch, Mum.", "I would tidy my room after lunch, Mum, I promise.", "If I had a robot, it will tidy my room.", "I will like a cleaner room."], "why": "Tidying after lunch is a firm promise: \"will\"."},
+    {"id": "p04", "t": "pick", "d": 1, "tag": "if", "ask": "Which sentence is correct?", "o": ["If we had a car, we would drive to Malaysia.", "If we had a car, we will drive to Malaysia.", "We would drive to Malaysia tomorrow morning, as planned.", "I hope we would reach Malaysia soon."], "why": "\"If we had a car\" is imagined: \"would\"."},
+    {"id": "p05", "t": "pick", "d": 2, "tag": "hope", "ask": "Which sentence is correct?", "o": ["I hope you will get well soon.", "I hope you would get well soon.", "If I were a doctor, I will make you well.", "I will love to visit you in hospital."], "why": "A real hope takes \"will\"."},
+    {"id": "p06", "t": "pick", "d": 2, "tag": "schedule", "ask": "Which sentence is correct?", "o": ["The train will arrive at 6.15 p.m.", "The train would arrive at 6.15 p.m.", "I hope the train would be on time.", "If the train were faster, we will be home now."], "why": "A timetable is a certain fact: \"will\"."},
+    {"id": "p07", "t": "pick", "d": 2, "tag": "wish", "ask": "Which sentence is correct?", "o": ["I would like a glass of water, please.", "I will like a glass of water, please.", "If I were thirsty, I will drink water.", "I hope you would bring me water."], "why": "\"Would like\" is a polite wish."},
+    {"id": "p08", "t": "pick", "d": 2, "tag": "plan", "q": "I would hand in the form tomorrow, I promise.", "ask": "Pick the best fix.", "o": ["I will hand in the form tomorrow, I promise.", "I would handed in the form tomorrow, I promise.", "I would hand in the form tomorrow, if I promise.", "I hope I would hand in the form tomorrow."], "why": "A promise for tomorrow is a firm plan, so \"would\" becomes \"will\"."},
+    {"id": "p09", "t": "pick", "d": 2, "tag": "hope", "q": "I hope you would accept my apology.", "ask": "Pick the best fix.", "o": ["I hope you will accept my apology.", "I hope you would accepted my apology.", "If I hope, you would accept my apology.", "I hoped you will accept my apology."], "why": "A real hope takes \"will\"."},
+    {"id": "p10", "t": "pick", "d": 2, "tag": "wish", "q": "I will love to join your birthday party.", "ask": "Pick the best fix.", "o": ["I would love to join your birthday party.", "I will loved to join your birthday party.", "If I could, I will love to join your birthday party.", "I will love joining your birthday party."], "why": "A wish uses \"would love to\"."},
+    {"id": "p11", "t": "pick", "d": 3, "tag": "reported", "q": "He said he will call me back.", "ask": "Pick the best fix.", "o": ["He said he would call me back.", "He says he would call me back.", "He said he will called me back.", "He said if he would call me back."], "why": "Reporting what he said in the past shifts \"will\" back to \"would\"."},
+    {"id": "p12", "t": "pick", "d": 3, "tag": "reported", "ask": "Which sentence is correct?", "o": ["The coach promised that we would have a break.", "The coach promised that we will have a break.", "If I were the coach, I will give a break.", "I will love a break now."], "why": "A past promise, reported, takes \"would\"."},
+    {"id": "p13", "t": "pick", "d": 3, "tag": "ifiwere", "q": "If I were you, I will take the bus.", "ask": "Pick the best fix.", "o": ["If I were you, I would take the bus.", "If I am you, I will take the bus.", "If I were you, I will took the bus.", "I were you, I would take the bus."], "why": "\"If I were you\" always takes \"would\"."},
+    {"id": "p14", "t": "pick", "d": 3, "tag": "ifiwere", "ask": "Which sentence is correct?", "o": ["If I were you, I would ask Ms Goh for help.", "If I were you, I will ask Ms Goh for help.", "I hope Ms Goh would help you.", "Ms Goh would help you tomorrow, she promised."], "why": "\"If I were you\" takes \"would\". The others need \"will\", or \"would\" for the reported promise."},
+    {"id": "p15", "t": "pick", "d": 1, "tag": "plan", "ask": "Which sentence needs fixing?", "o": ["I would bring my calculator tomorrow, I promise.", "I will bring my calculator tomorrow.", "If I had a calculator, I would lend it to you.", "I would love a new calculator."], "why": "A promise for tomorrow is a firm plan, so it needs \"will\"."},
+    {"id": "p16", "t": "pick", "d": 2, "tag": "if", "ask": "Which sentence needs fixing?", "o": ["If I had a million dollars, I will travel the world.", "If I had a million dollars, I would travel the world.", "I will travel to Penang next June.", "I would love to travel the world."], "why": "\"If I had a million dollars\" is imagined, so it needs \"would\"."},
+    {"id": "p17", "t": "pick", "d": 2, "tag": "schedule", "ask": "Which sentence needs fixing?", "o": ["The assembly would begin at 7.30 a.m. tomorrow.", "The assembly will begin at 7.30 a.m. tomorrow.", "I hope the assembly will be short.", "If I were the principal, I would make it shorter."], "why": "A scheduled time is a certain fact, so it needs \"will\"."},
+    {"id": "p18", "t": "pick", "d": 3, "tag": "reported", "ask": "Which sentence needs fixing?", "o": ["Yesterday, Nurul told me she will lend me her notes.", "Yesterday, Nurul told me she would lend me her notes.", "Nurul will lend me her notes tomorrow.", "If Nurul were here, she would lend me her notes."], "why": "\"Told me\" reports past speech, so it needs \"would\"."},
+    {"id": "p19", "t": "pick", "d": 3, "tag": "wish", "ask": "Which sentence needs fixing?", "o": ["I will like to say thank you to my teachers.", "I would like to say thank you to my teachers.", "I will say thank you to my teachers tomorrow.", "If I were brave, I would say it on stage."], "why": "A polite wish uses \"would like to\"."},
+    {"id": "p20", "t": "pick", "d": 3, "tag": "hope", "ask": "Which sentence needs fixing?", "o": ["We hope you would visit us again soon.", "We hope you will visit us again soon.", "We would love you to visit us again.", "You will visit us again next week."], "why": "A real hope takes \"will\"."},
+    {"id": "p21", "t": "pick", "d": 2, "tag": "schedule", "q": "The canteen would close early next Friday.", "ask": "Pick the best fix.", "o": ["The canteen will close early next Friday.", "The canteen would closed early next Friday.", "If the canteen closes, it would close early next Friday.", "I hope the canteen would close early next Friday."], "why": "A fixed closing time is a scheduled fact: \"will\"."},
+    {"id": "s01", "t": "spot", "d": 1, "tag": "plan", "parts": ["Tomorrow morning,", "I would bring", "the consent form", "to school."], "a": 1, "why": "Bringing the form tomorrow is a firm plan, so it needs \"I will bring\"."},
+    {"id": "s02", "t": "spot", "d": 1, "tag": "plan", "parts": ["Don't worry,", "Mum,", "I would remember", "to feed the cat."], "a": 2, "why": "A promise to Mum is a firm plan: \"I will remember\"."},
+    {"id": "s03", "t": "spot", "d": 1, "tag": "if", "parts": ["If I had", "a magic wand,", "I will turn", "my homework into ice cream."], "a": 2, "why": "\"If I had a magic wand\" is imagined, so it needs \"I would turn\"."},
+    {"id": "s04", "t": "spot", "d": 1, "tag": "if", "parts": ["If we lived", "in Japan,", "we will see", "snow every winter."], "a": 2, "why": "This imagines a different life, so it needs \"we would see\"."},
+    {"id": "s05", "t": "spot", "d": 2, "tag": "plan", "parts": ["If I had more time,", "I would stay longer,", "but tomorrow", "I would definitely come early."], "a": 3, "why": "The first \"would\" is right (imagined). Coming early tomorrow is a firm plan: \"I will definitely come\"."},
+    {"id": "s06", "t": "spot", "d": 2, "tag": "if", "parts": ["I will visit my cousins next week.", "If I lived nearer,", "I will visit them", "every day."], "a": 2, "why": "Next week's visit is a firm plan, so \"will\" is right there. \"If I lived nearer\" is imagined: \"I would visit them\"."},
+    {"id": "s07", "t": "spot", "d": 2, "tag": "hope", "parts": ["Dear Ms Goh,", "I hope", "you would accept", "my application."], "a": 2, "why": "A real hope takes \"will\": \"you will accept\"."},
+    {"id": "s08", "t": "spot", "d": 2, "tag": "hope", "parts": ["We are so excited,", "and we hope", "the weather would be", "fine on Sunday."], "a": 2, "why": "A real hope about Sunday takes \"will\": \"the weather will be\"."},
+    {"id": "s09", "t": "spot", "d": 2, "tag": "schedule", "parts": ["According to the timetable,", "the ferry", "would leave", "at 9 a.m. sharp."], "a": 2, "why": "A timetable is a certain fact: \"the ferry will leave\"."},
+    {"id": "s10", "t": "spot", "d": 2, "tag": "schedule", "parts": ["Please be early,", "because the exam", "would start", "at 8 a.m. tomorrow."], "a": 2, "why": "A scheduled exam time takes \"will\": \"will start\"."},
+    {"id": "s11", "t": "spot", "d": 2, "tag": "wish", "parts": ["One day,", "I will love", "to travel", "around the world."], "a": 1, "why": "A wish uses \"would love\": \"I would love\"."},
+    {"id": "s12", "t": "spot", "d": 2, "tag": "wish", "parts": ["Thank you for the invitation.", "I will like", "to attend", "your party."], "a": 1, "why": "A polite wish uses \"would like\": \"I would like\"."},
+    {"id": "s13", "t": "spot", "d": 3, "tag": "reported", "parts": ["Last week,", "Arjun said", "he will lend me", "his comic book."], "a": 2, "why": "Arjun's words are reported from the past, so \"will\" shifts back: \"he would lend me\"."},
+    {"id": "s14", "t": "spot", "d": 3, "tag": "reported", "parts": ["After the match,", "the coach promised", "that we will get", "new jerseys."], "a": 2, "why": "A past promise, reported, takes \"would\": \"that we would get\"."},
+    {"id": "s15", "t": "spot", "d": 3, "tag": "reported", "parts": ["When I called her,", "Grandma said", "she will bake", "my favourite cake."], "a": 2, "why": "Reported speech from the past takes \"would\": \"she would bake\"."},
+    {"id": "s16", "t": "spot", "d": 3, "tag": "ifiwere", "parts": ["You look worried.", "If I were you,", "I will talk", "to the teacher."], "a": 2, "why": "\"If I were you\" always takes \"would\": \"I would talk\"."},
+    {"id": "s17", "t": "spot", "d": 3, "tag": "ifiwere", "parts": ["If I were you,", "I will not", "leave my bag", "on the bus."], "a": 1, "why": "\"If I were you\" always takes \"would\": \"I would not\"."},
+    {"id": "s18", "t": "spot", "d": 3, "tag": "ifiwere", "parts": ["That bully is mean.", "If I were you,", "I will tell", "an adult."], "a": 2, "why": "Imagined advice takes \"would\": \"I would tell\"."},
+    {"id": "s19", "t": "spot", "d": 1, "tag": "plan", "parts": ["I would", "call you", "tonight,", "I promise."], "a": 0, "why": "A promise for tonight is a firm plan: \"I will call you\"."},
+    {"id": "s20", "t": "spot", "d": 1, "tag": "if", "parts": ["If I", "were a superhero,", "I will save", "the world."], "a": 2, "why": "Being a superhero is imagined, so it needs \"I would save\"."},
+    {"id": "s21", "t": "spot", "d": 2, "tag": "hope", "parts": ["I hope", "you would", "come to", "my birthday party."], "a": 1, "why": "A real hope takes \"will\": \"you will come\"."},
+    {"id": "s22", "t": "spot", "d": 3, "tag": "reported", "parts": ["My sister", "told me", "that she will help", "with my project."], "a": 2, "why": "\"Told me\" reports past speech: \"that she would help\"."},
+    {"id": "s23", "t": "spot", "d": 2, "tag": "schedule", "parts": ["The library", "would open", "at 8 a.m.", "on Saturday."], "a": 1, "why": "Opening hours are a scheduled fact: \"will open\"."},
+    {"id": "s24", "t": "spot", "d": 3, "tag": "wish", "parts": ["Thank you for asking.", "I will be", "very happy", "if you could join us."], "a": 1, "why": "A polite wish that depends on \"if you could\" takes \"would\": \"I would be very happy\"."},
   ];
 
-  const container = document.getElementById('quizContainer');
-  const scoreDisplay = document.getElementById('scoreDisplay');
-  const resetBtn = document.getElementById('resetBtn');
-  let score = 0;
-  let answered = new Array(QUESTIONS.length).fill(false);
+  /* ================= QUIZ BANK ENGINE (shared by every lesson) =================
+     Needs, defined above it: LESSON_KEY, TAGS, BANK. Optional: QB_TEXT = { ask: {...}, yn: [...] }.
+     Each attempt draws BAND_SIZES questions (easy, medium, tricky). The draw builds many
+     candidate quizzes and keeps the best: every tag present, 3+ of each type, balanced
+     check answers, unseen questions first. Options are shuffled; ids seen are remembered. */
+  const BAND_SIZES = [7, 7, 6];
+  const DRAW = BAND_SIZES.reduce((a, b) => a + b, 0);
+  const QBT = (typeof QB_TEXT !== 'undefined') ? QB_TEXT : {};
+  const ASK = Object.assign({
+    check: 'Is this sentence correct?',
+    pick:  'Pick the correct sentence.',
+    fill:  'Which choice fills the gap correctly?',
+    spot:  'Tap the part with the mistake.'
+  }, QBT.ask || {});
+  const YN = QBT.yn || ['Needs fixing', 'Correct'];
+
+  const store = {
+    get(k, fallback) { try { const v = localStorage.getItem(LESSON_KEY + ':' + k); return v === null ? fallback : JSON.parse(v); } catch (e) { return fallback; } },
+    set(k, v) { try { localStorage.setItem(LESSON_KEY + ':' + k, JSON.stringify(v)); } catch (e) { /* storage unavailable: quiz still works */ } }
+  };
+  const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  function buildCandidate(seen) {
+    const chosen = [], tagN = {}, typeN = {};
+    let fixN = 0, okN = 0;
+    for (let band = 1; band <= 3; band++) {
+      const picks = [];
+      for (let k = 0; k < BAND_SIZES[band - 1]; k++) {
+        let best = null, bestScore = -Infinity;
+        BANK.forEach(q => {
+          if (q.d !== band || picks.includes(q)) return;
+          let s = Math.random() * 3;
+          if (!seen.has(q.id)) s += 6;
+          if (!tagN[q.tag]) s += 12;
+          s -= (typeN[q.t] || 0) * 1.2;
+          if ((typeN[q.t] || 0) < 3) s += 2;   // nudge every type up to 3
+          if (q.t === 'check') { const lean = q.a === 0 ? fixN - okN : okN - fixN; if (lean >= 1) s -= 4; }
+          if (s > bestScore) { bestScore = s; best = q; }
+        });
+        if (!best) break;
+        picks.push(best);
+        tagN[best.tag] = (tagN[best.tag] || 0) + 1;
+        typeN[best.t] = (typeN[best.t] || 0) + 1;
+        if (best.t === 'check') { if (best.a === 0) fixN++; else okN++; }
+      }
+      chosen.push(...shuffle(picks));
+    }
+    return chosen;
+  }
+
+  function rateCandidate(c, seen) {
+    const tags = new Set(c.map(q => q.tag)).size;
+    const types = {};
+    c.forEach(q => types[q.t] = (types[q.t] || 0) + 1);
+    const used = [...new Set(BANK.map(q => q.t))];
+    const minType = Math.min(...used.map(t => types[t] || 0));
+    const checks = c.filter(q => q.t === 'check');
+    const lean = Math.abs(checks.filter(q => q.a === 0).length * 2 - checks.length);
+    return (tags === Object.keys(TAGS).length ? 10000 : tags * 500)
+         + (c.length === DRAW ? 5000 : 0)
+         + Math.min(minType, 3) * 300
+         + (lean <= 2 ? 200 : 0)
+         + c.filter(q => !seen.has(q.id)).length * 10;
+  }
+
+  function drawQuiz() {
+    let seen = new Set(store.get('seen', []));
+    if (BANK.length - seen.size < DRAW) seen = new Set(store.get('last', []));   // new cycle, but skip the last attempt
+    let chosen = null, bestRate = -1;
+    for (let tries = 0; tries < 200; tries++) {
+      const c = buildCandidate(seen), r = rateCandidate(c, seen);
+      if (r > bestRate) { bestRate = r; chosen = c; }
+    }
+    chosen.forEach(q => seen.add(q.id));
+    store.set('seen', [...seen]);
+    store.set('last', chosen.map(q => q.id));
+    return chosen.map(q => {
+      if (q.t === 'pick' || q.t === 'fill') {
+        const opts = shuffle(q.o.map((text, i) => ({ text, ok: i === 0 })));
+        return { q, opts, answer: opts.findIndex(o => o.ok) };
+      }
+      if (q.t === 'check') return { q, opts: YN.map(text => ({ text })), answer: q.a };
+      return { q, opts: null, answer: q.a };
+    });
+  }
+
+  const listEl = document.getElementById('qbList');
+  const scoreEl = document.getElementById('qbScore');
+  const progressEl = document.getElementById('qbProgress');
+  const summaryEl = document.getElementById('qbSummary');
+  let current = [], score = 0, done = 0, missed = [];
 
   function updateScore() {
-    scoreDisplay.textContent = score + " / " + QUESTIONS.length;
+    scoreEl.textContent = score + ' / ' + current.length;
+    progressEl.textContent = done + ' of ' + current.length + ' answered';
+  }
+
+  /* Small or empty options are hard to see on a button, so label them. */
+  function optLabel(text) {
+    const t = text.trim();
+    if (t === '') return '<span class="qb-note">(nothing)</span>';
+    if (t === ',') return '<span class="qb-punct">,</span> <span class="qb-note">(a comma)</span>';
+    if (t === '.') return '<span class="qb-punct">.</span> <span class="qb-note">(a full stop)</span>';
+    return esc(text);
+  }
+  function plainLabel(text) {
+    const t = text.trim();
+    return t === '' ? 'nothing' : t === ',' ? 'a comma' : t === '.' ? 'a full stop' : '"' + t + '"';
+  }
+  function sentenceWithGap(q, text) {
+    let filler = '<span class="qb-blank">___</span>';
+    if (text !== undefined) {
+      filler = text.trim() === ''
+        ? '<span class="qb-blank qb-filled qb-none">(nothing)</span>'
+        : '<span class="qb-blank qb-filled">' + esc(text) + '</span>';
+    }
+    return esc(q.q).replace('___', filler);
   }
 
   function render() {
-    container.innerHTML = '';
-    QUESTIONS.forEach((q, i) => {
+    listEl.innerHTML = '';
+    summaryEl.hidden = true;
+    current.forEach((item, i) => {
+      const q = item.q;
       const card = document.createElement('div');
-      card.className = 'quiz-card';
-
-      const num = document.createElement('p');
-      num.className = 'quiz-num';
-      num.textContent = 'Question ' + (i + 1) + ' of ' + QUESTIONS.length;
-      card.appendChild(num);
-
-      const sentence = document.createElement('p');
-      sentence.className = 'quiz-sentence';
-      sentence.innerHTML = q.before + '<span class="blank" id="blank-' + i + '">' + q.blank + '</span>' + q.after;
-      card.appendChild(sentence);
-
-      const btnRow = document.createElement('div');
-      btnRow.className = 'quiz-buttons';
-
-      ['will', 'would'].forEach(opt => {
-        const btn = document.createElement('button');
-        btn.className = 'quiz-btn opt-' + opt;
-        btn.textContent = opt;
-        btn.addEventListener('click', () => handleAnswer(i, opt));
-        btnRow.appendChild(btn);
-      });
-      card.appendChild(btnRow);
-
-      const feedback = document.createElement('div');
-      feedback.className = 'feedback';
-      feedback.id = 'feedback-' + i;
-      card.appendChild(feedback);
-
-      container.appendChild(card);
-    });
-  }
-
-  function handleAnswer(i, chosen) {
-    if (answered[i]) return;
-    answered[i] = true;
-
-    const q = QUESTIONS[i];
-    const correct = chosen === q.answer;
-    if (correct) score++;
-    updateScore();
-
-    const blank = document.getElementById('blank-' + i);
-    blank.textContent = chosen;
-    blank.classList.add(chosen === 'will' ? 'filled-will' : 'filled-would');
-
-    const card = blank.closest('.quiz-card');
-    const buttons = card.querySelectorAll('.quiz-btn');
-    buttons.forEach(b => {
-      b.disabled = true;
-      const isThisCorrectOption = b.textContent === q.answer;
-      if (b.textContent === chosen) {
-        b.classList.add(correct ? 'correct' : 'incorrect');
-      } else if (isThisCorrectOption && !correct) {
-        b.classList.add('reveal-correct');
+      card.className = 'qb-card';
+      card.dataset.type = q.t;
+      let body;
+      if (q.t === 'spot') {
+        body = '<div class="qb-spot">' + q.parts.map((p, k) =>
+          '<button type="button" class="qb-part" data-k="' + k + '">' + esc(p) + '</button>').join('') + '</div>';
+      } else if (q.t === 'fill') {
+        const cols = item.opts.length;
+        body = '<p class="qb-text">' + sentenceWithGap(q) + '</p><div class="qb-opts qb-row" style="--qb-cols:' + cols + '"></div>';
+      } else if (q.t === 'check') {
+        body = '<p class="qb-text">' + esc(q.q) + '</p><div class="qb-opts qb-row"></div>';
+      } else {
+        body = (q.q ? '<p class="qb-text">' + esc(q.q) + '</p>' : '') + '<div class="qb-opts"></div>';
       }
+      card.innerHTML =
+        '<p class="qb-num">Question ' + (i + 1) + ' of ' + current.length + '</p>' +
+        '<p class="qb-ask">' + esc(q.ask || ASK[q.t]) + '</p>' + body +
+        '<div class="qb-feedback" role="status"></div>';
+      if (q.t === 'spot') {
+        card.querySelectorAll('.qb-part').forEach(b => b.addEventListener('click', () => answer(i, +b.dataset.k, card)));
+      } else {
+        const opts = card.querySelector('.qb-opts');
+        item.opts.forEach((o, j) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'qb-opt';
+          b.innerHTML = (q.t === 'pick' ? '<span class="qb-letter">' + String.fromCharCode(65 + j) + '</span>' : '') + optLabel(o.text);
+          b.addEventListener('click', () => answer(i, j, card));
+          opts.appendChild(b);
+        });
+      }
+      listEl.appendChild(card);
     });
-
-    const feedback = document.getElementById('feedback-' + i);
-    feedback.classList.add('show', correct ? 'is-correct' : 'is-incorrect');
-    feedback.innerHTML = '<span class="verdict">' + (correct ? 'Correct!' : 'Not quite — the answer is "' + q.answer + '."') + '</span>' + q.why;
+    updateScore();
   }
 
-  resetBtn.addEventListener('click', () => {
-    score = 0;
-    answered = new Array(QUESTIONS.length).fill(false);
+  function answer(i, j, card) {
+    const item = current[i];
+    if (item.done) return;
+    item.done = true; done++;
+    const q = item.q, ok = j === item.answer;
+    if (ok) score++; else missed.push(q.tag);
+    card.querySelectorAll(q.t === 'spot' ? '.qb-part' : '.qb-opt').forEach((b, k) => {
+      b.disabled = true;
+      if (k === j) b.classList.add(ok ? 'qb-correct' : 'qb-incorrect');
+      else if (k === item.answer && !ok) b.classList.add('qb-reveal');
+    });
+    if (q.t === 'fill') card.querySelector('.qb-text').innerHTML = sentenceWithGap(q, item.opts[j].text);
+    let right;
+    if (q.t === 'spot') right = 'The mistake is in "' + esc(q.parts[item.answer]) + '".';
+    else if (q.t === 'pick') right = 'The answer is ' + String.fromCharCode(65 + item.answer) + '.';
+    else right = 'The answer is ' + esc(plainLabel(item.opts[item.answer].text)) + '.';
+    const fb = card.querySelector('.qb-feedback');
+    fb.classList.add('qb-show', ok ? 'qb-fb-ok' : 'qb-fb-no');
+    fb.innerHTML = '<span class="qb-verdict">' + (ok ? 'Correct!' : 'Not quite. ' + right) + '</span>' + esc(q.why);
     updateScore();
-    render();
-    window.scrollTo({ top: container.offsetTop - 80, behavior: 'smooth' });
-  });
+    if (done === current.length) showSummary();
+  }
 
-  render();
-  updateScore();
+  function showSummary() {
+    const best = Math.max(store.get('best', 0), score);
+    store.set('best', best);
+    const attempts = store.get('attempts', 0) + 1;
+    store.set('attempts', attempts);
+    const counts = {};
+    missed.forEach(t => counts[t] = (counts[t] || 0) + 1);
+    const areas = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+    const n = current.length;
+    let msg;
+    if (score === n) msg = 'A perfect run! Try another set to make sure it sticks.';
+    else if (score >= Math.ceil(n * 0.8)) msg = 'Strong work. Have a quick look at the areas below, then try a fresh set.';
+    else if (score >= Math.ceil(n * 0.6)) msg = 'Good progress. Re-read the parts below before your next attempt.';
+    else msg = 'Worth another look at the lesson. Start with the areas below, then try a fresh set.';
+    summaryEl.innerHTML =
+      '<h3>You scored ' + score + ' / ' + n + '</h3><p>' + msg + '</p>' +
+      (areas.length ? '<p class="qb-sum-label">Areas to review</p><ul class="qb-areas">' + areas.map(t =>
+        '<li><a href="' + TAGS[t].href + '">' + esc(TAGS[t].label) + '</a><span>' + counts[t] + ' wrong</span></li>').join('') + '</ul>' : '') +
+      '<p class="qb-meta">Attempts on this device: ' + attempts + ' · Best score: ' + best + ' / ' + n + '</p>' +
+      '<button type="button" class="qb-go" id="qbAgain">Try ' + n + ' new questions</button>';
+    summaryEl.hidden = false;
+    document.getElementById('qbAgain').addEventListener('click', () => { newQuiz(); listEl.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    summaryEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function newQuiz() {
+    current = drawQuiz(); score = 0; done = 0; missed = [];
+    render();
+  }
+
+  const bankEl = document.getElementById('qbBank'), drawEl = document.getElementById('qbDraw');
+  if (bankEl) bankEl.textContent = BANK.length;
+  if (drawEl) drawEl.textContent = DRAW;
+  document.getElementById('qbNew').addEventListener('click', () => {
+    newQuiz();
+    listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  newQuiz();
 })();
 </script>
 </body>

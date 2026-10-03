@@ -196,6 +196,103 @@
   .summary ul { margin: 0; padding-left: 20px; line-height: 1.8; }
   .chant { margin: 18px 0 0; padding: 14px 16px; background: var(--prep-soft); color: var(--ink); border-radius: 12px; font-family: var(--font-display); font-weight: 800; font-size: 20px; line-height: 1.35; text-align: center; }
   footer { text-align: center; color: var(--ink-soft); font-size: 13px; margin-top: 30px; }
+
+  /* ================= QUIZ BANK ENGINE (shared by every lesson; qb- prefix avoids clashes) ================= */
+  .qb { --qb-cols: 2; }
+  .qb-bar {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 3;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 10px 16px; margin: 0 0 18px; border-radius: var(--qb-radius);
+    background: var(--qb-bar); color: var(--qb-bar-ink);
+  }
+  .qb-label { font-size: 12.5px; opacity: 0.8; }
+  .qb-score { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 28px; line-height: 1.05; }
+  .qb-progress { font-size: 12.5px; opacity: 0.85; margin-top: 2px; }
+  .qb-new {
+    font: inherit; font-weight: 700; font-size: 14px; padding: 10px 16px; min-height: 44px;
+    border-radius: 999px; border: 2px solid currentColor; background: transparent; color: inherit; cursor: pointer;
+  }
+  .qb-list, .qb-summary { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 96px); }
+  .qb-card {
+    background: var(--qb-card); border: var(--qb-card-border); box-shadow: var(--qb-card-shadow);
+    border-radius: var(--qb-radius); padding: 16px 16px 14px; margin: 0 0 14px; color: var(--qb-ink);
+  }
+  .qb-num { font-size: 12.5px; color: var(--qb-soft); margin: 0 0 4px; }
+  .qb-ask { font-size: 13.5px; font-weight: 700; color: var(--qb-accent); margin: 0 0 6px; }
+  .qb-text { font-size: 16.5px; line-height: 1.6; margin: 0 0 14px; }
+  .qb-blank {
+    display: inline-block; min-width: 60px; padding: 0 3px; text-align: center;
+    border-bottom: 2.5px dashed var(--qb-soft); color: var(--qb-soft);
+  }
+  .qb-blank.qb-filled { border-bottom-style: solid; border-bottom-color: var(--qb-accent); color: var(--qb-accent); font-weight: 700; }
+  .qb-blank.qb-none { font-style: italic; font-weight: 400; }
+  .qb-opts { display: flex; flex-direction: column; gap: 9px; }
+  .qb-opts.qb-row { display: grid; grid-template-columns: repeat(var(--qb-cols), minmax(0, 1fr)); }
+  .qb-opt {
+    font: inherit; font-size: 15.5px; line-height: 1.45; text-align: left; color: var(--qb-ink);
+    padding: 11px 14px; min-height: 46px; border-radius: var(--qb-radius-opt);
+    border: 2px solid var(--qb-rule); background: var(--qb-page); cursor: pointer;
+  }
+  .qb-row .qb-opt { text-align: center; font-weight: 600; padding-left: 6px; padding-right: 6px; }
+  .qb-opt:not(:disabled):hover { border-color: var(--qb-accent); }
+  .qb-opt:disabled, .qb-part:disabled { cursor: default; }
+  .qb-letter { font-family: var(--qb-font); font-weight: var(--qb-font-weight); margin-right: 10px; color: var(--qb-accent); }
+  .qb-note { font-size: 12.5px; font-weight: 400; color: var(--qb-soft); }
+  .qb-punct { font-size: 22px; line-height: 0; font-weight: 700; }
+  .qb-spot { display: flex; flex-wrap: wrap; gap: 8px 6px; margin: 0 0 4px; }
+  .qb-part {
+    font: inherit; font-size: 16px; line-height: 1.35; text-align: left; color: var(--qb-ink); cursor: pointer;
+    background: var(--qb-accent-soft); border: none; border-bottom: 3px dashed var(--qb-accent);
+    border-radius: 4px 4px 0 0; padding: 7px 9px; min-height: 40px;
+  }
+  .qb-opt.qb-correct, .qb-opt.qb-reveal { background: var(--qb-right-soft); border-color: var(--qb-right); }
+  .qb-opt.qb-incorrect { background: var(--qb-wrong-soft); border-color: var(--qb-wrong); }
+  .qb-part.qb-correct, .qb-part.qb-reveal { background: var(--qb-right-soft); border-bottom: 3px solid var(--qb-right); }
+  .qb-part.qb-incorrect { background: var(--qb-wrong-soft); border-bottom: 3px solid var(--qb-wrong); }
+  .qb-feedback { display: none; margin-top: 12px; padding-top: 12px; border-top: 2px dashed var(--qb-rule); font-size: 14px; line-height: 1.55; }
+  .qb-feedback.qb-show { display: block; }
+  .qb-verdict { display: block; font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 18px; margin-bottom: 2px; }
+  .qb-fb-ok .qb-verdict { color: var(--qb-right); }
+  .qb-fb-no .qb-verdict { color: var(--qb-wrong); }
+  .qb-summary {
+    background: var(--qb-card); color: var(--qb-ink); border: 3px solid var(--qb-accent);
+    border-radius: var(--qb-radius); padding: 18px 20px; margin-top: 8px;
+  }
+  .qb-summary h3 { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 30px; line-height: 1.1; margin: 0 0 6px; color: var(--qb-accent); }
+  .qb-summary p { margin: 0 0 10px; line-height: 1.55; }
+  .qb-sum-label { font-weight: 700; margin-top: 14px !important; }
+  .qb-areas { list-style: none; margin: 0 0 12px; padding: 0; }
+  .qb-areas li { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--qb-rule); }
+  .qb-areas a { color: var(--qb-ink); font-weight: 600; }
+  .qb-areas span { color: var(--qb-wrong); font-weight: 700; white-space: nowrap; }
+  .qb-meta { font-size: 13px; color: var(--qb-soft); }
+  .qb-go {
+    font: inherit; font-weight: 700; font-size: 16px; width: 100%; min-height: 50px; margin-top: 4px; cursor: pointer;
+    border: none; border-radius: var(--qb-radius); background: var(--qb-accent); color: var(--qb-on-accent);
+  }
+
+  :root {
+    --qb-page: var(--bg);
+    --qb-card: var(--surface);
+    --qb-ink: var(--ink);
+    --qb-soft: var(--ink-soft);
+    --qb-accent: var(--word);
+    --qb-accent-soft: var(--prep-soft);
+    --qb-on-accent: var(--surface);
+    --qb-right: var(--right);
+    --qb-right-soft: var(--right-soft);
+    --qb-wrong: var(--wrong);
+    --qb-wrong-soft: var(--wrong-soft);
+    --qb-rule: var(--rule);
+    --qb-bar: var(--ink);
+    --qb-bar-ink: var(--bg);
+    --qb-font: var(--font-display);
+    --qb-font-weight: 700;
+    --qb-radius: 14px;
+    --qb-radius-opt: 10px;
+    --qb-card-border: none;
+    --qb-card-shadow: none;
+  }
 </style>
 </head>
 <body>
@@ -216,7 +313,7 @@
   </header>
 
   <!-- 2. THE RULE -->
-  <section>
+  <section id="rule">
     <h2>Finding the right piece</h2>
     <p class="sub">When you reach a gap, ask these three questions in order.</p>
     <div class="qs">
@@ -266,7 +363,7 @@
   </section>
 
   <!-- 3. TRAPS -->
-  <section>
+  <section id="traps">
     <h2>Three traps</h2>
     <p class="sub">Every example here comes from a real composition.</p>
     <div class="trap">
@@ -292,7 +389,7 @@
   </section>
 
   <!-- 4. CATEGORIES -->
-  <section>
+  <section id="cases">
     <h2>The four boxes of pieces</h2>
     <p class="sub">Two boxes hold place pieces, and two hold fixed pairs.</p>
     <div class="cats">
@@ -325,7 +422,7 @@
   </section>
 
   <!-- 5. SPECIAL CASES -->
-  <section>
+  <section id="specials">
     <h2>Three more puzzles in the quiz</h2>
     <p class="sub">These follow their own small rules.</p>
     <div class="grid-3">
@@ -359,12 +456,15 @@
   <!-- 6. PRACTICE -->
   <section>
     <h2>Find the piece</h2>
-    <p class="sub">Tap the piece that fits, or pick the correct sentence. You'll see straight away if you're right, and why. The questions get trickier as you go.</p>
-    <div class="scoreboard">
-      <div><div class="label">Your score</div><div class="score" id="scoreDisplay">0 / 30</div></div>
-      <button class="reset-btn" id="resetBtn" type="button">Start over</button>
+    <p class="sub">Each attempt draws <span id="qbDraw">20</span> questions from a bank of <span id="qbBank">120</span>, so every try is different. You'll fill gaps, check sentences, pick the right version and spot mistakes, and the questions get trickier as you go. Finish them all to see which areas to review.</p>
+    <div class="qb" id="qb">
+      <div class="qb-bar">
+        <div><div class="qb-label">Your score</div><div class="qb-score" id="qbScore">0 / 20</div><div class="qb-progress" id="qbProgress">0 of 20 answered</div></div>
+        <button class="qb-new" id="qbNew" type="button">New quiz</button>
+      </div>
+      <div class="qb-list" id="qbList"></div>
+      <div class="qb-summary" id="qbSummary" hidden></div>
     </div>
-    <div id="quizContainer"></div>
   </section>
 
   <!-- 7. PIN THIS UP -->
@@ -426,112 +526,380 @@
   document.getElementById('nextPuzzle').addEventListener('click', () => { p = (p + 1) % PUZZLES.length; drawPuzzle(); });
   drawPuzzle();
 
-  /* ---------- Quiz ---------- */
-  const FILL = "Tap the piece that fits.";
-  const CHECK = "Is the preposition right?";
-  const PICK = "Pick the correct sentence.";
-  const CN = ["Correct", "Needs fixing"];
-  const QUESTIONS = [
-    { ask: FILL, text: "Please reply ___ me by Friday.", options: ["at", "for", "to"], answer: 2, why: "“Reply” connects to a person with “to”. It's a verb + piece pair." },
-    { ask: FILL, text: "My mum is waiting for me ___ the bus stop.", options: ["in", "on", "at"], answer: 2, why: "A bus stop is one spot, so it takes “at”." },
-    { ask: FILL, text: "We sat ___ the balcony and watched the fireworks.", options: ["on", "in", "at"], answer: 0, why: "A balcony is a surface you sit on, not a box you're inside." },
-    { ask: FILL, text: "Nurul is very interested ___ dance.", options: ["on", "in", "at"], answer: 1, why: "“Interested” always pairs with “in”. It's a fixed chunk." },
-    { ask: FILL, text: "I poured myself a glass ___ water.", options: ["with", "in", "of"], answer: 2, why: "Amounts take “of”: a glass of water, a slice of cake, a bowl of noodles." },
-    { ask: FILL, text: "The ball bounced off the wall and rolled ___ the drain.", options: ["into", "onto", "at"], answer: 0, why: "The ball moved inside the drain, so this is movement: “into”." },
-    { ask: FILL, text: "Hundreds of students sat quietly ___ the school hall.", options: ["on", "at", "in"], answer: 2, why: "The hall is a space with walls around you, so it takes “in”." },
-    { ask: FILL, text: "Marcus is good ___ solving maths puzzles.", options: ["in", "at", "on"], answer: 1, why: "“Good” pairs with “at” when you talk about a skill." },
-    { ask: FILL, text: "We got ___ the MRT at Dhoby Ghaut.", options: ["in", "on", "at"], answer: 1, why: "Buses, trains and the MRT are vehicles you travel on, so they take “on”." },
-    { ask: CHECK, text: "Ms Goh was very proud of our performance.", options: CN, answer: 0, why: "“Proud of” is the right fixed pair." },
-
-    { ask: CHECK, text: "I hope you will reply me soon.", options: CN, answer: 1, why: "A piece is missing. It should be “reply to me”." },
-    { ask: PICK, text: "Which sentence is correct?", options: ["I would like to enrol into the programme.", "I would like to enrol in the programme.", "I would like to enrol at the programme."], answer: 1, why: "“Enrol” pairs with “in”. “Into” sounds right from the meaning, but this is a fixed chunk." },
-    { ask: FILL, text: "I lost my grip ___ the iPad, and it crashed to the floor.", options: ["of", "on", "at"], answer: 1, why: "You have a grip “on” something. It's a fixed pair, so don't guess from the meaning." },
-    { ask: CHECK, text: "She covered her mouth with shock.", options: CN, answer: 1, why: "Feelings like this take the fixed chunk “in shock”, not “with shock”." },
-    { ask: FILL, text: "We should always lend a helping hand ___ those in need.", options: ["for", "to", "with"], answer: 1, why: "You lend something “to” someone, and that includes a helping hand." },
-    { ask: PICK, text: "My heart thumped as I ___ the stage.", options: ["My heart thumped as I walked onto the stage.", "My heart thumped as I walked into the stage.", "My heart thumped as I walked at the stage.", "My heart thumped as I walked in the stage."], answer: 0, why: "You move up on top of a stage, so it's “onto”. Walking “into” a stage means crashing into it." },
-    { ask: FILL, text: "I peeked ___ the peephole and saw my brother outside.", options: ["through", "across", "into"], answer: 0, why: "You look in one side of the peephole and out the other, so it's “through”." },
-    { ask: FILL, text: "Raj apologised to Mary ___ spoiling her storybook.", options: ["to", "for", "with"], answer: 1, why: "You apologise “to” a person “for” the thing you did." },
-    { ask: CHECK, text: "Lila stared at my origami swan in disbelief.", options: CN, answer: 0, why: "“In disbelief” is a fixed chunk, just like “in shock”." },
-    { ask: PICK, text: "Which sentence is correct?", options: ["At the corner of my eye, I saw Mum running into the hall.", "Out of the corner of my eye, I saw Mum running into the hall.", "In the corner of my eye, I saw Mum running into the hall."], answer: 1, why: "The fixed phrase is always “out of the corner of my eye”." },
-
-    { ask: FILL, text: "Are you interested ___ signing up for the baking course?", options: ["to", "in", "for"], answer: 1, why: "“Interested in” is the fixed pair, and the verb after it takes -ing: “signing”." },
-    { ask: PICK, text: "Which ending to a formal letter is correct?", options: ["I look forward to hear from you.", "I look forward hearing from you.", "I look forward to hearing from you.", "I look forward for hearing from you."], answer: 2, why: "The chunk is “look forward to”, and since “to” is a preposition here, the verb takes -ing: “hearing”." },
-    { ask: FILL, text: "Our class concert is ___ Saturday.", options: ["on", "in", "at"], answer: 0, why: "Days and dates take “on”: on Saturday, on 22 August." },
-    { ask: FILL, text: "The school bus leaves ___ 7 a.m. sharp.", options: ["on", "in", "at"], answer: 2, why: "A clock time is a point, so it takes “at”." },
-    { ask: CHECK, text: "We will visit our cousins in Johor in December.", options: CN, answer: 0, why: "A place you're inside takes “in”, and so does a month." },
-    { ask: CHECK, text: "Let us discuss about the plan for Sports Day.", options: CN, answer: 1, why: "“Discuss” connects directly to its object with no piece: “discuss the plan”." },
-    { ask: PICK, text: "Which sentence is correct?", options: ["When we entered into the hall, everyone fell silent.", "When we entered at the hall, everyone fell silent.", "When we entered to the hall, everyone fell silent.", "When we entered the hall, everyone fell silent."], answer: 3, why: "“Enter” needs no piece: you simply enter the hall." },
-    { ask: FILL, text: "I was so tired that I went straight ___ after school.", options: ["to home", "home", "at home"], answer: 1, why: "“Go home” needs no piece. You go to school, but you just go home." },
-    { ask: PICK, text: "Which sentence is correct?", options: ["Meet me on the convenience store at the foot of our block after school.", "Meet me at the convenience store downstairs our block after school.", "Meet me at the convenience store at the foot of our block after school.", "Meet me at the convenience store at the foot on our block after school."], answer: 2, why: "Use “at” for a meeting spot. “At the foot of our block” needs every piece in place." },
-    { ask: PICK, text: "Which line from a letter to a teacher is correct?", options: ["I hope you will reply to me soon, as I am interested in joining the programme.", "I hope you will reply me soon, as I am interested in joining the programme.", "I hope you will reply to me soon, as I am interested to joining the programme.", "I hope you will reply to me soon, as I am interested on joining the programme."], answer: 0, why: "It needs “reply to” and “interested in”, followed by an -ing verb: “joining”." }
+    /* ================= QUIZ: question bank (134 questions) ================= */
+  const LESSON_KEY = "shelf-l08";
+  const QB_TEXT = {"ask": {"check": "Is the right piece in place?", "pick": "Pick the correct sentence.", "fill": "Which piece fits the gap?", "spot": "Tap the part with the wrong or missing piece."}, "yn": ["Needs fixing", "Correct"]};
+  const TAGS = {
+    where: { label: "Where it is: in, on, at", href: '#cases' },
+    going: { label: "Where it's going: into, onto, through, out of", href: '#cases' },
+    verbpair: { label: "Verb + piece: reply to, listen to, enrol in…", href: '#cases' },
+    descpair: { label: "Describing word + piece: interested in, proud of…", href: '#cases' },
+    missing: { label: "Trap: a missing piece", href: '#traps' },
+    surface: { label: "Trap: inside, or on top?", href: '#traps' },
+    time: { label: "Time pieces: at, on, in", href: '#specials' },
+    ing: { label: "After a piece, a verb takes -ing", href: '#specials' },
+    nopiece: { label: "Sometimes no piece at all", href: '#specials' },
+  };
+  const BANK = [
+    {"id": "f01", "t": "fill", "d": 1, "tag": "where", "q": "We waited ___ the bus stop for ten minutes.", "o": ["at", "in", "into"], "why": "A bus stop is one spot: at the bus stop."},
+    {"id": "f02", "t": "fill", "d": 1, "tag": "where", "q": "There are thirty pupils ___ my class.", "o": ["in", "on", "at"], "why": "A class is a group you're inside: in my class."},
+    {"id": "f03", "t": "fill", "d": 1, "tag": "where", "q": "My grandparents live ___ Singapore.", "o": ["in", "on", "at"], "why": "A country is a space or area: in Singapore."},
+    {"id": "f04", "t": "fill", "d": 1, "tag": "where", "q": "We sat ___ the bus and chatted.", "o": ["on", "into", "at"], "why": "A bus is a vehicle you ride on: on the bus."},
+    {"id": "f05", "t": "fill", "d": 1, "tag": "where", "q": "Someone is knocking ___ the door.", "o": ["at", "into", "in"], "why": "The door is one spot: at the door."},
+    {"id": "f06", "t": "fill", "d": 2, "tag": "where", "q": "We met ___ the foot of our block.", "o": ["at", "on", "into"], "why": "\"The foot of our block\" is one spot: at."},
+    {"id": "f07", "t": "fill", "d": 2, "tag": "where", "q": "The children are playing ___ the school hall.", "o": ["in", "on", "onto"], "why": "The hall is a space you're inside: in the school hall."},
+    {"id": "f08", "t": "fill", "d": 2, "tag": "where", "q": "We travelled ___ the MRT to Jurong East.", "o": ["on", "at", "into"], "why": "Vehicles you ride take \"on\": on the MRT."},
+    {"id": "f09", "t": "fill", "d": 1, "tag": "surface", "q": "We were playing games ___ the balcony.", "o": ["on", "in", "into"], "why": "A balcony is a surface you stand on: on the balcony."},
+    {"id": "f10", "t": "fill", "d": 2, "tag": "surface", "q": "I walked ___ the stage to collect my prize.", "o": ["onto", "into", "in"], "why": "A stage is a surface you step on top of: onto the stage."},
+    {"id": "f11", "t": "fill", "d": 2, "tag": "surface", "q": "The boys played football ___ the field.", "o": ["on", "in", "into"], "why": "A field is a surface: on the field."},
+    {"id": "f12", "t": "fill", "d": 2, "tag": "surface", "q": "The singer stood ___ the stage, smiling.", "o": ["on", "in", "into"], "why": "A stage is a surface: on the stage."},
+    {"id": "f13", "t": "fill", "d": 1, "tag": "going", "q": "The ball rolled ___ the drain.", "o": ["into", "onto", "on"], "why": "It moved inside the drain: into."},
+    {"id": "f14", "t": "fill", "d": 1, "tag": "going", "q": "I peeked ___ the peephole.", "o": ["through", "into", "onto"], "why": "You look in one side and out the other: through."},
+    {"id": "f15", "t": "fill", "d": 2, "tag": "going", "q": "Students ran ___ their classrooms when the alarm rang.", "o": ["out of", "into", "through"], "why": "They moved from inside to outside: out of."},
+    {"id": "f16", "t": "fill", "d": 2, "tag": "going", "q": "The cat jumped ___ the table.", "o": ["onto", "into", "in"], "why": "The table is a surface, and the cat moved on top of it: onto."},
+    {"id": "f17", "t": "fill", "d": 2, "tag": "going", "q": "We walked ___ the tunnel to the other side.", "o": ["through", "onto", "at"], "why": "In one side and out the other: through."},
+    {"id": "f18", "t": "fill", "d": 2, "tag": "going", "q": "Mum poured the soup ___ a bowl.", "o": ["into", "onto", "at"], "why": "The soup moved inside the bowl: into."},
+    {"id": "f19", "t": "fill", "d": 1, "tag": "verbpair", "q": "Please reply ___ my email soon.", "o": ["to", "at", "for"], "why": "\"Reply\" always takes \"to\": reply to."},
+    {"id": "f20", "t": "fill", "d": 1, "tag": "verbpair", "q": "We like to listen ___ music after school.", "o": ["to", "at", "on"], "why": "\"Listen\" always takes \"to\"."},
+    {"id": "f21", "t": "fill", "d": 2, "tag": "verbpair", "q": "Raj apologised ___ Mary for spoiling her book.", "o": ["to", "at", "with"], "why": "You apologise to a person."},
+    {"id": "f22", "t": "fill", "d": 2, "tag": "verbpair", "q": "Raj apologised to Mary ___ spoiling her book.", "o": ["for", "to", "of"], "why": "You apologise for a thing you did."},
+    {"id": "f23", "t": "fill", "d": 2, "tag": "verbpair", "q": "I would like to enrol ___ the programme.", "o": ["in", "to", "at"], "why": "\"Enrol\" takes \"in\": enrol in."},
+    {"id": "f24", "t": "fill", "d": 2, "tag": "verbpair", "q": "Our class will take part ___ the Youth Day celebrations.", "o": ["in", "at", "on"], "why": "\"Take part\" always takes \"in\"."},
+    {"id": "f25", "t": "fill", "d": 3, "tag": "verbpair", "q": "Whether we go to the beach depends ___ the weather.", "o": ["on", "at", "to"], "why": "\"Depend\" always takes \"on\"."},
+    {"id": "f26", "t": "fill", "d": 3, "tag": "verbpair", "q": "Please lend a hand ___ the younger pupils.", "o": ["to", "for", "at"], "why": "\"Lend a hand\" takes \"to\"."},
+    {"id": "f27", "t": "fill", "d": 1, "tag": "descpair", "q": "I am interested ___ joining the choir.", "o": ["in", "to", "at"], "why": "\"Interested\" always clicks with \"in\"."},
+    {"id": "f28", "t": "fill", "d": 1, "tag": "descpair", "q": "My sister is very good ___ drawing.", "o": ["at", "in", "on"], "why": "\"Good\" takes \"at\" for a skill: good at."},
+    {"id": "f29", "t": "fill", "d": 2, "tag": "descpair", "q": "Ms Goh was proud ___ us.", "o": ["of", "at", "for"], "why": "\"Proud\" takes \"of\"."},
+    {"id": "f30", "t": "fill", "d": 2, "tag": "descpair", "q": "My little brother is afraid ___ the dark.", "o": ["of", "at", "with"], "why": "\"Afraid\" takes \"of\"."},
+    {"id": "f31", "t": "fill", "d": 2, "tag": "descpair", "q": "She covered her mouth ___ shock.", "o": ["in", "with", "by"], "why": "The fixed chunk is \"in shock\"."},
+    {"id": "f32", "t": "fill", "d": 3, "tag": "descpair", "q": "Lila stared at me ___ disbelief.", "o": ["in", "with", "on"], "why": "The fixed chunk is \"in disbelief\"."},
+    {"id": "f33", "t": "fill", "d": 3, "tag": "descpair", "q": "I lost my grip ___ the iPad, and it fell.", "o": ["on", "of", "at"], "why": "The fixed chunk is \"a grip on\"."},
+    {"id": "f34", "t": "fill", "d": 3, "tag": "descpair", "q": "___ the corner of my eye, I saw Mum.", "o": ["Out of", "In", "At"], "why": "The fixed chunk is \"out of the corner of my eye\"."},
+    {"id": "f35", "t": "fill", "d": 1, "tag": "missing", "q": "I poured a glass ___ water.", "o": ["of", "in", ""], "why": "\"A glass\" needs \"of\" before what's in it: a glass of water."},
+    {"id": "f36", "t": "fill", "d": 2, "tag": "missing", "q": "I hope you will reply ___ me soon.", "o": ["to", "", "at"], "why": "\"Reply\" can't connect to \"me\" without its piece: reply to me."},
+    {"id": "f37", "t": "fill", "d": 1, "tag": "time", "q": "School starts ___ 7.30 a.m.", "o": ["at", "on", "in"], "why": "A clock time takes \"at\"."},
+    {"id": "f38", "t": "fill", "d": 1, "tag": "time", "q": "We have swimming lessons ___ Saturday.", "o": ["on", "in", "at"], "why": "A day takes \"on\"."},
+    {"id": "f39", "t": "fill", "d": 1, "tag": "time", "q": "My birthday is ___ December.", "o": ["in", "on", "at"], "why": "A month takes \"in\"."},
+    {"id": "f40", "t": "fill", "d": 2, "tag": "time", "q": "Youth Day is ___ 1 July.", "o": ["on", "in", "at"], "why": "A date takes \"on\"."},
+    {"id": "f41", "t": "fill", "d": 2, "tag": "time", "q": "We eat our snacks ___ recess.", "o": ["at", "on", "into"], "why": "\"Recess\" is a point in the school day: at recess."},
+    {"id": "f42", "t": "fill", "d": 2, "tag": "time", "q": "Grandpa reads the newspaper ___ the morning.", "o": ["in", "on", "at"], "why": "A longer stretch like \"the morning\" takes \"in\"."},
+    {"id": "f43", "t": "fill", "d": 2, "tag": "time", "q": "We eat lunch ___ noon.", "o": ["at", "on", "in"], "why": "\"Noon\" is a clock time: at noon."},
+    {"id": "f44", "t": "fill", "d": 3, "tag": "time", "q": "I was born ___ 2015.", "o": ["in", "on", "at"], "why": "A year takes \"in\"."},
+    {"id": "f45", "t": "fill", "d": 2, "tag": "ing", "q": "I look forward to ___ from you.", "o": ["hearing", "hear", "heard"], "why": "After a piece (\"to\"), the verb takes -ing: hearing."},
+    {"id": "f46", "t": "fill", "d": 2, "tag": "ing", "q": "Are you interested in ___ up for the camp?", "o": ["signing", "sign", "signed"], "why": "After \"in\", the verb takes -ing: signing."},
+    {"id": "f47", "t": "fill", "d": 3, "tag": "ing", "q": "Thank you for ___ me with my project.", "o": ["helping", "help", "helped"], "why": "After \"for\", the verb takes -ing: helping."},
+    {"id": "f48", "t": "fill", "d": 3, "tag": "ing", "q": "My brother is good at ___ model planes.", "o": ["building", "build", "built"], "why": "After \"at\", the verb takes -ing: building."},
+    {"id": "f49", "t": "fill", "d": 3, "tag": "ing", "q": "Wash your hands before ___ your meal.", "o": ["eating", "eat", "ate"], "why": "After \"before\", the verb takes -ing: eating."},
+    {"id": "f50", "t": "fill", "d": 2, "tag": "nopiece", "q": "We discussed ___ the plan for the class party.", "o": ["", "about", "on"], "why": "\"Discuss\" connects directly: we discussed the plan."},
+    {"id": "f51", "t": "fill", "d": 2, "tag": "nopiece", "q": "The pupils entered ___ the hall quietly.", "o": ["", "into", "in"], "why": "\"Enter\" connects directly: entered the hall."},
+    {"id": "f52", "t": "fill", "d": 3, "tag": "nopiece", "q": "After the concert, we went ___ home.", "o": ["", "to", "at"], "why": "\"Home\" connects directly after \"went\": went home."},
+    {"id": "c01", "t": "check", "d": 1, "tag": "where", "q": "We waited at the bus stop.", "a": 1, "why": "One spot: at. Correct."},
+    {"id": "c02", "t": "check", "d": 1, "tag": "where", "q": "My cousin lives at Japan.", "a": 0, "why": "A country is an area you're inside: in Japan."},
+    {"id": "c03", "t": "check", "d": 1, "tag": "where", "q": "We sat on the bus and chatted.", "a": 1, "why": "Vehicles you ride take \"on\": correct."},
+    {"id": "c04", "t": "check", "d": 2, "tag": "where", "q": "The pupils are in the canteen.", "a": 1, "why": "The canteen is a space you're inside: correct."},
+    {"id": "c05", "t": "check", "d": 1, "tag": "surface", "q": "We were playing games in the balcony.", "a": 0, "why": "A balcony is a surface: on the balcony."},
+    {"id": "c06", "t": "check", "d": 2, "tag": "surface", "q": "I walked into the stage.", "a": 0, "why": "You step on top of a stage: onto the stage. Walking \"into\" it means crashing into it!"},
+    {"id": "c07", "t": "check", "d": 2, "tag": "surface", "q": "We had our picnic on the field.", "a": 1, "why": "A field is a surface: on. Correct."},
+    {"id": "c08", "t": "check", "d": 1, "tag": "going", "q": "The ball rolled into the drain.", "a": 1, "why": "It moved inside the drain: into. Correct."},
+    {"id": "c09", "t": "check", "d": 2, "tag": "going", "q": "The cat jumped into the table.", "a": 0, "why": "A table is a surface: the cat jumped onto it."},
+    {"id": "c10", "t": "check", "d": 2, "tag": "going", "q": "I looked through the window.", "a": 1, "why": "In one side and out the other: through. Correct."},
+    {"id": "c11", "t": "check", "d": 2, "tag": "going", "q": "Everyone ran out from the classroom.", "a": 0, "why": "Moving from inside to outside: out of the classroom."},
+    {"id": "c12", "t": "check", "d": 1, "tag": "verbpair", "q": "Please reply me soon.", "a": 0, "why": "\"Reply\" needs its piece: reply to me."},
+    {"id": "c13", "t": "check", "d": 1, "tag": "verbpair", "q": "I like to listen to music.", "a": 1, "why": "\"Listen\" takes \"to\": correct."},
+    {"id": "c14", "t": "check", "d": 2, "tag": "verbpair", "q": "I would like to enrol to the programme.", "a": 0, "why": "\"Enrol\" takes \"in\": enrol in the programme."},
+    {"id": "c15", "t": "check", "d": 2, "tag": "verbpair", "q": "Raj apologised to Mary for spoiling her book.", "a": 1, "why": "Apologise to a person, for a thing: correct."},
+    {"id": "c16", "t": "check", "d": 2, "tag": "verbpair", "q": "Our team took part in the competition.", "a": 1, "why": "\"Take part in\": correct."},
+    {"id": "c17", "t": "check", "d": 3, "tag": "verbpair", "q": "It all depends at the weather.", "a": 0, "why": "\"Depend\" takes \"on\": depends on the weather."},
+    {"id": "c18", "t": "check", "d": 1, "tag": "descpair", "q": "I am interested to join the choir.", "a": 0, "why": "\"Interested\" takes \"in\", and then -ing: interested in joining."},
+    {"id": "c19", "t": "check", "d": 2, "tag": "descpair", "q": "My sister is good at drawing.", "a": 1, "why": "\"Good at\" + -ing: correct."},
+    {"id": "c20", "t": "check", "d": 2, "tag": "descpair", "q": "Ms Goh was proud of us.", "a": 1, "why": "\"Proud of\": correct."},
+    {"id": "c21", "t": "check", "d": 2, "tag": "descpair", "q": "She covered her mouth with shock.", "a": 0, "why": "The fixed chunk is \"in shock\"."},
+    {"id": "c22", "t": "check", "d": 3, "tag": "descpair", "q": "I lost grip of the iPad.", "a": 0, "why": "The fixed chunk is \"a grip on\": I lost my grip on the iPad."},
+    {"id": "c23", "t": "check", "d": 3, "tag": "descpair", "q": "Lila stared at me in disbelief.", "a": 1, "why": "\"In disbelief\" is the fixed chunk: correct."},
+    {"id": "c24", "t": "check", "d": 1, "tag": "missing", "q": "I poured a glass water.", "a": 0, "why": "A piece is missing: a glass of water."},
+    {"id": "c25", "t": "check", "d": 2, "tag": "missing", "q": "Meet me at the shop downstairs our block.", "a": 0, "why": "A piece is missing: at the shop at the foot of our block."},
+    {"id": "c26", "t": "check", "d": 1, "tag": "time", "q": "The concert starts at 7 p.m.", "a": 1, "why": "A clock time takes \"at\": correct."},
+    {"id": "c27", "t": "check", "d": 1, "tag": "time", "q": "We have PE in Monday.", "a": 0, "why": "A day takes \"on\": on Monday."},
+    {"id": "c28", "t": "check", "d": 2, "tag": "time", "q": "Our holiday starts on December.", "a": 0, "why": "A month takes \"in\": in December."},
+    {"id": "c29", "t": "check", "d": 2, "tag": "time", "q": "We went to the zoo on Youth Day.", "a": 1, "why": "A named day takes \"on\": correct."},
+    {"id": "c30", "t": "check", "d": 2, "tag": "ing", "q": "I look forward to hear from you.", "a": 0, "why": "After \"to\" here, the verb takes -ing: hearing."},
+    {"id": "c31", "t": "check", "d": 3, "tag": "ing", "q": "Thank you for inviting me to your party.", "a": 1, "why": "After \"for\", -ing: correct."},
+    {"id": "c32", "t": "check", "d": 3, "tag": "ing", "q": "Are you interested in sign up?", "a": 0, "why": "After \"in\", the verb takes -ing: signing up."},
+    {"id": "c33", "t": "check", "d": 2, "tag": "nopiece", "q": "We discussed about the plan.", "a": 0, "why": "\"Discuss\" connects directly: we discussed the plan."},
+    {"id": "c34", "t": "check", "d": 2, "tag": "nopiece", "q": "We entered into the hall.", "a": 0, "why": "\"Enter\" connects directly: we entered the hall."},
+    {"id": "c35", "t": "check", "d": 3, "tag": "nopiece", "q": "I went to home after school.", "a": 0, "why": "\"Home\" connects directly: I went home."},
+    {"id": "c36", "t": "check", "d": 3, "tag": "nopiece", "q": "We discussed the plan after school.", "a": 1, "why": "\"Discuss\" with no piece: correct."},
+    {"id": "p01", "t": "pick", "d": 1, "tag": "where", "ask": "Which sentence is correct?", "o": ["We waited at the bus stop.", "We waited on the bus stop.", "We waited into the bus stop.", "We waited through the bus stop."], "why": "A bus stop is one spot: at."},
+    {"id": "p02", "t": "pick", "d": 1, "tag": "surface", "ask": "Which sentence is correct?", "o": ["We played board games on the balcony.", "We played board games in the balcony.", "We played board games into the balcony.", "We played board games onto the balcony."], "why": "A balcony is a surface: on."},
+    {"id": "p03", "t": "pick", "d": 1, "tag": "verbpair", "q": "I hope you will reply me soon.", "ask": "Pick the best fix.", "o": ["I hope you will reply to me soon.", "I hope you will reply at me soon.", "I hope you will reply for me soon.", "I hope you will reply on me soon."], "why": "\"Reply\" always takes \"to\"."},
+    {"id": "p04", "t": "pick", "d": 1, "tag": "time", "ask": "Which sentence is correct?", "o": ["My piano lesson is on Friday at 4 p.m.", "My piano lesson is in Friday at 4 p.m.", "My piano lesson is on Friday in 4 p.m.", "My piano lesson is at Friday on 4 p.m."], "why": "A day takes \"on\", a clock time takes \"at\"."},
+    {"id": "p05", "t": "pick", "d": 2, "tag": "going", "ask": "Which sentence is correct?", "o": ["The frog jumped into the pond.", "The frog jumped onto the pond.", "The frog jumped through the pond.", "The frog jumped at the pond."], "why": "The frog moved inside the water: into."},
+    {"id": "p06", "t": "pick", "d": 2, "tag": "going", "ask": "Which sentence is correct?", "o": ["I climbed onto the rock.", "I climbed into the rock.", "I climbed in the rock.", "I climbed through the rock."], "why": "A rock is a surface you get on top of: onto."},
+    {"id": "p07", "t": "pick", "d": 2, "tag": "descpair", "q": "I am interested to join the robotics club.", "ask": "Pick the best fix.", "o": ["I am interested in joining the robotics club.", "I am interested in join the robotics club.", "I am interested at joining the robotics club.", "I am interested to joining the robotics club."], "why": "\"Interested in\", then the verb takes -ing: joining."},
+    {"id": "p08", "t": "pick", "d": 2, "tag": "descpair", "ask": "Which sentence is correct?", "o": ["My brother is afraid of spiders.", "My brother is afraid at spiders.", "My brother is afraid with spiders.", "My brother is afraid on spiders."], "why": "\"Afraid\" takes \"of\"."},
+    {"id": "p09", "t": "pick", "d": 2, "tag": "verbpair", "ask": "Which sentence is correct?", "o": ["We must listen to the teacher.", "We must listen the teacher.", "We must listen at the teacher.", "We must listen on the teacher."], "why": "\"Listen\" takes \"to\"."},
+    {"id": "p10", "t": "pick", "d": 2, "tag": "missing", "q": "I drank a cup tea.", "ask": "Pick the best fix.", "o": ["I drank a cup of tea.", "I drank a cup in tea.", "I drank a cup with tea.", "I drank a cup for tea."], "why": "A piece is missing: a cup of tea."},
+    {"id": "p11", "t": "pick", "d": 2, "tag": "ing", "q": "I look forward to meet you.", "ask": "Pick the best fix.", "o": ["I look forward to meeting you.", "I look forward to met you.", "I look forward meeting you.", "I look forward for meeting you."], "why": "\"Look forward to\", then -ing: meeting."},
+    {"id": "p12", "t": "pick", "d": 2, "tag": "time", "ask": "Which sentence is correct?", "o": ["We go camping in June.", "We go camping on June.", "We go camping at June.", "We go camping into June."], "why": "A month takes \"in\"."},
+    {"id": "p13", "t": "pick", "d": 3, "tag": "nopiece", "q": "We discussed about the class trip.", "ask": "Pick the best fix.", "o": ["We discussed the class trip.", "We discussed on the class trip.", "We discussed of the class trip.", "We discussed for the class trip."], "why": "\"Discuss\" connects directly, with no piece."},
+    {"id": "p14", "t": "pick", "d": 3, "tag": "nopiece", "ask": "Which sentence is correct?", "o": ["The guests entered the ballroom.", "The guests entered into the ballroom.", "The guests entered in the ballroom.", "The guests entered to the ballroom."], "why": "\"Enter\" connects directly, with no piece."},
+    {"id": "p15", "t": "pick", "d": 3, "tag": "descpair", "ask": "Which sentence is correct?", "o": ["I lost my grip on the rope.", "I lost my grip of the rope.", "I lost grip at the rope.", "I lost my grip with the rope."], "why": "The fixed chunk is \"a grip on\"."},
+    {"id": "p16", "t": "pick", "d": 3, "tag": "verbpair", "ask": "Which sentence is correct?", "o": ["I apologised to my sister for breaking her toy.", "I apologised my sister for breaking her toy.", "I apologised to my sister of breaking her toy.", "I apologised for my sister to breaking her toy."], "why": "Apologise to a person, for a thing, and -ing after \"for\"."},
+    {"id": "p17", "t": "pick", "d": 3, "tag": "surface", "ask": "Which sentence needs fixing?", "o": ["The magician walked into the stage.", "The magician walked onto the stage.", "The magician stood on the stage.", "The magician walked off the stage."], "why": "A stage is a surface: walked onto the stage."},
+    {"id": "p18", "t": "pick", "d": 3, "tag": "time", "ask": "Which sentence needs fixing?", "o": ["We have recess on 10 a.m.", "We have recess at 10 a.m.", "Sports Day is on Friday.", "The holidays start in June."], "why": "A clock time takes \"at\": at 10 a.m."},
+    {"id": "p19", "t": "pick", "d": 3, "tag": "ing", "ask": "Which sentence needs fixing?", "o": ["Thank you for help me.", "Thank you for helping me.", "Thank you for your help.", "Thanks for the help."], "why": "After \"for\", a verb takes -ing: helping."},
+    {"id": "p20", "t": "pick", "d": 2, "tag": "where", "ask": "Which sentence is correct?", "o": ["We left our shoes at the door.", "We left our shoes into the door.", "We left our shoes through the door.", "We left our shoes onto the door."], "why": "The door is one spot: at the door."},
+    {"id": "s01", "t": "spot", "d": 1, "tag": "where", "parts": ["My family lives", "at", "Singapore", "with my grandparents."], "a": 1, "why": "A country is an area you're inside: in Singapore."},
+    {"id": "s02", "t": "spot", "d": 1, "tag": "surface", "parts": ["We hung the washing", "in", "the balcony", "to dry."], "a": 1, "why": "A balcony is a surface: on the balcony."},
+    {"id": "s03", "t": "spot", "d": 1, "tag": "going", "parts": ["The coin", "fell onto", "the drain", "and disappeared."], "a": 1, "why": "The coin went inside the drain: fell into."},
+    {"id": "s04", "t": "spot", "d": 1, "tag": "verbpair", "parts": ["Please", "reply me", "as soon as", "possible."], "a": 1, "why": "\"Reply\" needs its piece: reply to me."},
+    {"id": "s05", "t": "spot", "d": 1, "tag": "time", "parts": ["The school bus", "comes", "on", "6.45 a.m."], "a": 2, "why": "A clock time takes \"at\": at 6.45 a.m."},
+    {"id": "s06", "t": "spot", "d": 2, "tag": "descpair", "parts": ["My best friend", "is very good", "in", "singing."], "a": 2, "why": "\"Good\" takes \"at\" for a skill: good at singing."},
+    {"id": "s07", "t": "spot", "d": 2, "tag": "descpair", "parts": ["Everyone", "was proud", "at", "our team."], "a": 2, "why": "\"Proud\" takes \"of\": proud of our team."},
+    {"id": "s08", "t": "spot", "d": 2, "tag": "verbpair", "parts": ["I would like", "to enrol", "to", "the art class."], "a": 2, "why": "\"Enrol\" takes \"in\": enrol in the art class."},
+    {"id": "s09", "t": "spot", "d": 2, "tag": "missing", "parts": ["Mum bought", "a packet", "biscuits", "for the party."], "a": 2, "why": "A piece is missing: a packet of biscuits."},
+    {"id": "s10", "t": "spot", "d": 2, "tag": "going", "parts": ["We walked", "into", "the stage", "to sing."], "a": 1, "why": "A stage is a surface: onto the stage."},
+    {"id": "s11", "t": "spot", "d": 2, "tag": "time", "parts": ["My brother", "was born", "on", "2018."], "a": 2, "why": "A year takes \"in\": in 2018."},
+    {"id": "s12", "t": "spot", "d": 2, "tag": "ing", "parts": ["I am interested", "in", "join", "the swimming team."], "a": 2, "why": "After \"in\", the verb takes -ing: joining."},
+    {"id": "s13", "t": "spot", "d": 2, "tag": "nopiece", "parts": ["The teacher", "discussed", "about", "our projects."], "a": 2, "why": "\"Discuss\" connects directly: discussed our projects."},
+    {"id": "s14", "t": "spot", "d": 3, "tag": "nopiece", "parts": ["After school,", "I went", "to home", "and rested."], "a": 2, "why": "\"Home\" connects directly: went home."},
+    {"id": "s15", "t": "spot", "d": 3, "tag": "descpair", "parts": ["She stared at the gift", "with", "disbelief", "and smiled."], "a": 1, "why": "The fixed chunk is \"in disbelief\"."},
+    {"id": "s16", "t": "spot", "d": 3, "tag": "verbpair", "parts": ["The result", "depends", "in", "how hard you work."], "a": 2, "why": "\"Depend\" takes \"on\": depends on."},
+    {"id": "s17", "t": "spot", "d": 3, "tag": "ing", "parts": ["We look forward", "to", "see", "you at the party."], "a": 2, "why": "After \"look forward to\", the verb takes -ing: seeing."},
+    {"id": "s18", "t": "spot", "d": 3, "tag": "going", "parts": ["When the bell rang,", "the pupils rushed", "out from", "the classroom."], "a": 2, "why": "Moving from inside to outside: out of the classroom."},
+    {"id": "s19", "t": "spot", "d": 3, "tag": "time", "parts": ["We visit our grandparents", "in", "Sunday", "afternoons."], "a": 1, "why": "Days take \"on\": on Sunday afternoons."},
+    {"id": "s20", "t": "spot", "d": 3, "tag": "nopiece", "parts": ["The guests", "entered into", "the hall", "quietly."], "a": 1, "why": "\"Enter\" connects directly: entered the hall."},
+    {"id": "s21", "t": "spot", "d": 3, "tag": "missing", "parts": ["Please meet me", "at the shop", "downstairs", "our block."], "a": 2, "why": "A piece is missing: \"at the foot of our block\"."},
+    {"id": "s22", "t": "spot", "d": 1, "tag": "where", "parts": ["I will wait for you", "in", "the bus stop", "after school."], "a": 1, "why": "A bus stop is one spot: at the bus stop."},
+    {"id": "f53", "t": "fill", "d": 3, "tag": "missing", "q": "Mum bought a bunch ___ bananas.", "o": ["of", "in", ""], "why": "A piece is missing without \"of\": a bunch of bananas."},
+    {"id": "c37", "t": "check", "d": 3, "tag": "missing", "q": "Could you pass me a piece of paper?", "a": 1, "why": "\"A piece of paper\": nothing is missing. Correct."},
+    {"id": "s23", "t": "spot", "d": 3, "tag": "missing", "parts": ["Grandma drank", "a cup", "hot milk", "before bed."], "a": 2, "why": "A piece is missing: a cup of hot milk."},
+    {"id": "p21", "t": "pick", "d": 3, "tag": "missing", "ask": "Which sentence needs fixing?", "o": ["Please listen me carefully.", "Please listen to me carefully.", "Please listen carefully.", "Please pay attention to me."], "why": "\"Listen\" can't connect to \"me\" without its piece: listen to me."},
   ];
 
-  const container = document.getElementById('quizContainer');
-  const scoreEl = document.getElementById('scoreDisplay');
-  let score = 0, answered = [];
+  /* ================= QUIZ BANK ENGINE (shared by every lesson) =================
+     Needs, defined above it: LESSON_KEY, TAGS, BANK. Optional: QB_TEXT = { ask: {...}, yn: [...] }.
+     Each attempt draws BAND_SIZES questions (easy, medium, tricky). The draw builds many
+     candidate quizzes and keeps the best: every tag present, 3+ of each type, balanced
+     check answers, unseen questions first. Options are shuffled; ids seen are remembered. */
+  const BAND_SIZES = [7, 7, 6];
+  const DRAW = BAND_SIZES.reduce((a, b) => a + b, 0);
+  const QBT = (typeof QB_TEXT !== 'undefined') ? QB_TEXT : {};
+  const ASK = Object.assign({
+    check: 'Is this sentence correct?',
+    pick:  'Pick the correct sentence.',
+    fill:  'Which choice fills the gap correctly?',
+    spot:  'Tap the part with the mistake.'
+  }, QBT.ask || {});
+  const YN = QBT.yn || ['Needs fixing', 'Correct'];
 
-  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const store = {
+    get(k, fallback) { try { const v = localStorage.getItem(LESSON_KEY + ':' + k); return v === null ? fallback : JSON.parse(v); } catch (e) { return fallback; } },
+    set(k, v) { try { localStorage.setItem(LESSON_KEY + ':' + k, JSON.stringify(v)); } catch (e) { /* storage unavailable: quiz still works */ } }
+  };
+  const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-  function updateScore() { scoreEl.textContent = score + ' / ' + QUESTIONS.length; }
+  function buildCandidate(seen) {
+    const chosen = [], tagN = {}, typeN = {};
+    let fixN = 0, okN = 0;
+    for (let band = 1; band <= 3; band++) {
+      const picks = [];
+      for (let k = 0; k < BAND_SIZES[band - 1]; k++) {
+        let best = null, bestScore = -Infinity;
+        BANK.forEach(q => {
+          if (q.d !== band || picks.includes(q)) return;
+          let s = Math.random() * 3;
+          if (!seen.has(q.id)) s += 6;
+          if (!tagN[q.tag]) s += 12;
+          s -= (typeN[q.t] || 0) * 1.2;
+          if ((typeN[q.t] || 0) < 3) s += 2;   // nudge every type up to 3
+          if (q.t === 'check') { const lean = q.a === 0 ? fixN - okN : okN - fixN; if (lean >= 1) s -= 4; }
+          if (s > bestScore) { bestScore = s; best = q; }
+        });
+        if (!best) break;
+        picks.push(best);
+        tagN[best.tag] = (tagN[best.tag] || 0) + 1;
+        typeN[best.t] = (typeN[best.t] || 0) + 1;
+        if (best.t === 'check') { if (best.a === 0) fixN++; else okN++; }
+      }
+      chosen.push(...shuffle(picks));
+    }
+    return chosen;
+  }
+
+  function rateCandidate(c, seen) {
+    const tags = new Set(c.map(q => q.tag)).size;
+    const types = {};
+    c.forEach(q => types[q.t] = (types[q.t] || 0) + 1);
+    const used = [...new Set(BANK.map(q => q.t))];
+    const minType = Math.min(...used.map(t => types[t] || 0));
+    const checks = c.filter(q => q.t === 'check');
+    const lean = Math.abs(checks.filter(q => q.a === 0).length * 2 - checks.length);
+    return (tags === Object.keys(TAGS).length ? 10000 : tags * 500)
+         + (c.length === DRAW ? 5000 : 0)
+         + Math.min(minType, 3) * 300
+         + (lean <= 2 ? 200 : 0)
+         + c.filter(q => !seen.has(q.id)).length * 10;
+  }
+
+  function drawQuiz() {
+    let seen = new Set(store.get('seen', []));
+    if (BANK.length - seen.size < DRAW) seen = new Set(store.get('last', []));   // new cycle, but skip the last attempt
+    let chosen = null, bestRate = -1;
+    for (let tries = 0; tries < 200; tries++) {
+      const c = buildCandidate(seen), r = rateCandidate(c, seen);
+      if (r > bestRate) { bestRate = r; chosen = c; }
+    }
+    chosen.forEach(q => seen.add(q.id));
+    store.set('seen', [...seen]);
+    store.set('last', chosen.map(q => q.id));
+    return chosen.map(q => {
+      if (q.t === 'pick' || q.t === 'fill') {
+        const opts = shuffle(q.o.map((text, i) => ({ text, ok: i === 0 })));
+        return { q, opts, answer: opts.findIndex(o => o.ok) };
+      }
+      if (q.t === 'check') return { q, opts: YN.map(text => ({ text })), answer: q.a };
+      return { q, opts: null, answer: q.a };
+    });
+  }
+
+  const listEl = document.getElementById('qbList');
+  const scoreEl = document.getElementById('qbScore');
+  const progressEl = document.getElementById('qbProgress');
+  const summaryEl = document.getElementById('qbSummary');
+  let current = [], score = 0, done = 0, missed = [];
+
+  function updateScore() {
+    scoreEl.textContent = score + ' / ' + current.length;
+    progressEl.textContent = done + ' of ' + current.length + ' answered';
+  }
+
+  /* Small or empty options are hard to see on a button, so label them. */
+  function optLabel(text) {
+    const t = text.trim();
+    if (t === '') return '<span class="qb-note">(nothing)</span>';
+    if (t === ',') return '<span class="qb-punct">,</span> <span class="qb-note">(a comma)</span>';
+    if (t === '.') return '<span class="qb-punct">.</span> <span class="qb-note">(a full stop)</span>';
+    return esc(text);
+  }
+  function plainLabel(text) {
+    const t = text.trim();
+    return t === '' ? 'nothing' : t === ',' ? 'a comma' : t === '.' ? 'a full stop' : '"' + t + '"';
+  }
+  function sentenceWithGap(q, text) {
+    let filler = '<span class="qb-blank">___</span>';
+    if (text !== undefined) {
+      filler = text.trim() === ''
+        ? '<span class="qb-blank qb-filled qb-none">(nothing)</span>'
+        : '<span class="qb-blank qb-filled">' + esc(text) + '</span>';
+    }
+    return esc(q.q).replace('___', filler);
+  }
 
   function render() {
-    container.innerHTML = '';
-    answered = QUESTIONS.map(() => false);
-    QUESTIONS.forEach((q, i) => {
+    listEl.innerHTML = '';
+    summaryEl.hidden = true;
+    current.forEach((item, i) => {
+      const q = item.q;
       const card = document.createElement('div');
-      card.className = 'quiz-card';
-      const hasBlank = q.text.includes('___');
-      const short = q.options.every(o => o.length <= 14);
+      card.className = 'qb-card';
+      card.dataset.type = q.t;
+      let body;
+      if (q.t === 'spot') {
+        body = '<div class="qb-spot">' + q.parts.map((p, k) =>
+          '<button type="button" class="qb-part" data-k="' + k + '">' + esc(p) + '</button>').join('') + '</div>';
+      } else if (q.t === 'fill') {
+        const cols = item.opts.length;
+        body = '<p class="qb-text">' + sentenceWithGap(q) + '</p><div class="qb-opts qb-row" style="--qb-cols:' + cols + '"></div>';
+      } else if (q.t === 'check') {
+        body = '<p class="qb-text">' + esc(q.q) + '</p><div class="qb-opts qb-row"></div>';
+      } else {
+        body = (q.q ? '<p class="qb-text">' + esc(q.q) + '</p>' : '') + '<div class="qb-opts"></div>';
+      }
       card.innerHTML =
-        '<p class="quiz-num">Question ' + (i + 1) + ' of ' + QUESTIONS.length + '</p>' +
-        (q.ask ? '<p class="quiz-ask">' + esc(q.ask) + '</p>' : '') +
-        '<p class="quiz-text">' + esc(q.text).replace('___', '<span class="blank">___</span>') + '</p>' +
-        '<div class="opts' + (short ? ' row' : '') + '"></div>' +
-        '<div class="feedback" role="status"></div>';
-      const opts = card.querySelector('.opts');
-      q.options.forEach((o, j) => {
-        const b = document.createElement('button');
-        b.type = 'button';
-        b.className = 'opt';
-        b.innerHTML = (short ? '' : '<span class="tag">' + String.fromCharCode(65 + j) + '</span>') + esc(o);
-        b.addEventListener('click', () => answer(i, j, card, hasBlank, short));
-        opts.appendChild(b);
-      });
-      container.appendChild(card);
+        '<p class="qb-num">Question ' + (i + 1) + ' of ' + current.length + '</p>' +
+        '<p class="qb-ask">' + esc(q.ask || ASK[q.t]) + '</p>' + body +
+        '<div class="qb-feedback" role="status"></div>';
+      if (q.t === 'spot') {
+        card.querySelectorAll('.qb-part').forEach(b => b.addEventListener('click', () => answer(i, +b.dataset.k, card)));
+      } else {
+        const opts = card.querySelector('.qb-opts');
+        item.opts.forEach((o, j) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'qb-opt';
+          b.innerHTML = (q.t === 'pick' ? '<span class="qb-letter">' + String.fromCharCode(65 + j) + '</span>' : '') + optLabel(o.text);
+          b.addEventListener('click', () => answer(i, j, card));
+          opts.appendChild(b);
+        });
+      }
+      listEl.appendChild(card);
     });
     updateScore();
   }
 
-  function answer(i, j, card, hasBlank, short) {
-    if (answered[i]) return;
-    answered[i] = true;
-    const q = QUESTIONS[i], ok = j === q.answer;
-    if (ok) score++;
-    updateScore();
-    if (hasBlank && short) {
-      const blank = card.querySelector('.blank');
-      blank.textContent = q.options[j];
-      blank.classList.add('filled');
-    }
-    card.querySelectorAll('.opt').forEach((b, k) => {
+  function answer(i, j, card) {
+    const item = current[i];
+    if (item.done) return;
+    item.done = true; done++;
+    const q = item.q, ok = j === item.answer;
+    if (ok) score++; else missed.push(q.tag);
+    card.querySelectorAll(q.t === 'spot' ? '.qb-part' : '.qb-opt').forEach((b, k) => {
       b.disabled = true;
-      if (k === j) b.classList.add(ok ? 'correct' : 'incorrect');
-      else if (k === q.answer && !ok) b.classList.add('reveal');
+      if (k === j) b.classList.add(ok ? 'qb-correct' : 'qb-incorrect');
+      else if (k === item.answer && !ok) b.classList.add('qb-reveal');
     });
-    const fb = card.querySelector('.feedback');
-    fb.classList.add('show', ok ? 'fb-ok' : 'fb-no');
-    fb.innerHTML = '<span class="verdict">' +
-      (ok ? 'Correct!' : 'Not quite. The answer is ' + (short ? '"' + esc(q.options[q.answer]) + '"' : String.fromCharCode(65 + q.answer)) + '.') +
-      '</span>' + esc(q.why);
+    if (q.t === 'fill') card.querySelector('.qb-text').innerHTML = sentenceWithGap(q, item.opts[j].text);
+    let right;
+    if (q.t === 'spot') right = 'The mistake is in "' + esc(q.parts[item.answer]) + '".';
+    else if (q.t === 'pick') right = 'The answer is ' + String.fromCharCode(65 + item.answer) + '.';
+    else right = 'The answer is ' + esc(plainLabel(item.opts[item.answer].text)) + '.';
+    const fb = card.querySelector('.qb-feedback');
+    fb.classList.add('qb-show', ok ? 'qb-fb-ok' : 'qb-fb-no');
+    fb.innerHTML = '<span class="qb-verdict">' + (ok ? 'Correct!' : 'Not quite. ' + right) + '</span>' + esc(q.why);
+    updateScore();
+    if (done === current.length) showSummary();
   }
 
-  document.getElementById('resetBtn').addEventListener('click', () => {
-    score = 0;
-    render();
-    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
+  function showSummary() {
+    const best = Math.max(store.get('best', 0), score);
+    store.set('best', best);
+    const attempts = store.get('attempts', 0) + 1;
+    store.set('attempts', attempts);
+    const counts = {};
+    missed.forEach(t => counts[t] = (counts[t] || 0) + 1);
+    const areas = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+    const n = current.length;
+    let msg;
+    if (score === n) msg = 'A perfect run! Try another set to make sure it sticks.';
+    else if (score >= Math.ceil(n * 0.8)) msg = 'Strong work. Have a quick look at the areas below, then try a fresh set.';
+    else if (score >= Math.ceil(n * 0.6)) msg = 'Good progress. Re-read the parts below before your next attempt.';
+    else msg = 'Worth another look at the lesson. Start with the areas below, then try a fresh set.';
+    summaryEl.innerHTML =
+      '<h3>You scored ' + score + ' / ' + n + '</h3><p>' + msg + '</p>' +
+      (areas.length ? '<p class="qb-sum-label">Areas to review</p><ul class="qb-areas">' + areas.map(t =>
+        '<li><a href="' + TAGS[t].href + '">' + esc(TAGS[t].label) + '</a><span>' + counts[t] + ' wrong</span></li>').join('') + '</ul>' : '') +
+      '<p class="qb-meta">Attempts on this device: ' + attempts + ' · Best score: ' + best + ' / ' + n + '</p>' +
+      '<button type="button" class="qb-go" id="qbAgain">Try ' + n + ' new questions</button>';
+    summaryEl.hidden = false;
+    document.getElementById('qbAgain').addEventListener('click', () => { newQuiz(); listEl.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    summaryEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 
-  render();
+  function newQuiz() {
+    current = drawQuiz(); score = 0; done = 0; missed = [];
+    render();
+  }
+
+  const bankEl = document.getElementById('qbBank'), drawEl = document.getElementById('qbDraw');
+  if (bankEl) bankEl.textContent = BANK.length;
+  if (drawEl) drawEl.textContent = DRAW;
+  document.getElementById('qbNew').addEventListener('click', () => {
+    newQuiz();
+    listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  newQuiz();
 })();
 </script>
 </body>

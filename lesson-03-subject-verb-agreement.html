@@ -216,6 +216,103 @@
     background: var(--verb-soft); font-family: var(--font-display); font-size: 21px; line-height: 1.3; color: var(--ink);
   }
   footer { text-align: center; font-size: 12.5px; color: var(--ink-soft); margin-top: 36px; }
+
+  /* ================= QUIZ BANK ENGINE (shared by every lesson; qb- prefix avoids clashes) ================= */
+  .qb { --qb-cols: 2; }
+  .qb-bar {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 3;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 10px 16px; margin: 0 0 18px; border-radius: var(--qb-radius);
+    background: var(--qb-bar); color: var(--qb-bar-ink);
+  }
+  .qb-label { font-size: 12.5px; opacity: 0.8; }
+  .qb-score { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 28px; line-height: 1.05; }
+  .qb-progress { font-size: 12.5px; opacity: 0.85; margin-top: 2px; }
+  .qb-new {
+    font: inherit; font-weight: 700; font-size: 14px; padding: 10px 16px; min-height: 44px;
+    border-radius: 999px; border: 2px solid currentColor; background: transparent; color: inherit; cursor: pointer;
+  }
+  .qb-list, .qb-summary { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 96px); }
+  .qb-card {
+    background: var(--qb-card); border: var(--qb-card-border); box-shadow: var(--qb-card-shadow);
+    border-radius: var(--qb-radius); padding: 16px 16px 14px; margin: 0 0 14px; color: var(--qb-ink);
+  }
+  .qb-num { font-size: 12.5px; color: var(--qb-soft); margin: 0 0 4px; }
+  .qb-ask { font-size: 13.5px; font-weight: 700; color: var(--qb-accent); margin: 0 0 6px; }
+  .qb-text { font-size: 16.5px; line-height: 1.6; margin: 0 0 14px; }
+  .qb-blank {
+    display: inline-block; min-width: 60px; padding: 0 3px; text-align: center;
+    border-bottom: 2.5px dashed var(--qb-soft); color: var(--qb-soft);
+  }
+  .qb-blank.qb-filled { border-bottom-style: solid; border-bottom-color: var(--qb-accent); color: var(--qb-accent); font-weight: 700; }
+  .qb-blank.qb-none { font-style: italic; font-weight: 400; }
+  .qb-opts { display: flex; flex-direction: column; gap: 9px; }
+  .qb-opts.qb-row { display: grid; grid-template-columns: repeat(var(--qb-cols), minmax(0, 1fr)); }
+  .qb-opt {
+    font: inherit; font-size: 15.5px; line-height: 1.45; text-align: left; color: var(--qb-ink);
+    padding: 11px 14px; min-height: 46px; border-radius: var(--qb-radius-opt);
+    border: 2px solid var(--qb-rule); background: var(--qb-page); cursor: pointer;
+  }
+  .qb-row .qb-opt { text-align: center; font-weight: 600; padding-left: 6px; padding-right: 6px; }
+  .qb-opt:not(:disabled):hover { border-color: var(--qb-accent); }
+  .qb-opt:disabled, .qb-part:disabled { cursor: default; }
+  .qb-letter { font-family: var(--qb-font); font-weight: var(--qb-font-weight); margin-right: 10px; color: var(--qb-accent); }
+  .qb-note { font-size: 12.5px; font-weight: 400; color: var(--qb-soft); }
+  .qb-punct { font-size: 22px; line-height: 0; font-weight: 700; }
+  .qb-spot { display: flex; flex-wrap: wrap; gap: 8px 6px; margin: 0 0 4px; }
+  .qb-part {
+    font: inherit; font-size: 16px; line-height: 1.35; text-align: left; color: var(--qb-ink); cursor: pointer;
+    background: var(--qb-accent-soft); border: none; border-bottom: 3px dashed var(--qb-accent);
+    border-radius: 4px 4px 0 0; padding: 7px 9px; min-height: 40px;
+  }
+  .qb-opt.qb-correct, .qb-opt.qb-reveal { background: var(--qb-right-soft); border-color: var(--qb-right); }
+  .qb-opt.qb-incorrect { background: var(--qb-wrong-soft); border-color: var(--qb-wrong); }
+  .qb-part.qb-correct, .qb-part.qb-reveal { background: var(--qb-right-soft); border-bottom: 3px solid var(--qb-right); }
+  .qb-part.qb-incorrect { background: var(--qb-wrong-soft); border-bottom: 3px solid var(--qb-wrong); }
+  .qb-feedback { display: none; margin-top: 12px; padding-top: 12px; border-top: 2px dashed var(--qb-rule); font-size: 14px; line-height: 1.55; }
+  .qb-feedback.qb-show { display: block; }
+  .qb-verdict { display: block; font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 18px; margin-bottom: 2px; }
+  .qb-fb-ok .qb-verdict { color: var(--qb-right); }
+  .qb-fb-no .qb-verdict { color: var(--qb-wrong); }
+  .qb-summary {
+    background: var(--qb-card); color: var(--qb-ink); border: 3px solid var(--qb-accent);
+    border-radius: var(--qb-radius); padding: 18px 20px; margin-top: 8px;
+  }
+  .qb-summary h3 { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 30px; line-height: 1.1; margin: 0 0 6px; color: var(--qb-accent); }
+  .qb-summary p { margin: 0 0 10px; line-height: 1.55; }
+  .qb-sum-label { font-weight: 700; margin-top: 14px !important; }
+  .qb-areas { list-style: none; margin: 0 0 12px; padding: 0; }
+  .qb-areas li { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--qb-rule); }
+  .qb-areas a { color: var(--qb-ink); font-weight: 600; }
+  .qb-areas span { color: var(--qb-wrong); font-weight: 700; white-space: nowrap; }
+  .qb-meta { font-size: 13px; color: var(--qb-soft); }
+  .qb-go {
+    font: inherit; font-weight: 700; font-size: 16px; width: 100%; min-height: 50px; margin-top: 4px; cursor: pointer;
+    border: none; border-radius: var(--qb-radius); background: var(--qb-accent); color: var(--qb-on-accent);
+  }
+
+  :root {
+    --qb-page: var(--bg);
+    --qb-card: var(--surface);
+    --qb-ink: var(--ink);
+    --qb-soft: var(--ink-soft);
+    --qb-accent: var(--verb);
+    --qb-accent-soft: var(--verb-soft);
+    --qb-on-accent: var(--surface);
+    --qb-right: var(--right);
+    --qb-right-soft: var(--right-soft);
+    --qb-wrong: var(--wrong);
+    --qb-wrong-soft: var(--wrong-soft);
+    --qb-rule: var(--rule);
+    --qb-bar: var(--ink);
+    --qb-bar-ink: var(--bg);
+    --qb-font: var(--font-display);
+    --qb-font-weight: 400;
+    --qb-radius: 18px;
+    --qb-radius-opt: 999px;
+    --qb-card-border: none;
+    --qb-card-shadow: none;
+  }
 </style>
 </head>
 <body>
@@ -257,7 +354,7 @@
   </header>
 
   <!-- 2. THE RULE -->
-  <section>
+  <section id="rule">
     <h2>The three-step balance check</h2>
     <p class="sub">Use this every time you're choosing between is/are, has/have, was/were, or a verb with or without -s.</p>
     <ol class="steps">
@@ -287,7 +384,7 @@
   </section>
 
   <!-- 3. TRAPS -->
-  <section>
+  <section id="traps">
     <h2>Three traps that tip the seesaw</h2>
     <p class="sub">These are the mistakes that show up again and again in grammar papers and compositions.</p>
 
@@ -315,7 +412,7 @@
   </section>
 
   <!-- 4. CATEGORIES -->
-  <section>
+  <section id="cases">
     <h2>Who's on the seesaw?</h2>
     <p class="sub">Some subjects are made of more than one word. Here's how to count them.</p>
     <div class="cats">
@@ -353,7 +450,7 @@
   </section>
 
   <!-- 5. SPECIAL CASES -->
-  <section>
+  <section id="specials">
     <h2>Four tricky riders</h2>
     <p class="sub">The quiz includes these less obvious patterns. Each one still follows the three-step check once you know who the real rider is.</p>
     <div class="specials">
@@ -387,12 +484,15 @@
   <!-- 6. PRACTICE -->
   <section>
     <h2>Balance the seesaw</h2>
-    <p class="sub">Tap the verb that keeps each sentence level. You'll see straight away if you're right, and why. The questions get trickier as you go.</p>
-    <div class="scoreboard">
-      <div><div class="label">Your score</div><div class="score" id="scoreDisplay">0 / 30</div></div>
-      <button class="reset-btn" id="resetBtn" type="button">Start over</button>
+    <p class="sub">Each attempt draws <span id="qbDraw">20</span> questions from a bank of <span id="qbBank">120</span>, so every try is different. You'll fill blanks, check sentences, pick the right version and spot the wrong verb, and the questions get trickier as you go. Finish them all to see which areas to review.</p>
+    <div class="qb" id="qb">
+      <div class="qb-bar">
+        <div><div class="qb-label">Your score</div><div class="qb-score" id="qbScore">0 / 20</div><div class="qb-progress" id="qbProgress">0 of 20 answered</div></div>
+        <button class="qb-new" id="qbNew" type="button">New quiz</button>
+      </div>
+      <div class="qb-list" id="qbList"></div>
+      <div class="qb-summary" id="qbSummary" hidden></div>
     </div>
-    <div id="quizContainer"></div>
   </section>
 
   <!-- 7. PIN THIS UP -->
@@ -436,106 +536,371 @@
     msg.innerHTML = (ok ? '<b class="lv">Level.</b> ' : '<b class="tp">Tipped over!</b> ') + c.dataset.msg;
   }));
 
-  /* ---------- Quiz ---------- */
-  const QUESTIONS = [
-    { text: "My brother ___ to school every morning.", options: ["walks", "walk"], answer: 0, why: "One brother is one rider, so the verb takes the -s: walks." },
-    { text: "The pupils in my class ___ excited about Sports Day.", options: ["is", "are"], answer: 1, why: "The rider is \"pupils\", more than one, so the crowd verb: are." },
-    { text: "My grandparents ___ in a flat near our school.", options: ["lives", "live"], answer: 1, why: "Grandparents are more than one, so the verb drops its -s: live." },
-    { text: "The durians at the market ___ very expensive this week.", options: ["is", "are"], answer: 1, why: "Cover \"at the market\". The rider is \"durians\", more than one, so: are." },
-    { text: "Wei Ling and her brother ___ to school together.", options: ["walks", "walk"], answer: 1, why: "\"And\" adds riders together. Two people make a crowd, so: walk." },
-    { text: "The school choir ___ a concert every November.", options: ["holds", "hold"], answer: 0, why: "The choir acts together as one group, so it takes the one-rider verb: holds." },
-    { text: "My pencil case and my water bottle ___ in my bag.", options: ["is", "are"], answer: 1, why: "Two things joined by \"and\" make a crowd, so: are." },
-    { text: "Everyone in Primary 5 ___ a library card.", options: ["has", "have"], answer: 0, why: "\"Everyone\" looks at people one at a time, so it takes the one-rider verb: has." },
-    { text: "There ___ three new pupils in our class this term.", options: ["is", "are"], answer: 1, why: "Look after the verb: the rider is \"three new pupils\", a crowd, so: are." },
-    { text: "My cat ___ on my bed every afternoon.", options: ["sleeps", "sleep"], answer: 0, why: "One cat is one rider, so the verb takes the -s: sleeps." },
-
-    { text: "The box of crayons ___ on the teacher's desk.", options: ["is", "are"], answer: 0, why: "Cover \"of crayons\". The rider is one box, so: is." },
-    { text: "Each of the pupils ___ a name tag.", options: ["has", "have"], answer: 0, why: "The rider is \"each\", which means one at a time, so: has." },
-    { text: "The committee ___ decided to cancel the carnival.", options: ["has", "have"], answer: 0, why: "The committee made one decision as a group, so it takes the one-rider verb: has." },
-    { text: "The leaves on the big tree ___ turning brown.", options: ["is", "are"], answer: 1, why: "Don't match \"tree\". Cover \"on the big tree\" and the rider is \"leaves\", a crowd, so: are." },
-    { text: "Neither Arjun nor Nurul ___ late for school.", options: ["is", "are"], answer: 0, why: "With \"neither… nor\", match the nearer subject. Nurul is one person, so: is." },
-    { text: "Either Marcus or his sisters ___ bringing the cake.", options: ["is", "are"], answer: 1, why: "Match the nearer subject. \"His sisters\" are more than one, so: are." },
-    { text: "One of my friends ___ in Tampines.", options: ["lives", "live"], answer: 0, why: "The rider is \"one\", not \"friends\", so the verb takes the -s: lives." },
-    { text: "Our class ___ going on an excursion to the zoo.", options: ["is", "are"], answer: 0, why: "The class is going together as one unit, so: is." },
-    { text: "Every boy and girl ___ a medal at the end of the race.", options: ["gets", "get"], answer: 0, why: "\"Every\" looks at each child one at a time, even with two nouns, so: gets." },
-    { text: "Mum and Dad ___ coming to watch my concert.", options: ["is", "are"], answer: 1, why: "\"And\" joins two people into a crowd, so: are." },
-
-    { text: "Mr Tan, as well as his pupils, ___ going to the assembly.", options: ["is", "are"], answer: 0, why: "\"As well as his pupils\" is extra. Cover it, and the rider is Mr Tan alone, so: is." },
-    { text: "The children, along with their teacher, ___ waiting at the bus stop.", options: ["is", "are"], answer: 1, why: "Cover \"along with their teacher\". The rider is \"the children\", a crowd, so: are." },
-    { text: "My new spectacles ___ on the table.", options: ["is", "are"], answer: 1, why: "\"Spectacles\" on its own is always plural, because it has two matching parts, so: are." },
-    { text: "A pair of scissors ___ in the art cupboard.", options: ["is", "are"], answer: 0, why: "With \"a pair of\", the rider is the pair, and one pair takes: is." },
-    { text: "The number of pupils in the CCA ___ growing every year.", options: ["is", "are"], answer: 0, why: "\"The number of\" is one figure, a count, so it takes the one-rider verb: is." },
-    { text: "A number of parents ___ volunteering at the school carnival.", options: ["is", "are"], answer: 1, why: "\"A number of\" means several, a crowd, so it takes the crowd verb: are." },
-    { text: "Ten dollars ___ enough to buy lunch for the whole week.", options: ["is", "are"], answer: 0, why: "Ten dollars is one total amount of money, so it's one rider: is." },
-    { text: "Two weeks ___ a long time to wait for the results.", options: ["is", "are"], answer: 0, why: "Two weeks is one stretch of time here, so it's one rider: is." },
-    { text: "Here ___ the library books you lent me.", options: ["is", "are"], answer: 1, why: "Like \"there\", look after the verb. The rider is \"the library books\", a crowd, so: are." },
-    { text: "Neither the teacher nor the pupils ___ heard the fire alarm.", options: ["has", "have"], answer: 1, why: "Match the nearer subject. \"The pupils\" are more than one, so: have." }
+    /* ================= QUIZ: question bank (123 questions) ================= */
+  const LESSON_KEY = "shelf-l03";
+  const QB_TEXT = {"ask": {"check": "Does the verb match the subject?", "fill": "Which verb keeps the seesaw level?", "spot": "Tap the part with the wrong verb."}, "yn": ["Needs fixing", "Correct"]};
+  const TAGS = {
+    basic: { label: "One rider or a crowd: matching the verb", href: '#rule' },
+    nearest: { label: "Trap: matching the nearest noun", href: '#traps' },
+    each: { label: "Each, every, everyone, one of", href: '#traps' },
+    there: { label: "\"There is / are\" and \"Here is / are\"", href: '#traps' },
+    and: { label: "Two subjects joined by \"and\"", href: '#cases' },
+    nor: { label: "Either… or, neither… nor", href: '#cases' },
+    group: { label: "Groups acting as one", href: '#cases' },
+    aswell: { label: "\"As well as\" and \"along with\"", href: '#specials' },
+    pairs: { label: "Scissors, spectacles and \"a pair of\"", href: '#specials' },
+    number: { label: "\"The number of\" vs \"a number of\"", href: '#specials' },
+    amount: { label: "Amounts of money and time", href: '#specials' },
+  };
+  const BANK = [
+    {"id": "f01", "t": "fill", "d": 1, "tag": "basic", "q": "My brother ___ to school every morning.", "o": ["walks", "walk"], "why": "One brother is one rider, so the verb takes the -s: walks."},
+    {"id": "f02", "t": "fill", "d": 1, "tag": "basic", "q": "The pupils in my class ___ excited about Sports Day.", "o": ["are", "is"], "why": "The rider is \"pupils\", more than one: are."},
+    {"id": "f03", "t": "fill", "d": 1, "tag": "basic", "q": "My grandparents ___ in a flat near our school.", "o": ["live", "lives"], "why": "Grandparents are more than one, so the verb drops its -s: live."},
+    {"id": "f04", "t": "fill", "d": 1, "tag": "basic", "q": "My cat ___ on my bed every afternoon.", "o": ["sleeps", "sleep"], "why": "One cat, one rider: sleeps."},
+    {"id": "f05", "t": "fill", "d": 1, "tag": "basic", "q": "The canteen stalls ___ at 7 a.m.", "o": ["open", "opens"], "why": "The stalls are more than one: open."},
+    {"id": "f06", "t": "fill", "d": 1, "tag": "basic", "q": "Our form teacher ___ a new laptop.", "o": ["has", "have"], "why": "One teacher: has."},
+    {"id": "f07", "t": "fill", "d": 1, "tag": "basic", "q": "The birds in the garden ___ every morning.", "o": ["sing", "sings"], "why": "Cover \"in the garden\". The rider is \"birds\", a crowd: sing."},
+    {"id": "f08", "t": "fill", "d": 1, "tag": "and", "q": "Wei Ling and her brother ___ to school together.", "o": ["walk", "walks"], "why": "\"And\" adds riders together, so it's a crowd: walk."},
+    {"id": "f09", "t": "fill", "d": 1, "tag": "and", "q": "My pencil case and my water bottle ___ in my bag.", "o": ["are", "is"], "why": "Two things joined by \"and\": are."},
+    {"id": "f10", "t": "fill", "d": 2, "tag": "and", "q": "Mum and Dad ___ coming to watch my concert.", "o": ["are", "is"], "why": "\"And\" joins two people into a crowd: are."},
+    {"id": "f11", "t": "fill", "d": 2, "tag": "and", "q": "Arjun and Nurul ___ the best singers in our class.", "o": ["are", "is"], "why": "Two people joined by \"and\": are."},
+    {"id": "f12", "t": "fill", "d": 1, "tag": "each", "q": "Everyone in Primary 5 ___ a library card.", "o": ["has", "have"], "why": "\"Everyone\" looks at people one at a time: has."},
+    {"id": "f13", "t": "fill", "d": 2, "tag": "each", "q": "Each of the pupils ___ a name tag.", "o": ["has", "have"], "why": "The rider is \"each\", one at a time: has."},
+    {"id": "f14", "t": "fill", "d": 2, "tag": "each", "q": "One of my friends ___ in Tampines.", "o": ["lives", "live"], "why": "The rider is \"one\", not \"friends\": lives."},
+    {"id": "f15", "t": "fill", "d": 2, "tag": "each", "q": "Every boy and girl ___ a medal at the end of the race.", "o": ["gets", "get"], "why": "\"Every\" looks at each child one at a time, even with two nouns: gets."},
+    {"id": "f16", "t": "fill", "d": 2, "tag": "each", "q": "Nobody ___ a soggy sandwich.", "o": ["likes", "like"], "why": "\"Nobody\" is one rider: likes."},
+    {"id": "f17", "t": "fill", "d": 2, "tag": "each", "q": "One of the lights in the hall ___ broken.", "o": ["is", "are"], "why": "The rider is \"one\": is."},
+    {"id": "f18", "t": "fill", "d": 1, "tag": "there", "q": "There ___ three new pupils in our class this term.", "o": ["are", "is"], "why": "Look after the verb: \"three new pupils\" is a crowd: are."},
+    {"id": "f19", "t": "fill", "d": 2, "tag": "there", "q": "There ___ a long queue at the bookshop today.", "o": ["is", "are"], "why": "Look after the verb: \"a long queue\" is one: is."},
+    {"id": "f20", "t": "fill", "d": 2, "tag": "there", "q": "Here ___ the library books you lent me.", "o": ["are", "is"], "why": "Like \"there\", look after the verb: \"the library books\" is a crowd: are."},
+    {"id": "f21", "t": "fill", "d": 2, "tag": "there", "q": "There ___ some sandwiches left in the fridge.", "o": ["are", "is"], "why": "\"Some sandwiches\" is more than one: are."},
+    {"id": "f22", "t": "fill", "d": 2, "tag": "there", "q": "Here ___ your water bottle.", "o": ["is", "are"], "why": "\"Your water bottle\" is one: is."},
+    {"id": "f23", "t": "fill", "d": 1, "tag": "nearest", "q": "The box of crayons ___ on the teacher's desk.", "o": ["is", "are"], "why": "Cover \"of crayons\". The rider is one box: is."},
+    {"id": "f24", "t": "fill", "d": 2, "tag": "nearest", "q": "The leaves on the big tree ___ turning brown.", "o": ["are", "is"], "why": "Cover \"on the big tree\". The rider is \"leaves\": are."},
+    {"id": "f25", "t": "fill", "d": 2, "tag": "nearest", "q": "The bag of oranges ___ heavy.", "o": ["is", "are"], "why": "Cover \"of oranges\". One bag: is."},
+    {"id": "f26", "t": "fill", "d": 2, "tag": "nearest", "q": "The keys to the classroom ___ missing.", "o": ["are", "is"], "why": "Cover \"to the classroom\". The keys are more than one: are."},
+    {"id": "f27", "t": "fill", "d": 3, "tag": "nearest", "q": "The colour of the curtains ___ too bright.", "o": ["is", "are"], "why": "Cover \"of the curtains\". The rider is \"colour\", one: is."},
+    {"id": "f28", "t": "fill", "d": 2, "tag": "nor", "q": "Neither Arjun nor Nurul ___ late for school.", "o": ["is", "are"], "why": "Match the nearer subject. Nurul is one person: is."},
+    {"id": "f29", "t": "fill", "d": 2, "tag": "nor", "q": "Either Marcus or his sisters ___ bringing the cake.", "o": ["are", "is"], "why": "Match the nearer subject: \"his sisters\" are more than one: are."},
+    {"id": "f30", "t": "fill", "d": 3, "tag": "nor", "q": "Neither the teacher nor the pupils ___ heard the fire alarm.", "o": ["have", "has"], "why": "Match the nearer subject: \"the pupils\" are a crowd: have."},
+    {"id": "f31", "t": "fill", "d": 3, "tag": "nor", "q": "Neither the twins nor their mother ___ the way.", "o": ["knows", "know"], "why": "Match the nearer subject: \"their mother\" is one: knows."},
+    {"id": "f32", "t": "fill", "d": 2, "tag": "group", "q": "Our class ___ going on an excursion to the zoo.", "o": ["is", "are"], "why": "The class is going together as one unit: is."},
+    {"id": "f33", "t": "fill", "d": 2, "tag": "group", "q": "The school choir ___ a concert every November.", "o": ["holds", "hold"], "why": "The choir acts together as one group: holds."},
+    {"id": "f34", "t": "fill", "d": 3, "tag": "group", "q": "The committee ___ decided to cancel the carnival.", "o": ["has", "have"], "why": "The committee made one decision as a group: has."},
+    {"id": "f35", "t": "fill", "d": 3, "tag": "aswell", "q": "Mr Tan, as well as his pupils, ___ going to the assembly.", "o": ["is", "are"], "why": "Cover \"as well as his pupils\". The rider is Mr Tan alone: is."},
+    {"id": "f36", "t": "fill", "d": 3, "tag": "aswell", "q": "The children, along with their teacher, ___ waiting at the bus stop.", "o": ["are", "is"], "why": "Cover \"along with their teacher\". The rider is \"the children\": are."},
+    {"id": "f37", "t": "fill", "d": 3, "tag": "aswell", "q": "My sister, together with her friends, ___ baking cookies.", "o": ["is", "are"], "why": "Cover \"together with her friends\". The rider is \"my sister\": is."},
+    {"id": "f38", "t": "fill", "d": 3, "tag": "pairs", "q": "My new spectacles ___ on the table.", "o": ["are", "is"], "why": "\"Spectacles\" on its own is always plural: are."},
+    {"id": "f39", "t": "fill", "d": 3, "tag": "pairs", "q": "A pair of scissors ___ in the art cupboard.", "o": ["is", "are"], "why": "With \"a pair of\", the rider is the pair: one pair: is."},
+    {"id": "f40", "t": "fill", "d": 3, "tag": "pairs", "q": "My school trousers ___ too short now.", "o": ["are", "is"], "why": "\"Trousers\" on its own is always plural: are."},
+    {"id": "f41", "t": "fill", "d": 3, "tag": "number", "q": "The number of pupils in the CCA ___ growing every year.", "o": ["is", "are"], "why": "\"The number of\" is one figure, a count: is."},
+    {"id": "f42", "t": "fill", "d": 3, "tag": "number", "q": "A number of parents ___ volunteering at the school carnival.", "o": ["are", "is"], "why": "\"A number of\" means several, a crowd: are."},
+    {"id": "f43", "t": "fill", "d": 3, "tag": "amount", "q": "Ten dollars ___ enough to buy lunch for the whole week.", "o": ["is", "are"], "why": "Ten dollars is one total amount of money: is."},
+    {"id": "f44", "t": "fill", "d": 3, "tag": "amount", "q": "Two weeks ___ a long time to wait for the results.", "o": ["is", "are"], "why": "Two weeks is one stretch of time here: is."},
+    {"id": "c01", "t": "check", "d": 1, "tag": "basic", "q": "My brother walk to school every day.", "a": 0, "why": "One brother is one rider, so the verb needs its -s: walks."},
+    {"id": "c02", "t": "check", "d": 1, "tag": "basic", "q": "The dogs runs in the park.", "a": 0, "why": "\"Dogs\" is a crowd, so the verb drops its -s: run."},
+    {"id": "c03", "t": "check", "d": 1, "tag": "basic", "q": "The dog runs in the park.", "a": 1, "why": "One dog, one-rider verb: correct."},
+    {"id": "c04", "t": "check", "d": 1, "tag": "basic", "q": "My parents work in the city.", "a": 1, "why": "Parents are a crowd, so \"work\" is right."},
+    {"id": "c05", "t": "check", "d": 1, "tag": "basic", "q": "The bus are late again.", "a": 0, "why": "One bus: is."},
+    {"id": "c06", "t": "check", "d": 1, "tag": "and", "q": "Wei Ling and Priya is my best friends.", "a": 0, "why": "\"And\" joins two people into a crowd: are."},
+    {"id": "c07", "t": "check", "d": 1, "tag": "and", "q": "Mum and Dad are in the kitchen.", "a": 1, "why": "Two people joined by \"and\": are. Correct."},
+    {"id": "c08", "t": "check", "d": 1, "tag": "each", "q": "Everyone in my class have a laptop.", "a": 0, "why": "\"Everyone\" takes the one-rider verb: has."},
+    {"id": "c09", "t": "check", "d": 2, "tag": "each", "q": "Each of the boys has a locker.", "a": 1, "why": "\"Each\" is one at a time: has. Correct."},
+    {"id": "c10", "t": "check", "d": 2, "tag": "each", "q": "One of my cousins play the piano.", "a": 0, "why": "The rider is \"one\": plays."},
+    {"id": "c11", "t": "check", "d": 2, "tag": "each", "q": "Every pupil and teacher gets a free drink.", "a": 1, "why": "\"Every\" looks at each person one at a time: gets. Correct."},
+    {"id": "c12", "t": "check", "d": 2, "tag": "there", "q": "There is three apples in the basket.", "a": 0, "why": "Look after the verb: \"three apples\" is a crowd: are."},
+    {"id": "c13", "t": "check", "d": 2, "tag": "there", "q": "There are two new books on the shelf.", "a": 1, "why": "\"Two new books\" is a crowd: are. Correct."},
+    {"id": "c14", "t": "check", "d": 2, "tag": "there", "q": "Here is the photos from our trip.", "a": 0, "why": "\"The photos\" is a crowd: Here are the photos."},
+    {"id": "c15", "t": "check", "d": 2, "tag": "nearest", "q": "The box of crayons are on the table.", "a": 0, "why": "Cover \"of crayons\". The rider is one box: is."},
+    {"id": "c16", "t": "check", "d": 2, "tag": "nearest", "q": "The bag of marbles is very heavy.", "a": 1, "why": "One bag: is. Correct."},
+    {"id": "c17", "t": "check", "d": 2, "tag": "nearest", "q": "The flowers in the vase is dying.", "a": 0, "why": "Cover \"in the vase\". The rider is \"flowers\": are."},
+    {"id": "c18", "t": "check", "d": 2, "tag": "nor", "q": "Neither Arjun nor Nurul is late.", "a": 1, "why": "Match the nearer subject: Nurul, one person: is. Correct."},
+    {"id": "c19", "t": "check", "d": 2, "tag": "nor", "q": "Either Marcus or his sisters is bringing the cake.", "a": 0, "why": "Match the nearer subject: \"his sisters\": are."},
+    {"id": "c20", "t": "check", "d": 3, "tag": "nor", "q": "Neither the pupils nor the teacher know the answer.", "a": 0, "why": "Match the nearer subject: \"the teacher\" is one: knows."},
+    {"id": "c21", "t": "check", "d": 2, "tag": "group", "q": "Our class is going on an excursion.", "a": 1, "why": "The class acts as one unit: is. Correct."},
+    {"id": "c22", "t": "check", "d": 3, "tag": "group", "q": "The committee have made its decision.", "a": 0, "why": "The committee acts as one, and \"its\" shows it's one unit: has."},
+    {"id": "c23", "t": "check", "d": 3, "tag": "aswell", "q": "Mr Tan, as well as his pupils, are at the assembly.", "a": 0, "why": "Cover \"as well as his pupils\". The rider is Mr Tan: is."},
+    {"id": "c24", "t": "check", "d": 3, "tag": "aswell", "q": "The children, along with their teacher, are at the bus stop.", "a": 1, "why": "Cover \"along with their teacher\": the children are. Correct."},
+    {"id": "c25", "t": "check", "d": 3, "tag": "pairs", "q": "My spectacles is on the table.", "a": 0, "why": "\"Spectacles\" on its own is always plural: are."},
+    {"id": "c26", "t": "check", "d": 3, "tag": "pairs", "q": "A pair of scissors is in the drawer.", "a": 1, "why": "The rider is one pair: is. Correct."},
+    {"id": "c27", "t": "check", "d": 3, "tag": "number", "q": "The number of pupils is growing.", "a": 1, "why": "\"The number of\" is one figure: is. Correct."},
+    {"id": "c28", "t": "check", "d": 3, "tag": "number", "q": "A number of pupils is absent today.", "a": 0, "why": "\"A number of\" means several: are."},
+    {"id": "c29", "t": "check", "d": 3, "tag": "amount", "q": "Five dollars is too much for a pencil.", "a": 1, "why": "One total amount of money: is. Correct."},
+    {"id": "c30", "t": "check", "d": 3, "tag": "amount", "q": "Three days are a long time to wait.", "a": 0, "why": "Three days is one stretch of time here: is."},
+    {"id": "c31", "t": "check", "d": 2, "tag": "basic", "q": "The pupils in my class is excited.", "a": 0, "why": "Cover \"in my class\". The rider is \"pupils\": are."},
+    {"id": "p01", "t": "pick", "d": 1, "tag": "basic", "ask": "Which sentence is correct?", "o": ["The birds sing in the morning.", "The birds sings in the morning.", "The bird sing in the morning.", "The birds is singing in the morning."], "why": "\"Birds\" is a crowd, so the verb drops its -s: sing."},
+    {"id": "p02", "t": "pick", "d": 1, "tag": "and", "ask": "Which sentence is correct?", "o": ["My sister and I are in the same school.", "My sister and I is in the same school.", "My sister and I am in the same school.", "My sister and I was in the same school."], "why": "\"And\" joins two people into a crowd: are."},
+    {"id": "p03", "t": "pick", "d": 1, "tag": "basic", "ask": "Which sentence is correct?", "o": ["Our neighbour has a big dog.", "Our neighbour have a big dog.", "Our neighbours has a big dog.", "Our neighbour haves a big dog."], "why": "One neighbour: has."},
+    {"id": "p04", "t": "pick", "d": 2, "tag": "nearest", "ask": "Which sentence is correct?", "o": ["The box of toys is in the storeroom.", "The box of toys are in the storeroom.", "The boxes of toys is in the storeroom.", "The box of toys were in the storeroom."], "why": "Cover \"of toys\". One box: is."},
+    {"id": "p05", "t": "pick", "d": 2, "tag": "each", "ask": "Which sentence is correct?", "o": ["Each of the players has a jersey.", "Each of the players have a jersey.", "Each of the players are having a jersey.", "Each of the player have a jersey."], "why": "\"Each\" is one at a time: has."},
+    {"id": "p06", "t": "pick", "d": 2, "tag": "there", "ask": "Which sentence is correct?", "o": ["There are many fish in the pond.", "There is many fish in the pond.", "There was many fish in the pond.", "There's many fish in the pond."], "why": "Look after the verb: \"many fish\" is a crowd: are."},
+    {"id": "p07", "t": "pick", "d": 2, "tag": "nor", "ask": "Which sentence is correct?", "o": ["Either my parents or my uncle is picking me up.", "Either my parents or my uncle are picking me up.", "Either my parents or my uncle am picking me up.", "Either my parents or my uncle were picking me up."], "why": "Match the nearer subject: \"my uncle\" is one: is."},
+    {"id": "p08", "t": "pick", "d": 2, "tag": "group", "ask": "Which sentence is correct?", "o": ["The school band is performing on Friday.", "The school band are performing on Friday.", "The school bands is performing on Friday.", "The school band were performing on Friday."], "why": "The band performs together as one unit: is."},
+    {"id": "p09", "t": "pick", "d": 2, "tag": "each", "q": "One of my friends live in Tampines.", "ask": "Pick the best fix.", "o": ["One of my friends lives in Tampines.", "One of my friend live in Tampines.", "One of my friends are living in Tampines.", "One of my friend lives in Tampines."], "why": "The rider is \"one\", so the verb takes -s: lives."},
+    {"id": "p10", "t": "pick", "d": 2, "tag": "there", "q": "There is two cats under the car.", "ask": "Pick the best fix.", "o": ["There are two cats under the car.", "There is two cat under the car.", "There are two cat under the car.", "There was two cats under the car."], "why": "\"Two cats\" is a crowd: are."},
+    {"id": "p11", "t": "pick", "d": 3, "tag": "aswell", "ask": "Which sentence is correct?", "o": ["The coach, as well as the players, is happy with the result.", "The coach, as well as the players, are happy with the result.", "The coaches, as well as the player, is happy with the result.", "The coach, as well as the players, were happy with the result."], "why": "Cover \"as well as the players\". The rider is the coach: is."},
+    {"id": "p12", "t": "pick", "d": 3, "tag": "pairs", "ask": "Which sentence is correct?", "o": ["These scissors are blunt.", "These scissors is blunt.", "This scissors are blunt.", "This scissors is blunt."], "why": "\"Scissors\" on its own is always plural: these scissors are."},
+    {"id": "p13", "t": "pick", "d": 3, "tag": "number", "ask": "Which sentence is correct?", "o": ["A number of shops are closed today.", "A number of shops is closed today.", "The number of shops are growing.", "A number of shop is closed today."], "why": "\"A number of\" means several: are."},
+    {"id": "p14", "t": "pick", "d": 3, "tag": "amount", "ask": "Which sentence is correct?", "o": ["Twenty dollars is a lot of money for a book.", "Twenty dollars are a lot of money for a book.", "Twenty dollar is a lot of money for a book.", "Twenty dollars were a lot of money for a book."], "why": "One total amount of money: is."},
+    {"id": "p15", "t": "pick", "d": 3, "tag": "nor", "q": "Neither the teacher nor the pupils has the key.", "ask": "Pick the best fix.", "o": ["Neither the teacher nor the pupils have the key.", "Neither the teacher nor the pupils is having the key.", "Neither the teachers nor the pupils has the key.", "Neither the teacher nor the pupil have the key."], "why": "Match the nearer subject: \"the pupils\" is a crowd: have."},
+    {"id": "p16", "t": "pick", "d": 3, "tag": "nearest", "ask": "Which sentence needs fixing?", "o": ["The keys to the cupboard is missing.", "The key to the cupboards is missing.", "The keys to the cupboard are missing.", "The key to the cupboard is missing."], "why": "Cover \"to the cupboard\": the keys are missing."},
+    {"id": "p17", "t": "pick", "d": 3, "tag": "group", "ask": "Which sentence needs fixing?", "o": ["The committee have chosen its new leader.", "The committee has chosen its new leader.", "The committees have chosen their new leaders.", "The class has chosen its monitor."], "why": "The committee acts as one unit (see \"its\"): has."},
+    {"id": "p18", "t": "pick", "d": 2, "tag": "and", "ask": "Which sentence needs fixing?", "o": ["My brother and sister is at home.", "My brother and sister are at home.", "My brother is at home.", "My sister and I are at home."], "why": "\"My brother and sister\" joined by \"and\" is a crowd: are."},
+    {"id": "p19", "t": "pick", "d": 3, "tag": "each", "ask": "Which sentence needs fixing?", "o": ["Everybody in the hall were clapping.", "Everybody in the hall was clapping.", "All the people in the hall were clapping.", "Each person in the hall was clapping."], "why": "\"Everybody\" takes the one-rider verb: was."},
+    {"id": "p20", "t": "pick", "d": 1, "tag": "basic", "q": "The cats sleeps on the sofa.", "ask": "Pick the best fix.", "o": ["The cats sleep on the sofa.", "The cats sleeping on the sofa.", "The cat sleep on the sofa.", "The cats is sleep on the sofa."], "why": "\"Cats\" is a crowd: sleep."},
+    {"id": "s01", "t": "spot", "d": 1, "tag": "basic", "parts": ["My little brother", "like", "to play", "with blocks."], "a": 1, "why": "One brother is one rider: likes."},
+    {"id": "s02", "t": "spot", "d": 1, "tag": "basic", "parts": ["Every morning,", "the birds", "sings", "outside my window."], "a": 2, "why": "\"Birds\" is a crowd, so the verb drops its -s: sing."},
+    {"id": "s03", "t": "spot", "d": 1, "tag": "and", "parts": ["After school,", "Ali and Ben", "plays", "football."], "a": 2, "why": "\"Ali and Ben\" is a crowd: play."},
+    {"id": "s04", "t": "spot", "d": 1, "tag": "each", "parts": ["Everyone", "in my family", "love", "durians."], "a": 2, "why": "\"Everyone\" takes the one-rider verb: loves."},
+    {"id": "s05", "t": "spot", "d": 2, "tag": "nearest", "parts": ["The box", "of chocolates", "are", "on the table."], "a": 2, "why": "Cover \"of chocolates\". One box: is."},
+    {"id": "s06", "t": "spot", "d": 2, "tag": "nearest", "parts": ["The pictures", "on the wall", "is", "crooked."], "a": 2, "why": "Cover \"on the wall\". The rider is \"pictures\": are."},
+    {"id": "s07", "t": "spot", "d": 2, "tag": "each", "parts": ["One", "of the girls", "have", "a broken arm."], "a": 2, "why": "The rider is \"one\": has."},
+    {"id": "s08", "t": "spot", "d": 2, "tag": "each", "parts": ["Each", "of the pupils", "are given", "a worksheet."], "a": 2, "why": "\"Each\" is one at a time: is given."},
+    {"id": "s09", "t": "spot", "d": 2, "tag": "there", "parts": ["In the playground,", "there is", "five swings", "and a slide."], "a": 1, "why": "Look after the verb: \"five swings and a slide\" is a crowd: there are."},
+    {"id": "s10", "t": "spot", "d": 2, "tag": "there", "parts": ["Look!", "Here is", "the cookies", "I baked."], "a": 1, "why": "\"The cookies\" is a crowd: Here are."},
+    {"id": "s11", "t": "spot", "d": 2, "tag": "nor", "parts": ["Neither Ravi", "nor his friends", "was", "at the party."], "a": 2, "why": "Match the nearer subject: \"his friends\" is a crowd: were."},
+    {"id": "s12", "t": "spot", "d": 2, "tag": "nor", "parts": ["Either my aunt", "or my cousins", "is coming", "to fetch me."], "a": 2, "why": "Match the nearer subject: \"my cousins\" is a crowd: are coming."},
+    {"id": "s13", "t": "spot", "d": 2, "tag": "group", "parts": ["Our school team", "have won", "three trophies", "this year."], "a": 1, "why": "The team acts as one unit: has won."},
+    {"id": "s14", "t": "spot", "d": 3, "tag": "aswell", "parts": ["The principal,", "as well as the teachers,", "are", "at the gate."], "a": 2, "why": "Cover \"as well as the teachers\". The rider is the principal: is."},
+    {"id": "s15", "t": "spot", "d": 3, "tag": "aswell", "parts": ["My brother,", "along with his friends,", "have gone", "to the beach."], "a": 2, "why": "Cover \"along with his friends\". The rider is \"my brother\": has gone."},
+    {"id": "s16", "t": "spot", "d": 3, "tag": "pairs", "parts": ["My new shorts", "is", "too big", "for me."], "a": 1, "why": "\"Shorts\" on its own is always plural: are."},
+    {"id": "s17", "t": "spot", "d": 3, "tag": "pairs", "parts": ["A pair", "of socks", "are lying", "on the floor."], "a": 2, "why": "With \"a pair of\", the rider is one pair: is lying."},
+    {"id": "s18", "t": "spot", "d": 3, "tag": "number", "parts": ["The number", "of cars", "on the road", "are increasing."], "a": 3, "why": "\"The number of\" is one figure: is increasing."},
+    {"id": "s19", "t": "spot", "d": 3, "tag": "number", "parts": ["A number", "of pupils", "was", "late today."], "a": 2, "why": "\"A number of\" means several: were."},
+    {"id": "s20", "t": "spot", "d": 3, "tag": "amount", "parts": ["Fifty dollars", "are", "too much", "for a T-shirt."], "a": 1, "why": "One total amount of money: is."},
+    {"id": "s21", "t": "spot", "d": 3, "tag": "amount", "parts": ["Three hours", "are", "a long time", "to wait."], "a": 1, "why": "Three hours is one stretch of time here: is."},
+    {"id": "s22", "t": "spot", "d": 1, "tag": "basic", "parts": ["The baby", "cry", "every night", "at bedtime."], "a": 1, "why": "One baby, one rider: cries."},
+    {"id": "s23", "t": "spot", "d": 2, "tag": "and", "parts": ["My mum", "and my aunt", "is", "good cooks."], "a": 2, "why": "\"My mum and my aunt\" joined by \"and\" is a crowd: are."},
+    {"id": "s24", "t": "spot", "d": 3, "tag": "each", "parts": ["Every boy", "and girl", "in the class", "have a part in the play."], "a": 3, "why": "\"Every\" looks at each child one at a time: has a part."},
+    {"id": "f45", "t": "fill", "d": 1, "tag": "basic", "q": "The children ___ in the pool every Saturday.", "o": ["swim", "swims"], "why": "\"Children\" is a crowd, so the verb has no -s: swim."},
+    {"id": "f46", "t": "fill", "d": 1, "tag": "basic", "q": "My sister ___ her teeth twice a day.", "o": ["brushes", "brush"], "why": "One sister, one rider: brushes."},
+    {"id": "c32", "t": "check", "d": 1, "tag": "and", "q": "Tom and his dog walks in the park every evening.", "a": 0, "why": "\"Tom and his dog\" joined by \"and\" is a crowd: walk."},
+    {"id": "c33", "t": "check", "d": 1, "tag": "basic", "q": "The flowers in our garden smell lovely.", "a": 1, "why": "Cover \"in our garden\". \"Flowers\" is a crowd: smell. Correct."},
   ];
 
-  const container = document.getElementById('quizContainer');
-  const scoreEl = document.getElementById('scoreDisplay');
-  let score = 0, answered = [];
-  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  /* ================= QUIZ BANK ENGINE (shared by every lesson) =================
+     Needs, defined above it: LESSON_KEY, TAGS, BANK. Optional: QB_TEXT = { ask: {...}, yn: [...] }.
+     Each attempt draws BAND_SIZES questions (easy, medium, tricky). The draw builds many
+     candidate quizzes and keeps the best: every tag present, 3+ of each type, balanced
+     check answers, unseen questions first. Options are shuffled; ids seen are remembered. */
+  const BAND_SIZES = [7, 7, 6];
+  const DRAW = BAND_SIZES.reduce((a, b) => a + b, 0);
+  const QBT = (typeof QB_TEXT !== 'undefined') ? QB_TEXT : {};
+  const ASK = Object.assign({
+    check: 'Is this sentence correct?',
+    pick:  'Pick the correct sentence.',
+    fill:  'Which choice fills the gap correctly?',
+    spot:  'Tap the part with the mistake.'
+  }, QBT.ask || {});
+  const YN = QBT.yn || ['Needs fixing', 'Correct'];
 
-  function updateScore() { scoreEl.textContent = score + ' / ' + QUESTIONS.length; }
+  const store = {
+    get(k, fallback) { try { const v = localStorage.getItem(LESSON_KEY + ':' + k); return v === null ? fallback : JSON.parse(v); } catch (e) { return fallback; } },
+    set(k, v) { try { localStorage.setItem(LESSON_KEY + ':' + k, JSON.stringify(v)); } catch (e) { /* storage unavailable: quiz still works */ } }
+  };
+  const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  function buildCandidate(seen) {
+    const chosen = [], tagN = {}, typeN = {};
+    let fixN = 0, okN = 0;
+    for (let band = 1; band <= 3; band++) {
+      const picks = [];
+      for (let k = 0; k < BAND_SIZES[band - 1]; k++) {
+        let best = null, bestScore = -Infinity;
+        BANK.forEach(q => {
+          if (q.d !== band || picks.includes(q)) return;
+          let s = Math.random() * 3;
+          if (!seen.has(q.id)) s += 6;
+          if (!tagN[q.tag]) s += 12;
+          s -= (typeN[q.t] || 0) * 1.2;
+          if ((typeN[q.t] || 0) < 3) s += 2;   // nudge every type up to 3
+          if (q.t === 'check') { const lean = q.a === 0 ? fixN - okN : okN - fixN; if (lean >= 1) s -= 4; }
+          if (s > bestScore) { bestScore = s; best = q; }
+        });
+        if (!best) break;
+        picks.push(best);
+        tagN[best.tag] = (tagN[best.tag] || 0) + 1;
+        typeN[best.t] = (typeN[best.t] || 0) + 1;
+        if (best.t === 'check') { if (best.a === 0) fixN++; else okN++; }
+      }
+      chosen.push(...shuffle(picks));
+    }
+    return chosen;
+  }
+
+  function rateCandidate(c, seen) {
+    const tags = new Set(c.map(q => q.tag)).size;
+    const types = {};
+    c.forEach(q => types[q.t] = (types[q.t] || 0) + 1);
+    const used = [...new Set(BANK.map(q => q.t))];
+    const minType = Math.min(...used.map(t => types[t] || 0));
+    const checks = c.filter(q => q.t === 'check');
+    const lean = Math.abs(checks.filter(q => q.a === 0).length * 2 - checks.length);
+    return (tags === Object.keys(TAGS).length ? 10000 : tags * 500)
+         + (c.length === DRAW ? 5000 : 0)
+         + Math.min(minType, 3) * 300
+         + (lean <= 2 ? 200 : 0)
+         + c.filter(q => !seen.has(q.id)).length * 10;
+  }
+
+  function drawQuiz() {
+    let seen = new Set(store.get('seen', []));
+    if (BANK.length - seen.size < DRAW) seen = new Set(store.get('last', []));   // new cycle, but skip the last attempt
+    let chosen = null, bestRate = -1;
+    for (let tries = 0; tries < 200; tries++) {
+      const c = buildCandidate(seen), r = rateCandidate(c, seen);
+      if (r > bestRate) { bestRate = r; chosen = c; }
+    }
+    chosen.forEach(q => seen.add(q.id));
+    store.set('seen', [...seen]);
+    store.set('last', chosen.map(q => q.id));
+    return chosen.map(q => {
+      if (q.t === 'pick' || q.t === 'fill') {
+        const opts = shuffle(q.o.map((text, i) => ({ text, ok: i === 0 })));
+        return { q, opts, answer: opts.findIndex(o => o.ok) };
+      }
+      if (q.t === 'check') return { q, opts: YN.map(text => ({ text })), answer: q.a };
+      return { q, opts: null, answer: q.a };
+    });
+  }
+
+  const listEl = document.getElementById('qbList');
+  const scoreEl = document.getElementById('qbScore');
+  const progressEl = document.getElementById('qbProgress');
+  const summaryEl = document.getElementById('qbSummary');
+  let current = [], score = 0, done = 0, missed = [];
+
+  function updateScore() {
+    scoreEl.textContent = score + ' / ' + current.length;
+    progressEl.textContent = done + ' of ' + current.length + ' answered';
+  }
+
+  /* Small or empty options are hard to see on a button, so label them. */
+  function optLabel(text) {
+    const t = text.trim();
+    if (t === '') return '<span class="qb-note">(nothing)</span>';
+    if (t === ',') return '<span class="qb-punct">,</span> <span class="qb-note">(a comma)</span>';
+    if (t === '.') return '<span class="qb-punct">.</span> <span class="qb-note">(a full stop)</span>';
+    return esc(text);
+  }
+  function plainLabel(text) {
+    const t = text.trim();
+    return t === '' ? 'nothing' : t === ',' ? 'a comma' : t === '.' ? 'a full stop' : '"' + t + '"';
+  }
+  function sentenceWithGap(q, text) {
+    let filler = '<span class="qb-blank">___</span>';
+    if (text !== undefined) {
+      filler = text.trim() === ''
+        ? '<span class="qb-blank qb-filled qb-none">(nothing)</span>'
+        : '<span class="qb-blank qb-filled">' + esc(text) + '</span>';
+    }
+    return esc(q.q).replace('___', filler);
+  }
 
   function render() {
-    container.innerHTML = '';
-    answered = QUESTIONS.map(() => false);
-    QUESTIONS.forEach((q, i) => {
+    listEl.innerHTML = '';
+    summaryEl.hidden = true;
+    current.forEach((item, i) => {
+      const q = item.q;
       const card = document.createElement('div');
-      card.className = 'quiz-card';
-      const hasBlank = q.text.includes('___');
-      const short = q.options.every(o => o.length <= 14);
+      card.className = 'qb-card';
+      card.dataset.type = q.t;
+      let body;
+      if (q.t === 'spot') {
+        body = '<div class="qb-spot">' + q.parts.map((p, k) =>
+          '<button type="button" class="qb-part" data-k="' + k + '">' + esc(p) + '</button>').join('') + '</div>';
+      } else if (q.t === 'fill') {
+        const cols = item.opts.length;
+        body = '<p class="qb-text">' + sentenceWithGap(q) + '</p><div class="qb-opts qb-row" style="--qb-cols:' + cols + '"></div>';
+      } else if (q.t === 'check') {
+        body = '<p class="qb-text">' + esc(q.q) + '</p><div class="qb-opts qb-row"></div>';
+      } else {
+        body = (q.q ? '<p class="qb-text">' + esc(q.q) + '</p>' : '') + '<div class="qb-opts"></div>';
+      }
       card.innerHTML =
-        '<p class="quiz-num">Question ' + (i + 1) + ' of ' + QUESTIONS.length + '</p>' +
-        '<p class="quiz-text">' + esc(q.text).replace('___', '<span class="blank">___</span>') + '</p>' +
-        '<div class="opts' + (short ? ' row' : '') + '"></div>' +
-        '<div class="feedback" role="status"></div>';
-      const opts = card.querySelector('.opts');
-      q.options.forEach((o, j) => {
-        const b = document.createElement('button');
-        b.type = 'button';
-        b.className = 'opt';
-        b.innerHTML = (short ? '' : '<span class="tag">' + String.fromCharCode(65 + j) + '</span>') + esc(o);
-        b.addEventListener('click', () => answer(i, j, card, hasBlank));
-        opts.appendChild(b);
-      });
-      container.appendChild(card);
+        '<p class="qb-num">Question ' + (i + 1) + ' of ' + current.length + '</p>' +
+        '<p class="qb-ask">' + esc(q.ask || ASK[q.t]) + '</p>' + body +
+        '<div class="qb-feedback" role="status"></div>';
+      if (q.t === 'spot') {
+        card.querySelectorAll('.qb-part').forEach(b => b.addEventListener('click', () => answer(i, +b.dataset.k, card)));
+      } else {
+        const opts = card.querySelector('.qb-opts');
+        item.opts.forEach((o, j) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'qb-opt';
+          b.innerHTML = (q.t === 'pick' ? '<span class="qb-letter">' + String.fromCharCode(65 + j) + '</span>' : '') + optLabel(o.text);
+          b.addEventListener('click', () => answer(i, j, card));
+          opts.appendChild(b);
+        });
+      }
+      listEl.appendChild(card);
     });
     updateScore();
   }
 
-  function answer(i, j, card, hasBlank) {
-    if (answered[i]) return;
-    answered[i] = true;
-    const q = QUESTIONS[i], ok = j === q.answer;
-    if (ok) score++;
-    updateScore();
-    if (hasBlank) {
-      const blank = card.querySelector('.blank');
-      blank.textContent = q.options[j];
-      blank.classList.add('filled');
-    }
-    card.querySelectorAll('.opt').forEach((b, k) => {
+  function answer(i, j, card) {
+    const item = current[i];
+    if (item.done) return;
+    item.done = true; done++;
+    const q = item.q, ok = j === item.answer;
+    if (ok) score++; else missed.push(q.tag);
+    card.querySelectorAll(q.t === 'spot' ? '.qb-part' : '.qb-opt').forEach((b, k) => {
       b.disabled = true;
-      if (k === j) b.classList.add(ok ? 'correct' : 'incorrect');
-      else if (k === q.answer && !ok) b.classList.add('reveal');
+      if (k === j) b.classList.add(ok ? 'qb-correct' : 'qb-incorrect');
+      else if (k === item.answer && !ok) b.classList.add('qb-reveal');
     });
-    const fb = card.querySelector('.feedback');
-    fb.classList.add('show', ok ? 'fb-ok' : 'fb-no');
-    fb.innerHTML = '<span class="verdict-q">' +
-      (ok ? 'Correct!' : 'Not quite. The answer is "' + esc(q.options[q.answer]) + '".') +
-      '</span>' + esc(q.why);
+    if (q.t === 'fill') card.querySelector('.qb-text').innerHTML = sentenceWithGap(q, item.opts[j].text);
+    let right;
+    if (q.t === 'spot') right = 'The mistake is in "' + esc(q.parts[item.answer]) + '".';
+    else if (q.t === 'pick') right = 'The answer is ' + String.fromCharCode(65 + item.answer) + '.';
+    else right = 'The answer is ' + esc(plainLabel(item.opts[item.answer].text)) + '.';
+    const fb = card.querySelector('.qb-feedback');
+    fb.classList.add('qb-show', ok ? 'qb-fb-ok' : 'qb-fb-no');
+    fb.innerHTML = '<span class="qb-verdict">' + (ok ? 'Correct!' : 'Not quite. ' + right) + '</span>' + esc(q.why);
+    updateScore();
+    if (done === current.length) showSummary();
   }
 
-  document.getElementById('resetBtn').addEventListener('click', () => {
-    score = 0;
-    render();
-    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
+  function showSummary() {
+    const best = Math.max(store.get('best', 0), score);
+    store.set('best', best);
+    const attempts = store.get('attempts', 0) + 1;
+    store.set('attempts', attempts);
+    const counts = {};
+    missed.forEach(t => counts[t] = (counts[t] || 0) + 1);
+    const areas = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+    const n = current.length;
+    let msg;
+    if (score === n) msg = 'A perfect run! Try another set to make sure it sticks.';
+    else if (score >= Math.ceil(n * 0.8)) msg = 'Strong work. Have a quick look at the areas below, then try a fresh set.';
+    else if (score >= Math.ceil(n * 0.6)) msg = 'Good progress. Re-read the parts below before your next attempt.';
+    else msg = 'Worth another look at the lesson. Start with the areas below, then try a fresh set.';
+    summaryEl.innerHTML =
+      '<h3>You scored ' + score + ' / ' + n + '</h3><p>' + msg + '</p>' +
+      (areas.length ? '<p class="qb-sum-label">Areas to review</p><ul class="qb-areas">' + areas.map(t =>
+        '<li><a href="' + TAGS[t].href + '">' + esc(TAGS[t].label) + '</a><span>' + counts[t] + ' wrong</span></li>').join('') + '</ul>' : '') +
+      '<p class="qb-meta">Attempts on this device: ' + attempts + ' · Best score: ' + best + ' / ' + n + '</p>' +
+      '<button type="button" class="qb-go" id="qbAgain">Try ' + n + ' new questions</button>';
+    summaryEl.hidden = false;
+    document.getElementById('qbAgain').addEventListener('click', () => { newQuiz(); listEl.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    summaryEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 
-  render();
+  function newQuiz() {
+    current = drawQuiz(); score = 0; done = 0; missed = [];
+    render();
+  }
+
+  const bankEl = document.getElementById('qbBank'), drawEl = document.getElementById('qbDraw');
+  if (bankEl) bankEl.textContent = BANK.length;
+  if (drawEl) drawEl.textContent = DRAW;
+  document.getElementById('qbNew').addEventListener('click', () => {
+    newQuiz();
+    listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  newQuiz();
 })();
 </script>
 </body>

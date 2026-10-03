@@ -288,6 +288,103 @@
   footer { text-align: center; font-size: 12px; opacity: 0.5; margin-top: 36px; }
   .back-link { display:inline-block; margin:0 0 14px; font-family:var(--font-body); font-weight:800; font-size:14px; color:var(--ink); text-decoration:none; background:var(--panel); border:2.5px solid var(--ink); border-radius:20px; padding:6px 14px; box-shadow:3px 3px 0 var(--ink); }
   .back-link:active { transform:translate(2px,2px); box-shadow:1px 1px 0 var(--ink); }
+
+  /* ================= QUIZ BANK ENGINE (shared by every lesson; qb- prefix avoids clashes) ================= */
+  .qb { --qb-cols: 2; }
+  .qb-bar {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 3;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 10px 16px; margin: 0 0 18px; border-radius: var(--qb-radius);
+    background: var(--qb-bar); color: var(--qb-bar-ink);
+  }
+  .qb-label { font-size: 12.5px; opacity: 0.8; }
+  .qb-score { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 28px; line-height: 1.05; }
+  .qb-progress { font-size: 12.5px; opacity: 0.85; margin-top: 2px; }
+  .qb-new {
+    font: inherit; font-weight: 700; font-size: 14px; padding: 10px 16px; min-height: 44px;
+    border-radius: 999px; border: 2px solid currentColor; background: transparent; color: inherit; cursor: pointer;
+  }
+  .qb-list, .qb-summary { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 96px); }
+  .qb-card {
+    background: var(--qb-card); border: var(--qb-card-border); box-shadow: var(--qb-card-shadow);
+    border-radius: var(--qb-radius); padding: 16px 16px 14px; margin: 0 0 14px; color: var(--qb-ink);
+  }
+  .qb-num { font-size: 12.5px; color: var(--qb-soft); margin: 0 0 4px; }
+  .qb-ask { font-size: 13.5px; font-weight: 700; color: var(--qb-accent); margin: 0 0 6px; }
+  .qb-text { font-size: 16.5px; line-height: 1.6; margin: 0 0 14px; }
+  .qb-blank {
+    display: inline-block; min-width: 60px; padding: 0 3px; text-align: center;
+    border-bottom: 2.5px dashed var(--qb-soft); color: var(--qb-soft);
+  }
+  .qb-blank.qb-filled { border-bottom-style: solid; border-bottom-color: var(--qb-accent); color: var(--qb-accent); font-weight: 700; }
+  .qb-blank.qb-none { font-style: italic; font-weight: 400; }
+  .qb-opts { display: flex; flex-direction: column; gap: 9px; }
+  .qb-opts.qb-row { display: grid; grid-template-columns: repeat(var(--qb-cols), minmax(0, 1fr)); }
+  .qb-opt {
+    font: inherit; font-size: 15.5px; line-height: 1.45; text-align: left; color: var(--qb-ink);
+    padding: 11px 14px; min-height: 46px; border-radius: var(--qb-radius-opt);
+    border: 2px solid var(--qb-rule); background: var(--qb-page); cursor: pointer;
+  }
+  .qb-row .qb-opt { text-align: center; font-weight: 600; padding-left: 6px; padding-right: 6px; }
+  .qb-opt:not(:disabled):hover { border-color: var(--qb-accent); }
+  .qb-opt:disabled, .qb-part:disabled { cursor: default; }
+  .qb-letter { font-family: var(--qb-font); font-weight: var(--qb-font-weight); margin-right: 10px; color: var(--qb-accent); }
+  .qb-note { font-size: 12.5px; font-weight: 400; color: var(--qb-soft); }
+  .qb-punct { font-size: 22px; line-height: 0; font-weight: 700; }
+  .qb-spot { display: flex; flex-wrap: wrap; gap: 8px 6px; margin: 0 0 4px; }
+  .qb-part {
+    font: inherit; font-size: 16px; line-height: 1.35; text-align: left; color: var(--qb-ink); cursor: pointer;
+    background: var(--qb-accent-soft); border: none; border-bottom: 3px dashed var(--qb-accent);
+    border-radius: 4px 4px 0 0; padding: 7px 9px; min-height: 40px;
+  }
+  .qb-opt.qb-correct, .qb-opt.qb-reveal { background: var(--qb-right-soft); border-color: var(--qb-right); }
+  .qb-opt.qb-incorrect { background: var(--qb-wrong-soft); border-color: var(--qb-wrong); }
+  .qb-part.qb-correct, .qb-part.qb-reveal { background: var(--qb-right-soft); border-bottom: 3px solid var(--qb-right); }
+  .qb-part.qb-incorrect { background: var(--qb-wrong-soft); border-bottom: 3px solid var(--qb-wrong); }
+  .qb-feedback { display: none; margin-top: 12px; padding-top: 12px; border-top: 2px dashed var(--qb-rule); font-size: 14px; line-height: 1.55; }
+  .qb-feedback.qb-show { display: block; }
+  .qb-verdict { display: block; font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 18px; margin-bottom: 2px; }
+  .qb-fb-ok .qb-verdict { color: var(--qb-right); }
+  .qb-fb-no .qb-verdict { color: var(--qb-wrong); }
+  .qb-summary {
+    background: var(--qb-card); color: var(--qb-ink); border: 3px solid var(--qb-accent);
+    border-radius: var(--qb-radius); padding: 18px 20px; margin-top: 8px;
+  }
+  .qb-summary h3 { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 30px; line-height: 1.1; margin: 0 0 6px; color: var(--qb-accent); }
+  .qb-summary p { margin: 0 0 10px; line-height: 1.55; }
+  .qb-sum-label { font-weight: 700; margin-top: 14px !important; }
+  .qb-areas { list-style: none; margin: 0 0 12px; padding: 0; }
+  .qb-areas li { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--qb-rule); }
+  .qb-areas a { color: var(--qb-ink); font-weight: 600; }
+  .qb-areas span { color: var(--qb-wrong); font-weight: 700; white-space: nowrap; }
+  .qb-meta { font-size: 13px; color: var(--qb-soft); }
+  .qb-go {
+    font: inherit; font-weight: 700; font-size: 16px; width: 100%; min-height: 50px; margin-top: 4px; cursor: pointer;
+    border: none; border-radius: var(--qb-radius); background: var(--qb-accent); color: var(--qb-on-accent);
+  }
+
+  :root {
+    --qb-page: var(--paper);
+    --qb-card: var(--panel);
+    --qb-ink: var(--ink);
+    --qb-soft: var(--blue);
+    --qb-accent: var(--blue);
+    --qb-accent-soft: var(--blue-soft);
+    --qb-on-accent: #fff;
+    --qb-right: var(--green);
+    --qb-right-soft: var(--green-soft);
+    --qb-wrong: var(--red);
+    --qb-wrong-soft: var(--red-soft);
+    --qb-rule: color-mix(in srgb, var(--ink) 22%, transparent);
+    --qb-bar: var(--ink);
+    --qb-bar-ink: var(--paper);
+    --qb-font: var(--font-display);
+    --qb-font-weight: 400;
+    --qb-radius: 14px;
+    --qb-radius-opt: 10px;
+    --qb-card-border: 3px solid var(--ink);
+    --qb-card-shadow: 5px 5px 0 var(--ink);
+  }
 </style>
 </head>
 <body>
@@ -302,7 +399,7 @@
     <p class="hero-sub">Picture quotation marks as a speech bubble in a comic. Anything that's literally part of the spoken words — including the punctuation mark right at the end — stays <b>inside</b> the bubble.</p>
   </header>
 
-  <section>
+  <section id="rule">
     <p class="section-label">The Method</p>
     <h2>The 3-Step Check</h2>
     <div class="steps">
@@ -329,7 +426,7 @@
     </div>
   </section>
 
-  <section>
+  <section id="cases">
     <p class="section-label">The Four Cases</p>
     <h2>Where Does the Punctuation Go?</h2>
 
@@ -362,7 +459,7 @@
     </div>
   </section>
 
-  <section>
+  <section id="specials">
     <p class="section-label">Beyond the Basics</p>
     <h2>Three More Things to Watch</h2>
     <p class="lede">The quiz below includes a few finer details that aren't about comma-vs-full-stop. Here's what to look out for.</p>
@@ -391,17 +488,16 @@
   <section>
     <p class="section-label">Practice</p>
     <h2>Pick the Correct Version</h2>
-    <p class="lede">Tap the option you think is punctuated correctly. You'll find out right away — and why.</p>
+    <p class="lede">Each attempt draws <span id="qbDraw">20</span> questions from a bank of <span id="qbBank">120</span>, so every try is different. You'll fill gaps, check sentences, pick the right version and spot mistakes, and the questions get trickier as you go. Finish them all to see which areas to review.</p>
 
-    <div class="scoreboard">
-      <div>
-        <div class="label">Your score</div>
-        <div class="score" id="scoreDisplay">0 / 30</div>
+    <div class="qb" id="qb">
+      <div class="qb-bar">
+        <div><div class="qb-label">Your score</div><div class="qb-score" id="qbScore">0 / 20</div><div class="qb-progress" id="qbProgress">0 of 20 answered</div></div>
+        <button class="qb-new" id="qbNew" type="button">New quiz</button>
       </div>
-      <button class="reset-btn" id="resetBtn">Start over</button>
+      <div class="qb-list" id="qbList"></div>
+      <div class="qb-summary" id="qbSummary" hidden></div>
     </div>
-
-    <div id="quizContainer"></div>
   </section>
 
   <section class="summary">
@@ -420,120 +516,363 @@
 
 <script>
 (function() {
-  const QUESTIONS = [
-    { prompt: 'She said im sorry.', options: ['"I\'m sorry." she said.', '"I\'m sorry," she said.', '"I\'m sorry", she said.', '"I\'m sorry" she said.'], answer: 1, why: 'A comma goes before the tag, not a full stop, since the sentence continues after the quote.' },
-    { prompt: 'She whispered follow me.', options: ['She whispered "Follow me."', 'She whispered, "Follow me."', 'She whispered, "Follow me".', 'She whispered "follow me."'], answer: 1, why: 'Comma before the opening quote, and the full stop belongs inside the closing quote.' },
-    { prompt: 'She asked are you coming.', options: ['"Are you coming?" she asked.', '"Are you coming," she asked.', '"Are you coming?," she asked.', '"Are you coming" she asked?'], answer: 0, why: 'The quoted words form a question, so the ? stays inside the quote and is not swapped for a comma.' },
-    { prompt: 'A question, standing alone, with no speech tag: how do I sign up.', options: ['"How do I sign up"', '"How do I sign up?"', '"How do I sign up."', 'How do I sign up?"'], answer: 1, why: 'With no tag, punctuate normally inside the quote — this is a question, so it needs a question mark, and the quotation marks must wrap the whole thing.' },
-    { prompt: 'Priya said i will bring the snacks.', options: ['"I will bring the snacks." Priya said.', '"I will bring the snacks" Priya said.', '"I will bring the snacks", Priya said.', '"I will bring the snacks," Priya said.'], answer: 3, why: 'A statement followed by a tag takes a comma, and the comma sits inside the closing quote.' },
-    { prompt: 'Arjun asked can I borrow your ruler.', options: ['"Can I borrow your ruler," Arjun asked.', '"Can I borrow your ruler." Arjun asked.', '"Can I borrow your ruler?," Arjun asked.', '"Can I borrow your ruler?" Arjun asked.'], answer: 3, why: 'A question keeps its ? even when a tag follows — and no extra comma is added after it.' },
-    { prompt: 'My mum called out dinner is ready.', options: ['My mum called out, "Dinner is ready."', 'My mum called out "Dinner is ready".', 'My mum called out, "Dinner is ready".', 'My mum called out "Dinner is ready."'], answer: 0, why: 'Comma before the opening quote (tag comes first), and the full stop belongs inside the closing quote.' },
-    { prompt: 'A statement, standing alone, with no speech tag: the canteen is closed today.', options: ['"The canteen is closed today"', '"the canteen is closed today."', '"The canteen is closed today,"', '"The canteen is closed today."'], answer: 3, why: 'With no tag, punctuate normally: a capital letter to start and a full stop inside the closing quote.' },
-    { prompt: 'Tom replied i dont think so.', options: ['"I don\'t think so." Tom replied.', '"I don\'t think so," Tom replied.', '"I don\'t think so", Tom replied.', '"I don\'t think so" Tom replied.'], answer: 1, why: 'A statement quote followed by a tag takes a comma inside the closing quote, not a full stop.' },
-    { prompt: 'Mum asked did you finish your homework.', options: ['"Did you finish your homework," Mum asked.', '"Did you finish your homework." Mum asked.', '"did you finish your homework?" Mum asked.', '"Did you finish your homework?" Mum asked.'], answer: 3, why: 'The ? stays inside the quote, and the spoken sentence starts with a capital letter.' },
-    { prompt: 'The teacher asked who left this here.', options: ['The teacher asked "Who left this here?"', 'The teacher asked, "Who left this here?"', 'The teacher asked, "Who left this here."', 'The teacher asked "Who left this here."'], answer: 1, why: 'A comma is needed before the opening quote (tag comes first), and the question mark belongs inside since the quoted words are a question.' },
-    { prompt: 'He shouted watch out.', options: ['"Watch out." he shouted.', '"Watch out," he shouted.', '"Watch out!" he shouted.', '"Watch out!," he shouted.'], answer: 2, why: 'The quote is an exclamation, so the ! stays exactly as it is — no comma is added before or after it.' },
-    { prompt: 'He admitted quietly i think we are lost.', options: ['"I think we are lost" he admitted quietly.', '"I think we are lost," he admitted quietly.', '"I think we are lost." he admitted quietly.', '"I think we are lost", he admitted quietly.'], answer: 1, why: 'A statement quote followed by a tag takes a comma inside the closing quote, not a full stop.' },
-    { prompt: 'The canteen auntie said that will be two dollars.', options: ['"That will be $2." the canteen auntie said.', '"That will be $2" the canteen auntie said.', '"That will be $2," the canteen auntie said.', '"That will be $2", the canteen auntie said.'], answer: 2, why: 'The tag comes after a statement, so the full stop becomes a comma — inside the closing quote.' },
-    { prompt: 'The bus driver asked where are you going.', options: ['The bus driver asked "Where are you going?"', 'The bus driver asked, "Where are you going."', 'The bus driver asked, "where are you going?"', 'The bus driver asked, "Where are you going?"'], answer: 3, why: 'Comma before the opening quote, a capital to start the speech, and the ? inside the closing quote.' },
-    { prompt: 'The child whined can we go home now.', options: ['"Can we go home now," the child whined.', '"Can we go home now." the child whined.', '"Can we go home now?" the child whined.', '"Can we go home now" the child whined.'], answer: 2, why: 'The quoted words form a question, so a question mark is needed inside the quote — not a comma or full stop.' },
-    { prompt: 'Nurul whispered i think the test is easy.', options: ['"I think the test is easy." Nurul whispered.', '"I think the test is easy" Nurul whispered.', '"I think the test is easy,"Nurul whispered.', '"I think the test is easy," Nurul whispered.'], answer: 3, why: 'Comma inside the closing quote because the tag continues the sentence — and a space before the tag.' },
-    { prompt: 'The girl said that was the best dance ever.', options: ['"That was the best dance ever!" the girl said.', '"That was the best dance ever," the girl said.', '"That was the best dance ever!," the girl said.', '"That was the best dance ever." the girl said.'], answer: 0, why: 'The exclamation mark stays exactly as it is when a tag follows — it never changes into a comma.' },
-    { prompt: 'The principal said the concert will start at seven.', options: ['The principal said "The concert will start at seven."', 'The principal said, "the concert will start at seven."', 'The principal said, "The concert will start at seven."', 'The principal said, "The concert will start at seven".'], answer: 2, why: 'Comma before the opening quote, a capital letter to start the speech, and the full stop inside the closing quote.' },
-    { prompt: 'A thought, standing alone, with no speech tag: finally, alone at last.', options: ['"Finally! Alone at last"', '"Finally! Alone at last!"', '"Finally. Alone at last!"', 'Finally! Alone at last!"'], answer: 1, why: 'With no tag at all, each exclamation inside the quote keeps its own ! — and the closing quotation mark comes right after the last one.' },
-    { prompt: 'The coach yelled congratulations.', options: ['"Congratulations!"the coach yelled.', '"Congratulations," the coach yelled.', '"Congratulations!" the coach yelled.', 'The coach yelled "Congratulations!"'], answer: 2, why: 'The ! stays inside the quote, and a space is always needed after the closing quotation mark before the next word.' },
-    { prompt: 'The commentator screamed goal.', options: ['"Goal!"the commentator screamed.', '"Goal!," the commentator screamed.', '"Goal!" the commentator screamed.', '"Goal"! the commentator screamed.'], answer: 2, why: 'The ! stays inside the bubble with no extra comma, and a space comes after the closing quote.' },
-    { prompt: 'My sister shouted put that down.', options: ['My sister shouted, "put that down!"', 'My sister shouted, "Put that down!"', 'My sister shouted "Put that down!"', 'My sister shouted, "Put that down"!'], answer: 1, why: 'Comma before the quote, the quoted sentence starts with a capital letter, and the ! stays inside the closing quote.' },
-    { prompt: 'Dad reminded me don\'t forget your homework diary.', options: ['Dad reminded me "Don\'t forget your homework diary."', 'Dad reminded me, "don\'t forget your homework diary."', 'Dad reminded me, "Don\'t forget your homework diary".', 'Dad reminded me, "Don\'t forget your homework diary."'], answer: 3, why: 'Comma before the quote, a capital letter to start the speech, and the full stop inside the closing quote.' },
-    { prompt: 'Wei Ling gasped my wallet is gone (she is shocked).', options: ['"My wallet is gone!," Wei Ling gasped.', '"My wallet is gone!" Wei Ling gasped.', '"My wallet is gone"! Wei Ling gasped.', '"my wallet is gone!" Wei Ling gasped.'], answer: 1, why: 'The ! stays inside the quote with no comma added, and the speech starts with a capital letter.' },
-    { prompt: 'The nurse said the patient is stable now.', options: ['The nurse said, "The patient is stable now."', 'The nurse said "The patient is stable now".', 'The nurse said, "The patient is stable now".', 'The nurse said "the patient is stable now."'], answer: 0, why: 'Comma before the opening quote, the quote starts with a capital letter, and the full stop belongs inside the closing quote.' },
-    { prompt: 'Mr Tan announced the bus is here.', options: ['"The bus is here," Mr Tan announced.', '"The bus is here." Mr Tan announced.', '"the bus is here," Mr Tan announced.', '"The bus is here,"Mr Tan announced.'], answer: 0, why: 'Comma inside the quote before the tag, a capital to start the speech, and a space after the closing quote.' },
-    { prompt: 'Father said she is on her way, and today the restaurant is crowded (two separate ideas).', options: ['My father said, "She is on her way, the restaurant is crowded today."', 'My father said "She is on her way. The restaurant is crowded today."', 'My father said, "She is on her way. The restaurant is crowded today."', 'My father said, "She is on her way today the restaurant is crowded."'], answer: 2, why: 'Comma before the opening quote, and two complete ideas inside the quote need their own full stop between them, not a comma.' },
-    { prompt: 'Ms Goh said the hall is full and please line up quietly (two separate ideas).', options: ['Ms Goh said, "The hall is full, please line up quietly."', 'Ms Goh said, "The hall is full please line up quietly."', 'Ms Goh said "The hall is full. Please line up quietly."', 'Ms Goh said, "The hall is full. Please line up quietly."'], answer: 3, why: 'Two complete ideas need a full stop between them, even inside one quote — plus a comma before the opening quote.' },
-    { prompt: 'Marcus asked i missed the bus can you give me a lift (two separate ideas).', options: ['"I missed the bus. Can you give me a lift?" Marcus asked.', '"I missed the bus, can you give me a lift?" Marcus asked.', '"I missed the bus. Can you give me a lift," Marcus asked.', '"I missed the bus. Can you give me a lift?"Marcus asked.'], answer: 0, why: 'Each idea gets its own end mark, the question keeps its ?, and a space comes before the tag.' }
+    /* ================= QUIZ: question bank (119 questions) ================= */
+  const LESSON_KEY = "shelf-l02";
+  const QB_TEXT = {"ask": {"check": "Is this punctuated correctly?", "pick": "Pick the correctly punctuated version.", "fill": "Which punctuation fills the gap?"}};
+  const TAGS = {
+    before: { label: "Tag before the quote: comma first", href: '#cases' },
+    after: { label: "Tag after a statement: comma, not full stop", href: '#cases' },
+    qmark: { label: "Tag after a question or exclamation: keep ? or !", href: '#cases' },
+    notag: { label: "No speech tag: punctuate normally", href: '#cases' },
+    twosent: { label: "Two sentences in one quote", href: '#specials' },
+    space: { label: "Space after the closing quote", href: '#specials' },
+    capital: { label: "Capital letter to start the speech", href: '#specials' },
+  };
+  const BANK = [
+    {"id": "f01", "t": "fill", "d": 1, "tag": "after", "q": "\"I am sorry___\" she said.", "o": [",", ".", ""], "why": "A statement followed by a tag takes a comma inside the closing quote."},
+    {"id": "f02", "t": "fill", "d": 1, "tag": "after", "q": "\"We should leave now___\" Dad whispered.", "o": [",", ".", ""], "why": "The tag comes after a statement, so the full stop becomes a comma."},
+    {"id": "f03", "t": "fill", "d": 1, "tag": "after", "q": "\"I think we are lost___\" he admitted.", "o": [",", ".", ""], "why": "The sentence carries on into the tag, so use a comma, not a full stop."},
+    {"id": "f04", "t": "fill", "d": 2, "tag": "after", "q": "\"The bus is here___\" Mr Tan announced.", "o": [",", ".", ""], "why": "A comma goes inside the quote because the tag still has to finish the sentence."},
+    {"id": "f05", "t": "fill", "d": 2, "tag": "after", "q": "\"I will bring the snacks___\" Priya said.", "o": [",", ".", ""], "why": "Statement + tag after: comma inside the closing quote."},
+    {"id": "f06", "t": "fill", "d": 2, "tag": "after", "q": "\"That will be $2___\" the canteen auntie said.", "o": [",", ".", ""], "why": "The tag finishes the sentence, so the quote ends with a comma."},
+    {"id": "f07", "t": "fill", "d": 1, "tag": "before", "q": "She said___ \"I'm sorry.\"", "o": [",", ".", ""], "why": "When the tag comes first, put a comma before the opening quote."},
+    {"id": "f08", "t": "fill", "d": 1, "tag": "before", "q": "Ms Goh asked___ \"Who would like to volunteer?\"", "o": [",", ".", ""], "why": "Tag before the quote: always a comma before it opens."},
+    {"id": "f09", "t": "fill", "d": 2, "tag": "before", "q": "My mum called out___ \"Dinner is ready.\"", "o": [",", ".", ""], "why": "A comma always goes between the tag and the opening quote."},
+    {"id": "f10", "t": "fill", "d": 2, "tag": "before", "q": "The principal announced___ \"The concert will start at seven.\"", "o": [",", ".", ""], "why": "Tag first, then a comma, then the quote."},
+    {"id": "f11", "t": "fill", "d": 2, "tag": "before", "q": "Arjun shouted___ \"Watch out!\"", "o": [",", ".", ""], "why": "Even before an exclamation, the tag is followed by a comma."},
+    {"id": "f12", "t": "fill", "d": 1, "tag": "qmark", "q": "\"Where is Mum___\" I asked.", "o": ["?", ",", "?,"], "why": "A question keeps its question mark, and no comma is added."},
+    {"id": "f13", "t": "fill", "d": 1, "tag": "qmark", "q": "\"Watch out___\" he shouted.", "o": ["!", ",", "!,"], "why": "An exclamation keeps its !, with no extra comma."},
+    {"id": "f14", "t": "fill", "d": 2, "tag": "qmark", "q": "\"Can I borrow your ruler___\" Arjun asked.", "o": ["?", ",", "."], "why": "The quoted words are a question, so the ? stays, even with a tag after."},
+    {"id": "f15", "t": "fill", "d": 2, "tag": "qmark", "q": "\"Are you coming___\" she asked.", "o": ["?", ",", "?,"], "why": "Keep the question mark and don't add a comma."},
+    {"id": "f16", "t": "fill", "d": 2, "tag": "qmark", "q": "\"Hooray___\" the crowd cheered.", "o": ["!", ",", "!,"], "why": "An exclamation keeps its !, and never gets a comma as well."},
+    {"id": "f17", "t": "fill", "d": 3, "tag": "qmark", "q": "\"Did you finish your homework___\" Mum asked.", "o": ["?", ",", "?,"], "why": "A question mark never changes into a comma, and never gets one added."},
+    {"id": "f18", "t": "fill", "d": 1, "tag": "notag", "q": "\"How do I sign up___\"", "o": ["?", ".", ","], "why": "With no tag, punctuate normally: a question needs a question mark."},
+    {"id": "f19", "t": "fill", "d": 1, "tag": "notag", "q": "\"I am going to the toilet___\"", "o": [".", ",", ""], "why": "With no tag, a statement ends with a full stop inside the quote."},
+    {"id": "f20", "t": "fill", "d": 2, "tag": "notag", "q": "\"The canteen is closed today___\"", "o": [".", ",", ""], "why": "No tag, so punctuate normally: a full stop."},
+    {"id": "f21", "t": "fill", "d": 2, "tag": "notag", "q": "\"What a beautiful view___\"", "o": ["!", ",", ""], "why": "No tag, and the words are an exclamation, so they end with !."},
+    {"id": "f22", "t": "fill", "d": 3, "tag": "twosent", "q": "\"She is on her way___ The restaurant is crowded today.\"", "o": [".", ",", ""], "why": "Two separate ideas inside one quote still need a full stop between them."},
+    {"id": "f23", "t": "fill", "d": 3, "tag": "twosent", "q": "\"I am tired___ I want to go home,\" Ben said.", "o": [".", ",", ""], "why": "Two complete sentences inside the quote: full stop between them."},
+    {"id": "f24", "t": "fill", "d": 3, "tag": "twosent", "q": "\"The bus is late___ We will miss the show,\" Dad sighed.", "o": [".", ",", ""], "why": "Each idea gets its own full stop, even inside the same quote."},
+    {"id": "f25", "t": "fill", "d": 3, "tag": "twosent", "q": "Mum said, \"Dinner is ready___ It is your favourite.\"", "o": [".", ",", ""], "why": "Two complete ideas: a full stop between them."},
+    {"id": "f26", "t": "fill", "d": 2, "tag": "capital", "q": "My mum called out, \"___inner is ready.\"", "o": ["D", "d"], "why": "A new sentence of speech starts with a capital letter."},
+    {"id": "f27", "t": "fill", "d": 2, "tag": "capital", "q": "The nurse said, \"___he patient is stable now.\"", "o": ["T", "t"], "why": "Speech that starts a sentence gets a capital letter."},
+    {"id": "f28", "t": "fill", "d": 3, "tag": "capital", "q": "My sister shouted, \"___ut that down!\"", "o": ["P", "p"], "why": "The first word of the speech gets a capital, even after a comma."},
+    {"id": "f29", "t": "fill", "d": 3, "tag": "capital", "q": "Dad reminded me, \"___on't forget your homework diary.\"", "o": ["D", "d"], "why": "The speech begins a new sentence, so it starts with a capital."},
+    {"id": "c01", "t": "check", "d": 1, "tag": "after", "q": "\"I'm sorry.\" she said.", "a": 0, "why": "A full stop can't sit before a tag that continues the sentence. Use a comma: \"I'm sorry,\" she said."},
+    {"id": "c02", "t": "check", "d": 1, "tag": "after", "q": "\"I'm sorry,\" she said.", "a": 1, "why": "Statement + tag after: comma inside the closing quote. Correct."},
+    {"id": "c03", "t": "check", "d": 1, "tag": "after", "q": "\"We should leave now,\" she whispered.", "a": 1, "why": "A comma inside the quote before the tag: correct."},
+    {"id": "c04", "t": "check", "d": 2, "tag": "after", "q": "\"I think we are lost.\" he admitted quietly.", "a": 0, "why": "The tag finishes the sentence, so the full stop must become a comma."},
+    {"id": "c05", "t": "check", "d": 2, "tag": "after", "q": "\"I don't think so\", Tom replied.", "a": 0, "why": "The comma belongs inside the closing quote: \"I don't think so,\" Tom replied."},
+    {"id": "c06", "t": "check", "d": 2, "tag": "after", "q": "\"Yes,\" my mother said.", "a": 1, "why": "Comma inside the quote, then the tag: correct."},
+    {"id": "c07", "t": "check", "d": 1, "tag": "before", "q": "She said, \"I'm sorry.\"", "a": 1, "why": "Comma before the opening quote, full stop inside the closing one: correct."},
+    {"id": "c08", "t": "check", "d": 1, "tag": "before", "q": "The teacher asked \"Who left this here?\"", "a": 0, "why": "A tag before the quote needs a comma: The teacher asked, \"Who left this here?\""},
+    {"id": "c09", "t": "check", "d": 2, "tag": "before", "q": "She whispered, \"Follow me\".", "a": 0, "why": "The full stop belongs inside the closing quote: \"Follow me.\""},
+    {"id": "c10", "t": "check", "d": 2, "tag": "before", "q": "Ms Goh asked, \"Who would like to volunteer?\"", "a": 1, "why": "Comma before the quote, question mark inside: correct."},
+    {"id": "c11", "t": "check", "d": 2, "tag": "before", "q": "Grandpa said \"It is time for bed.\"", "a": 0, "why": "The tag comes first, so it needs a comma before the opening quote."},
+    {"id": "c12", "t": "check", "d": 1, "tag": "qmark", "q": "\"Where is mother?\" I asked.", "a": 1, "why": "A question keeps its question mark before the tag: correct."},
+    {"id": "c13", "t": "check", "d": 1, "tag": "qmark", "q": "\"Watch out,\" he shouted.", "a": 0, "why": "\"Watch out\" is an exclamation, so it keeps its !: \"Watch out!\" he shouted."},
+    {"id": "c14", "t": "check", "d": 2, "tag": "qmark", "q": "\"Are you coming?,\" she asked.", "a": 0, "why": "Never add a comma after ? or !. \"Are you coming?\" she asked."},
+    {"id": "c15", "t": "check", "d": 2, "tag": "qmark", "q": "\"Can we go home now?\" the child whined.", "a": 1, "why": "The question mark stays inside the quote: correct."},
+    {"id": "c16", "t": "check", "d": 2, "tag": "qmark", "q": "\"Congratulations!\" the coach yelled.", "a": 1, "why": "The ! stays inside, then a space and the tag: correct."},
+    {"id": "c17", "t": "check", "d": 3, "tag": "qmark", "q": "\"Where are my shoes.\" Marcus asked.", "a": 0, "why": "The quoted words are a question, so they need a question mark."},
+    {"id": "c18", "t": "check", "d": 1, "tag": "notag", "q": "\"How do I sign up?\"", "a": 1, "why": "No tag, so punctuate normally: a question mark. Correct."},
+    {"id": "c19", "t": "check", "d": 2, "tag": "notag", "q": "\"I am going to the toilet,\"", "a": 0, "why": "With no tag, a statement ends with a full stop, not a comma."},
+    {"id": "c20", "t": "check", "d": 2, "tag": "notag", "q": "\"Finally! Alone at last!\"", "a": 1, "why": "Each exclamation keeps its own !, and the closing quote comes after the last one. Correct."},
+    {"id": "c21", "t": "check", "d": 3, "tag": "twosent", "q": "\"She is on her way, the restaurant is crowded today.\"", "a": 0, "why": "Two separate ideas need a full stop between them: \"She is on her way. The restaurant is crowded today.\""},
+    {"id": "c22", "t": "check", "d": 3, "tag": "twosent", "q": "\"I am tired. I want to go home,\" Ben said.", "a": 1, "why": "A full stop between the two ideas, and a comma before the tag: correct."},
+    {"id": "c23", "t": "check", "d": 3, "tag": "twosent", "q": "Nurul said, \"I am hungry, I skipped breakfast.\"", "a": 0, "why": "Two complete ideas inside the quote need a full stop between them."},
+    {"id": "c24", "t": "check", "d": 3, "tag": "twosent", "q": "\"I lost my wallet. Can you help me?\" Marcus asked.", "a": 1, "why": "Each idea has its own end mark, and the ? stays: correct."},
+    {"id": "c25", "t": "check", "d": 2, "tag": "space", "q": "\"Congratulations!\"the coach yelled.", "a": 0, "why": "There must be a space after the closing quote: \"Congratulations!\" the coach yelled."},
+    {"id": "c26", "t": "check", "d": 2, "tag": "space", "q": "\"Goal!\" the commentator screamed.", "a": 1, "why": "The ! stays inside, and there's a space before the tag: correct."},
+    {"id": "c27", "t": "check", "d": 3, "tag": "space", "q": "\"Let's go,\"Mum said.", "a": 0, "why": "A space is needed after the closing quotation mark."},
+    {"id": "c28", "t": "check", "d": 2, "tag": "capital", "q": "My mum called out, \"dinner is ready.\"", "a": 0, "why": "The speech is a new sentence, so it starts with a capital: \"Dinner is ready.\""},
+    {"id": "c29", "t": "check", "d": 2, "tag": "capital", "q": "The nurse said, \"The patient is stable now.\"", "a": 1, "why": "Comma, capital letter, full stop inside: correct."},
+    {"id": "c30", "t": "check", "d": 3, "tag": "capital", "q": "Dad said, \"we are leaving in five minutes.\"", "a": 0, "why": "The first word of the speech needs a capital: \"We are leaving…\""},
+    {"id": "p01", "t": "pick", "d": 1, "tag": "after", "q": "She said im sorry.", "o": ["\"I'm sorry,\" she said.", "\"I'm sorry.\" she said.", "\"I'm sorry\", she said.", "\"I'm sorry\" she said."], "why": "A comma goes before the tag, and it sits inside the closing quote."},
+    {"id": "p02", "t": "pick", "d": 1, "tag": "before", "q": "The teacher asked who left this here.", "o": ["The teacher asked, \"Who left this here?\"", "The teacher asked \"Who left this here?\"", "The teacher asked, \"Who left this here.\"", "The teacher asked \"Who left this here.\""], "why": "Comma before the opening quote, and a question mark inside."},
+    {"id": "p03", "t": "pick", "d": 1, "tag": "qmark", "q": "He shouted watch out.", "o": ["\"Watch out!\" he shouted.", "\"Watch out.\" he shouted.", "\"Watch out,\" he shouted.", "\"Watch out!,\" he shouted."], "why": "The exclamation keeps its !, and no comma is added."},
+    {"id": "p04", "t": "pick", "d": 1, "tag": "before", "q": "My mum called out dinner is ready.", "o": ["My mum called out, \"Dinner is ready.\"", "My mum called out \"Dinner is ready\".", "My mum called out, \"Dinner is ready\".", "My mum called out \"Dinner is ready.\""], "why": "Comma before the quote, and the full stop inside the closing quote."},
+    {"id": "p05", "t": "pick", "d": 1, "tag": "qmark", "q": "She asked are you coming.", "o": ["\"Are you coming?\" she asked.", "\"Are you coming,\" she asked.", "\"Are you coming?,\" she asked.", "\"Are you coming\" she asked?"], "why": "The question mark stays inside the quote, with no extra comma."},
+    {"id": "p06", "t": "pick", "d": 2, "tag": "space", "q": "The coach yelled congratulations.", "o": ["\"Congratulations!\" the coach yelled.", "\"Congratulations!\"the coach yelled.", "\"Congratulations,\" the coach yelled.", "\"Congratulations\"! the coach yelled."], "why": "The ! stays inside, and a space comes after the closing quote."},
+    {"id": "p07", "t": "pick", "d": 2, "tag": "after", "q": "He admitted quietly i think we are lost.", "o": ["\"I think we are lost,\" he admitted quietly.", "\"I think we are lost\" he admitted quietly.", "\"I think we are lost.\" he admitted quietly.", "\"I think we are lost\", he admitted quietly."], "why": "Statement + tag after: comma inside the closing quote."},
+    {"id": "p08", "t": "pick", "d": 2, "tag": "before", "q": "She whispered follow me.", "o": ["She whispered, \"Follow me.\"", "She whispered \"Follow me.\"", "She whispered, \"Follow me\".", "She whispered \"follow me.\""], "why": "Comma before the quote, capital to start, full stop inside."},
+    {"id": "p09", "t": "pick", "d": 2, "tag": "capital", "q": "My sister shouted put that down.", "o": ["My sister shouted, \"Put that down!\"", "My sister shouted, \"put that down!\"", "My sister shouted \"Put that down!\"", "My sister shouted, \"Put that down\"!"], "why": "Comma before the quote, a capital to start, and the ! inside."},
+    {"id": "p10", "t": "pick", "d": 2, "tag": "qmark", "q": "The girl said that was the best dance ever.", "o": ["\"That was the best dance ever!\" the girl said.", "\"That was the best dance ever!,\" the girl said.", "\"That was the best dance ever!\"the girl said.", "\"That was the best dance ever\"! the girl said."], "why": "The ! stays inside with no comma added, and a space before the tag."},
+    {"id": "p11", "t": "pick", "d": 2, "tag": "notag", "q": "A thought, standing alone, with no speech tag: finally, alone at last.", "o": ["\"Finally! Alone at last!\"", "\"Finally! Alone at last\"", "\"Finally. Alone at last,\"", "Finally! Alone at last!\""], "why": "With no tag, each exclamation keeps its !, and the quotation marks wrap the whole thing."},
+    {"id": "p12", "t": "pick", "d": 2, "tag": "notag", "q": "A question, standing alone, with no speech tag: how do I sign up.", "o": ["\"How do I sign up?\"", "\"How do I sign up\"", "\"How do I sign up.\"", "How do I sign up?\""], "why": "No tag: punctuate normally with a question mark, and wrap it in quotation marks."},
+    {"id": "p13", "t": "pick", "d": 3, "tag": "twosent", "q": "Father said she is on her way, and the restaurant is crowded today (two separate ideas).", "o": ["My father said, \"She is on her way. The restaurant is crowded today.\"", "My father said, \"She is on her way, the restaurant is crowded today.\"", "My father said \"She is on her way. The restaurant is crowded today.\"", "My father said, \"She is on her way. the restaurant is crowded today.\""], "why": "Comma before the quote, and a full stop plus a capital between the two ideas."},
+    {"id": "p14", "t": "pick", "d": 3, "tag": "twosent", "q": "Ben said i am tired i want to go home (two separate ideas, tag after).", "o": ["\"I am tired. I want to go home,\" Ben said.", "\"I am tired, I want to go home,\" Ben said.", "\"I am tired. I want to go home.\" Ben said.", "\"I am tired. i want to go home,\" Ben said."], "why": "A full stop between the ideas, a capital \"I\", and a comma before the tag."},
+    {"id": "p15", "t": "pick", "d": 3, "tag": "twosent", "q": "Marcus asked i lost my wallet can you help me (two separate ideas).", "o": ["\"I lost my wallet. Can you help me?\" Marcus asked.", "\"I lost my wallet, can you help me?\" Marcus asked.", "\"I lost my wallet. Can you help me,\" Marcus asked.", "\"I lost my wallet. Can you help me?\"Marcus asked."], "why": "Each idea gets its own end mark, the ? stays, and a space comes before the tag."},
+    {"id": "p16", "t": "pick", "d": 1, "tag": "after", "q": "Tom replied i don't think so.", "o": ["\"I don't think so,\" Tom replied.", "\"I don't think so.\" Tom replied.", "\"I don't think so\", Tom replied.", "\"I don't think so\" Tom replied."], "why": "Statement + tag after: comma inside the closing quote."},
+    {"id": "p17", "t": "pick", "d": 2, "tag": "qmark", "q": "The child whined can we go home now.", "o": ["\"Can we go home now?\" the child whined.", "\"Can we go home now,\" the child whined.", "\"Can we go home now.\" the child whined.", "\"Can we go home now\" the child whined."], "why": "The quoted words form a question, so they need a question mark."},
+    {"id": "p18", "t": "pick", "d": 2, "tag": "capital", "q": "The nurse said the patient is stable now.", "o": ["The nurse said, \"The patient is stable now.\"", "The nurse said \"The patient is stable now\".", "The nurse said, \"The patient is stable now\".", "The nurse said, \"the patient is stable now.\""], "why": "Comma, capital letter, full stop inside the closing quote."},
+    {"id": "p19", "t": "pick", "d": 3, "tag": "space", "ask": "Which sentence is correct?", "o": ["\"Hurray!\" the children cheered.", "\"Hurray!\"the children cheered.", "\"Hurray!,\" the children cheered.", "\"Hurray\"! the children cheered."], "why": "The ! stays inside, nothing is added, and a space comes before the tag."},
+    {"id": "p20", "t": "pick", "d": 3, "tag": "after", "ask": "Which sentence is correct?", "o": ["\"The library is closed,\" Wei Ling said.", "\"The library is closed.\" Wei Ling said.", "\"The library is closed\", Wei Ling said.", "\"The library is closed,\"Wei Ling said."], "why": "Comma inside the quote, then a space and the tag."},
+    {"id": "p21", "t": "pick", "d": 3, "tag": "before", "ask": "Which sentence is correct?", "o": ["Grandma asked, \"Have you eaten?\"", "Grandma asked \"Have you eaten?\"", "Grandma asked, \"have you eaten?\"", "Grandma asked, \"Have you eaten\"?"], "why": "Comma before the quote, capital to start, and the ? inside."},
+    {"id": "p22", "t": "pick", "d": 3, "tag": "notag", "ask": "Which sentence is correct?", "o": ["\"I can't find my book!\"", "\"I can't find my book!,\"", "\"I can't find my book\"!", "\"i can't find my book!\""], "why": "No tag: a capital to start, and the ! inside the closing quote."},
+    {"id": "s01", "t": "spot", "d": 1, "tag": "after", "parts": ["\"I am hungry.\"", "my brother", "said", "loudly."], "a": 0, "why": "The quote ends in a full stop, but the tag continues the sentence: \"I am hungry,\" my brother said."},
+    {"id": "s02", "t": "spot", "d": 1, "tag": "before", "parts": ["Ms Lee said", "\"Please open", "your books", "to page ten.\""], "a": 0, "why": "A tag before the quote needs a comma: Ms Lee said, \"Please…"},
+    {"id": "s03", "t": "spot", "d": 1, "tag": "qmark", "parts": ["\"Where is", "my water bottle,\"", "Nurul", "asked."], "a": 1, "why": "The quoted words are a question, so they need a question mark, not a comma."},
+    {"id": "s04", "t": "spot", "d": 2, "tag": "after", "parts": ["\"The film starts", "at seven.\"", "Dad", "reminded us."], "a": 1, "why": "A statement followed by a tag takes a comma inside the quote: \"…at seven,\" Dad reminded us."},
+    {"id": "s05", "t": "spot", "d": 2, "tag": "before", "parts": ["After lunch,", "Mr Lim announced", "\"The bus", "is here.\""], "a": 1, "why": "Mr Lim's words come after the tag, so a comma goes before the opening quote."},
+    {"id": "s06", "t": "spot", "d": 2, "tag": "qmark", "parts": ["\"Watch out,\"", "the man", "shouted", "at the boy."], "a": 0, "why": "\"Watch out\" is an exclamation, so it keeps its !: \"Watch out!\""},
+    {"id": "s07", "t": "spot", "d": 2, "tag": "qmark", "parts": ["\"Did you see", "my keys?,\"", "Mum", "asked."], "a": 1, "why": "Never add a comma after a question mark: \"Did you see my keys?\" Mum asked."},
+    {"id": "s08", "t": "spot", "d": 2, "tag": "space", "parts": ["\"Thank you!\"the", "children", "said", "together."], "a": 0, "why": "There must be a space after the closing quotation mark."},
+    {"id": "s09", "t": "spot", "d": 2, "tag": "space", "parts": ["\"I won!\"I", "shouted", "to", "my parents."], "a": 0, "why": "Leave a space between the closing quotation mark and the next word."},
+    {"id": "s10", "t": "spot", "d": 2, "tag": "capital", "parts": ["The coach", "said,", "\"keep", "running!\""], "a": 2, "why": "The speech starts a new sentence, so \"Keep\" needs a capital."},
+    {"id": "s11", "t": "spot", "d": 2, "tag": "capital", "parts": ["Grandma", "smiled and said,", "\"you have", "grown so tall.\""], "a": 2, "why": "The first word of the speech needs a capital: \"You have…\""},
+    {"id": "s12", "t": "spot", "d": 3, "tag": "twosent", "parts": ["\"I lost my book,", "I need", "to find it,\"", "Ali said."], "a": 0, "why": "Two separate ideas inside the quote need a full stop between them: \"I lost my book. I need…\""},
+    {"id": "s13", "t": "spot", "d": 3, "tag": "twosent", "parts": ["Mum said,", "\"The car is ready,", "we can", "leave now.\""], "a": 1, "why": "Two complete ideas: \"The car is ready. We can leave now.\""},
+    {"id": "s14", "t": "spot", "d": 3, "tag": "twosent", "parts": ["\"It is late.", "we should", "go home,\"", "Dad said."], "a": 1, "why": "After the full stop, the new sentence inside the quote needs a capital: \"We should…\""},
+    {"id": "s15", "t": "spot", "d": 1, "tag": "qmark", "parts": ["\"Where", "are you", "going\"", "I wondered."], "a": 2, "why": "The quoted words are a question, so they need a question mark: \"Where are you going?\" I wondered."},
+    {"id": "s16", "t": "spot", "d": 3, "tag": "after", "parts": ["\"We won", "the match\",", "our captain", "announced."], "a": 1, "why": "The comma belongs inside the closing quote: \"We won the match,\" our captain announced."},
+    {"id": "s17", "t": "spot", "d": 3, "tag": "before", "parts": ["The bus driver", "asked \"Where", "are you", "going?\""], "a": 1, "why": "A tag before the quote needs a comma: asked, \"Where…"},
+    {"id": "s18", "t": "spot", "d": 3, "tag": "qmark", "parts": ["\"What a", "lovely surprise!,\"", "Grandma", "exclaimed."], "a": 1, "why": "An exclamation mark never gets a comma as well: \"What a lovely surprise!\" Grandma exclaimed."},
+    {"id": "s19", "t": "spot", "d": 1, "tag": "after", "parts": ["\"I will", "help you.\"", "Wei Ling", "promised."], "a": 1, "why": "The tag continues the sentence, so the full stop must be a comma: \"I will help you,\" Wei Ling promised."},
+    {"id": "s20", "t": "spot", "d": 2, "tag": "notag", "parts": ["\"Help!", "Someone", "has fallen", "into the pool\""], "a": 3, "why": "With no tag, the exclamation needs its ! inside the closing quote: \"…into the pool!\""},
+    {"id": "s21", "t": "spot", "d": 3, "tag": "capital", "parts": ["\"Hurry up,\"", "Dad called.", "\"the taxi", "is waiting.\""], "a": 2, "why": "\"The taxi is waiting\" is a new sentence of speech, so it starts with a capital."},
+    {"id": "s22", "t": "spot", "d": 3, "tag": "space", "parts": ["\"Look!\"Arjun", "pointed", "at the sky.", "\"A rainbow!\""], "a": 0, "why": "A space is needed between the closing quotation mark and \"Arjun\"."},
+    {"id": "c31", "t": "check", "d": 1, "tag": "after", "q": "\"Let's play outside,\" said Wei Ling.", "a": 1, "why": "A comma inside the quote before the tag: correct."},
+    {"id": "c32", "t": "check", "d": 1, "tag": "before", "q": "Dad asked, \"Where are my glasses?\"", "a": 1, "why": "Comma before the quote, question mark inside: correct."},
+    {"id": "c33", "t": "check", "d": 1, "tag": "after", "q": "\"It is raining.\" Mum said.", "a": 0, "why": "The tag finishes the sentence, so use a comma: \"It is raining,\" Mum said."},
+    {"id": "f30", "t": "fill", "d": 1, "tag": "after", "q": "\"I love this song___\" Nurul said.", "o": [",", ".", ""], "why": "Statement + tag after: a comma inside the closing quote."},
+    {"id": "f31", "t": "fill", "d": 1, "tag": "before", "q": "The bus driver said___ \"Please move to the back.\"", "o": [",", ".", ""], "why": "Tag before the quote: a comma before it opens."},
+    {"id": "p23", "t": "pick", "d": 1, "tag": "notag", "ask": "This speech has no tag. Which version is correct?", "o": ["\"Good morning, class.\"", "\"Good morning, class\"", "\"good morning, class.\"", "Good morning, class.\""], "why": "No tag: a capital to start, a full stop inside, and quotation marks around the whole thing."},
+    {"id": "c34", "t": "check", "d": 1, "tag": "space", "q": "\"Hello!\" Grandpa called.", "a": 1, "why": "The ! stays inside, then a space before the tag: correct."},
+    {"id": "c35", "t": "check", "d": 3, "tag": "space", "q": "\"Wait for me!\"Ravi cried.", "a": 0, "why": "A space is needed after the closing quotation mark: \"Wait for me!\" Ravi cried."},
+    {"id": "s23", "t": "spot", "d": 3, "tag": "space", "parts": ["\"Stop!\"the", "guard", "shouted", "loudly."], "a": 0, "why": "Leave a space between the closing quotation mark and \"the\"."},
+    {"id": "p24", "t": "pick", "d": 3, "tag": "space", "ask": "Which sentence is correct?", "o": ["\"Run!\" the teacher shouted.", "\"Run!\"the teacher shouted.", "\"Run,\" the teacher shouted.", "\"Run!\", the teacher shouted."], "why": "The ! stays inside, nothing is added after it, and a space comes before the tag."},
+    {"id": "c36", "t": "check", "d": 3, "tag": "after", "q": "\"The answer is ten\", Ravi said.", "a": 0, "why": "The comma belongs inside the closing quote: \"The answer is ten,\" Ravi said."},
+    {"id": "c37", "t": "check", "d": 3, "tag": "qmark", "q": "\"Is it time to go?\" asked Priya.", "a": 1, "why": "The question keeps its question mark, even with the tag after: correct."},
+    {"id": "s24", "t": "spot", "d": 3, "tag": "notag", "parts": ["\"Who left", "these shoes", "in the hall.\""], "a": 2, "why": "The quoted words are a question, so they end with a question mark: \"…in the hall?\""},
+    {"id": "f32", "t": "fill", "d": 3, "tag": "notag", "q": "\"Has anyone seen my cat___\"", "o": ["?", ".", ","], "why": "No tag, and the words are a question: a question mark."},
+    {"id": "c38", "t": "check", "d": 3, "tag": "before", "q": "Mr Tan said, \"Hand in your books by Friday\".", "a": 0, "why": "The full stop belongs inside the closing quote: \"…by Friday.\""},
+    {"id": "c39", "t": "check", "d": 3, "tag": "twosent", "q": "\"The shop is closed. We will come back tomorrow,\" Dad said.", "a": 1, "why": "A full stop between the two ideas, and a comma before the tag: correct."},
   ];
 
-  const container = document.getElementById('quizContainer');
-  const scoreDisplay = document.getElementById('scoreDisplay');
-  const resetBtn = document.getElementById('resetBtn');
-  let score = 0;
-  let answered = new Array(QUESTIONS.length).fill(false);
+  /* ================= QUIZ BANK ENGINE (shared by every lesson) =================
+     Needs, defined above it: LESSON_KEY, TAGS, BANK. Optional: QB_TEXT = { ask: {...}, yn: [...] }.
+     Each attempt draws BAND_SIZES questions (easy, medium, tricky). The draw builds many
+     candidate quizzes and keeps the best: every tag present, 3+ of each type, balanced
+     check answers, unseen questions first. Options are shuffled; ids seen are remembered. */
+  const BAND_SIZES = [7, 7, 6];
+  const DRAW = BAND_SIZES.reduce((a, b) => a + b, 0);
+  const QBT = (typeof QB_TEXT !== 'undefined') ? QB_TEXT : {};
+  const ASK = Object.assign({
+    check: 'Is this sentence correct?',
+    pick:  'Pick the correct sentence.',
+    fill:  'Which choice fills the gap correctly?',
+    spot:  'Tap the part with the mistake.'
+  }, QBT.ask || {});
+  const YN = QBT.yn || ['Needs fixing', 'Correct'];
+
+  const store = {
+    get(k, fallback) { try { const v = localStorage.getItem(LESSON_KEY + ':' + k); return v === null ? fallback : JSON.parse(v); } catch (e) { return fallback; } },
+    set(k, v) { try { localStorage.setItem(LESSON_KEY + ':' + k, JSON.stringify(v)); } catch (e) { /* storage unavailable: quiz still works */ } }
+  };
+  const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  function buildCandidate(seen) {
+    const chosen = [], tagN = {}, typeN = {};
+    let fixN = 0, okN = 0;
+    for (let band = 1; band <= 3; band++) {
+      const picks = [];
+      for (let k = 0; k < BAND_SIZES[band - 1]; k++) {
+        let best = null, bestScore = -Infinity;
+        BANK.forEach(q => {
+          if (q.d !== band || picks.includes(q)) return;
+          let s = Math.random() * 3;
+          if (!seen.has(q.id)) s += 6;
+          if (!tagN[q.tag]) s += 12;
+          s -= (typeN[q.t] || 0) * 1.2;
+          if ((typeN[q.t] || 0) < 3) s += 2;   // nudge every type up to 3
+          if (q.t === 'check') { const lean = q.a === 0 ? fixN - okN : okN - fixN; if (lean >= 1) s -= 4; }
+          if (s > bestScore) { bestScore = s; best = q; }
+        });
+        if (!best) break;
+        picks.push(best);
+        tagN[best.tag] = (tagN[best.tag] || 0) + 1;
+        typeN[best.t] = (typeN[best.t] || 0) + 1;
+        if (best.t === 'check') { if (best.a === 0) fixN++; else okN++; }
+      }
+      chosen.push(...shuffle(picks));
+    }
+    return chosen;
+  }
+
+  function rateCandidate(c, seen) {
+    const tags = new Set(c.map(q => q.tag)).size;
+    const types = {};
+    c.forEach(q => types[q.t] = (types[q.t] || 0) + 1);
+    const used = [...new Set(BANK.map(q => q.t))];
+    const minType = Math.min(...used.map(t => types[t] || 0));
+    const checks = c.filter(q => q.t === 'check');
+    const lean = Math.abs(checks.filter(q => q.a === 0).length * 2 - checks.length);
+    return (tags === Object.keys(TAGS).length ? 10000 : tags * 500)
+         + (c.length === DRAW ? 5000 : 0)
+         + Math.min(minType, 3) * 300
+         + (lean <= 2 ? 200 : 0)
+         + c.filter(q => !seen.has(q.id)).length * 10;
+  }
+
+  function drawQuiz() {
+    let seen = new Set(store.get('seen', []));
+    if (BANK.length - seen.size < DRAW) seen = new Set(store.get('last', []));   // new cycle, but skip the last attempt
+    let chosen = null, bestRate = -1;
+    for (let tries = 0; tries < 200; tries++) {
+      const c = buildCandidate(seen), r = rateCandidate(c, seen);
+      if (r > bestRate) { bestRate = r; chosen = c; }
+    }
+    chosen.forEach(q => seen.add(q.id));
+    store.set('seen', [...seen]);
+    store.set('last', chosen.map(q => q.id));
+    return chosen.map(q => {
+      if (q.t === 'pick' || q.t === 'fill') {
+        const opts = shuffle(q.o.map((text, i) => ({ text, ok: i === 0 })));
+        return { q, opts, answer: opts.findIndex(o => o.ok) };
+      }
+      if (q.t === 'check') return { q, opts: YN.map(text => ({ text })), answer: q.a };
+      return { q, opts: null, answer: q.a };
+    });
+  }
+
+  const listEl = document.getElementById('qbList');
+  const scoreEl = document.getElementById('qbScore');
+  const progressEl = document.getElementById('qbProgress');
+  const summaryEl = document.getElementById('qbSummary');
+  let current = [], score = 0, done = 0, missed = [];
 
   function updateScore() {
-    scoreDisplay.textContent = score + " / " + QUESTIONS.length;
+    scoreEl.textContent = score + ' / ' + current.length;
+    progressEl.textContent = done + ' of ' + current.length + ' answered';
+  }
+
+  /* Small or empty options are hard to see on a button, so label them. */
+  function optLabel(text) {
+    const t = text.trim();
+    if (t === '') return '<span class="qb-note">(nothing)</span>';
+    if (t === ',') return '<span class="qb-punct">,</span> <span class="qb-note">(a comma)</span>';
+    if (t === '.') return '<span class="qb-punct">.</span> <span class="qb-note">(a full stop)</span>';
+    return esc(text);
+  }
+  function plainLabel(text) {
+    const t = text.trim();
+    return t === '' ? 'nothing' : t === ',' ? 'a comma' : t === '.' ? 'a full stop' : '"' + t + '"';
+  }
+  function sentenceWithGap(q, text) {
+    let filler = '<span class="qb-blank">___</span>';
+    if (text !== undefined) {
+      filler = text.trim() === ''
+        ? '<span class="qb-blank qb-filled qb-none">(nothing)</span>'
+        : '<span class="qb-blank qb-filled">' + esc(text) + '</span>';
+    }
+    return esc(q.q).replace('___', filler);
   }
 
   function render() {
-    container.innerHTML = '';
-    QUESTIONS.forEach((q, i) => {
+    listEl.innerHTML = '';
+    summaryEl.hidden = true;
+    current.forEach((item, i) => {
+      const q = item.q;
       const card = document.createElement('div');
-      card.className = 'quiz-bubble';
-
-      const num = document.createElement('p');
-      num.className = 'quiz-num';
-      num.textContent = 'Q' + (i + 1);
-      card.appendChild(num);
-
-      const prompt = document.createElement('p');
-      prompt.className = 'quiz-prompt';
-      prompt.textContent = q.prompt;
-      card.appendChild(prompt);
-
-      const optWrap = document.createElement('div');
-      optWrap.className = 'quiz-options';
-
-      q.options.forEach((optText, j) => {
-        const btn = document.createElement('button');
-        btn.className = 'quiz-opt';
-        btn.innerHTML = '<span class="tag">' + String.fromCharCode(65 + j) + '</span>' + optText.replace(/</g, '&lt;');
-        btn.addEventListener('click', () => handleAnswer(i, j, card));
-        optWrap.appendChild(btn);
-      });
-      card.appendChild(optWrap);
-
-      const feedback = document.createElement('div');
-      feedback.className = 'feedback';
-      feedback.id = 'feedback-' + i;
-      card.appendChild(feedback);
-
-      container.appendChild(card);
-    });
-  }
-
-  function handleAnswer(i, chosenIdx, card) {
-    if (answered[i]) return;
-    answered[i] = true;
-
-    const q = QUESTIONS[i];
-    const correct = chosenIdx === q.answer;
-    if (correct) score++;
-    updateScore();
-
-    const buttons = card.querySelectorAll('.quiz-opt');
-    buttons.forEach((b, j) => {
-      b.disabled = true;
-      if (j === chosenIdx) {
-        b.classList.add(correct ? 'correct' : 'incorrect');
-      } else if (j === q.answer && !correct) {
-        b.classList.add('reveal-correct');
+      card.className = 'qb-card';
+      card.dataset.type = q.t;
+      let body;
+      if (q.t === 'spot') {
+        body = '<div class="qb-spot">' + q.parts.map((p, k) =>
+          '<button type="button" class="qb-part" data-k="' + k + '">' + esc(p) + '</button>').join('') + '</div>';
+      } else if (q.t === 'fill') {
+        const cols = item.opts.length;
+        body = '<p class="qb-text">' + sentenceWithGap(q) + '</p><div class="qb-opts qb-row" style="--qb-cols:' + cols + '"></div>';
+      } else if (q.t === 'check') {
+        body = '<p class="qb-text">' + esc(q.q) + '</p><div class="qb-opts qb-row"></div>';
+      } else {
+        body = (q.q ? '<p class="qb-text">' + esc(q.q) + '</p>' : '') + '<div class="qb-opts"></div>';
       }
+      card.innerHTML =
+        '<p class="qb-num">Question ' + (i + 1) + ' of ' + current.length + '</p>' +
+        '<p class="qb-ask">' + esc(q.ask || ASK[q.t]) + '</p>' + body +
+        '<div class="qb-feedback" role="status"></div>';
+      if (q.t === 'spot') {
+        card.querySelectorAll('.qb-part').forEach(b => b.addEventListener('click', () => answer(i, +b.dataset.k, card)));
+      } else {
+        const opts = card.querySelector('.qb-opts');
+        item.opts.forEach((o, j) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'qb-opt';
+          b.innerHTML = (q.t === 'pick' ? '<span class="qb-letter">' + String.fromCharCode(65 + j) + '</span>' : '') + optLabel(o.text);
+          b.addEventListener('click', () => answer(i, j, card));
+          opts.appendChild(b);
+        });
+      }
+      listEl.appendChild(card);
     });
-
-    const feedback = document.getElementById('feedback-' + i);
-    feedback.classList.add('show', correct ? 'is-correct' : 'is-incorrect');
-    feedback.innerHTML = '<span class="verdict">' + (correct ? 'Correct!' : 'Not quite!') + '</span>' + q.why;
+    updateScore();
   }
 
-  resetBtn.addEventListener('click', () => {
-    score = 0;
-    answered = new Array(QUESTIONS.length).fill(false);
+  function answer(i, j, card) {
+    const item = current[i];
+    if (item.done) return;
+    item.done = true; done++;
+    const q = item.q, ok = j === item.answer;
+    if (ok) score++; else missed.push(q.tag);
+    card.querySelectorAll(q.t === 'spot' ? '.qb-part' : '.qb-opt').forEach((b, k) => {
+      b.disabled = true;
+      if (k === j) b.classList.add(ok ? 'qb-correct' : 'qb-incorrect');
+      else if (k === item.answer && !ok) b.classList.add('qb-reveal');
+    });
+    if (q.t === 'fill') card.querySelector('.qb-text').innerHTML = sentenceWithGap(q, item.opts[j].text);
+    let right;
+    if (q.t === 'spot') right = 'The mistake is in "' + esc(q.parts[item.answer]) + '".';
+    else if (q.t === 'pick') right = 'The answer is ' + String.fromCharCode(65 + item.answer) + '.';
+    else right = 'The answer is ' + esc(plainLabel(item.opts[item.answer].text)) + '.';
+    const fb = card.querySelector('.qb-feedback');
+    fb.classList.add('qb-show', ok ? 'qb-fb-ok' : 'qb-fb-no');
+    fb.innerHTML = '<span class="qb-verdict">' + (ok ? 'Correct!' : 'Not quite. ' + right) + '</span>' + esc(q.why);
     updateScore();
-    render();
-    window.scrollTo({ top: container.offsetTop - 80, behavior: 'smooth' });
-  });
+    if (done === current.length) showSummary();
+  }
 
-  render();
-  updateScore();
+  function showSummary() {
+    const best = Math.max(store.get('best', 0), score);
+    store.set('best', best);
+    const attempts = store.get('attempts', 0) + 1;
+    store.set('attempts', attempts);
+    const counts = {};
+    missed.forEach(t => counts[t] = (counts[t] || 0) + 1);
+    const areas = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+    const n = current.length;
+    let msg;
+    if (score === n) msg = 'A perfect run! Try another set to make sure it sticks.';
+    else if (score >= Math.ceil(n * 0.8)) msg = 'Strong work. Have a quick look at the areas below, then try a fresh set.';
+    else if (score >= Math.ceil(n * 0.6)) msg = 'Good progress. Re-read the parts below before your next attempt.';
+    else msg = 'Worth another look at the lesson. Start with the areas below, then try a fresh set.';
+    summaryEl.innerHTML =
+      '<h3>You scored ' + score + ' / ' + n + '</h3><p>' + msg + '</p>' +
+      (areas.length ? '<p class="qb-sum-label">Areas to review</p><ul class="qb-areas">' + areas.map(t =>
+        '<li><a href="' + TAGS[t].href + '">' + esc(TAGS[t].label) + '</a><span>' + counts[t] + ' wrong</span></li>').join('') + '</ul>' : '') +
+      '<p class="qb-meta">Attempts on this device: ' + attempts + ' · Best score: ' + best + ' / ' + n + '</p>' +
+      '<button type="button" class="qb-go" id="qbAgain">Try ' + n + ' new questions</button>';
+    summaryEl.hidden = false;
+    document.getElementById('qbAgain').addEventListener('click', () => { newQuiz(); listEl.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    summaryEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function newQuiz() {
+    current = drawQuiz(); score = 0; done = 0; missed = [];
+    render();
+  }
+
+  const bankEl = document.getElementById('qbBank'), drawEl = document.getElementById('qbDraw');
+  if (bankEl) bankEl.textContent = BANK.length;
+  if (drawEl) drawEl.textContent = DRAW;
+  document.getElementById('qbNew').addEventListener('click', () => {
+    newQuiz();
+    listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  newQuiz();
 })();
 </script>
 </body>
