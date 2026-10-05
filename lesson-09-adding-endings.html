@@ -154,35 +154,108 @@
   .special { background: var(--surface); border-radius: 12px; padding: 16px 18px; border: 2px dashed var(--board); }
   .special p { margin: 0 0 8px; font-size: 15px; }
 
-  /* ---------- Quiz ---------- */
-  .scoreboard {
-    display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; margin-bottom: 20px;
-    background: var(--board); color: var(--board-ink); border-radius: 12px; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 2;
+  /* ================= QUIZ BANK ENGINE (shared by every lesson; qb- prefix avoids clashes) ================= */
+  .qb { --qb-cols: 2; }
+  .qb-bar {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 3;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 10px 16px; margin: 0 0 18px; border-radius: var(--qb-radius);
+    background: var(--qb-bar); color: var(--qb-bar-ink);
   }
-  .scoreboard .label { font-size: 13px; opacity: 0.85; }
-  .score { font-family: var(--font-display); font-weight: 700; font-size: 26px; }
-  .reset-btn { font: inherit; font-weight: 700; font-size: 14px; padding: 10px 16px; min-height: 44px; border-radius: 22px; border: 2px solid var(--board-ink); background: transparent; color: var(--board-ink); cursor: pointer; }
-  .quiz-card { background: var(--surface); padding: 18px; margin-bottom: 14px; border-radius: 12px; }
-  .quiz-num { font-size: 13px; color: var(--ink-soft); margin: 0 0 6px; }
-  .quiz-ask { font-size: 14px; font-weight: 700; color: var(--board); margin: 0 0 6px; }
-  :root[data-theme="dark"] .quiz-ask { color: var(--dbl); }
-  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .quiz-ask { color: var(--dbl); } }
-  .quiz-text { font-size: 17px; margin: 0 0 14px; font-weight: 600; line-height: 1.45; }
-  .blank { display: inline-block; min-width: 70px; text-align: center; border-bottom: 2px dashed var(--ink-soft); color: var(--ink-soft); }
-  .blank.filled { border-bottom-style: solid; color: var(--ink); font-weight: 700; }
-  .opts { display: flex; flex-direction: column; gap: 9px; }
-  .opts.row { flex-direction: row; }
-  .opts.row .opt { flex: 1; text-align: center; font-family: var(--font-display); font-weight: 700; font-size: 18px; }
-  .opt { font: inherit; font-size: 15.5px; text-align: left; padding: 11px 12px; min-height: 44px; border: 2px solid var(--rule); background: var(--bg); color: var(--ink); cursor: pointer; border-radius: 8px; }
-  .opt:disabled { cursor: default; }
-  .opt .tag { font-weight: 700; margin-right: 8px; color: var(--board); }
-  .opt.correct, .opt.reveal { background: var(--right-soft); border-color: var(--right); }
-  .opt.incorrect { background: var(--wrong-soft); border-color: var(--wrong); }
-  .feedback { display: none; margin-top: 12px; padding-top: 12px; border-top: 2px dashed var(--rule); font-size: 15px; line-height: 1.55; }
-  .feedback.show { display: block; }
-  .verdict { display: block; font-weight: 700; margin-bottom: 4px; }
-  .feedback.fb-ok .verdict { color: var(--right); }
-  .feedback.fb-no .verdict { color: var(--wrong); }
+  .qb-label { font-size: 12.5px; opacity: 0.8; }
+  .qb-score { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 28px; line-height: 1.05; }
+  .qb-progress { font-size: 12.5px; opacity: 0.85; margin-top: 2px; }
+  .qb-new {
+    font: inherit; font-weight: 700; font-size: 14px; padding: 10px 16px; min-height: 44px;
+    border-radius: 999px; border: 2px solid currentColor; background: transparent; color: inherit; cursor: pointer;
+  }
+  .qb-list, .qb-summary { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 96px); }
+  .qb-card {
+    background: var(--qb-card); border: var(--qb-card-border); box-shadow: var(--qb-card-shadow);
+    border-radius: var(--qb-radius); padding: 16px 16px 14px; margin: 0 0 14px; color: var(--qb-ink);
+  }
+  .qb-speak {
+    float: right; margin: -4px 0 6px 10px; font: inherit; font-size: 13.5px; font-weight: 700;
+    padding: 7px 12px; min-height: 38px; border-radius: 999px; cursor: pointer;
+    border: 2px solid var(--qb-accent); background: var(--qb-accent-soft); color: var(--qb-ink);
+  }
+  .qb-num { font-size: 12.5px; color: var(--qb-soft); margin: 0 0 4px; }
+  .qb-ask { font-size: 13.5px; font-weight: 700; color: var(--qb-accent); margin: 0 0 6px; }
+  .qb-text { font-size: var(--qb-text-size, 16.5px); line-height: 1.6; margin: 0 0 14px; }
+  .qb-blank {
+    display: inline-block; min-width: 60px; padding: 0 3px; text-align: center;
+    border-bottom: 2.5px dashed var(--qb-soft); color: var(--qb-soft);
+  }
+  .qb-blank.qb-filled { border-bottom-style: solid; border-bottom-color: var(--qb-accent); color: var(--qb-accent); font-weight: 700; }
+  .qb-blank.qb-none { font-style: italic; font-weight: 400; }
+  .qb-opts { display: flex; flex-direction: column; gap: 9px; }
+  .qb-opts.qb-row { display: grid; grid-template-columns: repeat(var(--qb-cols), minmax(0, 1fr)); }
+  .qb-opt {
+    font: inherit; font-size: var(--qb-opt-size, 15.5px); line-height: 1.45; text-align: left; color: var(--qb-ink);
+    padding: 11px 14px; min-height: var(--qb-tap, 46px); border-radius: var(--qb-radius-opt);
+    border: 2px solid var(--qb-rule); background: var(--qb-page); cursor: pointer;
+  }
+  .qb-row .qb-opt { text-align: center; font-weight: 600; padding-left: 6px; padding-right: 6px; }
+  .qb-opt:not(:disabled):hover { border-color: var(--qb-accent); }
+  .qb-opt:disabled, .qb-part:disabled { cursor: default; }
+  .qb-letter { font-family: var(--qb-font); font-weight: var(--qb-font-weight); margin-right: 10px; color: var(--qb-accent); }
+  .qb-note { font-size: 12.5px; font-weight: 400; color: var(--qb-soft); }
+  .qb-punct { font-size: 22px; line-height: 0; font-weight: 700; }
+  .qb-spot { display: flex; flex-wrap: wrap; gap: 8px 6px; margin: 0 0 4px; }
+  .qb-part {
+    font: inherit; font-size: var(--qb-opt-size, 16px); line-height: 1.35; text-align: left; color: var(--qb-ink); cursor: pointer;
+    background: var(--qb-accent-soft); border: none; border-bottom: 3px dashed var(--qb-accent);
+    border-radius: 4px 4px 0 0; padding: 7px 9px; min-height: 40px;
+  }
+  .qb-opt.qb-correct, .qb-opt.qb-reveal { background: var(--qb-right-soft); border-color: var(--qb-right); }
+  .qb-opt.qb-incorrect { background: var(--qb-wrong-soft); border-color: var(--qb-wrong); }
+  .qb-part.qb-correct, .qb-part.qb-reveal { background: var(--qb-right-soft); border-bottom: 3px solid var(--qb-right); }
+  .qb-part.qb-incorrect { background: var(--qb-wrong-soft); border-bottom: 3px solid var(--qb-wrong); }
+  .qb-feedback { display: none; margin-top: 12px; padding-top: 12px; border-top: 2px dashed var(--qb-rule); font-size: 14px; line-height: 1.55; }
+  .qb-feedback.qb-show { display: block; }
+  .qb-verdict { display: block; font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 18px; margin-bottom: 2px; }
+  .qb-fb-ok .qb-verdict { color: var(--qb-right); }
+  .qb-fb-no .qb-verdict { color: var(--qb-wrong); }
+  .qb-summary {
+    background: var(--qb-card); color: var(--qb-ink); border: 3px solid var(--qb-accent);
+    border-radius: var(--qb-radius); padding: 18px 20px; margin-top: 8px;
+  }
+  .qb-summary h3 { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 30px; line-height: 1.1; margin: 0 0 6px; color: var(--qb-accent); }
+  .qb-summary p { margin: 0 0 10px; line-height: 1.55; }
+  .qb-sum-label { font-weight: 700; margin-top: 14px !important; }
+  .qb-areas { list-style: none; margin: 0 0 12px; padding: 0; }
+  .qb-areas li { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--qb-rule); }
+  .qb-areas a { color: var(--qb-ink); font-weight: 600; }
+  .qb-areas span { color: var(--qb-wrong); font-weight: 700; white-space: nowrap; }
+  .qb-meta { font-size: 13px; color: var(--qb-soft); }
+  .qb-go {
+    font: inherit; font-weight: 700; font-size: 16px; width: 100%; min-height: 50px; margin-top: 4px; cursor: pointer;
+    border: none; border-radius: var(--qb-radius); background: var(--qb-accent); color: var(--qb-on-accent);
+  }
+  :root {
+    --qb-page: var(--bg);
+    --qb-card: var(--surface);
+    --qb-ink: var(--ink);
+    --qb-soft: var(--ink-soft);
+    --qb-accent: var(--dbl);
+    --qb-accent-soft: var(--dbl-soft);
+    --qb-on-accent: #FFFFFF;
+    --qb-right: var(--right);
+    --qb-right-soft: var(--right-soft);
+    --qb-wrong: var(--wrong);
+    --qb-wrong-soft: var(--wrong-soft);
+    --qb-rule: var(--rule);
+    --qb-bar: var(--board);
+    --qb-bar-ink: var(--board-ink);
+    --qb-font: var(--font-display);
+    --qb-font-weight: 700;
+    --qb-radius: 12px;
+    --qb-radius-opt: 8px;
+    --qb-card-border: none;
+    --qb-card-shadow: none;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --qb-on-accent: #0D1A16; } }
+  :root[data-theme="dark"] { --qb-on-accent: #0D1A16; }
 
   /* ---------- Summary ---------- */
   .summary { background: var(--board); color: var(--board-ink); border-radius: 14px; padding: 20px; }
@@ -193,12 +266,12 @@
 </head>
 <body>
 <div class="wrap">
-  <a class="back-link" href="index.html">← Back to the shelf</a>
+  <a class="back-link" href="index.html#upper">← Back to the shelf</a>
 
   <!-- 1. HERO -->
   <header class="hero">
     <h1><span class="d1">Double</span> It, <span class="d2">Drop</span> It, or Leave It?</h1>
-    <p class="lead">Endings that start with a vowel, like <b>-ing, -ed, -er</b> and <b>-able</b>, are <b>pushy</b>. They lean on the vowel in front of them and try to make it "say its name". <i>Hop</i> + <i>ing</i> becomes "hoping", which sounds like <i>hope</i>! Your job is to keep the word's sound the same. You can build a wall of two letters, drop a silent <i>e</i>, or leave the word alone.</p>
+    <p class="lead">Endings whose <b>first letter</b> is a vowel, like <b>-ing, -ed, -er, -est, -able</b> and <b>-y</b>, are <b>pushy</b>. They lean on the vowel in front of them and try to make it "say its name". <i>Hop</i> + <i>ing</i> becomes "hoping", which sounds like <i>hope</i>! Your job is to keep the word's sound the same. You can build a wall of two letters, drop a silent <i>e</i>, or leave the word alone.</p>
 
     <div class="board">
       <p class="lbl">1. Pick a word.</p>
@@ -215,14 +288,14 @@
   </header>
 
   <!-- 2. THE RULE -->
-  <section>
+  <section id="rule">
     <h2>The three-tile check</h2>
     <p class="sub">Ask these questions in order. Stop as soon as one gives you the answer.</p>
 
     <div class="check">
       <div class="n">1</div>
       <div>
-        <p><b>Does the ending start with a vowel?</b> If it starts with a consonant (<i>-ful, -ly, -less, -ness, -ment</i>), it isn't pushy. <b>Just add it.</b> Nothing changes.</p>
+        <p><b>Look at the first letter of the ending.</b> Is it a vowel: <b>a, e, i, o, u</b> (or <b>y</b>)? Then it's pushy, so go on to check 2. If it starts with a consonant (<i>-ful, -ly, -less, -ness, -ment</i>), it isn't pushy. <b>Just add it.</b> Nothing changes.</p>
         <p class="eg">hope + ful = <b>hopeful</b> · sad + ness = <b>sadness</b> · sincere + ly = <b>sincerely</b></p>
       </div>
     </div>
@@ -249,7 +322,7 @@
   </section>
 
   <!-- 3. TRAPS -->
-  <section>
+  <section id="traps">
     <h2>Three traps</h2>
     <p class="sub">All three come straight from real compositions.</p>
     <div class="trap">
@@ -270,7 +343,7 @@
   </section>
 
   <!-- 4. CATEGORIES -->
-  <section>
+  <section id="cases">
     <h2>The four tile racks</h2>
     <p class="sub">Every word you add an ending to belongs on one of these racks.</p>
     <div class="cats">
@@ -318,7 +391,7 @@
   </section>
 
   <!-- 5. SPECIAL CASES -->
-  <section>
+  <section id="specials">
     <h2>Three special cases</h2>
     <p class="sub">The quiz checks these too.</p>
     <div class="grid-3">
@@ -346,12 +419,15 @@
   <!-- 6. PRACTICE -->
   <section>
     <h2>Build the word</h2>
-    <p class="sub">Tap the correct spelling. You'll see straight away if you're right, and why. The questions get trickier as you go.</p>
-    <div class="scoreboard">
-      <div><div class="label">Your score</div><div class="score" id="scoreDisplay">0 / 30</div></div>
-      <button class="reset-btn" id="resetBtn" type="button">Start over</button>
+    <p class="sub">Each attempt draws <span id="qbDraw">20</span> questions from a bank of <span id="qbBank">150</span>, so every try is different. You'll add endings, check sentences, pick the right version and spot misspelt words, and the questions get trickier as you go. Finish them all to see which areas to review.</p>
+    <div class="qb" id="qb">
+      <div class="qb-bar">
+        <div><div class="qb-label">Your score</div><div class="qb-score" id="qbScore">0 / 20</div><div class="qb-progress" id="qbProgress">0 of 20 answered</div></div>
+        <button class="qb-new" id="qbNew" type="button">New quiz</button>
+      </div>
+      <div class="qb-list" id="qbList"></div>
+      <div class="qb-summary" id="qbSummary" hidden></div>
     </div>
-    <div id="quizContainer"></div>
   </section>
 
   <!-- 7. PIN THIS UP -->
@@ -390,23 +466,23 @@
              res: { double: ['jum', 'p', 'p', 'ed'], drop: null, leave: ['jum', 'p', '', 'ed'] },
              msg: { double: '"Jumpped"? No wall is needed. The <i>m</i> and <i>p</i> already protect the vowel.', drop: 'There\'s no silent <i>e</i> on "jump". Try again.', leave: 'Jumped. Two consonants already guard the short <i>u</i>, so just add the ending.' } }
   };
-  let current = 'hop';
+  let curWord = 'hop';
   const pick = document.getElementById('wordPick');
   const build = document.getElementById('build');
   const msg = document.getElementById('heroMsg');
 
   const tiles = (s, cls) => s.split('').map(c => '<span class="t ' + (cls || '') + '">' + c + '</span>').join('');
   function showStart() {
-    const w = WORDS[current];
+    const w = WORDS[curWord];
     build.innerHTML = '<span class="tiles">' + tiles(w.stem) + '</span><span class="plus">+</span><span class="tiles">' + tiles(w.end, 'end') + '</span>';
     msg.innerHTML = 'What should happen to <b>' + w.stem + '</b> before you add <b>-' + w.end + '</b>?';
   }
   Object.keys(WORDS).forEach(k => {
     const b = document.createElement('button');
     b.type = 'button'; b.className = 'wbtn'; b.textContent = k + ' + ' + WORDS[k].end;
-    b.setAttribute('aria-pressed', String(k === current));
+    b.setAttribute('aria-pressed', String(k === curWord));
     b.addEventListener('click', () => {
-      current = k;
+      curWord = k;
       pick.querySelectorAll('.wbtn').forEach(x => x.setAttribute('aria-pressed', 'false'));
       b.setAttribute('aria-pressed', 'true');
       showStart();
@@ -414,7 +490,7 @@
     pick.appendChild(b);
   });
   document.querySelectorAll('.abtn').forEach(btn => btn.addEventListener('click', () => {
-    const w = WORDS[current], act = btn.dataset.act, r = w.res[act];
+    const w = WORDS[curWord], act = btn.dataset.act, r = w.res[act];
     const ok = act === w.right;
     if (r) {
       let html = '';
@@ -428,112 +504,441 @@
   }));
   showStart();
 
-  /* ---------- Quiz ---------- */
-  const ADD = "Add the ending. Which spelling is correct?";
-  const CHECK = "Is every word spelt correctly?";
-  const PICK = "Pick the sentence with every word spelt correctly.";
-  const CM = ["Correct", "Misspelt"];
-  const QUESTIONS = [
-    { ask: ADD, text: "stop + ed = ___", options: ["stoped", "stopped"], answer: 1, why: "One short vowel + one consonant, so double the p to keep the short “o”." },
-    { ask: ADD, text: "make + ing = ___", options: ["making", "makeing", "makking"], answer: 0, why: "Make ends in a silent e. Drop the e and never double: “making”." },
-    { ask: ADD, text: "jump + ed = ___", options: ["jumped", "jumpped"], answer: 0, why: "Two consonants (m, p) already guard the vowel, so leave it alone." },
-    { ask: ADD, text: "swim + ing = ___", options: ["swiming", "swimming"], answer: 1, why: "One short vowel + one consonant, so build the wall: “swimming”." },
-    { ask: ADD, text: "hope + ful = ___", options: ["hopeful", "hopful"], answer: 0, why: "“-ful” starts with a consonant, so it isn't pushy. Keep the e." },
-    { ask: ADD, text: "rain + ing = ___", options: ["rainning", "raining"], answer: 1, why: "Two vowels (a, i) already protect the sound, so leave it alone." },
-    { ask: ADD, text: "big + est = ___", options: ["biggest", "bigest"], answer: 0, why: "One short vowel + one consonant, so double the g." },
-    { ask: ADD, text: "smile + ed = ___", options: ["smilled", "smileed", "smiled"], answer: 2, why: "Silent e: drop it, then add “-ed”. It's simply “smiled”." },
-    { ask: ADD, text: "sad + ness = ___", options: ["sadness", "saddness"], answer: 0, why: "“-ness” starts with a consonant, so there's no push and no wall. Just add it." },
-    { ask: ADD, text: "look + ing = ___", options: ["lookking", "looking"], answer: 1, why: "Two vowels (oo) already protect the sound, so leave it alone." },
-
-    { ask: ADD, text: "come + ing = ___", options: ["comming", "coming", "comeing"], answer: 1, why: "Come ends in a silent e. Silent-e words drop the e and never double." },
-    { ask: ADD, text: "write + ing = ___", options: ["writing", "writting", "writeing"], answer: 0, why: "Drop the silent e. “Writting” would rhyme with “sitting”." },
-    { ask: ADD, text: "wrap + ed = ___", options: ["wraped", "wrapped"], answer: 1, why: "One short vowel + one consonant needs a wall. “Wraped” would rhyme with “draped”." },
-    { ask: CHECK, text: "We were dinning at a hawker centre when it started to rain.", options: CM, answer: 1, why: "Dine + ing = “dining”. “Dinning” comes from “din”, a loud noise." },
-    { ask: ADD, text: "sincere + ly = ___", options: ["sincerely", "sincerly"], answer: 0, why: "“-ly” starts with a consonant, so the e stays: “Yours sincerely”." },
-    { ask: ADD, text: "excite + ment = ___", options: ["excitment", "excitement"], answer: 1, why: "“-ment” starts with a consonant, so it isn't pushy. Keep the e." },
-    { ask: ADD, text: "hop + ing = ___", options: ["hopping", "hoping"], answer: 0, why: "Hop has a short o, so double the p. “Hoping” would come from “hope”." },
-    { ask: ADD, text: "hope + ing = ___", options: ["hopping", "hoping"], answer: 1, why: "Hope ends in a silent e. Drop it, and don't double." },
-    { ask: ADD, text: "decide + ed = ___", options: ["decided", "decidded"], answer: 0, why: "Silent e: drop it and add “-ed”. No doubling." },
-    { ask: CHECK, text: "Mum hugged me tightly before I boarded the bus.", options: CM, answer: 0, why: "Hug has one short vowel + one consonant, so “hugged” is right. “Boarded” has two vowels, so it's left alone." },
-
-    { ask: ADD, text: "forget + able = ___", options: ["forgetable", "forgettable"], answer: 1, why: "The beat is on the last part, for-GET, so double the t." },
-    { ask: ADD, text: "begin + ing = ___", options: ["beginning", "begining"], answer: 0, why: "The beat is on be-GIN, at the end, so double the n." },
-    { ask: ADD, text: "visit + ed = ___", options: ["visitted", "visited"], answer: 1, why: "The beat is at the start, VIS-it, so no wall is needed." },
-    { ask: ADD, text: "open + ing = ___", options: ["opening", "openning"], answer: 0, why: "The beat is at the start, O-pen, so leave it alone." },
-    { ask: ADD, text: "prefer + ed = ___", options: ["prefered", "preferred"], answer: 1, why: "The beat is on pre-FER, at the end, so double the r." },
-    { ask: ADD, text: "snow + ing = ___", options: ["snowing", "snowwing"], answer: 0, why: "W, x and y never double." },
-    { ask: ADD, text: "In British spelling (used in Singapore): travel + ed = ___", options: ["traveled", "travelled"], answer: 1, why: "British spelling doubles a final l after one vowel: “travelled”." },
-    { ask: ADD, text: "dis + appear = ___", options: ["disappear", "dissappear", "disapear"], answer: 0, why: "Prefixes just join: dis + appear. Keep every letter of both parts, so it has one s and two p's." },
-    { ask: ADD, text: "mis + spell = ___", options: ["mispell", "misspell"], answer: 1, why: "Prefixes just join. Mis + spell keeps both s's: “misspell”." },
-    { ask: PICK, text: "Which sentence is spelt correctly?", options: ["The concert was unforgetable. We kept clapping and only stopped when the lights dimmed.", "The concert was unforgettable. We kept clapping and only stoped when the lights dimmed.", "The concert was unforgettable. We kept clapping and only stopped when the lights dimmed.", "The concert was unforgettable. We kept claping and only stopped when the lights dimed."], answer: 2, why: "Unforgettable, clapping, stopped and dimmed all need a wall, because each has one short vowel + one consonant." }
+  { /* qb-start: quiz engine in its own scope, so its names can't clash with the lesson's */
+  /* ================= QUIZ: question bank (156 questions) ================= */
+  const LESSON_KEY = "shelf-l09";
+  const QB_TEXT = {"ask": {"check": "Is every word spelt correctly?", "pick": "Pick the correct sentence.", "fill": "Which spelling is correct?", "spot": "Tap the part with the misspelt word."}, "yn": ["Misspelt", "Correct"]};
+  const TAGS = {
+    double: { label: "Double it: one short vowel + one consonant", href: '#cases' },
+    drop: { label: "Drop the e: silent-e words", href: '#cases' },
+    comming: { label: "Trap: doubling after a silent e (comming, writting)", href: '#traps' },
+    leave: { label: "Leave it alone: already protected", href: '#cases' },
+    consonant: { label: "Consonant endings keep the e (sincerely, hopeful)", href: '#rule' },
+    beat: { label: "Longer words: listen for the beat", href: '#cases' },
+    prefix: { label: "Prefixes just join (disappear, misspell)", href: '#specials' },
+    wxy: { label: "w, x and y never double", href: '#specials' },
+    britishl: { label: "The British \"l\" rule (travelled)", href: '#specials' },
+  };
+  const BANK = [
+    {"id": "d01", "t": "fill", "d": 1, "tag": "double", "q": "stop + ed = ___", "o": ["stopped", "stoped"], "why": "One short vowel + one consonant, so build the wall: stopped."},
+    {"id": "d02", "t": "fill", "d": 1, "tag": "double", "q": "swim + ing = ___", "o": ["swimming", "swiming"], "why": "Short i + one m, so double the m: swimming."},
+    {"id": "d03", "t": "fill", "d": 1, "tag": "double", "q": "big + est = ___", "o": ["biggest", "bigest"], "why": "Short i + one g, so double the g: biggest."},
+    {"id": "d04", "t": "fill", "d": 1, "tag": "double", "q": "run + er = ___", "o": ["runner", "runer"], "why": "Short u + one n, so double the n: runner."},
+    {"id": "d05", "t": "fill", "d": 1, "tag": "double", "q": "get + ing = ___", "o": ["getting", "geting"], "why": "Short e + one t, so double the t: getting."},
+    {"id": "d06", "t": "fill", "d": 1, "tag": "double", "q": "hot + est = ___", "o": ["hottest", "hotest"], "why": "Short o + one t, so double the t: hottest."},
+    {"id": "d07", "t": "fill", "d": 1, "tag": "double", "q": "fun + y = ___", "o": ["funny", "funy"], "why": "-y acts as a vowel ending, so build the wall: funny."},
+    {"id": "d08", "t": "fill", "d": 2, "tag": "double", "q": "We ___ our hands to the beat. (clap + ed)", "o": ["clapped", "claped"], "why": "Short a + one p, so double the p: clapped."},
+    {"id": "d09", "t": "fill", "d": 2, "tag": "double", "q": "The lights ___ before the show began. (dim + ed)", "o": ["dimmed", "dimed"], "why": "Short i + one m, so double the m: dimmed."},
+    {"id": "d10", "t": "fill", "d": 2, "tag": "double", "q": "Grandma ___ her head and smiled. (nod + ed)", "o": ["nodded", "noded"], "why": "Short o + one d, so double the d: nodded."},
+    {"id": "d11", "t": "fill", "d": 2, "tag": "double", "q": "I ___ the present in blue paper. (wrap + ed)", "o": ["wrapped", "wraped"], "why": "\"Wraped\" would rhyme with \"draped\". Double the p: wrapped."},
+    {"id": "d12", "t": "fill", "d": 2, "tag": "double", "q": "It was a ___ day, so we flew kites. (sun + y)", "o": ["sunny", "suny"], "why": "-y is a vowel ending, so double the n: sunny."},
+    {"id": "d13", "t": "fill", "d": 3, "tag": "double", "q": "The ___ of the race got a gold medal. (win + er)", "o": ["winner", "winer"], "why": "Short i + one n, so double the n: winner."},
+    {"id": "d14", "t": "fill", "d": 2, "tag": "double", "q": "He was ___ his foot to the music. (tap + ing)", "o": ["tapping", "taping"], "why": "Tap has a short a, so double the p. \"Taping\" comes from \"tape\"."},
+    {"id": "d15", "t": "fill", "d": 2, "tag": "double", "q": "The rabbit was ___ across the field. (hop + ing)", "o": ["hopping", "hoping"], "why": "Hop has a short o, so double the p. \"Hoping\" comes from \"hope\"."},
+    {"id": "d16", "t": "check", "d": 1, "tag": "double", "q": "Mum hugged me at the school gate.", "a": 1, "why": "Hug: short u + one g, so \"hugged\" is right."},
+    {"id": "d17", "t": "check", "d": 1, "tag": "double", "q": "We were shoping at the mall all afternoon.", "a": 0, "why": "Shop: short o + one p, so it needs the wall: shopping."},
+    {"id": "d18", "t": "check", "d": 2, "tag": "double", "q": "The puppy wagged its tail happily.", "a": 1, "why": "Wag: short a + one g, so \"wagged\" is right."},
+    {"id": "d19", "t": "check", "d": 2, "tag": "double", "q": "Arjun was the winer of the spelling bee.", "a": 0, "why": "Win: short i + one n, so double the n: winner."},
+    {"id": "d20", "t": "spot", "d": 1, "tag": "double", "parts": ["The bus", "stoped", "at the", "red light."], "a": 1, "why": "Stop needs the wall: stopped."},
+    {"id": "d21", "t": "spot", "d": 2, "tag": "double", "parts": ["Lila", "steped", "carefully over", "the puddle."], "a": 1, "why": "Step: short e + one p, so double the p: stepped."},
+    {"id": "d22", "t": "spot", "d": 2, "tag": "double", "parts": ["It was the", "hotest", "day of", "the year."], "a": 1, "why": "Hot: short o + one t, so double the t: hottest."},
+    {"id": "d23", "t": "pick", "d": 2, "tag": "double", "ask": "Which sentence is spelt correctly?", "o": ["The ground was muddy after the storm.", "The ground was mudy after the storm.", "The ground was muddey after the storm."], "why": "Mud + y: short u + one d, so double the d: muddy."},
+    {"id": "d24", "t": "pick", "d": 2, "tag": "double", "ask": "Which sentence is spelt correctly?", "o": ["Our class planned a party for Ms Goh.", "Our class planed a party for Ms Goh.", "Our class plannd a party for Ms Goh."], "why": "Plan: short a + one n, so double the n: planned."},
+    {"id": "e01", "t": "fill", "d": 1, "tag": "drop", "q": "make + ing = ___", "o": ["making", "makeing", "makking"], "why": "Silent e: drop it and never double: making."},
+    {"id": "e02", "t": "fill", "d": 1, "tag": "drop", "q": "smile + ed = ___", "o": ["smiled", "smileed", "smilled"], "why": "Silent e: drop it, then add -ed: smiled."},
+    {"id": "e03", "t": "fill", "d": 1, "tag": "drop", "q": "bake + er = ___", "o": ["baker", "bakeer", "bakker"], "why": "Silent e: drop it, then add -er: baker."},
+    {"id": "e04", "t": "fill", "d": 1, "tag": "drop", "q": "ride + ing = ___", "o": ["riding", "rideing"], "why": "Silent e: drop it before -ing: riding."},
+    {"id": "e05", "t": "fill", "d": 1, "tag": "drop", "q": "nice + est = ___", "o": ["nicest", "niceest"], "why": "Silent e: drop it before -est: nicest."},
+    {"id": "e06", "t": "fill", "d": 1, "tag": "drop", "q": "dance + ing = ___", "o": ["dancing", "danceing"], "why": "Silent e: drop it before -ing: dancing."},
+    {"id": "e07", "t": "fill", "d": 2, "tag": "drop", "q": "We ___ to keep it a secret. (decide + ed)", "o": ["decided", "decideed", "decidded"], "why": "Silent e: drop it, add -ed, no doubling: decided."},
+    {"id": "e08", "t": "fill", "d": 2, "tag": "drop", "q": "The ending was really ___. (excite + ing)", "o": ["exciting", "exciteing", "excitting"], "why": "Silent e: drop it, never double: exciting."},
+    {"id": "e09", "t": "fill", "d": 2, "tag": "drop", "q": "The road was ___ in winter. (ice + y)", "o": ["icy", "icey"], "why": "-y is a vowel ending, so the silent e drops: icy."},
+    {"id": "e10", "t": "fill", "d": 2, "tag": "drop", "q": "The canteen was very ___ at recess. (noise + y)", "o": ["noisy", "noisey"], "why": "-y is a vowel ending, so the silent e drops: noisy."},
+    {"id": "e11", "t": "fill", "d": 2, "tag": "drop", "q": "I am ___ to win the race. (hope + ing)", "o": ["hoping", "hopping"], "why": "Hope ends in a silent e: drop it, don't double: hoping."},
+    {"id": "e12", "t": "fill", "d": 3, "tag": "drop", "q": "The workers were ___ the windows before the storm. (tape + ing)", "o": ["taping", "tapping"], "why": "Tape ends in a silent e: drop it, don't double: taping."},
+    {"id": "e13", "t": "fill", "d": 3, "tag": "drop", "q": "A ___ is a person eating a meal at a restaurant. (dine + er)", "o": ["diner", "dinner"], "why": "Dine ends in a silent e: drop it, don't double: diner. \"Dinner\" is the meal."},
+    {"id": "e14", "t": "check", "d": 1, "tag": "drop", "q": "She was taking photos of the sunset.", "a": 1, "why": "Take: drop the silent e, so \"taking\" is right."},
+    {"id": "e15", "t": "check", "d": 1, "tag": "drop", "q": "We are haveing a party on Saturday.", "a": 0, "why": "Have ends in a silent e: drop it: having."},
+    {"id": "e16", "t": "check", "d": 2, "tag": "drop", "q": "The guests arrived early for the party.", "a": 1, "why": "Arrive: drop the e and add -d: arrived."},
+    {"id": "e17", "t": "check", "d": 2, "tag": "drop", "q": "Thank you for inviteing me to your party.", "a": 0, "why": "Invite ends in a silent e: drop it: inviting."},
+    {"id": "e18", "t": "spot", "d": 1, "tag": "drop", "parts": ["I love", "danceing", "to my", "favourite songs."], "a": 1, "why": "Dance: drop the silent e: dancing."},
+    {"id": "e19", "t": "spot", "d": 2, "tag": "drop", "parts": ["We were", "useing", "the computers", "in the library."], "a": 1, "why": "Use: drop the silent e: using."},
+    {"id": "e20", "t": "spot", "d": 2, "tag": "drop", "parts": ["The sun was", "shineing", "brightly", "all afternoon."], "a": 1, "why": "Shine: drop the silent e: shining."},
+    {"id": "e21", "t": "pick", "d": 2, "tag": "drop", "ask": "Which sentence is spelt correctly?", "o": ["Dad was closing the windows.", "Dad was closeing the windows.", "Dad was clossing the windows."], "why": "Close: drop the silent e, no doubling: closing."},
+    {"id": "e22", "t": "pick", "d": 3, "tag": "drop", "ask": "Which sentence is spelt correctly?", "o": ["The floor was shiny after Mum mopped it.", "The floor was shiney after Mum mopped it.", "The floor was shinny after Mum mopped it."], "why": "Shine + y: drop the silent e, don't double: shiny."},
+    {"id": "m01", "t": "fill", "d": 1, "tag": "comming", "q": "come + ing = ___", "o": ["coming", "comming", "comeing"], "why": "Silent-e words drop the e and never double: coming."},
+    {"id": "m02", "t": "fill", "d": 1, "tag": "comming", "q": "write + ing = ___", "o": ["writing", "writting", "writeing"], "why": "Drop the silent e, one t: writing."},
+    {"id": "m03", "t": "fill", "d": 2, "tag": "comming", "q": "We are ___ at a hawker centre tonight. (dine + ing)", "o": ["dining", "dinning", "dineing"], "why": "Drop the silent e, one n: dining. \"Dinning\" comes from \"din\"."},
+    {"id": "m04", "t": "fill", "d": 2, "tag": "comming", "q": "The ___ concert is on Friday. (up + come + ing)", "o": ["upcoming", "upcomming"], "why": "Come drops its e and never doubles: upcoming."},
+    {"id": "m05", "t": "fill", "d": 2, "tag": "comming", "q": "The sky was ___ dark. (become + ing)", "o": ["becoming", "becomming"], "why": "Become drops its e and never doubles: becoming."},
+    {"id": "m06", "t": "fill", "d": 2, "tag": "comming", "q": "The cat was ___ under the bed. (hide + ing)", "o": ["hiding", "hidding", "hideing"], "why": "Hide drops its e and never doubles: hiding."},
+    {"id": "m07", "t": "fill", "d": 2, "tag": "comming", "q": "The mosquitoes kept ___ us. (bite + ing)", "o": ["biting", "bitting"], "why": "Bite drops its e and never doubles: biting."},
+    {"id": "m08", "t": "check", "d": 2, "tag": "comming", "q": "Are you comming to my birthday party?", "a": 0, "why": "Come drops its e and never doubles: coming."},
+    {"id": "m09", "t": "check", "d": 2, "tag": "comming", "q": "I am writing to thank you for the gift.", "a": 1, "why": "Write: drop the e, one t. \"Writing\" is right."},
+    {"id": "m10", "t": "check", "d": 2, "tag": "comming", "q": "We had lunch in the dinning hall.", "a": 0, "why": "Dine drops its e and never doubles: dining hall."},
+    {"id": "m11", "t": "check", "d": 3, "tag": "comming", "q": "I am writting to ask about the upcoming camp.", "a": 0, "why": "Write drops its e and never doubles: writing."},
+    {"id": "m12", "t": "spot", "d": 2, "tag": "comming", "parts": ["I am", "writting", "to tell you", "about my holiday."], "a": 1, "why": "Write drops its e and never doubles: writing."},
+    {"id": "m13", "t": "spot", "d": 2, "tag": "comming", "parts": ["The bus", "is comming", "in five", "minutes."], "a": 1, "why": "Come drops its e and never doubles: coming."},
+    {"id": "m14", "t": "spot", "d": 3, "tag": "comming", "parts": ["The", "upcomming", "trip to Japan", "is in December."], "a": 1, "why": "Come drops its e and never doubles: upcoming."},
+    {"id": "m15", "t": "pick", "d": 2, "tag": "comming", "ask": "Which sentence is spelt correctly?", "o": ["We are dining at a restaurant tonight.", "We are dinning at a restaurant tonight.", "We are dineing at a restaurant tonight."], "why": "Dine drops its e and never doubles: dining."},
+    {"id": "m16", "t": "pick", "d": 3, "tag": "comming", "ask": "Which sentence needs fixing?", "o": ["Riding my bike and writting stories are my hobbies.", "Riding my bike and writing stories are my hobbies.", "I enjoy riding my bike and writing stories."], "why": "\"Writting\" is wrong: write drops its e and never doubles."},
+    {"id": "l01", "t": "fill", "d": 1, "tag": "leave", "q": "jump + ed = ___", "o": ["jumped", "jumpped"], "why": "Two consonants (m, p) already guard the vowel: jumped."},
+    {"id": "l02", "t": "fill", "d": 1, "tag": "leave", "q": "rain + ing = ___", "o": ["raining", "rainning"], "why": "Two vowels (a, i) already protect the sound: raining."},
+    {"id": "l03", "t": "fill", "d": 1, "tag": "leave", "q": "look + ing = ___", "o": ["looking", "lookking"], "why": "Two vowels (oo) already protect the sound: looking."},
+    {"id": "l04", "t": "fill", "d": 1, "tag": "leave", "q": "help + er = ___", "o": ["helper", "helpper"], "why": "Two consonants (l, p) already guard the vowel: helper."},
+    {"id": "l05", "t": "fill", "d": 1, "tag": "leave", "q": "cook + ed = ___", "o": ["cooked", "cookked"], "why": "Two vowels (oo) already protect the sound: cooked."},
+    {"id": "l06", "t": "fill", "d": 2, "tag": "leave", "q": "We ___ for the bus for twenty minutes. (wait + ed)", "o": ["waited", "waitted"], "why": "Two vowels (a, i) already protect the sound: waited."},
+    {"id": "l07", "t": "fill", "d": 2, "tag": "leave", "q": "It was a ___ day, so we stayed indoors. (cloud + y)", "o": ["cloudy", "clouddy"], "why": "Two vowels (ou) already protect the sound: cloudy."},
+    {"id": "l08", "t": "fill", "d": 2, "tag": "leave", "q": "My brother is ___ than me. (quick + er)", "o": ["quicker", "quickker"], "why": "Two consonants (ck) already guard the vowel: quicker."},
+    {"id": "l09", "t": "check", "d": 1, "tag": "leave", "q": "The baby was sleeping soundly.", "a": 1, "why": "Two vowels (ee) already protect the sound, so \"sleeping\" is right."},
+    {"id": "l10", "t": "check", "d": 1, "tag": "leave", "q": "We startted the race at 8 a.m.", "a": 0, "why": "Two consonants (r, t) already guard the vowel: started."},
+    {"id": "l11", "t": "check", "d": 2, "tag": "leave", "q": "We packked our bags for the camp.", "a": 0, "why": "\"ck\" is already two letters, so leave it alone: packed."},
+    {"id": "l12", "t": "check", "d": 2, "tag": "leave", "q": "The crowd cheered loudly.", "a": 1, "why": "Two vowels (ee) already protect the sound, so \"cheered\" is right."},
+    {"id": "l13", "t": "spot", "d": 1, "tag": "leave", "parts": ["The boys", "kickked", "the ball", "into the goal."], "a": 1, "why": "\"ck\" already guards the vowel: kicked."},
+    {"id": "l14", "t": "spot", "d": 2, "tag": "leave", "parts": ["We", "paintted", "a mural", "on the wall."], "a": 1, "why": "Two consonants (n, t) already guard the vowel: painted."},
+    {"id": "l15", "t": "pick", "d": 2, "tag": "leave", "ask": "Which sentence is spelt correctly?", "o": ["The beach was sandy and warm.", "The beach was sanddy and warm.", "The beach was sandey and warm."], "why": "Two consonants (n, d) already guard the vowel: sandy."},
+    {"id": "c01", "t": "fill", "d": 1, "tag": "consonant", "q": "hope + ful = ___", "o": ["hopeful", "hopful"], "why": "-ful starts with a consonant, so it isn't pushy. Keep the e."},
+    {"id": "c02", "t": "fill", "d": 1, "tag": "consonant", "q": "sad + ness = ___", "o": ["sadness", "saddness"], "why": "-ness starts with a consonant, so just add it."},
+    {"id": "c03", "t": "fill", "d": 1, "tag": "consonant", "q": "care + ful = ___", "o": ["careful", "carful"], "why": "-ful starts with a consonant, so keep the e."},
+    {"id": "c04", "t": "fill", "d": 2, "tag": "consonant", "q": "sincere + ly = ___", "o": ["sincerely", "sincerly"], "why": "-ly starts with a consonant, so keep the e: sincerely."},
+    {"id": "c05", "t": "fill", "d": 2, "tag": "consonant", "q": "excite + ment = ___", "o": ["excitement", "excitment"], "why": "-ment starts with a consonant, so keep the e."},
+    {"id": "c06", "t": "fill", "d": 2, "tag": "consonant", "q": "use + less = ___", "o": ["useless", "usless"], "why": "-less starts with a consonant, so keep the e."},
+    {"id": "c07", "t": "fill", "d": 2, "tag": "consonant", "q": "love + ly = ___", "o": ["lovely", "lovly"], "why": "-ly starts with a consonant, so keep the e."},
+    {"id": "c08", "t": "fill", "d": 2, "tag": "consonant", "q": "fit + ness = ___", "o": ["fitness", "fittness"], "why": "-ness starts with a consonant, so no wall is needed."},
+    {"id": "c09", "t": "fill", "d": 2, "tag": "consonant", "q": "tire + less = ___", "o": ["tireless", "tirless"], "why": "-less starts with a consonant, so keep the e."},
+    {"id": "c10", "t": "fill", "d": 3, "tag": "consonant", "q": "tire + less + ly = ___", "o": ["tirelessly", "tiresly", "tirelesly"], "why": "Just add each consonant ending in turn: tire + less + ly."},
+    {"id": "c11", "t": "fill", "d": 3, "tag": "consonant", "q": "complete + ly = ___", "o": ["completely", "completly"], "why": "-ly starts with a consonant, so keep the e."},
+    {"id": "c12", "t": "fill", "d": 3, "tag": "consonant", "q": "amaze + ment = ___", "o": ["amazement", "amazment"], "why": "-ment starts with a consonant, so keep the e."},
+    {"id": "c13", "t": "fill", "d": 3, "tag": "consonant", "q": "glad + ly = ___", "o": ["gladly", "gladdly"], "why": "-ly starts with a consonant, so no wall is needed."},
+    {"id": "c14", "t": "check", "d": 2, "tag": "consonant", "q": "Yours sincerly, Siti", "a": 0, "why": "-ly is a consonant ending, so the e stays: sincerely."},
+    {"id": "c15", "t": "check", "d": 2, "tag": "consonant", "q": "Please be careful when crossing the road.", "a": 1, "why": "-ful is a consonant ending, so \"careful\" keeps its e."},
+    {"id": "c16", "t": "check", "d": 2, "tag": "consonant", "q": "We waited in excitment for the results.", "a": 0, "why": "-ment is a consonant ending, so the e stays: excitement."},
+    {"id": "c17", "t": "check", "d": 3, "tag": "consonant", "q": "The dancers moved in a graceful way.", "a": 1, "why": "-ful is a consonant ending, so \"graceful\" keeps its e."},
+    {"id": "c18", "t": "spot", "d": 2, "tag": "consonant", "parts": ["Thank you", "for your", "kindness and", "encouragment."], "a": 3, "why": "-ment is a consonant ending, so the e stays: encouragement."},
+    {"id": "c19", "t": "spot", "d": 3, "tag": "consonant", "parts": ["We stared", "in amazment", "at the", "fireworks."], "a": 1, "why": "-ment is a consonant ending, so the e stays: amazement."},
+    {"id": "c20", "t": "pick", "d": 3, "tag": "consonant", "ask": "Which ending to a formal letter is correct?", "o": ["Yours sincerely,", "Yours sincerly,", "Yours sincerelly,"], "why": "Keep the e before -ly, and don't double the l: sincerely."},
+    {"id": "c21", "t": "pick", "d": 3, "tag": "consonant", "ask": "Which sentence needs fixing?", "o": ["The ending was completly unexpected.", "The ending was completely unexpected.", "The ending was totally unexpected."], "why": "\"Completly\" is wrong: -ly is a consonant ending, so the e stays."},
+    {"id": "b01", "t": "fill", "d": 3, "tag": "beat", "q": "forget + able = ___", "o": ["forgettable", "forgetable"], "why": "The beat is on for-GET, at the end, so double the t."},
+    {"id": "b02", "t": "fill", "d": 3, "tag": "beat", "q": "begin + ing = ___", "o": ["beginning", "begining"], "why": "The beat is on be-GIN, at the end, so double the n."},
+    {"id": "b03", "t": "fill", "d": 3, "tag": "beat", "q": "visit + ed = ___", "o": ["visited", "visitted"], "why": "The beat is at the start, VIS-it, so no wall."},
+    {"id": "b04", "t": "fill", "d": 3, "tag": "beat", "q": "open + ing = ___", "o": ["opening", "openning"], "why": "The beat is at the start, O-pen, so leave it alone."},
+    {"id": "b05", "t": "fill", "d": 3, "tag": "beat", "q": "prefer + ed = ___", "o": ["preferred", "prefered"], "why": "The beat is on pre-FER, at the end, so double the r."},
+    {"id": "b06", "t": "fill", "d": 3, "tag": "beat", "q": "admit + ed = ___", "o": ["admitted", "admited"], "why": "The beat is on ad-MIT, at the end, so double the t."},
+    {"id": "b07", "t": "fill", "d": 3, "tag": "beat", "q": "listen + ing = ___", "o": ["listening", "listenning"], "why": "The beat is at the start, LIS-ten, so no wall."},
+    {"id": "b08", "t": "fill", "d": 2, "tag": "beat", "q": "happen + ed = ___", "o": ["happened", "happenned"], "why": "The beat is at the start, HAP-pen, so no wall."},
+    {"id": "b09", "t": "fill", "d": 3, "tag": "beat", "q": "regret + ed = ___", "o": ["regretted", "regreted"], "why": "The beat is on re-GRET, at the end, so double the t."},
+    {"id": "b10", "t": "fill", "d": 3, "tag": "beat", "q": "garden + ing = ___", "o": ["gardening", "gardenning"], "why": "The beat is at the start, GAR-den, so no wall."},
+    {"id": "b11", "t": "fill", "d": 3, "tag": "beat", "q": "occur + ed = ___", "o": ["occurred", "occured"], "why": "The beat is on oc-CUR, at the end, so double the r."},
+    {"id": "b12", "t": "fill", "d": 3, "tag": "beat", "q": "enter + ed = ___", "o": ["entered", "enterred"], "why": "The beat is at the start, EN-ter, so no wall."},
+    {"id": "b13", "t": "fill", "d": 3, "tag": "beat", "q": "un + forget + able = ___", "o": ["unforgettable", "unforgetable", "unnforgettable"], "why": "Un- just joins, and for-GET doubles its t: unforgettable."},
+    {"id": "b14", "t": "check", "d": 3, "tag": "beat", "q": "The concert was unforgetable.", "a": 0, "why": "For-GET has the beat at the end, so double the t: unforgettable."},
+    {"id": "b15", "t": "check", "d": 3, "tag": "beat", "q": "It was the beginning of a new school year.", "a": 1, "why": "Be-GIN has the beat at the end, so \"beginning\" is right."},
+    {"id": "b16", "t": "check", "d": 3, "tag": "beat", "q": "We visitted our grandparents in Johor.", "a": 0, "why": "VIS-it has the beat at the start, so no wall: visited."},
+    {"id": "b17", "t": "check", "d": 3, "tag": "beat", "q": "The accident occurred at the junction.", "a": 1, "why": "Oc-CUR has the beat at the end, so \"occurred\" is right."},
+    {"id": "b18", "t": "spot", "d": 3, "tag": "beat", "parts": ["What", "happenned", "at the", "playground?"], "a": 1, "why": "HAP-pen has the beat at the start, so no wall: happened."},
+    {"id": "b19", "t": "spot", "d": 3, "tag": "beat", "parts": ["Ravi", "admited", "that he had", "broken the vase."], "a": 1, "why": "Ad-MIT has the beat at the end, so double the t: admitted."},
+    {"id": "b20", "t": "pick", "d": 3, "tag": "beat", "ask": "Which sentence is spelt correctly?", "o": ["The shop was opening as we arrived.", "The shop was openning as we arrived.", "The shop was oppening as we arrived."], "why": "O-pen has the beat at the start, so no wall: opening."},
+    {"id": "b21", "t": "pick", "d": 3, "tag": "beat", "ask": "Which spelling is correct?", "o": ["developed", "developped", "devellopped"], "why": "De-VEL-op has its beat in the middle, not at the end, so no wall: developed."},
+    {"id": "p01", "t": "fill", "d": 2, "tag": "prefix", "q": "dis + appear = ___", "o": ["disappear", "dissappear", "disapear"], "why": "Prefixes just join: one s from dis, two p's from appear."},
+    {"id": "p02", "t": "fill", "d": 2, "tag": "prefix", "q": "mis + spell = ___", "o": ["misspell", "mispell"], "why": "Prefixes just join: mis + spell keeps both s's."},
+    {"id": "p03", "t": "fill", "d": 3, "tag": "prefix", "q": "un + necessary = ___", "o": ["unnecessary", "unecessary"], "why": "Prefixes just join: un + necessary keeps both n's."},
+    {"id": "p04", "t": "fill", "d": 2, "tag": "prefix", "q": "dis + agree = ___", "o": ["disagree", "dissagree"], "why": "Prefixes just join: dis + agree has only one s."},
+    {"id": "p05", "t": "fill", "d": 2, "tag": "prefix", "q": "dis + appoint = ___", "o": ["disappoint", "dissapoint", "disapoint"], "why": "Prefixes just join: one s from dis, two p's from appoint."},
+    {"id": "p06", "t": "fill", "d": 3, "tag": "prefix", "q": "dis + satisfied = ___", "o": ["dissatisfied", "disatisfied"], "why": "Prefixes just join: dis + satisfied keeps both s's."},
+    {"id": "p07", "t": "fill", "d": 2, "tag": "prefix", "q": "un + usual = ___", "o": ["unusual", "unnusual"], "why": "Prefixes just join: un + usual has only one n."},
+    {"id": "p08", "t": "fill", "d": 3, "tag": "prefix", "q": "un + natural = ___", "o": ["unnatural", "unatural"], "why": "Prefixes just join: un + natural keeps both n's."},
+    {"id": "p09", "t": "check", "d": 2, "tag": "prefix", "q": "The magician made the coin dissappear.", "a": 0, "why": "Dis + appear: one s, two p's: disappear."},
+    {"id": "p10", "t": "check", "d": 3, "tag": "prefix", "q": "Please check that you do not misspell any names.", "a": 1, "why": "Mis + spell keeps both s's, so \"misspell\" is right."},
+    {"id": "p11", "t": "spot", "d": 2, "tag": "prefix", "parts": ["The sun", "disapeared", "behind", "the clouds."], "a": 1, "why": "Dis + appear keeps both p's: disappeared."},
+    {"id": "p12", "t": "spot", "d": 3, "tag": "prefix", "parts": ["We were", "dissapointed", "when the trip", "was called off."], "a": 1, "why": "Dis + appoint: one s, two p's: disappointed."},
+    {"id": "p13", "t": "pick", "d": 3, "tag": "prefix", "ask": "Which sentence is spelt correctly?", "o": ["It is unnecessary to bring an umbrella.", "It is unecessary to bring an umbrella.", "It is unnecesary to bring an umbrella."], "why": "Un + necessary keeps both n's: unnecessary."},
+    {"id": "w01", "t": "fill", "d": 2, "tag": "wxy", "q": "snow + ing = ___", "o": ["snowing", "snowwing"], "why": "W never doubles: snowing."},
+    {"id": "w02", "t": "fill", "d": 2, "tag": "wxy", "q": "fix + ed = ___", "o": ["fixed", "fixxed"], "why": "X never doubles: fixed."},
+    {"id": "w03", "t": "fill", "d": 2, "tag": "wxy", "q": "box + er = ___", "o": ["boxer", "boxxer"], "why": "X never doubles: boxer."},
+    {"id": "w04", "t": "fill", "d": 1, "tag": "wxy", "q": "play + er = ___", "o": ["player", "playyer"], "why": "Y never doubles: player."},
+    {"id": "w05", "t": "fill", "d": 2, "tag": "wxy", "q": "mix + ed = ___", "o": ["mixed", "mixxed", "mixied"], "why": "X never doubles, and nothing else changes: mixed."},
+    {"id": "w06", "t": "fill", "d": 2, "tag": "wxy", "q": "relax + ing = ___", "o": ["relaxing", "relaxxing"], "why": "X never doubles: relaxing."},
+    {"id": "w07", "t": "fill", "d": 3, "tag": "wxy", "q": "draw + ing = ___", "o": ["drawing", "drawwing"], "why": "W never doubles: drawing."},
+    {"id": "w08", "t": "check", "d": 2, "tag": "wxy", "q": "We stayed at a hotel near the beach.", "a": 1, "why": "Y never doubles, so \"stayed\" is right."},
+    {"id": "w09", "t": "check", "d": 2, "tag": "wxy", "q": "Mum mixxed the batter with a wooden spoon.", "a": 0, "why": "X never doubles: mixed."},
+    {"id": "w10", "t": "check", "d": 3, "tag": "wxy", "q": "It was snowy when we arrived in Hokkaido.", "a": 1, "why": "W never doubles, so \"snowy\" is right."},
+    {"id": "w11", "t": "spot", "d": 3, "tag": "wxy", "parts": ["The", "snowwy", "mountains", "looked beautiful."], "a": 1, "why": "W never doubles: snowy."},
+    {"id": "w12", "t": "pick", "d": 3, "tag": "wxy", "ask": "Which sentence is spelt correctly?", "o": ["Dad fixed the leaking tap.", "Dad fixxed the leaking tap.", "Dad fixd the leaking tap."], "why": "X never doubles: fixed."},
+    {"id": "r01", "t": "fill", "d": 3, "tag": "britishl", "q": "In British spelling, travel + ed = ___", "o": ["travelled", "traveled"], "why": "British spelling doubles a final l after one vowel: travelled."},
+    {"id": "r02", "t": "fill", "d": 3, "tag": "britishl", "q": "In British spelling, cancel + ed = ___", "o": ["cancelled", "canceled"], "why": "British spelling doubles the l: cancelled."},
+    {"id": "r03", "t": "fill", "d": 3, "tag": "britishl", "q": "In British spelling, label + ed = ___", "o": ["labelled", "labeled"], "why": "British spelling doubles the l: labelled."},
+    {"id": "r04", "t": "fill", "d": 3, "tag": "britishl", "q": "In British spelling, quarrel + ing = ___", "o": ["quarrelling", "quarreling"], "why": "British spelling doubles the l: quarrelling."},
+    {"id": "r05", "t": "fill", "d": 3, "tag": "britishl", "q": "In British spelling, signal + ed = ___", "o": ["signalled", "signaled"], "why": "British spelling doubles the l: signalled."},
+    {"id": "r06", "t": "fill", "d": 3, "tag": "britishl", "q": "In British spelling, travel + er = ___", "o": ["traveller", "traveler"], "why": "British spelling doubles the l: traveller."},
+    {"id": "r07", "t": "fill", "d": 3, "tag": "britishl", "q": "appeal + ed = ___", "o": ["appealed", "appealled"], "why": "Two vowels (ea) come before the l, so no doubling: appealed."},
+    {"id": "r08", "t": "fill", "d": 3, "tag": "britishl", "q": "control + ed = ___", "o": ["controlled", "controled"], "why": "One vowel + l, with the beat at the end: controlled."},
+    {"id": "r09", "t": "check", "d": 3, "tag": "britishl", "q": "The match was cancelled because of the rain.", "a": 1, "why": "British spelling doubles the l, so \"cancelled\" is right."},
+    {"id": "r10", "t": "check", "d": 3, "tag": "britishl", "q": "We traveled to Malaysia by coach.", "a": 0, "why": "In British spelling, used in Singapore, it's \"travelled\"."},
+    {"id": "r11", "t": "spot", "d": 3, "tag": "britishl", "parts": ["The two brothers", "quarreled", "over the", "television remote."], "a": 1, "why": "British spelling doubles the l: quarrelled."},
+    {"id": "r12", "t": "pick", "d": 3, "tag": "britishl", "ask": "Which sentence uses British spelling correctly?", "o": ["We labelled every jar and travelled home.", "We labeled every jar and travelled home.", "We labelled every jar and traveled home."], "why": "British spelling doubles the l in both: labelled, travelled."},
   ];
 
-  const container = document.getElementById('quizContainer');
-  const scoreEl = document.getElementById('scoreDisplay');
-  let score = 0, answered = [];
+  /* ================= QUIZ BANK ENGINE (shared by every lesson) =================
+     Needs, defined above it: LESSON_KEY, TAGS, BANK.
+     Optional: QB_BANDS = [easy, medium, tricky] questions per attempt (default 7/7/6 = 20);
+     QB_TEXT = { ask: {...}, yn: [...], right: [...], wrong: '...', speak: true, summary: {...} }.
+     Each attempt draws BAND_SIZES questions (easy, medium, tricky). The draw builds many
+     candidate quizzes and keeps the best: every tag present, 3+ of each type, balanced
+     check answers, unseen questions first. Options are shuffled; ids seen are remembered. */
+  const BAND_SIZES = (typeof QB_BANDS !== 'undefined') ? QB_BANDS : [7, 7, 6];
+  const DRAW = BAND_SIZES.reduce((a, b) => a + b, 0);
+  const TYPE_TARGET = Math.max(1, Math.min(3, Math.floor(DRAW / new Set(BANK.map(q => q.t)).size)));   // e.g. 20 Qs → 3 of each type, 10 Qs with 4 types → 2
+  const QBT = (typeof QB_TEXT !== 'undefined') ? QB_TEXT : {};
+  const ASK = Object.assign({
+    check: 'Is this sentence correct?',
+    pick:  'Pick the correct sentence.',
+    fill:  'Which choice fills the gap correctly?',
+    spot:  'Tap the part with the mistake.'
+  }, QBT.ask || {});
+  const YN = QBT.yn || ['Needs fixing', 'Correct'];
+  const RIGHT = QBT.right || ['Correct!'];
+  const WRONG = QBT.wrong || 'Not quite.';
+  const SUM = Object.assign({
+    perfect: 'A perfect run! Try another set to make sure it sticks.',
+    high: 'Strong work. Have a quick look at the areas below, then try a fresh set.',
+    mid: 'Good progress. Re-read the parts below before your next attempt.',
+    low: 'Worth another look at the lesson. Start with the areas below, then try a fresh set.',
+    review: 'Areas to review'
+  }, QBT.summary || {});
+  const CAN_SPEAK = !!QBT.speak && typeof window !== 'undefined' && !!window.speechSynthesis &&
+    typeof window.speechSynthesis.speak === 'function' && typeof SpeechSynthesisUtterance !== 'undefined';
+  function speak(text) {
+    try {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-GB'; u.rate = 0.9;
+      window.speechSynthesis.speak(u);
+    } catch (e) { /* no speech on this device */ }
+  }
 
-  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const store = {
+    get(k, fallback) { try { const v = localStorage.getItem(LESSON_KEY + ':' + k); return v === null ? fallback : JSON.parse(v); } catch (e) { return fallback; } },
+    set(k, v) { try { localStorage.setItem(LESSON_KEY + ':' + k, JSON.stringify(v)); } catch (e) { /* storage unavailable: quiz still works */ } }
+  };
+  const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-  function updateScore() { scoreEl.textContent = score + ' / ' + QUESTIONS.length; }
+  function buildCandidate(seen) {
+    const chosen = [], tagN = {}, typeN = {};
+    let fixN = 0, okN = 0;
+    for (let band = 1; band <= 3; band++) {
+      const picks = [];
+      for (let k = 0; k < BAND_SIZES[band - 1]; k++) {
+        let best = null, bestScore = -Infinity;
+        BANK.forEach(q => {
+          if (q.d !== band || picks.includes(q)) return;
+          let s = Math.random() * 3;
+          if (!seen.has(q.id)) s += 6;
+          if (!tagN[q.tag]) s += 12;
+          s -= (typeN[q.t] || 0) * 1.2;
+          if ((typeN[q.t] || 0) < TYPE_TARGET) s += 3;   // nudge every type up to its target
+          if (q.t === 'check') { const lean = q.a === 0 ? fixN - okN : okN - fixN; if (lean >= 1) s -= 4; }
+          if (s > bestScore) { bestScore = s; best = q; }
+        });
+        if (!best) break;
+        picks.push(best);
+        tagN[best.tag] = (tagN[best.tag] || 0) + 1;
+        typeN[best.t] = (typeN[best.t] || 0) + 1;
+        if (best.t === 'check') { if (best.a === 0) fixN++; else okN++; }
+      }
+      chosen.push(...shuffle(picks));
+    }
+    return chosen;
+  }
+
+  function rateCandidate(c, seen) {
+    const tags = new Set(c.map(q => q.tag)).size;
+    const types = {};
+    c.forEach(q => types[q.t] = (types[q.t] || 0) + 1);
+    const used = [...new Set(BANK.map(q => q.t))];
+    const minType = Math.min(...used.map(t => types[t] || 0));
+    const checks = c.filter(q => q.t === 'check');
+    const lean = Math.abs(checks.filter(q => q.a === 0).length * 2 - checks.length);
+    return (tags === Object.keys(TAGS).length ? 10000 : tags * 500)
+         + (c.length === DRAW ? 5000 : 0)
+         + Math.min(minType, TYPE_TARGET) * 300
+         + (lean <= 2 ? 200 : 0)
+         + c.filter(q => !seen.has(q.id)).length * 10;
+  }
+
+  function drawQuiz() {
+    let seen = new Set(store.get('seen', []));
+    if (BANK.length - seen.size < DRAW) seen = new Set(store.get('last', []));   // new cycle, but skip the last attempt
+    let chosen = null, bestRate = -1;
+    for (let tries = 0; tries < 200; tries++) {
+      const c = buildCandidate(seen), r = rateCandidate(c, seen);
+      if (r > bestRate) { bestRate = r; chosen = c; }
+    }
+    chosen.forEach(q => seen.add(q.id));
+    store.set('seen', [...seen]);
+    store.set('last', chosen.map(q => q.id));
+    return chosen.map(q => {
+      if (q.t === 'pick' || q.t === 'fill') {
+        const opts = shuffle(q.o.map((text, i) => ({ text, ok: i === 0 })));
+        return { q, opts, answer: opts.findIndex(o => o.ok) };
+      }
+      if (q.t === 'check') return { q, opts: YN.map(text => ({ text })), answer: q.a };
+      return { q, opts: null, answer: q.a };
+    });
+  }
+
+  const listEl = document.getElementById('qbList');
+  const scoreEl = document.getElementById('qbScore');
+  const progressEl = document.getElementById('qbProgress');
+  const summaryEl = document.getElementById('qbSummary');
+  let current = [], score = 0, done = 0, missed = [];
+
+  function updateScore() {
+    scoreEl.textContent = score + ' / ' + current.length;
+    progressEl.textContent = done + ' of ' + current.length + ' answered';
+  }
+
+  /* Small or empty options are hard to see on a button, so label them. */
+  function optLabel(text) {
+    const t = text.trim();
+    if (t === '') return '<span class="qb-note">(nothing)</span>';
+    if (t === ',') return '<span class="qb-punct">,</span> <span class="qb-note">(a comma)</span>';
+    if (t === '.') return '<span class="qb-punct">.</span> <span class="qb-note">(a full stop)</span>';
+    if (t === '?') return '<span class="qb-punct">?</span> <span class="qb-note">(a question mark)</span>';
+    if (t === '!') return '<span class="qb-punct">!</span> <span class="qb-note">(an exclamation mark)</span>';
+    return esc(text);
+  }
+  function plainLabel(text) {
+    const t = text.trim();
+    return t === '' ? 'nothing' : t === ',' ? 'a comma' : t === '.' ? 'a full stop'
+      : t === '?' ? 'a question mark' : t === '!' ? 'an exclamation mark' : '"' + t + '"';
+  }
+  function sentenceWithGap(q, text) {
+    let filler = '<span class="qb-blank">___</span>';
+    if (text !== undefined) {
+      filler = text.trim() === ''
+        ? '<span class="qb-blank qb-filled qb-none">(nothing)</span>'
+        : '<span class="qb-blank qb-filled">' + esc(text) + '</span>';
+    }
+    return esc(q.q).replace('___', filler);
+  }
 
   function render() {
-    container.innerHTML = '';
-    answered = QUESTIONS.map(() => false);
-    QUESTIONS.forEach((q, i) => {
+    listEl.innerHTML = '';
+    summaryEl.hidden = true;
+    current.forEach((item, i) => {
+      const q = item.q;
       const card = document.createElement('div');
-      card.className = 'quiz-card';
-      const hasBlank = q.text.includes('___');
-      const short = q.options.every(o => o.length <= 14);
+      card.className = 'qb-card';
+      card.dataset.type = q.t;
+      let body;
+      if (q.t === 'spot') {
+        body = '<div class="qb-spot">' + q.parts.map((p, k) =>
+          '<button type="button" class="qb-part" data-k="' + k + '">' + esc(p) + '</button>').join('') + '</div>';
+      } else if (q.t === 'fill') {
+        const cols = item.opts.length;
+        body = '<p class="qb-text">' + sentenceWithGap(q) + '</p><div class="qb-opts qb-row" style="--qb-cols:' + cols + '"></div>';
+      } else if (q.t === 'check') {
+        body = '<p class="qb-text">' + esc(q.q) + '</p><div class="qb-opts qb-row"></div>';
+      } else {
+        body = (q.q ? '<p class="qb-text">' + esc(q.q) + '</p>' : '') + '<div class="qb-opts"></div>';
+      }
       card.innerHTML =
-        '<p class="quiz-num">Question ' + (i + 1) + ' of ' + QUESTIONS.length + '</p>' +
-        (q.ask ? '<p class="quiz-ask">' + esc(q.ask) + '</p>' : '') +
-        '<p class="quiz-text">' + esc(q.text).replace('___', '<span class="blank">___</span>') + '</p>' +
-        '<div class="opts' + (short ? ' row' : '') + '"></div>' +
-        '<div class="feedback" role="status"></div>';
-      const opts = card.querySelector('.opts');
-      q.options.forEach((o, j) => {
-        const b = document.createElement('button');
-        b.type = 'button';
-        b.className = 'opt';
-        b.innerHTML = (short ? '' : '<span class="tag">' + String.fromCharCode(65 + j) + '</span>') + esc(o);
-        b.addEventListener('click', () => answer(i, j, card, hasBlank, short));
-        opts.appendChild(b);
-      });
-      container.appendChild(card);
+        (CAN_SPEAK ? '<button type="button" class="qb-speak" aria-label="Read this question aloud">🔊 Read it to me</button>' : '') +
+        '<p class="qb-num">Question ' + (i + 1) + ' of ' + current.length + '</p>' +
+        '<p class="qb-ask">' + esc(q.ask || ASK[q.t]) + '</p>' + body +
+        '<div class="qb-feedback" role="status"></div>';
+      if (CAN_SPEAK) {
+        const bits = [q.ask || ASK[q.t]];
+        if (q.t === 'spot') bits.push(q.parts.join(' '));
+        else if (q.q) bits.push(q.q.replace('___', 'blank'));
+        const sayOpt = t => { const x = t.trim(); return x === '' ? 'nothing' : x === '.' ? 'full stop' : x === ',' ? 'comma' : x === '?' ? 'question mark' : x === '!' ? 'exclamation mark' : x; };
+        if (q.t === 'pick' || q.t === 'fill') item.opts.forEach((o, j) => bits.push((q.t === 'pick' ? String.fromCharCode(65 + j) + ': ' : '') + sayOpt(o.text)));
+        if (q.t === 'check') bits.push(YN.join(', or '));
+        const spoken = bits.map(t => t.trim().replace(/[.\s]+$/, '')).filter(Boolean)
+          .map(t => /[?!]$/.test(t) ? t : t + '.').join(' ');
+        card.querySelector('.qb-speak').addEventListener('click', () => speak(spoken));
+      }
+      if (q.t === 'spot') {
+        card.querySelectorAll('.qb-part').forEach(b => b.addEventListener('click', () => answer(i, +b.dataset.k, card)));
+      } else {
+        const opts = card.querySelector('.qb-opts');
+        item.opts.forEach((o, j) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'qb-opt';
+          b.innerHTML = (q.t === 'pick' ? '<span class="qb-letter">' + String.fromCharCode(65 + j) + '</span>' : '') + optLabel(o.text);
+          b.addEventListener('click', () => answer(i, j, card));
+          opts.appendChild(b);
+        });
+      }
+      listEl.appendChild(card);
     });
     updateScore();
   }
 
-  function answer(i, j, card, hasBlank, short) {
-    if (answered[i]) return;
-    answered[i] = true;
-    const q = QUESTIONS[i], ok = j === q.answer;
-    if (ok) score++;
-    updateScore();
-    if (hasBlank && short) {
-      const blank = card.querySelector('.blank');
-      blank.textContent = q.options[j];
-      blank.classList.add('filled');
-    }
-    card.querySelectorAll('.opt').forEach((b, k) => {
+  function answer(i, j, card) {
+    const item = current[i];
+    if (item.done) return;
+    item.done = true; done++;
+    const q = item.q, ok = j === item.answer;
+    if (ok) score++; else missed.push(q.tag);
+    card.querySelectorAll(q.t === 'spot' ? '.qb-part' : '.qb-opt').forEach((b, k) => {
       b.disabled = true;
-      if (k === j) b.classList.add(ok ? 'correct' : 'incorrect');
-      else if (k === q.answer && !ok) b.classList.add('reveal');
+      if (k === j) b.classList.add(ok ? 'qb-correct' : 'qb-incorrect');
+      else if (k === item.answer && !ok) b.classList.add('qb-reveal');
     });
-    const fb = card.querySelector('.feedback');
-    fb.classList.add('show', ok ? 'fb-ok' : 'fb-no');
-    fb.innerHTML = '<span class="verdict">' +
-      (ok ? 'Correct!' : 'Not quite. The answer is ' + (short ? '"' + esc(q.options[q.answer]) + '"' : String.fromCharCode(65 + q.answer)) + '.') +
-      '</span>' + esc(q.why);
+    if (q.t === 'fill') card.querySelector('.qb-text').innerHTML = sentenceWithGap(q, item.opts[j].text);
+    let right;
+    if (q.t === 'spot') right = 'The mistake is in "' + esc(q.parts[item.answer]) + '".';
+    else if (q.t === 'pick') right = 'The answer is ' + String.fromCharCode(65 + item.answer) + '.';
+    else right = 'The answer is ' + esc(plainLabel(item.opts[item.answer].text)) + '.';
+    const fb = card.querySelector('.qb-feedback');
+    fb.classList.add('qb-show', ok ? 'qb-fb-ok' : 'qb-fb-no');
+    fb.innerHTML = '<span class="qb-verdict">' + (ok ? RIGHT[Math.floor(Math.random() * RIGHT.length)] : WRONG + ' ' + right) + '</span>' + esc(q.why);
+    updateScore();
+    if (done === current.length) showSummary();
   }
 
-  document.getElementById('resetBtn').addEventListener('click', () => {
-    score = 0;
-    render();
-    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
+  function showSummary() {
+    const best = Math.max(store.get('best', 0), score);
+    store.set('best', best);
+    const attempts = store.get('attempts', 0) + 1;
+    store.set('attempts', attempts);
+    const counts = {};
+    missed.forEach(t => counts[t] = (counts[t] || 0) + 1);
+    const areas = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+    const n = current.length;
+    let msg;
+    if (score === n) msg = SUM.perfect;
+    else if (score >= Math.ceil(n * 0.8)) msg = SUM.high;
+    else if (score >= Math.ceil(n * 0.6)) msg = SUM.mid;
+    else msg = SUM.low;
+    summaryEl.innerHTML =
+      '<h3>You scored ' + score + ' / ' + n + '</h3><p>' + msg + '</p>' +
+      (areas.length ? '<p class="qb-sum-label">' + esc(SUM.review) + '</p><ul class="qb-areas">' + areas.map(t =>
+        '<li><a href="' + TAGS[t].href + '">' + esc(TAGS[t].label) + '</a><span>' + counts[t] + ' wrong</span></li>').join('') + '</ul>' : '') +
+      '<p class="qb-meta">Attempts on this device: ' + attempts + ' · Best score: ' + best + ' / ' + n + '</p>' +
+      '<button type="button" class="qb-go" id="qbAgain">Try ' + n + ' new questions</button>';
+    summaryEl.hidden = false;
+    document.getElementById('qbAgain').addEventListener('click', () => { newQuiz(); listEl.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    summaryEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 
-  render();
+  function newQuiz() {
+    current = drawQuiz(); score = 0; done = 0; missed = [];
+    render();
+  }
+
+  const bankEl = document.getElementById('qbBank'), drawEl = document.getElementById('qbDraw');
+  if (bankEl) bankEl.textContent = BANK.length;
+  if (drawEl) drawEl.textContent = DRAW;
+  document.getElementById('qbNew').addEventListener('click', () => {
+    newQuiz();
+    listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  newQuiz();
+  } /* qb-end */
 })();
 </script>
 </body>
