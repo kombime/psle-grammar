@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Double It, Drop It, or Leave It? Adding Endings</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔤</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #E7F1EC;
+    --surface: #FFFFFF;
+    --ink: #13261F;
+    --ink-soft: #4C6158;
+    --board: #1B5E4A;         /* board green */
+    --board-ink: #F2F7F4;
+    --tile: #F4E3B8;          /* letter tile */
+    --tile-edge: #C9AE6E;
+    --tile-ink: #2A2111;
+    --dbl: #3D86C6;           /* double-letter blue */
+    --dbl-soft: #DCEAF7;
+    --drop: #D6455D;          /* dropped-e pink-red */
+    --drop-soft: #FBE1E5;
+    --right: #1F7A45;   --right-soft: #DDF1E4;
+    --wrong: #B3261E;   --wrong-soft: #F8DEDC;
+    --rule: rgba(19,38,31,0.14);
+    --font-display: 'Zilla Slab', Georgia, serif;
+    --font-body: 'Work Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0D1A16; --surface: #16271F; --ink: #E8F2ED; --ink-soft: #A3B8AE;
+      --board: #1F6B54; --board-ink: #F2F7F4;
+      --tile: #E9D49E; --tile-edge: #A88C4A; --tile-ink: #2A2111;
+      --dbl: #7DB5E8; --dbl-soft: #17293A;
+      --drop: #F27A8E; --drop-soft: #3A1A21;
+      --right: #6FD49A; --right-soft: #17321F;
+      --wrong: #F08A82; --wrong-soft: #3A1E1C;
+      --rule: rgba(232,242,237,0.14);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0D1A16; --surface: #16271F; --ink: #E8F2ED; --ink-soft: #A3B8AE;
+    --board: #1F6B54; --board-ink: #F2F7F4;
+    --tile: #E9D49E; --tile-edge: #A88C4A; --tile-ink: #2A2111;
+    --dbl: #7DB5E8; --dbl-soft: #17293A;
+    --drop: #F27A8E; --drop-soft: #3A1A21;
+    --right: #6FD49A; --right-soft: #17321F;
+    --wrong: #F08A82; --wrong-soft: #3A1E1C;
+    --rule: rgba(232,242,237,0.14);
+  }
+
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; }
+  .wrap { max-width: 740px; margin: 0 auto; padding: 28px 18px 64px; }
+  img, svg { max-width: 100%; }
+  section { margin-bottom: 48px; }
+  h1, h2, h3 { font-family: var(--font-display); font-weight: 700; }
+  h2 { font-size: 29px; line-height: 1.12; margin: 0 0 8px; }
+  h3 { font-size: 20px; margin: 0 0 8px; }
+  p { line-height: 1.55; }
+  .sub { color: var(--ink-soft); margin: 0 0 20px; max-width: 60ch; }
+  :focus-visible { outline: 3px solid var(--dbl); outline-offset: 2px; }
+
+  .back-link {
+    display: inline-block; margin: 0 0 22px; padding: 9px 16px; min-height: 40px;
+    font-weight: 600; font-size: 14px; color: var(--ink); text-decoration: none;
+    border-radius: 8px; background: var(--surface); border: 2px solid var(--rule);
+  }
+
+  /* Letter tiles */
+  .tiles { display: inline-flex; flex-wrap: wrap; gap: 3px; vertical-align: middle; }
+  .t {
+    display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 34px;
+    font-family: var(--font-display); font-weight: 700; font-size: 20px; text-transform: lowercase;
+    background: var(--tile); color: var(--tile-ink); border-radius: 4px; box-shadow: 0 3px 0 var(--tile-edge);
+  }
+  .t.end { background: var(--surface); color: var(--ink); box-shadow: 0 3px 0 var(--rule); border: 1.5px solid var(--rule); }
+  .t.dbl { background: var(--dbl); color: #fff; box-shadow: 0 3px 0 #1F5584; }
+  .t.gone { background: var(--drop-soft); color: var(--drop); text-decoration: line-through; box-shadow: none; opacity: 0.8; }
+  .t.sm { width: 24px; height: 28px; font-size: 16px; }
+  .plus { font-weight: 700; color: var(--ink-soft); margin: 0 4px; }
+
+  .eg { margin: 0 0 8px; font-size: 15.5px; }
+  .bad { color: var(--wrong); text-decoration: line-through; text-decoration-thickness: 1.5px; }
+  .good { color: var(--right); font-weight: 700; }
+  .why { color: var(--ink-soft); font-size: 15px; }
+  .k-dbl { color: var(--dbl); font-weight: 700; }
+  .k-drop { color: var(--drop); font-weight: 700; }
+
+  /* ---------- Hero ---------- */
+  .hero h1 { font-size: clamp(36px, 9.5vw, 58px); line-height: 1.02; margin: 0 0 14px; }
+  .hero h1 .d1 { color: var(--dbl); } .hero h1 .d2 { color: var(--drop); }
+  .lead { font-size: 17px; max-width: 58ch; margin: 0 0 22px; }
+
+  .board { background: var(--board); color: var(--board-ink); border-radius: 14px; padding: 18px 16px; }
+  .board .lbl { font-size: 14px; opacity: 0.85; margin: 0 0 8px; }
+  .word-pick { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .wbtn {
+    font: inherit; font-family: var(--font-display); font-weight: 700; font-size: 17px; min-height: 44px; padding: 6px 14px;
+    border-radius: 8px; border: 2px solid rgba(255,255,255,0.35); background: transparent; color: var(--board-ink); cursor: pointer;
+  }
+  .wbtn[aria-pressed="true"] { background: var(--tile); color: var(--tile-ink); border-color: var(--tile); }
+  .build { min-height: 56px; display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin: 4px 0 14px; }
+  .actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .abtn {
+    font: inherit; font-weight: 700; font-size: 14px; min-height: 48px; padding: 8px 6px; border-radius: 10px; cursor: pointer;
+    border: none; background: var(--surface); color: var(--ink);
+  }
+  .abtn.a1 { box-shadow: inset 0 -4px 0 var(--dbl); }
+  .abtn.a2 { box-shadow: inset 0 -4px 0 var(--drop); }
+  .abtn.a3 { box-shadow: inset 0 -4px 0 var(--tile-edge); }
+  .hero-msg { margin: 14px 2px 0; font-size: 15px; min-height: 48px; line-height: 1.5; }
+  .hero-msg b { font-family: var(--font-display); font-size: 17px; }
+
+  /* ---------- Rule ---------- */
+  .check { background: var(--surface); border-radius: 12px; padding: 16px 18px; margin-bottom: 10px; display: grid; grid-template-columns: 40px 1fr; gap: 12px; }
+  .check .n { width: 40px; height: 44px; border-radius: 5px; background: var(--tile); color: var(--tile-ink); box-shadow: 0 3px 0 var(--tile-edge); font-family: var(--font-display); font-weight: 700; font-size: 22px; display: flex; align-items: center; justify-content: center; }
+  .check p { margin: 0 0 6px; }
+  .check p:last-child { margin: 0; }
+  .push { margin-top: 14px; padding: 14px 16px; border-radius: 12px; background: var(--dbl-soft); border-left: 6px solid var(--dbl); }
+  .push p { margin: 0 0 6px; }
+  .push p:last-child { margin: 0; }
+  .endings { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; padding: 0; list-style: none; }
+  .endings li { font-weight: 700; font-size: 14px; padding: 3px 10px; border-radius: 12px; background: var(--surface); }
+
+  /* ---------- Traps ---------- */
+  .trap { background: var(--surface); border-radius: 12px; padding: 16px 18px; margin-bottom: 12px; border-top: 5px solid var(--wrong); }
+  .trap h3 { color: var(--wrong); }
+  .trap p { margin: 0 0 8px; }
+
+  /* ---------- Categories ---------- */
+  .cats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 560px) { .cats { grid-template-columns: 1fr; } }
+  .cat { background: var(--surface); border-radius: 12px; padding: 16px 18px; }
+  .cat.c1 { border-left: 6px solid var(--dbl); }
+  .cat.c2 { border-left: 6px solid var(--drop); }
+  .cat.c3 { border-left: 6px solid var(--tile-edge); }
+  .cat.c4 { border-left: 6px solid var(--board); }
+  .cat p { margin: 0 0 7px; font-size: 15px; }
+  .pairs { list-style: none; padding: 0; margin: 8px 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; font-size: 14.5px; }
+  .pairs li b { font-weight: 700; }
+  .stress { font-weight: 700; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+
+  /* ---------- Specials ---------- */
+  .grid-3 { display: grid; gap: 12px; }
+  .special { background: var(--surface); border-radius: 12px; padding: 16px 18px; border: 2px dashed var(--board); }
+  .special p { margin: 0 0 8px; font-size: 15px; }
+
+  /* ---------- Quiz ---------- */
+  .scoreboard {
+    display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; margin-bottom: 20px;
+    background: var(--board); color: var(--board-ink); border-radius: 12px; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 2;
+  }
+  .scoreboard .label { font-size: 13px; opacity: 0.85; }
+  .score { font-family: var(--font-display); font-weight: 700; font-size: 26px; }
+  .reset-btn { font: inherit; font-weight: 700; font-size: 14px; padding: 10px 16px; min-height: 44px; border-radius: 22px; border: 2px solid var(--board-ink); background: transparent; color: var(--board-ink); cursor: pointer; }
+  .quiz-card { background: var(--surface); padding: 18px; margin-bottom: 14px; border-radius: 12px; }
+  .quiz-num { font-size: 13px; color: var(--ink-soft); margin: 0 0 6px; }
+  .quiz-ask { font-size: 14px; font-weight: 700; color: var(--board); margin: 0 0 6px; }
+  :root[data-theme="dark"] .quiz-ask { color: var(--dbl); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .quiz-ask { color: var(--dbl); } }
+  .quiz-text { font-size: 17px; margin: 0 0 14px; font-weight: 600; line-height: 1.45; }
+  .blank { display: inline-block; min-width: 70px; text-align: center; border-bottom: 2px dashed var(--ink-soft); color: var(--ink-soft); }
+  .blank.filled { border-bottom-style: solid; color: var(--ink); font-weight: 700; }
+  .opts { display: flex; flex-direction: column; gap: 9px; }
+  .opts.row { flex-direction: row; }
+  .opts.row .opt { flex: 1; text-align: center; font-family: var(--font-display); font-weight: 700; font-size: 18px; }
+  .opt { font: inherit; font-size: 15.5px; text-align: left; padding: 11px 12px; min-height: 44px; border: 2px solid var(--rule); background: var(--bg); color: var(--ink); cursor: pointer; border-radius: 8px; }
+  .opt:disabled { cursor: default; }
+  .opt .tag { font-weight: 700; margin-right: 8px; color: var(--board); }
+  .opt.correct, .opt.reveal { background: var(--right-soft); border-color: var(--right); }
+  .opt.incorrect { background: var(--wrong-soft); border-color: var(--wrong); }
+  .feedback { display: none; margin-top: 12px; padding-top: 12px; border-top: 2px dashed var(--rule); font-size: 15px; line-height: 1.55; }
+  .feedback.show { display: block; }
+  .verdict { display: block; font-weight: 700; margin-bottom: 4px; }
+  .feedback.fb-ok .verdict { color: var(--right); }
+  .feedback.fb-no .verdict { color: var(--wrong); }
+
+  /* ---------- Summary ---------- */
+  .summary { background: var(--board); color: var(--board-ink); border-radius: 14px; padding: 20px; }
+  .summary ul { margin: 0; padding-left: 20px; line-height: 1.8; }
+  .chant { margin: 18px 0 0; padding: 14px 16px; background: var(--tile); color: var(--tile-ink); border-radius: 8px; box-shadow: 0 4px 0 var(--tile-edge); font-family: var(--font-display); font-weight: 700; font-size: 20px; line-height: 1.4; text-align: center; }
+  footer { text-align: center; color: var(--ink-soft); font-size: 13px; margin-top: 30px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back-link" href="index.html">← Back to the shelf</a>
+
+  <!-- 1. HERO -->
+  <header class="hero">
+    <h1><span class="d1">Double</span> It, <span class="d2">Drop</span> It, or Leave It?</h1>
+    <p class="lead">Endings that start with a vowel, like <b>-ing, -ed, -er</b> and <b>-able</b>, are <b>pushy</b>. They lean on the vowel in front of them and try to make it "say its name". <i>Hop</i> + <i>ing</i> becomes "hoping", which sounds like <i>hope</i>! Your job is to keep the word's sound the same. You can build a wall of two letters, drop a silent <i>e</i>, or leave the word alone.</p>
+
+    <div class="board">
+      <p class="lbl">1. Pick a word.</p>
+      <div class="word-pick" id="wordPick" role="group" aria-label="Choose a word"></div>
+      <div class="build" id="build" aria-live="polite"></div>
+      <p class="lbl">2. Choose what to do before adding the ending.</p>
+      <div class="actions">
+        <button class="abtn a1" type="button" data-act="double">Double it</button>
+        <button class="abtn a2" type="button" data-act="drop">Drop the e</button>
+        <button class="abtn a3" type="button" data-act="leave">Leave it</button>
+      </div>
+      <p class="hero-msg" id="heroMsg"></p>
+    </div>
+  </header>
+
+  <!-- 2. THE RULE -->
+  <section>
+    <h2>The three-tile check</h2>
+    <p class="sub">Ask these questions in order. Stop as soon as one gives you the answer.</p>
+
+    <div class="check">
+      <div class="n">1</div>
+      <div>
+        <p><b>Does the ending start with a vowel?</b> If it starts with a consonant (<i>-ful, -ly, -less, -ness, -ment</i>), it isn't pushy. <b>Just add it.</b> Nothing changes.</p>
+        <p class="eg">hope + ful = <b>hopeful</b> · sad + ness = <b>sadness</b> · sincere + ly = <b>sincerely</b></p>
+      </div>
+    </div>
+    <div class="check">
+      <div class="n">2</div>
+      <div>
+        <p><b>Does the word end in a silent e?</b> <span class="k-drop">Drop the e</span>, then add the ending. Never double.</p>
+        <p class="eg">hope → <b>hoping</b> · write → <b>writing</b> · come → <b>coming</b></p>
+      </div>
+    </div>
+    <div class="check">
+      <div class="n">3</div>
+      <div>
+        <p><b>Does it end in one short vowel + one consonant?</b> <span class="k-dbl">Double the last letter</span> to build a wall. If not, leave the word alone.</p>
+        <p class="eg">wrap → <b>wrapped</b> · stop → <b>stopping</b> · but jump → <b>jumped</b>, rain → <b>raining</b></p>
+      </div>
+    </div>
+
+    <div class="push">
+      <p><b>Why it works:</b> say the word with and without the wall.</p>
+      <p><span class="tiles"><span class="t sm">h</span><span class="t sm">o</span><span class="t sm">p</span></span><span class="plus">+ ing</span> → "hoping" sounds like <i>hope</i>. ✗ &nbsp; "ho<span class="k-dbl">pp</span>ing" keeps the short <i>o</i>. ✓</p>
+      <p>A silent <i>e</i> is already there to make the vowel long, as in <i>hope</i> and <i>write</i>. When the ending arrives, its vowel takes over that job, so the <i>e</i> can step out.</p>
+    </div>
+  </section>
+
+  <!-- 3. TRAPS -->
+  <section>
+    <h2>Three traps</h2>
+    <p class="sub">All three come straight from real compositions.</p>
+    <div class="trap">
+      <h3>Trap 1: Doubling after a silent-e word</h3>
+      <p><span class="bad">comming</span> → <span class="good">coming</span> &nbsp; <span class="bad">writting</span> → <span class="good">writing</span> &nbsp; <span class="bad">dinning</span> → <span class="good">dining</span></p>
+      <p class="why">Come, write and dine all end in a silent <i>e</i>. Silent-e words only <b>drop</b> the e. They <b>never</b> double. (Also, "dinning" comes from <i>din</i>, a loud noise!)</p>
+    </div>
+    <div class="trap">
+      <h3>Trap 2: Forgetting the wall</h3>
+      <p><span class="bad">wraped</span> → <span class="good">wrapped</span> &nbsp; <span class="bad">stoped</span> → <span class="good">stopped</span> &nbsp; <span class="bad">unforgetable</span> → <span class="good">unforgettable</span></p>
+      <p class="why">Read the wrong spelling aloud. "Wraped" would rhyme with "draped". One short vowel + one consonant needs two letters to protect its sound.</p>
+    </div>
+    <div class="trap">
+      <h3>Trap 3: Dropping the e before a consonant ending</h3>
+      <p><span class="bad">sincerly</span> → <span class="good">sincerely</span> &nbsp; <span class="bad">excitment</span> → <span class="good">excitement</span> &nbsp; <span class="bad">carful</span> → <span class="good">careful</span></p>
+      <p class="why">The e only drops for a <b>vowel</b> ending. <i>-ly, -ment</i> and <i>-ful</i> start with consonants, so they aren't pushy, and the e stays. This matters for every letter you sign "Yours sincerely".</p>
+    </div>
+  </section>
+
+  <!-- 4. CATEGORIES -->
+  <section>
+    <h2>The four tile racks</h2>
+    <p class="sub">Every word you add an ending to belongs on one of these racks.</p>
+    <div class="cats">
+      <div class="cat c1">
+        <h3 class="k-dbl">Double it</h3>
+        <p>One short vowel + one consonant, with a vowel ending.</p>
+        <ul class="pairs">
+          <li>wrap → <b>wrapped</b></li><li>run → <b>running</b></li>
+          <li>swim → <b>swimmer</b></li><li>big → <b>biggest</b></li>
+          <li>plan → <b>planned</b></li><li>hug → <b>hugged</b></li>
+          <li>fun → <b>funny</b></li><li>shop → <b>shopping</b></li>
+        </ul>
+      </div>
+      <div class="cat c2">
+        <h3 class="k-drop">Drop the e</h3>
+        <p>Silent e, with a vowel ending.</p>
+        <ul class="pairs">
+          <li>come → <b>coming</b></li><li>write → <b>writing</b></li>
+          <li>dine → <b>dining</b></li><li>smile → <b>smiled</b></li>
+          <li>bake → <b>baker</b></li><li>decide → <b>decided</b></li>
+          <li>excite → <b>exciting</b></li><li>nice → <b>nicest</b></li>
+        </ul>
+      </div>
+      <div class="cat c3">
+        <h3>Leave it alone</h3>
+        <p>The vowel is already protected by two consonants (jump) or two vowels (rain). Or the ending starts with a consonant.</p>
+        <ul class="pairs">
+          <li>jump → <b>jumped</b></li><li>help → <b>helper</b></li>
+          <li>rain → <b>raining</b></li><li>look → <b>looked</b></li>
+          <li>hope → <b>hopeful</b></li><li>care → <b>careless</b></li>
+          <li>excite → <b>excitement</b></li><li>sad → <b>sadly</b></li>
+        </ul>
+      </div>
+      <div class="cat c4">
+        <h3>Longer words: listen for the beat</h3>
+        <p>Double only if the beat (stress) falls on the <b>last</b> part of the word.</p>
+        <ul class="pairs">
+          <li>for<span class="stress">GET</span> → <b>forgettable</b></li><li><span class="stress">VIS</span>it → <b>visited</b></li>
+          <li>be<span class="stress">GIN</span> → <b>beginning</b></li><li><span class="stress">O</span>pen → <b>opening</b></li>
+          <li>pre<span class="stress">FER</span> → <b>preferred</b></li><li><span class="stress">LIS</span>ten → <b>listening</b></li>
+          <li>ad<span class="stress">MIT</span> → <b>admitted</b></li><li><span class="stress">HAP</span>pen → <b>happened</b></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. SPECIAL CASES -->
+  <section>
+    <h2>Three special cases</h2>
+    <p class="sub">The quiz checks these too.</p>
+    <div class="grid-3">
+      <div class="special">
+        <h3>Endings at the front (prefixes) never change anything</h3>
+        <p>When you add <i>dis-, mis-</i> or <i>un-</i>, just join the two parts. Keep every letter of both.</p>
+        <p>dis + appear = <b>disappear</b> &nbsp;(not <span class="bad">dissappear</span> or <span class="bad">disapear</span>)</p>
+        <p>mis + spell = <b>misspell</b> · un + necessary = <b>unnecessary</b></p>
+        <p class="why">The double <i>s</i> in "misspell" and the double <i>n</i> in "unnecessary" come from joining two parts. They aren't walls.</p>
+      </div>
+      <div class="special">
+        <h3>w, x and y never double</h3>
+        <p>Even after one short vowel, these letters stay single.</p>
+        <p>snow → <b>snowing</b> · fix → <b>fixed</b> · box → <b>boxer</b> · play → <b>played</b></p>
+      </div>
+      <div class="special">
+        <h3>The British "l" rule</h3>
+        <p>In British spelling, which Singapore uses, a word ending in one vowel + <i>l</i> doubles the <i>l</i>, even when the beat comes first.</p>
+        <p>travel → <b>travelled</b> · cancel → <b>cancelled</b> · label → <b>labelled</b> · quarrel → <b>quarrelled</b></p>
+        <p class="why">American spelling writes "traveled". In PSLE, use the British form, just like <i>centre</i>, <i>flavour</i> and <i>practised</i>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. PRACTICE -->
+  <section>
+    <h2>Build the word</h2>
+    <p class="sub">Tap the correct spelling. You'll see straight away if you're right, and why. The questions get trickier as you go.</p>
+    <div class="scoreboard">
+      <div><div class="label">Your score</div><div class="score" id="scoreDisplay">0 / 30</div></div>
+      <button class="reset-btn" id="resetBtn" type="button">Start over</button>
+    </div>
+    <div id="quizContainer"></div>
+  </section>
+
+  <!-- 7. PIN THIS UP -->
+  <section class="summary">
+    <h2>Pin This Up</h2>
+    <ul>
+      <li><b>Consonant ending</b> (-ful, -ly, -less, -ment): just add it. sincere → sincerely.</li>
+      <li><b>Silent e + vowel ending:</b> drop the e, never double. come → coming.</li>
+      <li><b>One short vowel + one consonant:</b> double it. wrap → wrapped.</li>
+      <li><b>Longer words:</b> double only if the beat is at the end. forget → forgettable, visit → visited.</li>
+      <li><b>Prefixes</b> just join. <b>w, x, y</b> never double. <b>British l</b> doubles: travelled.</li>
+    </ul>
+    <p class="chant">Short and single? Build the wall.<br>Silent e? Drop it, that is all!</p>
+  </section>
+
+  <footer>My Grammar Shelf, Lesson 09</footer>
+</div>
+
+<script>
+(function () {
+  /* ---------- Hero: build the word ---------- */
+  const WORDS = {
+    hop:   { stem: 'hop',   end: 'ing', right: 'double',
+             res: { double: ['ho', 'p', 'p', 'ing'], drop: null, leave: ['ho', 'p', '', 'ing'] },
+             msg: { double: 'Hopping. The double <i>p</i> is a wall that keeps the short <i>o</i>.', drop: 'There\'s no silent <i>e</i> on "hop" to drop. Try again.', leave: '"Hoping"? That sounds like <i>hope</i>, so the pushy ending changed the sound.' } },
+    hope:  { stem: 'hope',  end: 'ing', right: 'drop',
+             res: { double: null, drop: ['hop', 'e', 'ing'], leave: ['hop', 'e', 'ing'] },
+             msg: { double: 'Silent-e words never double. Try again.', drop: 'Hoping. The ending\'s <i>i</i> takes over the silent <i>e</i>\'s job, so the e steps out.', leave: '"Hopeing" isn\'t a word. The silent <i>e</i> has to go when a vowel ending arrives.' } },
+    wrap:  { stem: 'wrap',  end: 'ed',  right: 'double',
+             res: { double: ['wra', 'p', 'p', 'ed'], drop: null, leave: ['wra', 'p', '', 'ed'] },
+             msg: { double: 'Wrapped. One short vowel + one consonant, so build the wall.', drop: 'There\'s no silent <i>e</i> on "wrap". Try again.', leave: '"Wraped" would rhyme with "draped". It needs the wall.' } },
+    write: { stem: 'write', end: 'ing', right: 'drop',
+             res: { double: null, drop: ['writ', 'e', 'ing'], leave: ['writ', 'e', 'ing'] },
+             msg: { double: '"Writting" is the trap! Silent-e words never double. Try again.', drop: 'Writing. Drop the e, one <i>t</i>, done.', leave: '"Writeing" isn\'t a word. Drop the silent <i>e</i> first.' } },
+    jump:  { stem: 'jump',  end: 'ed',  right: 'leave',
+             res: { double: ['jum', 'p', 'p', 'ed'], drop: null, leave: ['jum', 'p', '', 'ed'] },
+             msg: { double: '"Jumpped"? No wall is needed. The <i>m</i> and <i>p</i> already protect the vowel.', drop: 'There\'s no silent <i>e</i> on "jump". Try again.', leave: 'Jumped. Two consonants already guard the short <i>u</i>, so just add the ending.' } }
+  };
+  let current = 'hop';
+  const pick = document.getElementById('wordPick');
+  const build = document.getElementById('build');
+  const msg = document.getElementById('heroMsg');
+
+  const tiles = (s, cls) => s.split('').map(c => '<span class="t ' + (cls || '') + '">' + c + '</span>').join('');
+  function showStart() {
+    const w = WORDS[current];
+    build.innerHTML = '<span class="tiles">' + tiles(w.stem) + '</span><span class="plus">+</span><span class="tiles">' + tiles(w.end, 'end') + '</span>';
+    msg.innerHTML = 'What should happen to <b>' + w.stem + '</b> before you add <b>-' + w.end + '</b>?';
+  }
+  Object.keys(WORDS).forEach(k => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'wbtn'; b.textContent = k + ' + ' + WORDS[k].end;
+    b.setAttribute('aria-pressed', String(k === current));
+    b.addEventListener('click', () => {
+      current = k;
+      pick.querySelectorAll('.wbtn').forEach(x => x.setAttribute('aria-pressed', 'false'));
+      b.setAttribute('aria-pressed', 'true');
+      showStart();
+    });
+    pick.appendChild(b);
+  });
+  document.querySelectorAll('.abtn').forEach(btn => btn.addEventListener('click', () => {
+    const w = WORDS[current], act = btn.dataset.act, r = w.res[act];
+    const ok = act === w.right;
+    if (r) {
+      let html = '';
+      if (act === 'double') html = tiles(r[0]) + tiles(r[1]) + tiles(r[2], 'dbl') + tiles(r[3], 'end');
+      else if (act === 'leave' && r.length === 4) html = tiles(r[0]) + tiles(r[1]) + tiles(r[3], 'end');
+      else if (act === 'drop') html = tiles(r[0]) + tiles(r[1], 'gone') + tiles(r[2], 'end');
+      else html = tiles(r[0]) + tiles(r[1]) + tiles(r[2], 'end');
+      build.innerHTML = '<span class="tiles">' + html + '</span>';
+    }
+    msg.innerHTML = (ok ? '<b>✓ Yes!</b> ' : '<b>✗ Not quite.</b> ') + w.msg[act];
+  }));
+  showStart();
+
+  /* ---------- Quiz ---------- */
+  const ADD = "Add the ending. Which spelling is correct?";
+  const CHECK = "Is every word spelt correctly?";
+  const PICK = "Pick the sentence with every word spelt correctly.";
+  const CM = ["Correct", "Misspelt"];
+  const QUESTIONS = [
+    { ask: ADD, text: "stop + ed = ___", options: ["stoped", "stopped"], answer: 1, why: "One short vowel + one consonant, so double the p to keep the short “o”." },
+    { ask: ADD, text: "make + ing = ___", options: ["making", "makeing", "makking"], answer: 0, why: "Make ends in a silent e. Drop the e and never double: “making”." },
+    { ask: ADD, text: "jump + ed = ___", options: ["jumped", "jumpped"], answer: 0, why: "Two consonants (m, p) already guard the vowel, so leave it alone." },
+    { ask: ADD, text: "swim + ing = ___", options: ["swiming", "swimming"], answer: 1, why: "One short vowel + one consonant, so build the wall: “swimming”." },
+    { ask: ADD, text: "hope + ful = ___", options: ["hopeful", "hopful"], answer: 0, why: "“-ful” starts with a consonant, so it isn't pushy. Keep the e." },
+    { ask: ADD, text: "rain + ing = ___", options: ["rainning", "raining"], answer: 1, why: "Two vowels (a, i) already protect the sound, so leave it alone." },
+    { ask: ADD, text: "big + est = ___", options: ["biggest", "bigest"], answer: 0, why: "One short vowel + one consonant, so double the g." },
+    { ask: ADD, text: "smile + ed = ___", options: ["smilled", "smileed", "smiled"], answer: 2, why: "Silent e: drop it, then add “-ed”. It's simply “smiled”." },
+    { ask: ADD, text: "sad + ness = ___", options: ["sadness", "saddness"], answer: 0, why: "“-ness” starts with a consonant, so there's no push and no wall. Just add it." },
+    { ask: ADD, text: "look + ing = ___", options: ["lookking", "looking"], answer: 1, why: "Two vowels (oo) already protect the sound, so leave it alone." },
+
+    { ask: ADD, text: "come + ing = ___", options: ["comming", "coming", "comeing"], answer: 1, why: "Come ends in a silent e. Silent-e words drop the e and never double." },
+    { ask: ADD, text: "write + ing = ___", options: ["writing", "writting", "writeing"], answer: 0, why: "Drop the silent e. “Writting” would rhyme with “sitting”." },
+    { ask: ADD, text: "wrap + ed = ___", options: ["wraped", "wrapped"], answer: 1, why: "One short vowel + one consonant needs a wall. “Wraped” would rhyme with “draped”." },
+    { ask: CHECK, text: "We were dinning at a hawker centre when it started to rain.", options: CM, answer: 1, why: "Dine + ing = “dining”. “Dinning” comes from “din”, a loud noise." },
+    { ask: ADD, text: "sincere + ly = ___", options: ["sincerely", "sincerly"], answer: 0, why: "“-ly” starts with a consonant, so the e stays: “Yours sincerely”." },
+    { ask: ADD, text: "excite + ment = ___", options: ["excitment", "excitement"], answer: 1, why: "“-ment” starts with a consonant, so it isn't pushy. Keep the e." },
+    { ask: ADD, text: "hop + ing = ___", options: ["hopping", "hoping"], answer: 0, why: "Hop has a short o, so double the p. “Hoping” would come from “hope”." },
+    { ask: ADD, text: "hope + ing = ___", options: ["hopping", "hoping"], answer: 1, why: "Hope ends in a silent e. Drop it, and don't double." },
+    { ask: ADD, text: "decide + ed = ___", options: ["decided", "decidded"], answer: 0, why: "Silent e: drop it and add “-ed”. No doubling." },
+    { ask: CHECK, text: "Mum hugged me tightly before I boarded the bus.", options: CM, answer: 0, why: "Hug has one short vowel + one consonant, so “hugged” is right. “Boarded” has two vowels, so it's left alone." },
+
+    { ask: ADD, text: "forget + able = ___", options: ["forgetable", "forgettable"], answer: 1, why: "The beat is on the last part, for-GET, so double the t." },
+    { ask: ADD, text: "begin + ing = ___", options: ["beginning", "begining"], answer: 0, why: "The beat is on be-GIN, at the end, so double the n." },
+    { ask: ADD, text: "visit + ed = ___", options: ["visitted", "visited"], answer: 1, why: "The beat is at the start, VIS-it, so no wall is needed." },
+    { ask: ADD, text: "open + ing = ___", options: ["opening", "openning"], answer: 0, why: "The beat is at the start, O-pen, so leave it alone." },
+    { ask: ADD, text: "prefer + ed = ___", options: ["prefered", "preferred"], answer: 1, why: "The beat is on pre-FER, at the end, so double the r." },
+    { ask: ADD, text: "snow + ing = ___", options: ["snowing", "snowwing"], answer: 0, why: "W, x and y never double." },
+    { ask: ADD, text: "In British spelling (used in Singapore): travel + ed = ___", options: ["traveled", "travelled"], answer: 1, why: "British spelling doubles a final l after one vowel: “travelled”." },
+    { ask: ADD, text: "dis + appear = ___", options: ["disappear", "dissappear", "disapear"], answer: 0, why: "Prefixes just join: dis + appear. Keep every letter of both parts, so it has one s and two p's." },
+    { ask: ADD, text: "mis + spell = ___", options: ["mispell", "misspell"], answer: 1, why: "Prefixes just join. Mis + spell keeps both s's: “misspell”." },
+    { ask: PICK, text: "Which sentence is spelt correctly?", options: ["The concert was unforgetable. We kept clapping and only stopped when the lights dimmed.", "The concert was unforgettable. We kept clapping and only stoped when the lights dimmed.", "The concert was unforgettable. We kept clapping and only stopped when the lights dimmed.", "The concert was unforgettable. We kept claping and only stopped when the lights dimed."], answer: 2, why: "Unforgettable, clapping, stopped and dimmed all need a wall, because each has one short vowel + one consonant." }
+  ];
+
+  const container = document.getElementById('quizContainer');
+  const scoreEl = document.getElementById('scoreDisplay');
+  let score = 0, answered = [];
+
+  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  function updateScore() { scoreEl.textContent = score + ' / ' + QUESTIONS.length; }
+
+  function render() {
+    container.innerHTML = '';
+    answered = QUESTIONS.map(() => false);
+    QUESTIONS.forEach((q, i) => {
+      const card = document.createElement('div');
+      card.className = 'quiz-card';
+      const hasBlank = q.text.includes('___');
+      const short = q.options.every(o => o.length <= 14);
+      card.innerHTML =
+        '<p class="quiz-num">Question ' + (i + 1) + ' of ' + QUESTIONS.length + '</p>' +
+        (q.ask ? '<p class="quiz-ask">' + esc(q.ask) + '</p>' : '') +
+        '<p class="quiz-text">' + esc(q.text).replace('___', '<span class="blank">___</span>') + '</p>' +
+        '<div class="opts' + (short ? ' row' : '') + '"></div>' +
+        '<div class="feedback" role="status"></div>';
+      const opts = card.querySelector('.opts');
+      q.options.forEach((o, j) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'opt';
+        b.innerHTML = (short ? '' : '<span class="tag">' + String.fromCharCode(65 + j) + '</span>') + esc(o);
+        b.addEventListener('click', () => answer(i, j, card, hasBlank, short));
+        opts.appendChild(b);
+      });
+      container.appendChild(card);
+    });
+    updateScore();
+  }
+
+  function answer(i, j, card, hasBlank, short) {
+    if (answered[i]) return;
+    answered[i] = true;
+    const q = QUESTIONS[i], ok = j === q.answer;
+    if (ok) score++;
+    updateScore();
+    if (hasBlank && short) {
+      const blank = card.querySelector('.blank');
+      blank.textContent = q.options[j];
+      blank.classList.add('filled');
+    }
+    card.querySelectorAll('.opt').forEach((b, k) => {
+      b.disabled = true;
+      if (k === j) b.classList.add(ok ? 'correct' : 'incorrect');
+      else if (k === q.answer && !ok) b.classList.add('reveal');
+    });
+    const fb = card.querySelector('.feedback');
+    fb.classList.add('show', ok ? 'fb-ok' : 'fb-no');
+    fb.innerHTML = '<span class="verdict">' +
+      (ok ? 'Correct!' : 'Not quite. The answer is ' + (short ? '"' + esc(q.options[q.answer]) + '"' : String.fromCharCode(65 + q.answer)) + '.') +
+      '</span>' + esc(q.why);
+  }
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    score = 0;
+    render();
+    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

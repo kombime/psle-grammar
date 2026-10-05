@@ -7,7 +7,7 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Atkinson+Hyperlegible:wght@400;700&family=Spectral:wght@700&family=Bangers&family=Lilita+One&family=Big+Shoulders+Display:wght@800&family=Fraunces:opsz,wght@9..144,800&family=Alfa+Slab+One&family=Caveat+Brush&family=Baloo+2:wght@800&family=Fredoka:wght@700&family=Sniglet:wght@800&family=Grandstander:wght@800&family=Chewy&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Atkinson+Hyperlegible:wght@400;700&family=Spectral:wght@700&family=Bangers&family=Lilita+One&family=Big+Shoulders+Display:wght@800&family=Fraunces:opsz,wght@9..144,800&family=Alfa+Slab+One&family=Caveat+Brush&family=Baloo+2:wght@800&family=Zilla+Slab:wght@700&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #E4EAE1;
@@ -162,6 +162,17 @@
   .book.b08 .t { font-family: 'Baloo 2', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 27px; }
   .book.b08 .t span { color: #FFD666; }
 
+  /* Lesson 09: letter tiles on a green board, blue double-letter accent */
+  .book.b09 {
+    width: 85%;
+    background: #1B5E4A;
+    color: #F2F7F4;
+    border-right: 14px solid #F4E3B8;
+    border-left: 6px solid #3D86C6;
+  }
+  .book.b09 .t { font-family: 'Zilla Slab', Georgia, serif; font-weight: 700; font-size: 24px; }
+  .book.b09 .t span { color: #F4E3B8; }
+
   /* The next book still to be written */
   .slot {
     width: 80%;
@@ -182,123 +193,29 @@
     margin-top: 2px;
   }
 
-  /* Lower 01: road signs, sunny yellow */
-  .book.bL01 { width: 88%; background: #FFF3C9; color: #1E2433; border: 3px solid #454B5C; border-left: 10px solid #D2263B; }
-  .book.bL01 .t { font-family: 'Fredoka', 'Trebuchet MS', sans-serif; font-weight: 700; font-size: 27px; }
-  .book.bL01 .t .s1 { color: #D2263B; } .book.bL01 .t .s2 { color: #2462C9; } .book.bL01 .t .s3 { color: #D9620A; }
-
-  /* Lower 02: Helper N, leaf green and berry */
-  .book.bL02 { width: 84%; background: #E4F5DA; color: #1B2A1F; border: 3px solid #2160A8; box-shadow: 4px 4px 0 #D99A00; }
-  .book.bL02 .t { font-family: 'Sniglet', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 27px; color: #B02D74; }
-  .book.bL02 .t span { color: #D99A00; }
-
-  /* Lower 03: crown letters, royal purple and gold */
-  .book.bL03 { width: 86%; background: #5B2A9E; color: #F7F2FF; border-top: 6px solid #E8B000; }
-  .book.bL03 .t { font-family: 'Grandstander', 'Trebuchet MS', sans-serif; font-weight: 800; font-size: 27px; }
-  .book.bL03 .t span { color: #FFD44D; }
-
-  /* Lower 04: comma fences, barn red and wood */
-  .book.bL04 { width: 90%; background: #B83227; color: #FFF6EE; border: 4px solid #8A5A2B; border-radius: 6px; }
-  .book.bL04 .t { font-family: 'Chewy', 'Trebuchet MS', sans-serif; font-size: 30px; }
-
-  /* ---------- Level shelves ---------- */
-  .levels { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 0 0 28px; }
-  .level-tab {
-    font: inherit; font-family: var(--font-body); cursor: pointer; text-align: center;
-    padding: 10px 6px; min-height: 64px; border-radius: 10px;
-    border: 2px solid var(--empty); background: transparent; color: var(--ink);
-  }
-  .level-tab b { display: block; font-family: var(--font-head); font-weight: 400; font-size: 20px; line-height: 1.1; }
-  .level-tab span { display: block; font-size: 12.5px; color: var(--ink-soft); margin-top: 2px; }
-  .level-tab[aria-selected="true"] { border-color: var(--wood); background: var(--wood); color: #FFF8EE; }
-  .level-tab[aria-selected="true"] span { color: #F3E3CF; }
-  .level-tab:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
-  .level-shelf[hidden] { display: none; }
-  .shelf-label { font-size: 14px; color: var(--ink-soft); margin: 0 0 14px; }
   .note { margin-top: 36px; font-size: 14px; color: var(--ink-soft); line-height: 1.55; }
 </style>
 </head>
 <body>
 <div class="wrap">
   <h1>My Grammar Shelf</h1>
-  <p class="intro">One tricky English rule in each book, with a practice quiz at the end. Choose your level, then tap a spine to open it.</p>
-
-  <div class="levels" role="tablist" aria-label="Choose your level">
-    <button class="level-tab" role="tab" type="button" id="tab-lower" aria-controls="shelf-lower" data-level="lower"><b>P1–P2</b><span>Lower shelf</span></button>
-    <button class="level-tab" role="tab" type="button" id="tab-middle" aria-controls="shelf-middle" data-level="middle"><b>P3–P4</b><span>Middle shelf</span></button>
-    <button class="level-tab" role="tab" type="button" id="tab-upper" aria-controls="shelf-upper" data-level="upper"><b>P5–P6</b><span>Upper shelf</span></button>
-  </div>
-
-  <!-- ===== LOWER SHELF (P1–P2). Newest book at the TOP; files are lower-NN-slug.html ===== -->
-  <section class="level-shelf" id="shelf-lower" role="tabpanel" aria-labelledby="tab-lower" hidden>
-    <p class="shelf-label">For Primary 1 and 2: short lessons, big buttons, and a "Read it to me" button on every question.</p>
-    <ol class="stack" reversed>
-      <li><div class="slot">Next book coming soon</div></li>
-
-      <li>
-        <a class="book bL04" href="lower-04-commas.html">
-          <span class="num">04</span>
-          <span class="text">
-            <span class="t">Comma Fences</span>
-            <span class="d">Commas in lists, after Yes and No</span>
-          </span>
-          <span class="q">62 Qs</span>
-        </a>
-      </li>
-
-      <li>
-        <a class="book bL03" href="lower-03-capital-letters.html">
-          <span class="num">03</span>
-          <span class="text">
-            <span class="t"><span>Crown</span> Letters</span>
-            <span class="d">Capital letters for names, days and places</span>
-          </span>
-          <span class="q">75 Qs</span>
-        </a>
-      </li>
-
-      <li>
-        <a class="book bL02" href="lower-02-a-or-an.html">
-          <span class="num">02</span>
-          <span class="text">
-            <span class="t">Meet Helper <span>N</span></span>
-            <span class="d">"a" or "an"?</span>
-          </span>
-          <span class="q">62 Qs</span>
-        </a>
-      </li>
-
-      <li>
-        <a class="book bL01" href="lower-01-ending-a-sentence.html">
-          <span class="num">01</span>
-          <span class="text">
-            <span class="t"><span class="s1">Stop,</span> <span class="s2">Ask</span> or <span class="s3">Wow?</span></span>
-            <span class="d">Full stop, question mark or exclamation mark?</span>
-          </span>
-          <span class="q">63 Qs</span>
-        </a>
-      </li>
-    </ol>
-    <div class="shelf" aria-hidden="true"></div>
-  </section>
-
-  <!-- ===== MIDDLE SHELF (P3–P4). Files are middle-NN-slug.html ===== -->
-  <section class="level-shelf" id="shelf-middle" role="tabpanel" aria-labelledby="tab-middle" hidden>
-    <p class="shelf-label">For Primary 3 and 4.</p>
-    <ol class="stack" reversed>
-      <li><div class="slot">First books coming soon</div></li>
-    </ol>
-    <div class="shelf" aria-hidden="true"></div>
-  </section>
-
-  <!-- ===== UPPER SHELF (P5–P6, PSLE). Files are lesson-NN-slug.html ===== -->
-  <section class="level-shelf" id="shelf-upper" role="tabpanel" aria-labelledby="tab-upper">
-    <p class="shelf-label">For Primary 5 and 6, with PSLE-style practice.</p>
+  <p class="intro">One tricky PSLE English rule in each book, with a practice quiz at the end. Tap a spine to open it.</p>
 
   <!-- Newest lesson goes at the TOP of the stack.
        To add one: copy a <li> block, give it a new bNN class, and add matching styles above. -->
   <ol class="stack" reversed>
     <li><div class="slot">Next book coming soon</div></li>
+
+    <li>
+      <a class="book b09" href="lesson-09-adding-endings.html">
+        <span class="num">09</span>
+        <span class="text">
+          <span class="t"><span>Double</span> It, Drop It, or Leave It?</span>
+          <span class="d">Spelling: adding -ing, -ed and other endings</span>
+        </span>
+        <span class="q">30 Qs</span>
+      </a>
+    </li>
 
     <li>
       <a class="book b08" href="lesson-08-prepositions.html">
@@ -307,7 +224,7 @@
           <span class="t">Only <span>One Piece</span> Fits</span>
           <span class="d">Prepositions: in, on, at, into, and fixed pairs</span>
         </span>
-        <span class="q">134 Qs</span>
+        <span class="q">30 Qs</span>
       </a>
     </li>
 
@@ -318,7 +235,7 @@
           <span class="t">Every Story Is a <span>Photo Album</span></span>
           <span class="d">Tense consistency: keeping a story in the past</span>
         </span>
-        <span class="q">125 Qs</span>
+        <span class="q">30 Qs</span>
       </a>
     </li>
 
@@ -329,7 +246,7 @@
           <span class="t">Who Gets the <span>VIP Pass</span>?</span>
           <span class="d">Capital letters: sentence starts and special names</span>
         </span>
-        <span class="q">121 Qs</span>
+        <span class="q">30 Qs</span>
       </a>
     </li>
 
@@ -340,7 +257,7 @@
           <span class="t">Where Do You <span>Breathe</span>?</span>
           <span class="d">Commas in long sentences: intros, new verses and echoes</span>
         </span>
-        <span class="q">120 Qs</span>
+        <span class="q">30 Qs</span>
       </a>
     </li>
 
@@ -351,7 +268,7 @@
           <span class="t">A Comma Can't Pull a Carriage</span>
           <span class="d">Comma splices: joining two sentences properly</span>
         </span>
-        <span class="q">124 Qs</span>
+        <span class="q">30 Qs</span>
       </a>
     </li>
 
@@ -362,7 +279,7 @@
           <span class="t">Keep the Seesaw Level</span>
           <span class="d">Subject-verb agreement: is or are, has or have</span>
         </span>
-        <span class="q">123 Qs</span>
+        <span class="q">30 Qs</span>
       </a>
     </li>
 
@@ -373,7 +290,7 @@
           <span class="t">Inside the Speech Bubble!</span>
           <span class="d">Commas, full stops and question marks in quotes</span>
         </span>
-        <span class="q">119 Qs</span>
+        <span class="q">30 Qs</span>
       </a>
     </li>
 
@@ -384,39 +301,13 @@
           <span class="t">Will <span>vs.</span> Would</span>
           <span class="d">The time traveler's rule for plans and maybes</span>
         </span>
-        <span class="q">119 Qs</span>
+        <span class="q">30 Qs</span>
       </a>
     </li>
   </ol>
   <div class="shelf" aria-hidden="true"></div>
-  </section>
 
   <p class="note">Each lesson has a "Back to the shelf" button at the top, so you can always find your way back here.</p>
 </div>
-<script>
-(function () {
-  const tabs = document.querySelectorAll('.level-tab');
-  const levels = ['lower', 'middle', 'upper'];
-  function show(level, remember) {
-    tabs.forEach(t => {
-      const on = t.dataset.level === level;
-      t.setAttribute('aria-selected', on ? 'true' : 'false');
-      t.tabIndex = on ? 0 : -1;
-      document.getElementById('shelf-' + t.dataset.level).hidden = !on;
-    });
-    if (remember) { try { localStorage.setItem('shelf-level', level); } catch (e) { /* storage off: still works */ } }
-  }
-  let start = location.hash.replace('#', '');
-  if (!levels.includes(start)) { try { start = localStorage.getItem('shelf-level'); } catch (e) { start = null; } }
-  show(levels.includes(start) ? start : 'upper', false);
-  tabs.forEach(t => t.addEventListener('click', () => { show(t.dataset.level, true); history.replaceState(null, '', '#' + t.dataset.level); }));
-  document.querySelector('.levels').addEventListener('keydown', e => {
-    const i = [...tabs].findIndex(t => t.getAttribute('aria-selected') === 'true');
-    const n = e.key === 'ArrowRight' ? i + 1 : e.key === 'ArrowLeft' ? i - 1 : null;
-    if (n === null) return;
-    const t = tabs[(n + tabs.length) % tabs.length]; t.click(); t.focus();
-  });
-})();
-</script>
 </body>
 </html>
