@@ -93,6 +93,7 @@
   .good { color: var(--right); font-weight: 700; }
   .why { color: var(--ink-soft); font-size: 15px; }
   .k-dbl { color: var(--dbl); font-weight: 700; }
+  .nw { white-space: nowrap; }
   .k-drop { color: var(--drop); font-weight: 700; }
 
   /* ---------- Hero ---------- */
@@ -309,15 +310,18 @@
     <div class="check">
       <div class="n">3</div>
       <div>
-        <p><b>Does it end in one short vowel + one consonant?</b> <span class="k-dbl">Double the last letter</span> to build a wall. If not, leave the word alone.</p>
-        <p class="eg">wrap → <b>wrapped</b> · stop → <b>stopping</b> · but jump → <b>jumped</b>, rain → <b>raining</b></p>
+        <p><b>Do the last three letters go consonant, vowel, consonant (<span class="nw">C-V-C</span>)?</b> <span class="k-dbl">Double the last letter</span> to build a wall. If not, leave the word alone.</p>
+        <p class="eg">✅ s<b>top</b> (<span class="nw">t-o-p</span>) → <b>stopped</b> · w<b>rap</b> (<span class="nw">r-a-p</span>) → <b>wrapped</b> · s<b>wim</b> (<span class="nw">w-i-m</span>) → <b>swimming</b></p>
+        <p class="eg">❌ r<b>ain</b> (<span class="nw">a-i-n</span>: two vowels) → <b>raining</b> · l<b>ook</b> (<span class="nw">o-o-k</span>: two vowels) → <b>looking</b> · j<b>ump</b> (<span class="nw">u-m-p</span>: two consonants) → <b>jumped</b></p>
+        <p class="why">Count back three letters from the end. A single vowel squeezed between two consonants makes a short sound, and that's the sound the wall protects. A vowel team (ai, oo) or two consonants at the end (mp) already keep their sound.</p>
+        <p class="why"><b>Four extra conditions</b>, each explained further down: in longer words, double only if the beat is on the last part (visit → visited); <b>w, x, y</b> never double; <b>qu</b> counts as one consonant (quit → quitting); British spelling always doubles a final <b>l</b> after one vowel (travel → travelled).</p>
       </div>
     </div>
 
     <div class="push">
       <p><b>Why it works:</b> say the word with and without the wall.</p>
       <p><span class="tiles"><span class="t sm">h</span><span class="t sm">o</span><span class="t sm">p</span></span><span class="plus">+ ing</span> → "hoping" sounds like <i>hope</i>. ✗ &nbsp; "ho<span class="k-dbl">pp</span>ing" keeps the short <i>o</i>. ✓</p>
-      <p>A silent <i>e</i> is already there to make the vowel long, as in <i>hope</i> and <i>write</i>. When the ending arrives, its vowel takes over that job, so the <i>e</i> can step out.</p>
+      <p>Only the <span class="nw">C-V-C</span> ending is in danger: the single vowel in <span class="nw">s-t-<b>o</b>-p</span> would change sound without the wall. A silent <i>e</i> is already there to make the vowel long, as in <i>hope</i> and <i>write</i>. When the ending arrives, its vowel takes over that job, so the <i>e</i> can step out.</p>
     </div>
   </section>
 
@@ -333,7 +337,7 @@
     <div class="trap">
       <h3>Trap 2: Forgetting the wall</h3>
       <p><span class="bad">wraped</span> → <span class="good">wrapped</span> &nbsp; <span class="bad">stoped</span> → <span class="good">stopped</span> &nbsp; <span class="bad">unforgetable</span> → <span class="good">unforgettable</span></p>
-      <p class="why">Read the wrong spelling aloud. "Wraped" would rhyme with "draped". One short vowel + one consonant needs two letters to protect its sound.</p>
+      <p class="why">Read the wrong spelling aloud. "Wraped" would rhyme with "draped". The end <span class="nw">r-a-p</span> is <span class="nw">C-V-C</span>, so it needs two letters to protect its sound.</p>
     </div>
     <div class="trap">
       <h3>Trap 3: Dropping the e before a consonant ending</h3>
@@ -349,7 +353,7 @@
     <div class="cats">
       <div class="cat c1">
         <h3 class="k-dbl">Double it</h3>
-        <p>One short vowel + one consonant, with a vowel ending.</p>
+        <p>The word ends consonant, vowel, consonant (<span class="nw">C-V-C</span>), and the ending starts with a vowel.</p>
         <ul class="pairs">
           <li>wrap → <b>wrapped</b></li><li>run → <b>running</b></li>
           <li>swim → <b>swimmer</b></li><li>big → <b>biggest</b></li>
@@ -392,7 +396,7 @@
 
   <!-- 5. SPECIAL CASES -->
   <section id="specials">
-    <h2>Three special cases</h2>
+    <h2>Four special cases</h2>
     <p class="sub">The quiz checks these too.</p>
     <div class="grid-3">
       <div class="special">
@@ -404,8 +408,13 @@
       </div>
       <div class="special">
         <h3>w, x and y never double</h3>
-        <p>Even after one short vowel, these letters stay single.</p>
+        <p>Even when the end looks like <span class="nw">C-V-C</span> (<span class="nw">f-i-x</span>, <span class="nw">b-o-x</span>), these letters stay single.</p>
         <p>snow → <b>snowing</b> · fix → <b>fixed</b> · box → <b>boxer</b> · play → <b>played</b></p>
+      </div>
+      <div class="special">
+        <h3>"qu" counts as one consonant</h3>
+        <p>In <i>quit</i> and <i>quiz</i>, the <i>u</i> isn't working as a vowel. It belongs to the <i>q</i>, and together they make one consonant sound ("kw"). So the end is really <span class="nw"><b>qu</b>-i-t</span>: <span class="nw">C-V-C</span>.</p>
+        <p>quit → <b>quitting</b> · quiz → <b>quizzes</b></p>
       </div>
       <div class="special">
         <h3>The British "l" rule</h3>
@@ -436,9 +445,9 @@
     <ul>
       <li><b>Consonant ending</b> (-ful, -ly, -less, -ment): just add it. sincere → sincerely.</li>
       <li><b>Silent e + vowel ending:</b> drop the e, never double. come → coming.</li>
-      <li><b>One short vowel + one consonant:</b> double it. wrap → wrapped.</li>
+      <li><b>Ends <span class="nw">C-V-C</b></span> (consonant, vowel, consonant): double it. wrap → wrapped. But rain, look, jump: leave them.</li>
       <li><b>Longer words:</b> double only if the beat is at the end. forget → forgettable, visit → visited.</li>
-      <li><b>Prefixes</b> just join. <b>w, x, y</b> never double. <b>British l</b> doubles: travelled.</li>
+      <li><b>Prefixes</b> just join. <b>w, x, y</b> never double. <b>qu</b> counts as a consonant: quitting. <b>British l</b> doubles: travelled.</li>
     </ul>
     <p class="chant">Short and single? Build the wall.<br>Silent e? Drop it, that is all!</p>
   </section>
@@ -458,7 +467,7 @@
              msg: { double: 'Silent-e words never double. Try again.', drop: 'Hoping. The ending\'s <i>i</i> takes over the silent <i>e</i>\'s job, so the e steps out.', leave: '"Hopeing" isn\'t a word. The silent <i>e</i> has to go when a vowel ending arrives.' } },
     wrap:  { stem: 'wrap',  end: 'ed',  right: 'double',
              res: { double: ['wra', 'p', 'p', 'ed'], drop: null, leave: ['wra', 'p', '', 'ed'] },
-             msg: { double: 'Wrapped. One short vowel + one consonant, so build the wall.', drop: 'There\'s no silent <i>e</i> on "wrap". Try again.', leave: '"Wraped" would rhyme with "draped". It needs the wall.' } },
+             msg: { double: 'Wrapped. The end r-a-p is consonant, vowel, consonant (C-V-C), so build the wall.', drop: 'There\'s no silent <i>e</i> on "wrap". Try again.', leave: '"Wraped" would rhyme with "draped". It needs the wall.' } },
     write: { stem: 'write', end: 'ing', right: 'drop',
              res: { double: null, drop: ['writ', 'e', 'ing'], leave: ['writ', 'e', 'ing'] },
              msg: { double: '"Writting" is the trap! Silent-e words never double. Try again.', drop: 'Writing. Drop the e, one <i>t</i>, done.', leave: '"Writeing" isn\'t a word. Drop the silent <i>e</i> first.' } },
@@ -505,11 +514,11 @@
   showStart();
 
   { /* qb-start: quiz engine in its own scope, so its names can't clash with the lesson's */
-  /* ================= QUIZ: question bank (156 questions) ================= */
+  /* ================= QUIZ: question bank (159 questions) ================= */
   const LESSON_KEY = "shelf-l09";
   const QB_TEXT = {"ask": {"check": "Is every word spelt correctly?", "pick": "Pick the correct sentence.", "fill": "Which spelling is correct?", "spot": "Tap the part with the misspelt word."}, "yn": ["Misspelt", "Correct"]};
   const TAGS = {
-    double: { label: "Double it: one short vowel + one consonant", href: '#cases' },
+    double: { label: "Double it: words ending C-V-C", href: '#cases' },
     drop: { label: "Drop the e: silent-e words", href: '#cases' },
     comming: { label: "Trap: doubling after a silent e (comming, writting)", href: '#traps' },
     leave: { label: "Leave it alone: already protected", href: '#cases' },
@@ -520,30 +529,33 @@
     britishl: { label: "The British \"l\" rule (travelled)", href: '#specials' },
   };
   const BANK = [
-    {"id": "d01", "t": "fill", "d": 1, "tag": "double", "q": "stop + ed = ___", "o": ["stopped", "stoped"], "why": "One short vowel + one consonant, so build the wall: stopped."},
-    {"id": "d02", "t": "fill", "d": 1, "tag": "double", "q": "swim + ing = ___", "o": ["swimming", "swiming"], "why": "Short i + one m, so double the m: swimming."},
-    {"id": "d03", "t": "fill", "d": 1, "tag": "double", "q": "big + est = ___", "o": ["biggest", "bigest"], "why": "Short i + one g, so double the g: biggest."},
-    {"id": "d04", "t": "fill", "d": 1, "tag": "double", "q": "run + er = ___", "o": ["runner", "runer"], "why": "Short u + one n, so double the n: runner."},
-    {"id": "d05", "t": "fill", "d": 1, "tag": "double", "q": "get + ing = ___", "o": ["getting", "geting"], "why": "Short e + one t, so double the t: getting."},
-    {"id": "d06", "t": "fill", "d": 1, "tag": "double", "q": "hot + est = ___", "o": ["hottest", "hotest"], "why": "Short o + one t, so double the t: hottest."},
-    {"id": "d07", "t": "fill", "d": 1, "tag": "double", "q": "fun + y = ___", "o": ["funny", "funy"], "why": "-y acts as a vowel ending, so build the wall: funny."},
-    {"id": "d08", "t": "fill", "d": 2, "tag": "double", "q": "We ___ our hands to the beat. (clap + ed)", "o": ["clapped", "claped"], "why": "Short a + one p, so double the p: clapped."},
-    {"id": "d09", "t": "fill", "d": 2, "tag": "double", "q": "The lights ___ before the show began. (dim + ed)", "o": ["dimmed", "dimed"], "why": "Short i + one m, so double the m: dimmed."},
-    {"id": "d10", "t": "fill", "d": 2, "tag": "double", "q": "Grandma ___ her head and smiled. (nod + ed)", "o": ["nodded", "noded"], "why": "Short o + one d, so double the d: nodded."},
+    {"id": "d01", "t": "fill", "d": 1, "tag": "double", "q": "stop + ed = ___", "o": ["stopped", "stoped"], "why": "t-o-p ends consonant, vowel, consonant (C-V-C), so build the wall: stopped."},
+    {"id": "d02", "t": "fill", "d": 1, "tag": "double", "q": "swim + ing = ___", "o": ["swimming", "swiming"], "why": "w-i-m is C-V-C, so double the m: swimming."},
+    {"id": "d03", "t": "fill", "d": 1, "tag": "double", "q": "big + est = ___", "o": ["biggest", "bigest"], "why": "b-i-g is C-V-C, so double the g: biggest."},
+    {"id": "d04", "t": "fill", "d": 1, "tag": "double", "q": "run + er = ___", "o": ["runner", "runer"], "why": "r-u-n is C-V-C, so double the n: runner."},
+    {"id": "d05", "t": "fill", "d": 1, "tag": "double", "q": "get + ing = ___", "o": ["getting", "geting"], "why": "g-e-t is C-V-C, so double the t: getting."},
+    {"id": "d06", "t": "fill", "d": 1, "tag": "double", "q": "hot + est = ___", "o": ["hottest", "hotest"], "why": "h-o-t is C-V-C, so double the t: hottest."},
+    {"id": "d07", "t": "fill", "d": 1, "tag": "double", "q": "fun + y = ___", "o": ["funny", "funy"], "why": "f-u-n is C-V-C, and -y acts as a vowel ending, so double the n: funny."},
+    {"id": "d08", "t": "fill", "d": 2, "tag": "double", "q": "We ___ our hands to the beat. (clap + ed)", "o": ["clapped", "claped"], "why": "l-a-p is C-V-C, so double the p: clapped."},
+    {"id": "d09", "t": "fill", "d": 2, "tag": "double", "q": "The lights ___ before the show began. (dim + ed)", "o": ["dimmed", "dimed"], "why": "d-i-m is C-V-C, so double the m: dimmed."},
+    {"id": "d10", "t": "fill", "d": 2, "tag": "double", "q": "Grandma ___ her head and smiled. (nod + ed)", "o": ["nodded", "noded"], "why": "n-o-d is C-V-C, so double the d: nodded."},
     {"id": "d11", "t": "fill", "d": 2, "tag": "double", "q": "I ___ the present in blue paper. (wrap + ed)", "o": ["wrapped", "wraped"], "why": "\"Wraped\" would rhyme with \"draped\". Double the p: wrapped."},
-    {"id": "d12", "t": "fill", "d": 2, "tag": "double", "q": "It was a ___ day, so we flew kites. (sun + y)", "o": ["sunny", "suny"], "why": "-y is a vowel ending, so double the n: sunny."},
-    {"id": "d13", "t": "fill", "d": 3, "tag": "double", "q": "The ___ of the race got a gold medal. (win + er)", "o": ["winner", "winer"], "why": "Short i + one n, so double the n: winner."},
-    {"id": "d14", "t": "fill", "d": 2, "tag": "double", "q": "He was ___ his foot to the music. (tap + ing)", "o": ["tapping", "taping"], "why": "Tap has a short a, so double the p. \"Taping\" comes from \"tape\"."},
-    {"id": "d15", "t": "fill", "d": 2, "tag": "double", "q": "The rabbit was ___ across the field. (hop + ing)", "o": ["hopping", "hoping"], "why": "Hop has a short o, so double the p. \"Hoping\" comes from \"hope\"."},
-    {"id": "d16", "t": "check", "d": 1, "tag": "double", "q": "Mum hugged me at the school gate.", "a": 1, "why": "Hug: short u + one g, so \"hugged\" is right."},
-    {"id": "d17", "t": "check", "d": 1, "tag": "double", "q": "We were shoping at the mall all afternoon.", "a": 0, "why": "Shop: short o + one p, so it needs the wall: shopping."},
-    {"id": "d18", "t": "check", "d": 2, "tag": "double", "q": "The puppy wagged its tail happily.", "a": 1, "why": "Wag: short a + one g, so \"wagged\" is right."},
-    {"id": "d19", "t": "check", "d": 2, "tag": "double", "q": "Arjun was the winer of the spelling bee.", "a": 0, "why": "Win: short i + one n, so double the n: winner."},
-    {"id": "d20", "t": "spot", "d": 1, "tag": "double", "parts": ["The bus", "stoped", "at the", "red light."], "a": 1, "why": "Stop needs the wall: stopped."},
-    {"id": "d21", "t": "spot", "d": 2, "tag": "double", "parts": ["Lila", "steped", "carefully over", "the puddle."], "a": 1, "why": "Step: short e + one p, so double the p: stepped."},
-    {"id": "d22", "t": "spot", "d": 2, "tag": "double", "parts": ["It was the", "hotest", "day of", "the year."], "a": 1, "why": "Hot: short o + one t, so double the t: hottest."},
-    {"id": "d23", "t": "pick", "d": 2, "tag": "double", "ask": "Which sentence is spelt correctly?", "o": ["The ground was muddy after the storm.", "The ground was mudy after the storm.", "The ground was muddey after the storm."], "why": "Mud + y: short u + one d, so double the d: muddy."},
-    {"id": "d24", "t": "pick", "d": 2, "tag": "double", "ask": "Which sentence is spelt correctly?", "o": ["Our class planned a party for Ms Goh.", "Our class planed a party for Ms Goh.", "Our class plannd a party for Ms Goh."], "why": "Plan: short a + one n, so double the n: planned."},
+    {"id": "d12", "t": "fill", "d": 2, "tag": "double", "q": "It was a ___ day, so we flew kites. (sun + y)", "o": ["sunny", "suny"], "why": "s-u-n is C-V-C, and -y is a vowel ending, so double the n: sunny."},
+    {"id": "d13", "t": "fill", "d": 3, "tag": "double", "q": "The ___ of the race got a gold medal. (win + er)", "o": ["winner", "winer"], "why": "w-i-n is C-V-C, so double the n: winner."},
+    {"id": "d14", "t": "fill", "d": 2, "tag": "double", "q": "He was ___ his foot to the music. (tap + ing)", "o": ["tapping", "taping"], "why": "t-a-p is C-V-C, so double the p. \"Taping\" comes from \"tape\"."},
+    {"id": "d15", "t": "fill", "d": 2, "tag": "double", "q": "The rabbit was ___ across the field. (hop + ing)", "o": ["hopping", "hoping"], "why": "h-o-p is C-V-C, so double the p. \"Hoping\" comes from \"hope\"."},
+    {"id": "d16", "t": "check", "d": 1, "tag": "double", "q": "Mum hugged me at the school gate.", "a": 1, "why": "h-u-g is C-V-C, so \"hugged\" is right."},
+    {"id": "d17", "t": "check", "d": 1, "tag": "double", "q": "We were shoping at the mall all afternoon.", "a": 0, "why": "Shop ends h-o-p, which is C-V-C, so it needs the wall: shopping."},
+    {"id": "d18", "t": "check", "d": 2, "tag": "double", "q": "The puppy wagged its tail happily.", "a": 1, "why": "w-a-g is C-V-C, so \"wagged\" is right."},
+    {"id": "d19", "t": "check", "d": 2, "tag": "double", "q": "Arjun was the winer of the spelling bee.", "a": 0, "why": "w-i-n is C-V-C, so double the n: winner."},
+    {"id": "d20", "t": "spot", "d": 1, "tag": "double", "parts": ["The bus", "stoped", "at the", "red light."], "a": 1, "why": "t-o-p is C-V-C, so stop needs the wall: stopped."},
+    {"id": "d21", "t": "spot", "d": 2, "tag": "double", "parts": ["Lila", "steped", "carefully over", "the puddle."], "a": 1, "why": "Step ends t-e-p, which is C-V-C, so double the p: stepped."},
+    {"id": "d22", "t": "spot", "d": 2, "tag": "double", "parts": ["It was the", "hotest", "day of", "the year."], "a": 1, "why": "h-o-t is C-V-C, so double the t: hottest."},
+    {"id": "d23", "t": "pick", "d": 2, "tag": "double", "ask": "Which sentence is spelt correctly?", "o": ["The ground was muddy after the storm.", "The ground was mudy after the storm.", "The ground was muddey after the storm."], "why": "m-u-d is C-V-C, so double the d: muddy."},
+    {"id": "d24", "t": "pick", "d": 2, "tag": "double", "ask": "Which sentence is spelt correctly?", "o": ["Our class planned a party for Ms Goh.", "Our class planed a party for Ms Goh.", "Our class plannd a party for Ms Goh."], "why": "Plan ends l-a-n, which is C-V-C, so double the n: planned."},
+    {"id": "d25", "t": "fill", "d": 3, "tag": "double", "q": "Dad is ___ his office job to open a bakery. (quit + ing)", "o": ["quitting", "quiting"], "why": "In quit, the u belongs to the q, so the end is qu-i-t: C-V-C. Double the t: quitting."},
+    {"id": "d26", "t": "fill", "d": 3, "tag": "double", "q": "We had two spelling ___ this week. (quiz + es)", "o": ["quizzes", "quizes"], "why": "In quiz, the u belongs to the q, so the end is qu-i-z: C-V-C. Double the z: quizzes."},
+    {"id": "d27", "t": "check", "d": 3, "tag": "double", "q": "Mr Tan was quiting smoking for good.", "a": 0, "why": "The u in quit belongs to the q, so qu-i-t is C-V-C: quitting."},
     {"id": "e01", "t": "fill", "d": 1, "tag": "drop", "q": "make + ing = ___", "o": ["making", "makeing", "makking"], "why": "Silent e: drop it and never double: making."},
     {"id": "e02", "t": "fill", "d": 1, "tag": "drop", "q": "smile + ed = ___", "o": ["smiled", "smileed", "smilled"], "why": "Silent e: drop it, then add -ed: smiled."},
     {"id": "e03", "t": "fill", "d": 1, "tag": "drop", "q": "bake + er = ___", "o": ["baker", "bakeer", "bakker"], "why": "Silent e: drop it, then add -er: baker."},
