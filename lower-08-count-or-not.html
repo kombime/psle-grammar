@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>One, Two or a Carton? Count or Not</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Paytone+One&family=Readex+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #E9F1FF;
+    --surface: #FFFFFF;
+    --surface-2: #F4F8FF;
+    --ink: #172036;
+    --ink-soft: #4D5872;
+    --mart: #1E5AA8;    --mart-soft: #DCE8FA;    /* the mini mart */
+    --count: #B5179E;   --count-soft: #F8DDF2;   /* things you can count */
+    --pack: #8A6100;    --pack-soft: #FFEFC2;    /* things that come in a pack */
+    --right: #1D7A45; --right-soft: #DCF1E3;
+    --wrong: #B3261E; --wrong-soft: #F9DEDC;
+    --rule: rgba(23,32,54,0.14);
+    --font-display: 'Paytone One', 'Arial Rounded MT Bold', 'Trebuchet MS', sans-serif;
+    --font-body: 'Readex Pro', -apple-system, 'Segoe UI', sans-serif;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #121828; --surface: #1C2436; --surface-2: #232C41;
+      --ink: #ECF1FB; --ink-soft: #B1BAD0;
+      --mart: #8DB6F5; --mart-soft: #1D2D4C;
+      --count: #F48AE0; --count-soft: #3E1D38;
+      --pack: #FFCF5C; --pack-soft: #3B2F11;
+      --right: #72D69D; --right-soft: #17311F;
+      --wrong: #F48D84; --wrong-soft: #3D1F1D;
+      --rule: rgba(236,241,251,0.16);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #121828; --surface: #1C2436; --surface-2: #232C41;
+    --ink: #ECF1FB; --ink-soft: #B1BAD0;
+    --mart: #8DB6F5; --mart-soft: #1D2D4C;
+    --count: #F48AE0; --count-soft: #3E1D38;
+    --pack: #FFCF5C; --pack-soft: #3B2F11;
+    --right: #72D69D; --right-soft: #17311F;
+    --wrong: #F48D84; --wrong-soft: #3D1F1D;
+    --rule: rgba(236,241,251,0.16);
+  }
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 19px; line-height: 1.55; }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 22px 18px 64px; }
+  :focus-visible { outline: 3px solid var(--mart); outline-offset: 3px; }
+  .back-link {
+    display: inline-block; margin: 0 0 20px; padding: 10px 16px; min-height: 44px;
+    font-weight: 700; font-size: 16px; color: var(--ink); text-decoration: none;
+    background: var(--surface); border: 2px solid var(--rule); border-radius: 999px;
+  }
+  h1, h2, h3 { font-family: var(--font-display); font-weight: 400; line-height: 1.12; }
+  h2 { font-size: 30px; margin: 0 0 8px; }
+  section { margin-bottom: 48px; }
+  .sub { color: var(--ink-soft); margin: 0 0 18px; }
+  .ct { color: var(--count); font-weight: 700; }
+  .pk { color: var(--pack); font-weight: 700; }
+  .no { color: var(--wrong); text-decoration: line-through; text-decoration-thickness: 2px; }
+  .yes { color: var(--right); font-weight: 700; }
+  .say {
+    display: none; font: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
+    padding: 6px 12px; min-height: 40px; margin-left: 6px; vertical-align: middle;
+    border-radius: 999px; border: 2px solid var(--mart); background: var(--mart-soft); color: var(--ink);
+  }
+  .can-speak .say { display: inline-block; }
+
+  /* ---------- Hero ---------- */
+  .hero h1 { font-size: clamp(42px, 12vw, 62px); margin: 0 0 12px; }
+  .hero h1 .a { color: var(--count); } .hero h1 .b { color: var(--pack); }
+  .lead { font-size: 21px; margin: 0 0 18px; }
+  .mart { background: var(--surface); border-radius: 22px; overflow: hidden; border: 3px solid var(--rule); }
+  .awning { height: 24px; background: repeating-linear-gradient(90deg, var(--mart) 0 24px, var(--surface) 24px 48px); }
+  .shop { padding: 14px 14px 18px; text-align: center; }
+  .shelf-items { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-bottom: 14px; }
+  .item {
+    font: inherit; cursor: pointer; border-radius: 14px; padding: 6px 2px; min-height: 76px;
+    border: 3px solid transparent; background: var(--surface-2); color: var(--ink);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .item .e { font-size: 32px; line-height: 1.1; }
+  .item .w { font-size: 14px; font-weight: 600; }
+  .item[aria-pressed="true"] { border-color: var(--mart); background: var(--mart-soft); }
+  .item.done { opacity: .5; }
+  .ask { font-weight: 700; margin: 0 0 10px; min-height: 1.5em; }
+  .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .choice {
+    font: inherit; font-weight: 700; font-size: 17px; cursor: pointer; padding: 10px 6px; min-height: 64px; border-radius: 16px;
+    border: 3px solid transparent; color: var(--ink);
+  }
+  .choice.c { background: var(--count-soft); border-color: var(--count); }
+  .choice.p { background: var(--pack-soft); border-color: var(--pack); }
+  .choice[disabled] { opacity: .4; cursor: default; }
+  .basket { font-family: var(--font-display); font-size: 30px; margin: 14px 0 0; min-height: 1.3em; }
+  .shop-msg { margin: 6px 4px 0; font-size: 18px; min-height: 2.8em; }
+  .shop-msg b.good { color: var(--right); } .shop-msg b.try { color: var(--wrong); }
+
+  .steps { display: grid; gap: 12px; }
+  .step { background: var(--surface); border-radius: 18px; padding: 16px 18px; display: flex; gap: 14px; align-items: flex-start; }
+  .step .n { flex: 0 0 auto; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 24px; background: var(--mart); color: var(--surface); }
+  .step p { margin: 0; font-size: 20px; }
+  .step .hint { font-size: 20px; margin-top: 6px; }
+  .trap { background: var(--surface); border-radius: 18px; padding: 18px; border-left: 8px solid var(--wrong); }
+  .trap p { margin: 0 0 10px; }
+  .eg { font-size: 21px; margin: 0 0 6px !important; }
+  .cards { display: grid; gap: 12px; }
+  .card { background: var(--surface); border-radius: 20px; padding: 16px 18px; }
+  .card h3 { margin: 0 0 6px; font-size: 26px; }
+  .card.c h3 { color: var(--count); } .card.p h3 { color: var(--pack); } .card.l h3 { color: var(--mart); }
+  .card p { margin: 0 0 6px; }
+  .specials { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 520px) { .specials { grid-template-columns: 1fr; } }
+  .special { background: var(--surface-2); border-radius: 20px; padding: 16px 18px; border: 2px dashed var(--pack); }
+  .special h3 { margin: 0 0 6px; font-size: 24px; }
+  .special ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+  .special li { font-size: 19px; }
+  .pin { background: var(--surface); border-radius: 22px; padding: 20px; border: 3px solid var(--rule); }
+  .pin ul { margin: 0; padding-left: 22px; font-size: 20px; line-height: 1.7; }
+  .chant { margin: 16px 0 0; padding: 16px; border-radius: 16px; text-align: center; background: var(--mart-soft);
+    font-family: var(--font-display); font-size: 23px; line-height: 1.35; }
+  footer { text-align: center; font-size: 14px; color: var(--ink-soft); margin-top: 32px; }
+  /* ================= QUIZ BANK ENGINE (shared by every lesson; qb- prefix avoids clashes) ================= */
+  .qb { --qb-cols: 2; }
+  .qb-bar {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 3;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 10px 16px; margin: 0 0 18px; border-radius: var(--qb-radius);
+    background: var(--qb-bar); color: var(--qb-bar-ink);
+  }
+  .qb-label { font-size: 12.5px; opacity: 0.8; }
+  .qb-score { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 28px; line-height: 1.05; }
+  .qb-progress { font-size: 12.5px; opacity: 0.85; margin-top: 2px; }
+  .qb-new {
+    font: inherit; font-weight: 700; font-size: 14px; padding: 10px 16px; min-height: 44px;
+    border-radius: 999px; border: 2px solid currentColor; background: transparent; color: inherit; cursor: pointer;
+  }
+  .qb-list, .qb-summary { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 96px); }
+  .qb-card {
+    background: var(--qb-card); border: var(--qb-card-border); box-shadow: var(--qb-card-shadow);
+    border-radius: var(--qb-radius); padding: 16px 16px 14px; margin: 0 0 14px; color: var(--qb-ink);
+  }
+  .qb-speak {
+    float: right; margin: -4px 0 6px 10px; font: inherit; font-size: 13.5px; font-weight: 700;
+    padding: 7px 12px; min-height: 38px; border-radius: 999px; cursor: pointer;
+    border: 2px solid var(--qb-accent); background: var(--qb-accent-soft); color: var(--qb-ink);
+  }
+  .qb-num { font-size: 12.5px; color: var(--qb-soft); margin: 0 0 4px; }
+  .qb-ask { font-size: 13.5px; font-weight: 700; color: var(--qb-accent); margin: 0 0 6px; }
+  .qb-text { font-size: var(--qb-text-size, 16.5px); line-height: 1.6; margin: 0 0 14px; }
+  .qb-blank {
+    display: inline-block; min-width: 60px; padding: 0 3px; text-align: center;
+    border-bottom: 2.5px dashed var(--qb-soft); color: var(--qb-soft);
+  }
+  .qb-blank.qb-filled { border-bottom-style: solid; border-bottom-color: var(--qb-accent); color: var(--qb-accent); font-weight: 700; }
+  .qb-blank.qb-none { font-style: italic; font-weight: 400; }
+  .qb-opts { display: flex; flex-direction: column; gap: 9px; }
+  .qb-opts.qb-row { display: grid; grid-template-columns: repeat(var(--qb-cols), minmax(0, 1fr)); }
+  .qb-opt {
+    font: inherit; font-size: var(--qb-opt-size, 15.5px); line-height: 1.45; text-align: left; color: var(--qb-ink);
+    padding: 11px 14px; min-height: var(--qb-tap, 46px); border-radius: var(--qb-radius-opt);
+    border: 2px solid var(--qb-rule); background: var(--qb-page); cursor: pointer;
+  }
+  .qb-row .qb-opt { text-align: center; font-weight: 600; padding-left: 6px; padding-right: 6px; }
+  .qb-opt:not(:disabled):hover { border-color: var(--qb-accent); }
+  .qb-opt:disabled, .qb-part:disabled { cursor: default; }
+  .qb-letter { font-family: var(--qb-font); font-weight: var(--qb-font-weight); margin-right: 10px; color: var(--qb-accent); }
+  .qb-note { font-size: 12.5px; font-weight: 400; color: var(--qb-soft); }
+  .qb-punct { font-size: 22px; line-height: 0; font-weight: 700; }
+  .qb-spot { display: flex; flex-wrap: wrap; gap: 8px 6px; margin: 0 0 4px; }
+  .qb-part {
+    font: inherit; font-size: var(--qb-opt-size, 16px); line-height: 1.35; text-align: left; color: var(--qb-ink); cursor: pointer;
+    background: var(--qb-accent-soft); border: none; border-bottom: 3px dashed var(--qb-accent);
+    border-radius: 4px 4px 0 0; padding: 7px 9px; min-height: 40px;
+  }
+  .qb-opt.qb-correct, .qb-opt.qb-reveal { background: var(--qb-right-soft); border-color: var(--qb-right); }
+  .qb-opt.qb-incorrect { background: var(--qb-wrong-soft); border-color: var(--qb-wrong); }
+  .qb-part.qb-correct, .qb-part.qb-reveal { background: var(--qb-right-soft); border-bottom: 3px solid var(--qb-right); }
+  .qb-part.qb-incorrect { background: var(--qb-wrong-soft); border-bottom: 3px solid var(--qb-wrong); }
+  .qb-feedback { display: none; margin-top: 12px; padding-top: 12px; border-top: 2px dashed var(--qb-rule); font-size: 14px; line-height: 1.55; }
+  .qb-feedback.qb-show { display: block; }
+  .qb-verdict { display: block; font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 18px; margin-bottom: 2px; }
+  .qb-fb-ok .qb-verdict { color: var(--qb-right); }
+  .qb-fb-no .qb-verdict { color: var(--qb-wrong); }
+  .qb-summary {
+    background: var(--qb-card); color: var(--qb-ink); border: 3px solid var(--qb-accent);
+    border-radius: var(--qb-radius); padding: 18px 20px; margin-top: 8px;
+  }
+  .qb-summary h3 { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 30px; line-height: 1.1; margin: 0 0 6px; color: var(--qb-accent); }
+  .qb-summary p { margin: 0 0 10px; line-height: 1.55; }
+  .qb-sum-label { font-weight: 700; margin-top: 14px !important; }
+  .qb-areas { list-style: none; margin: 0 0 12px; padding: 0; }
+  .qb-areas li { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--qb-rule); }
+  .qb-areas a { color: var(--qb-ink); font-weight: 600; }
+  .qb-areas span { color: var(--qb-wrong); font-weight: 700; white-space: nowrap; }
+  .qb-meta { font-size: 13px; color: var(--qb-soft); }
+  .qb-go {
+    font: inherit; font-weight: 700; font-size: 16px; width: 100%; min-height: 50px; margin-top: 4px; cursor: pointer;
+    border: none; border-radius: var(--qb-radius); background: var(--qb-accent); color: var(--qb-on-accent);
+  }
+
+  /* Theme the quiz engine through these tokens only. */
+  :root {
+    --qb-page: var(--surface-2);
+    --qb-card: var(--surface);
+    --qb-ink: var(--ink);
+    --qb-soft: var(--ink-soft);
+    --qb-on-accent: var(--surface);
+    --qb-right: var(--right);
+    --qb-right-soft: var(--right-soft);
+    --qb-wrong: var(--wrong);
+    --qb-wrong-soft: var(--wrong-soft);
+    --qb-rule: var(--rule);
+    --qb-bar-ink: var(--surface);
+    --qb-font: var(--font-display);
+    --qb-font-weight: 400;
+    --qb-radius: 18px;
+    --qb-radius-opt: 14px;
+    --qb-card-border: none;
+    --qb-card-shadow: none;
+    --qb-text-size: 21px;
+    --qb-opt-size: 19px;
+    --qb-tap: 56px;
+    --qb-accent: var(--mart);
+    --qb-accent-soft: var(--mart-soft);
+    --qb-bar: var(--mart);
+  }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back-link" href="index.html#lower">← Back to the shelf</a>
+
+  <!-- 1. HERO -->
+  <header class="hero">
+    <h1><span class="a">One, Two</span> or a <span class="b">Carton?</span></h1>
+    <p class="lead">At the mini mart, some things you can <span class="ct">count</span>: one egg, two eggs. Some things you can't count one by one, like milk. They come in a <span class="pk">pack</span>: a carton of milk! <button class="say" type="button" data-say="At the mini mart, some things you can count: one egg, two eggs. Some things you can't count one by one, like milk. They come in a pack: a carton of milk!">🔊</button></p>
+    <div class="mart">
+      <div class="awning" aria-hidden="true"></div>
+      <div class="shop">
+        <div class="shelf-items" id="items" role="group" aria-label="Things in the mini mart"></div>
+        <p class="ask" id="shopAsk">Tap something on the shelf.</p>
+        <div class="choices">
+          <button class="choice c" id="chCount" type="button" disabled>🔢 I can count it</button>
+          <button class="choice p" id="chPack" type="button" disabled>📦 It comes in a pack</button>
+        </div>
+        <p class="basket" id="basket" aria-live="polite"></p>
+        <p class="shop-msg" id="shopMsg" aria-live="polite"></p>
+      </div>
+    </div>
+  </header>
+
+  <!-- 2. THE RULE -->
+  <section id="rule">
+    <h2>One question</h2>
+    <p class="sub">Ask: can I count it, one, two, three?</p>
+    <div class="steps">
+      <div class="step"><span class="n">🔢</span><div><p><b>Yes?</b> For more than one, add <span class="ct">-s</span>. <button class="say" type="button" data-say="Yes? For more than one, add s. One apple, three apples. One sweet, five sweets.">🔊</button></p>
+        <p class="hint">one apple → three apple<span class="ct">s</span></p></div></div>
+      <div class="step"><span class="n">📦</span><div><p><b>No?</b> Never add -s. It stays the same. <button class="say" type="button" data-say="No? Never add s. It stays the same. Rice. Water. Sugar. Milk.">🔊</button></p>
+        <p class="hint">rice · water · sugar · milk</p></div></div>
+    </div>
+  </section>
+
+  <!-- 3. THE TRAP -->
+  <section id="traps">
+    <h2>No -s on can't-count words</h2>
+    <div class="trap">
+      <p>You can't count rice grain by grain, so it never gets an -s. <button class="say" type="button" data-say="You can't count rice grain by grain, so it never gets an s. I ate some rice. Mum bought some bread.">🔊</button></p>
+      <p class="eg"><span class="no">I ate some rices.</span> → <span class="yes">I ate some rice.</span></p>
+      <p class="eg"><span class="no">Mum bought some breads.</span> → <span class="yes">Mum bought some bread.</span></p>
+    </div>
+  </section>
+
+  <!-- 4. CASES -->
+  <section id="cases">
+    <h2>A few, a little, a lot of</h2>
+    <p class="sub">Which words go with which things?</p>
+    <div class="cards">
+      <div class="card c"><h3>a few 🍪</h3>
+        <p>For things you <b>can</b> count. <button class="say" type="button" data-say="A few is for things you can count. A few cookies. A few books.">🔊</button></p>
+        <p class="eg">a few <span class="ct">cookies</span> · a few <span class="ct">books</span></p></div>
+      <div class="card p"><h3>a little 🥛</h3>
+        <p>For things you <b>can't</b> count. <button class="say" type="button" data-say="A little is for things you can't count. A little milk. A little sugar.">🔊</button></p>
+        <p class="eg">a little <span class="pk">milk</span> · a little <span class="pk">sugar</span></p></div>
+      <div class="card l"><h3>a lot of 🎉</h3>
+        <p>For <b>both</b> kinds! <button class="say" type="button" data-say="A lot of is for both kinds! A lot of toys. A lot of water.">🔊</button></p>
+        <p class="eg">a lot of <span class="ct">toys</span> · a lot of <span class="pk">water</span></p></div>
+    </div>
+  </section>
+
+  <!-- 5. SPECIAL CASES -->
+  <section id="specials">
+    <h2>Pack words and pair words</h2>
+    <p class="sub">We can count the packs!</p>
+    <div class="specials">
+      <div class="special"><h3>📦 Pack words</h3>
+        <ul>
+          <li>a <b>carton</b> of milk / juice</li>
+          <li>a <b>loaf</b> of bread</li>
+          <li>a <b>bowl</b> of rice</li>
+          <li>a <b>glass</b> of water</li>
+          <li>a <b>bar</b> of soap</li>
+        </ul>
+        <button class="say" type="button" data-say="Pack words. A carton of milk, or juice. A loaf of bread. A bowl of rice. A glass of water. A bar of soap.">🔊</button></div>
+      <div class="special"><h3>🧦 Pair words</h3>
+        <ul>
+          <li>a <b>pair</b> of socks</li>
+          <li>a <b>pair</b> of shoes</li>
+          <li>a <b>pair</b> of sunglasses</li>
+          <li>two <b>pairs</b> of spectacles</li>
+        </ul>
+        <p style="margin:6px 0 0">Things that come in twos use "pair". More than one pair? Say <b>pairs</b>. <button class="say" type="button" data-say="Things that come in twos use pair. A pair of socks. A pair of shoes. A pair of sunglasses. More than one pair? Say pairs. Two pairs of spectacles.">🔊</button></p></div>
+    </div>
+  </section>
+
+  <!-- 6. PRACTICE -->
+  <section id="practice">
+    <h2>Your turn!</h2>
+    <p class="sub">Answer <span id="qbDraw">10</span> questions. Tap 🔊 to hear each one. Every time you play, you get new questions! <span hidden id="qbBank">70</span></p>
+    <div class="qb" id="qb">
+      <div class="qb-bar">
+        <div><div class="qb-label">Your score</div><div class="qb-score" id="qbScore">0 / 10</div><div class="qb-progress" id="qbProgress">0 of 10 answered</div></div>
+        <button class="qb-new" id="qbNew" type="button">New quiz</button>
+      </div>
+      <div class="qb-list" id="qbList"></div>
+      <div class="qb-summary" id="qbSummary" hidden></div>
+    </div>
+  </section>
+
+  <!-- 7. PIN THIS UP -->
+  <section class="pin">
+    <h2>Pin This Up</h2>
+    <ul>
+      <li>Can count it? Add <span class="ct">-s</span> and say <b>a few</b>.</li>
+      <li>Can't count it? No -s, and say <b>a little</b>.</li>
+      <li><b>A lot of</b> works for both.</li>
+      <li>Pack words: a carton of, a loaf of. Pair words: a pair of.</li>
+    </ul>
+    <p class="chant">Count the eggs, one, two, three,<br>but milk comes in a carton for me!</p>
+  </section>
+
+  <footer>My Grammar Shelf · Lower shelf, Lesson 08</footer>
+</div>
+
+<script>
+(function () {
+  const canSpeak = !!window.speechSynthesis && typeof window.speechSynthesis.speak === 'function' && typeof SpeechSynthesisUtterance !== 'undefined';
+  function sayIt(text) {
+    try { window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'en-GB'; u.rate = 0.9; window.speechSynthesis.speak(u); } catch (e) {}
+  }
+  if (canSpeak) {
+    document.body.classList.add('can-speak');
+    document.querySelectorAll('.say').forEach(b => {
+      b.setAttribute('aria-label', 'Read this aloud');
+      b.addEventListener('click', () => sayIt(b.dataset.say));
+    });
+  }
+
+  /* ---------- Hero: the mini mart ---------- */
+  /* [emoji, word, can count?, what goes in the basket] */
+  const ITEMS = [
+    ['🥚', 'egg', true, '3 eggs'], ['🥛', 'milk', false, 'a carton of milk'], ['🍎', 'apple', true, '4 apples'], ['🍞', 'bread', false, 'a loaf of bread'],
+    ['🍬', 'sweet', true, '5 sweets'], ['🍚', 'rice', false, 'a bowl of rice'], ['📕', 'book', true, '2 books'], ['💧', 'water', false, 'a glass of water']
+  ];
+  const itemsEl = document.getElementById('items'), askEl = document.getElementById('shopAsk');
+  const chC = document.getElementById('chCount'), chP = document.getElementById('chPack');
+  const basket = document.getElementById('basket'), msg = document.getElementById('shopMsg');
+  let pick = -1;
+  ITEMS.forEach((it, i) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'item'; b.setAttribute('aria-pressed', 'false');
+    b.innerHTML = '<span class="e">' + it[0] + '</span><span class="w">' + it[1] + '</span>';
+    b.addEventListener('click', () => {
+      pick = i;
+      itemsEl.querySelectorAll('.item').forEach((x, k) => x.setAttribute('aria-pressed', k === i ? 'true' : 'false'));
+      askEl.textContent = it[0] + ' ' + it[1] + ': can you count it, one, two, three?';
+      chC.disabled = false; chP.disabled = false; basket.textContent = ''; msg.textContent = '';
+    });
+    itemsEl.appendChild(b);
+  });
+  function choose(count) {
+    if (pick < 0) return;
+    const it = ITEMS[pick];
+    if (count === it[2]) {
+      basket.innerHTML = it[0] + ' ' + it[3];
+      msg.innerHTML = it[2]
+        ? '<b class="good">Yes!</b> You can count ' + it[1] + 's, so we add -s: ' + it[3] + '.'
+        : '<b class="good">Yes!</b> You can\'t count ' + it[1] + ' one by one. So we say ' + it[3] + '.';
+      itemsEl.children[pick].classList.add('done');
+      chC.disabled = true; chP.disabled = true;
+      if (canSpeak) sayIt(it[3]);
+    } else {
+      msg.innerHTML = it[2]
+        ? '<b class="try">Try again!</b> Look: one ' + it[1] + ', two ' + it[1] + 's. You can count them!'
+        : '<b class="try">Try again!</b> Can you say "one ' + it[1] + ', two ' + it[1] + 's"? No! You can\'t count it.';
+    }
+  }
+  chC.addEventListener('click', () => choose(true));
+  chP.addEventListener('click', () => choose(false));
+
+  { /* qb-start: quiz engine in its own scope, so its names can't clash with the lesson's */
+  /* ================= QUIZ: question bank (70 questions) ================= */
+  const LESSON_KEY = "shelf-lower-08";
+  const QB_BANDS = [4, 4, 2];
+  const QB_TEXT = {"speak": true, "right": ["Well done!", "Great job!", "You got it!", "Super!"], "wrong": "Good try!", "summary": {"perfect": "All correct! Your shopping is perfect! Try a new set!", "high": "Great work! Look at the part below, then try a new set.", "mid": "Good effort! Read the parts below again, then try a new set.", "low": "Let's look at the lesson again together, then try a new set.", "review": "Have another look at"}, "ask": {"check": "Is this right?", "pick": "Which one is right?", "fill": "Which one fits?", "spot": "Tap the part with the mistake."}, "yn": ["Wrong", "Right"]};
+  const TAGS = {
+    count: { label: "Can you count it? Add -s", href: '#rule' },
+    nos: { label: "No -s on can't-count words", href: '#traps' },
+    few: { label: "a few or a little?", href: '#cases' },
+    lot: { label: "a lot of works for both", href: '#cases' },
+    pack: { label: "Pack words: a carton of, a loaf of", href: '#specials' },
+    pair: { label: "Pair words: a pair of", href: '#specials' },
+  };
+  const BANK = [
+    {"id": "p01", "t": "pick", "d": 1, "tag": "count", "ask": "Which one can you count?", "o": ["egg", "milk", "water"], "why": "One egg, two eggs: you can count eggs."},
+    {"id": "p02", "t": "pick", "d": 1, "tag": "count", "ask": "Which one can you count?", "o": ["apple", "rice", "sugar"], "why": "One apple, two apples: you can count apples."},
+    {"id": "p03", "t": "pick", "d": 1, "tag": "count", "ask": "Which one can you count?", "o": ["book", "sand", "juice"], "why": "One book, two books: you can count books."},
+    {"id": "p04", "t": "pick", "d": 2, "tag": "count", "ask": "Which one can you count?", "o": ["sweet", "salt", "flour"], "why": "One sweet, two sweets: you can count sweets."},
+    {"id": "p05", "t": "pick", "d": 2, "tag": "count", "ask": "Which one can you NOT count?", "o": ["rice", "pencil", "toy"], "why": "You can't count rice grain by grain."},
+    {"id": "p06", "t": "pick", "d": 2, "tag": "count", "ask": "Which one can you NOT count?", "o": ["milk", "cup", "spoon"], "why": "You can't count milk one by one."},
+    {"id": "p07", "t": "pick", "d": 3, "tag": "count", "ask": "Which one can you NOT count?", "o": ["sugar", "cookie", "balloon"], "why": "You can't count sugar one by one."},
+    {"id": "f01", "t": "fill", "d": 1, "tag": "count", "q": "I bought three ___.", "o": ["apples", "apple"], "why": "You can count apples, so three apples."},
+    {"id": "f02", "t": "fill", "d": 1, "tag": "count", "q": "There are two ___ on the table.", "o": ["cups", "cup"], "why": "More than one cup: cups."},
+    {"id": "f03", "t": "fill", "d": 1, "tag": "count", "q": "Mei has five ___.", "o": ["pencils", "pencil"], "why": "You can count pencils: five pencils."},
+    {"id": "f04", "t": "fill", "d": 2, "tag": "count", "q": "We need ten ___ for the cake.", "o": ["eggs", "egg"], "why": "You can count eggs: ten eggs."},
+    {"id": "f05", "t": "fill", "d": 2, "tag": "count", "q": "I have four ___ in my bag.", "o": ["books", "book"], "why": "You can count books: four books."},
+    {"id": "c01", "t": "check", "d": 1, "tag": "count", "q": "I have two cats.", "a": 1, "why": "You can count cats, so we add -s. Right!"},
+    {"id": "c02", "t": "check", "d": 2, "tag": "count", "q": "There are three balloon.", "a": 0, "why": "You can count balloons, so three balloons."},
+    {"id": "c03", "t": "check", "d": 2, "tag": "count", "q": "Ali ate two sandwiches.", "a": 1, "why": "You can count sandwiches. Right!"},
+    {"id": "f06", "t": "fill", "d": 1, "tag": "nos", "q": "I ate some ___.", "o": ["rice", "rices"], "why": "You can't count rice, so no -s."},
+    {"id": "f07", "t": "fill", "d": 1, "tag": "nos", "q": "Please drink some ___.", "o": ["water", "waters"], "why": "You can't count water, so no -s."},
+    {"id": "f08", "t": "fill", "d": 2, "tag": "nos", "q": "Mum bought some ___.", "o": ["bread", "breads"], "why": "You can't count bread, so no -s."},
+    {"id": "f09", "t": "fill", "d": 2, "tag": "nos", "q": "Put some ___ in my tea, please.", "o": ["sugar", "sugars"], "why": "You can't count sugar, so no -s."},
+    {"id": "f10", "t": "fill", "d": 3, "tag": "nos", "q": "The children played in the ___.", "o": ["sand", "sands"], "why": "You can't count sand, so no -s."},
+    {"id": "f11", "t": "fill", "d": 3, "tag": "nos", "q": "Dad poured some ___ for me.", "o": ["milk", "milks"], "why": "You can't count milk, so no -s."},
+    {"id": "c04", "t": "check", "d": 1, "tag": "nos", "q": "I drank some waters.", "a": 0, "why": "You can't count water, so no -s: some water."},
+    {"id": "c05", "t": "check", "d": 1, "tag": "nos", "q": "I like rice.", "a": 1, "why": "Rice has no -s. Right!"},
+    {"id": "c06", "t": "check", "d": 2, "tag": "nos", "q": "We bought some breads.", "a": 0, "why": "You can't count bread, so no -s: some bread."},
+    {"id": "c07", "t": "check", "d": 2, "tag": "nos", "q": "The soup is hot.", "a": 1, "why": "Soup has no -s. Right!"},
+    {"id": "c08", "t": "check", "d": 3, "tag": "nos", "q": "Grandma added some salts.", "a": 0, "why": "You can't count salt, so no -s: some salt."},
+    {"id": "s01", "t": "spot", "d": 2, "tag": "nos", "parts": ["I had", "some", "rices", "for lunch."], "a": 2, "why": "You can't count rice, so no -s: rice.", "ask": "Tap the word with the mistake."},
+    {"id": "s02", "t": "spot", "d": 3, "tag": "nos", "parts": ["Please", "pass me", "the sugars."], "a": 2, "why": "You can't count sugar, so no -s: the sugar.", "ask": "Tap the part with the mistake."},
+    {"id": "f12", "t": "fill", "d": 1, "tag": "few", "q": "There are ___ eggs in the box.", "o": ["a few", "a little"], "why": "You can count eggs, so: a few eggs."},
+    {"id": "f13", "t": "fill", "d": 1, "tag": "few", "q": "Can I have ___ water?", "o": ["a little", "a few"], "why": "You can't count water, so: a little water."},
+    {"id": "f14", "t": "fill", "d": 1, "tag": "few", "q": "I have ___ sweets.", "o": ["a few", "a little"], "why": "You can count sweets: a few sweets."},
+    {"id": "f15", "t": "fill", "d": 2, "tag": "few", "q": "Add ___ salt to the soup.", "o": ["a little", "a few"], "why": "You can't count salt: a little salt."},
+    {"id": "f16", "t": "fill", "d": 2, "tag": "few", "q": "We saw ___ birds in the tree.", "o": ["a few", "a little"], "why": "You can count birds: a few birds."},
+    {"id": "f17", "t": "fill", "d": 2, "tag": "few", "q": "There is ___ milk in the glass.", "o": ["a little", "a few"], "why": "You can't count milk: a little milk."},
+    {"id": "f18", "t": "fill", "d": 2, "tag": "few", "q": "Raju bought ___ oranges.", "o": ["a few", "a little"], "why": "You can count oranges: a few oranges."},
+    {"id": "f19", "t": "fill", "d": 3, "tag": "few", "q": "Mum put ___ sugar in the cake.", "o": ["a little", "a few"], "why": "You can't count sugar: a little sugar."},
+    {"id": "f20", "t": "fill", "d": 3, "tag": "few", "q": "I read ___ books last week.", "o": ["a few", "a little"], "why": "You can count books: a few books."},
+    {"id": "c09", "t": "check", "d": 2, "tag": "few", "q": "I have a few toys.", "a": 1, "why": "You can count toys, so \"a few\". Right!"},
+    {"id": "c10", "t": "check", "d": 2, "tag": "few", "q": "I have a little books.", "a": 0, "why": "You can count books, so: a few books."},
+    {"id": "c11", "t": "check", "d": 3, "tag": "few", "q": "Can I have a few milk?", "a": 0, "why": "You can't count milk, so: a little milk."},
+    {"id": "c12", "t": "check", "d": 3, "tag": "few", "q": "There is a little juice left.", "a": 1, "why": "You can't count juice, so \"a little\". Right!"},
+    {"id": "p08", "t": "pick", "d": 2, "tag": "few", "ask": "Which one is right?", "o": ["a few apples", "a little apples"], "why": "You can count apples: a few apples."},
+    {"id": "p09", "t": "pick", "d": 3, "tag": "few", "ask": "Which one is right?", "o": ["a little sugar", "a few sugar"], "why": "You can't count sugar: a little sugar."},
+    {"id": "p10", "t": "pick", "d": 1, "tag": "lot", "ask": "Which one is right?", "o": ["We have a lot of toys.", "We have a little toys."], "why": "\"A lot of\" works for things you can count. \"A little\" doesn't."},
+    {"id": "p11", "t": "pick", "d": 2, "tag": "lot", "ask": "Which one is right?", "o": ["There is a lot of water.", "There is a few water."], "why": "\"A lot of\" works for things you can't count. \"A few\" doesn't."},
+    {"id": "p12", "t": "pick", "d": 2, "tag": "lot", "ask": "Which two words both fit? I have ___ stickers.", "o": ["a lot of, a few", "a little, a lot of", "a little, a few"], "why": "You can count stickers, so \"a lot of\" and \"a few\" both fit."},
+    {"id": "p13", "t": "pick", "d": 3, "tag": "lot", "ask": "Which two words both fit? We need ___ rice.", "o": ["a lot of, a little", "a few, a lot of", "a few, a little"], "why": "You can't count rice, so \"a lot of\" and \"a little\" both fit."},
+    {"id": "c13", "t": "check", "d": 1, "tag": "lot", "q": "I have a lot of friends.", "a": 1, "why": "\"A lot of\" works with things you can count. Right!"},
+    {"id": "c14", "t": "check", "d": 2, "tag": "lot", "q": "There is a lot of sand on the beach.", "a": 1, "why": "\"A lot of\" works with things you can't count too. Right!"},
+    {"id": "c15", "t": "check", "d": 3, "tag": "lot", "q": "We ate a lot of noodles.", "a": 1, "why": "\"A lot of\" works here. Right!"},
+    {"id": "f21", "t": "fill", "d": 2, "tag": "lot", "q": "There are ___ cars on the road.", "o": ["a lot of", "a little"], "why": "You can count cars, so \"a lot of\" fits, not \"a little\"."},
+    {"id": "f22", "t": "fill", "d": 3, "tag": "lot", "q": "The pool has ___ water.", "o": ["a lot of", "a few"], "why": "You can't count water, so \"a lot of\" fits, not \"a few\"."},
+    {"id": "f23", "t": "fill", "d": 1, "tag": "pack", "q": "I drank a ___ of milk.", "o": ["carton", "pair", "loaf"], "why": "Milk comes in a carton."},
+    {"id": "f24", "t": "fill", "d": 1, "tag": "pack", "q": "Mum bought a ___ of bread.", "o": ["loaf", "carton", "pair"], "why": "Bread comes in a loaf."},
+    {"id": "f25", "t": "fill", "d": 2, "tag": "pack", "q": "I ate a ___ of rice.", "o": ["bowl", "pair", "loaf"], "why": "Rice comes in a bowl."},
+    {"id": "f26", "t": "fill", "d": 2, "tag": "pack", "q": "Can I have a ___ of water?", "o": ["glass", "loaf", "pair"], "why": "Water comes in a glass."},
+    {"id": "f27", "t": "fill", "d": 3, "tag": "pack", "q": "We need a new ___ of soap.", "o": ["bar", "carton", "pair"], "why": "Soap comes in a bar."},
+    {"id": "f28", "t": "fill", "d": 3, "tag": "pack", "q": "Dad bought a ___ of orange juice.", "o": ["carton", "loaf", "pair"], "why": "Juice comes in a carton."},
+    {"id": "p14", "t": "pick", "d": 2, "tag": "pack", "ask": "Which one is right?", "o": ["a loaf of bread", "a pair of bread", "a carton of bread"], "why": "Bread comes in a loaf."},
+    {"id": "p15", "t": "pick", "d": 3, "tag": "pack", "ask": "Which one is right?", "o": ["two cartons of milk", "two carton of milks", "two cartons of milks"], "why": "Count the cartons: two cartons. Milk stays the same."},
+    {"id": "c16", "t": "check", "d": 2, "tag": "pack", "q": "I bought a carton of juice.", "a": 1, "why": "Juice comes in a carton. Right!"},
+    {"id": "c17", "t": "check", "d": 3, "tag": "pack", "q": "We had two bowls of rices.", "a": 0, "why": "Count the bowls, but rice stays the same: two bowls of rice."},
+    {"id": "f29", "t": "fill", "d": 1, "tag": "pair", "q": "I need a ___ of socks.", "o": ["pair", "loaf", "carton"], "why": "Socks come in twos: a pair of socks."},
+    {"id": "f30", "t": "fill", "d": 2, "tag": "pair", "q": "She wore a ___ of sunglasses.", "o": ["pair", "bar", "glass"], "why": "Sunglasses come as a pair."},
+    {"id": "f31", "t": "fill", "d": 2, "tag": "pair", "q": "Grandpa has two ___ of spectacles.", "o": ["pairs", "pair"], "why": "More than one pair: two pairs."},
+    {"id": "f32", "t": "fill", "d": 3, "tag": "pair", "q": "I bought three ___ of shoes.", "o": ["pairs", "pair"], "why": "More than one pair: three pairs."},
+    {"id": "p16", "t": "pick", "d": 2, "tag": "pair", "ask": "Which one is right?", "o": ["a pair of shoes", "a loaf of shoes", "a carton of shoes"], "why": "Shoes come in twos: a pair of shoes."},
+    {"id": "p17", "t": "pick", "d": 3, "tag": "pair", "ask": "Which one is right?", "o": ["two pairs of socks", "two pair of socks", "two pairs of sock"], "why": "Two pairs, and socks keeps its -s."},
+    {"id": "c18", "t": "check", "d": 2, "tag": "pair", "q": "I lost a pair of gloves.", "a": 1, "why": "Gloves come in twos: a pair of gloves. Right!"},
+    {"id": "c19", "t": "check", "d": 3, "tag": "pair", "q": "We bought two pair of shoes.", "a": 0, "why": "More than one pair: two pairs of shoes."},
+  ];
+
+  /* ================= QUIZ BANK ENGINE (shared by every lesson) =================
+     Needs, defined above it: LESSON_KEY, TAGS, BANK.
+     Optional: QB_BANDS = [easy, medium, tricky] questions per attempt (default 7/7/6 = 20);
+     QB_TEXT = { ask: {...}, yn: [...], right: [...], wrong: '...', speak: true, summary: {...} }.
+     Each attempt draws BAND_SIZES questions (easy, medium, tricky). The draw builds many
+     candidate quizzes and keeps the best: every tag present, 3+ of each type, balanced
+     check answers, unseen questions first. Options are shuffled; ids seen are remembered. */
+  const BAND_SIZES = (typeof QB_BANDS !== 'undefined') ? QB_BANDS : [7, 7, 6];
+  const DRAW = BAND_SIZES.reduce((a, b) => a + b, 0);
+  const TYPE_TARGET = Math.max(1, Math.min(3, Math.floor(DRAW / new Set(BANK.map(q => q.t)).size)));   // e.g. 20 Qs → 3 of each type, 10 Qs with 4 types → 2
+  const QBT = (typeof QB_TEXT !== 'undefined') ? QB_TEXT : {};
+  const ASK = Object.assign({
+    check: 'Is this sentence correct?',
+    pick:  'Pick the correct sentence.',
+    fill:  'Which choice fills the gap correctly?',
+    spot:  'Tap the part with the mistake.'
+  }, QBT.ask || {});
+  const YN = QBT.yn || ['Needs fixing', 'Correct'];
+  const RIGHT = QBT.right || ['Correct!'];
+  const WRONG = QBT.wrong || 'Not quite.';
+  const SUM = Object.assign({
+    perfect: 'A perfect run! Try another set to make sure it sticks.',
+    high: 'Strong work. Have a quick look at the areas below, then try a fresh set.',
+    mid: 'Good progress. Re-read the parts below before your next attempt.',
+    low: 'Worth another look at the lesson. Start with the areas below, then try a fresh set.',
+    review: 'Areas to review'
+  }, QBT.summary || {});
+  const CAN_SPEAK = !!QBT.speak && typeof window !== 'undefined' && !!window.speechSynthesis &&
+    typeof window.speechSynthesis.speak === 'function' && typeof SpeechSynthesisUtterance !== 'undefined';
+  function speak(text) {
+    try {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-GB'; u.rate = 0.9;
+      window.speechSynthesis.speak(u);
+    } catch (e) { /* no speech on this device */ }
+  }
+
+  const store = {
+    get(k, fallback) { try { const v = localStorage.getItem(LESSON_KEY + ':' + k); return v === null ? fallback : JSON.parse(v); } catch (e) { return fallback; } },
+    set(k, v) { try { localStorage.setItem(LESSON_KEY + ':' + k, JSON.stringify(v)); } catch (e) { /* storage unavailable: quiz still works */ } }
+  };
+  const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  function buildCandidate(seen) {
+    const chosen = [], tagN = {}, typeN = {};
+    let fixN = 0, okN = 0;
+    for (let band = 1; band <= 3; band++) {
+      const picks = [];
+      for (let k = 0; k < BAND_SIZES[band - 1]; k++) {
+        let best = null, bestScore = -Infinity;
+        BANK.forEach(q => {
+          if (q.d !== band || picks.includes(q)) return;
+          let s = Math.random() * 3;
+          if (!seen.has(q.id)) s += 6;
+          if (!tagN[q.tag]) s += 12;
+          s -= (typeN[q.t] || 0) * 1.2;
+          if ((typeN[q.t] || 0) < TYPE_TARGET) s += 3;   // nudge every type up to its target
+          if (q.t === 'check') { const lean = q.a === 0 ? fixN - okN : okN - fixN; if (lean >= 1) s -= 4; }
+          if (s > bestScore) { bestScore = s; best = q; }
+        });
+        if (!best) break;
+        picks.push(best);
+        tagN[best.tag] = (tagN[best.tag] || 0) + 1;
+        typeN[best.t] = (typeN[best.t] || 0) + 1;
+        if (best.t === 'check') { if (best.a === 0) fixN++; else okN++; }
+      }
+      chosen.push(...shuffle(picks));
+    }
+    return chosen;
+  }
+
+  function rateCandidate(c, seen) {
+    const tags = new Set(c.map(q => q.tag)).size;
+    const types = {};
+    c.forEach(q => types[q.t] = (types[q.t] || 0) + 1);
+    const used = [...new Set(BANK.map(q => q.t))];
+    const minType = Math.min(...used.map(t => types[t] || 0));
+    const checks = c.filter(q => q.t === 'check');
+    const lean = Math.abs(checks.filter(q => q.a === 0).length * 2 - checks.length);
+    return (tags === Object.keys(TAGS).length ? 10000 : tags * 500)
+         + (c.length === DRAW ? 5000 : 0)
+         + Math.min(minType, TYPE_TARGET) * 300
+         + (lean <= 2 ? 200 : 0)
+         + c.filter(q => !seen.has(q.id)).length * 10;
+  }
+
+  function drawQuiz() {
+    let seen = new Set(store.get('seen', []));
+    if (BANK.length - seen.size < DRAW) seen = new Set(store.get('last', []));   // new cycle, but skip the last attempt
+    let chosen = null, bestRate = -1;
+    for (let tries = 0; tries < 200; tries++) {
+      const c = buildCandidate(seen), r = rateCandidate(c, seen);
+      if (r > bestRate) { bestRate = r; chosen = c; }
+    }
+    chosen.forEach(q => seen.add(q.id));
+    store.set('seen', [...seen]);
+    store.set('last', chosen.map(q => q.id));
+    return chosen.map(q => {
+      if (q.t === 'pick' || q.t === 'fill') {
+        const opts = shuffle(q.o.map((text, i) => ({ text, ok: i === 0 })));
+        return { q, opts, answer: opts.findIndex(o => o.ok) };
+      }
+      if (q.t === 'check') return { q, opts: YN.map(text => ({ text })), answer: q.a };
+      return { q, opts: null, answer: q.a };
+    });
+  }
+
+  const listEl = document.getElementById('qbList');
+  const scoreEl = document.getElementById('qbScore');
+  const progressEl = document.getElementById('qbProgress');
+  const summaryEl = document.getElementById('qbSummary');
+  let current = [], score = 0, done = 0, missed = [];
+
+  function updateScore() {
+    scoreEl.textContent = score + ' / ' + current.length;
+    progressEl.textContent = done + ' of ' + current.length + ' answered';
+  }
+
+  /* Small or empty options are hard to see on a button, so label them. */
+  function optLabel(text) {
+    const t = text.trim();
+    if (t === '') return '<span class="qb-note">(nothing)</span>';
+    if (t === ',') return '<span class="qb-punct">,</span> <span class="qb-note">(a comma)</span>';
+    if (t === '.') return '<span class="qb-punct">.</span> <span class="qb-note">(a full stop)</span>';
+    if (t === '?') return '<span class="qb-punct">?</span> <span class="qb-note">(a question mark)</span>';
+    if (t === '!') return '<span class="qb-punct">!</span> <span class="qb-note">(an exclamation mark)</span>';
+    return esc(text);
+  }
+  function plainLabel(text) {
+    const t = text.trim();
+    return t === '' ? 'nothing' : t === ',' ? 'a comma' : t === '.' ? 'a full stop'
+      : t === '?' ? 'a question mark' : t === '!' ? 'an exclamation mark' : '"' + t + '"';
+  }
+  function sentenceWithGap(q, text) {
+    let filler = '<span class="qb-blank">___</span>';
+    if (text !== undefined) {
+      filler = text.trim() === ''
+        ? '<span class="qb-blank qb-filled qb-none">(nothing)</span>'
+        : '<span class="qb-blank qb-filled">' + esc(text) + '</span>';
+    }
+    return esc(q.q).replace('___', filler);
+  }
+
+  function render() {
+    listEl.innerHTML = '';
+    summaryEl.hidden = true;
+    current.forEach((item, i) => {
+      const q = item.q;
+      const card = document.createElement('div');
+      card.className = 'qb-card';
+      card.dataset.type = q.t;
+      let body;
+      if (q.t === 'spot') {
+        body = '<div class="qb-spot">' + q.parts.map((p, k) =>
+          '<button type="button" class="qb-part" data-k="' + k + '">' + esc(p) + '</button>').join('') + '</div>';
+      } else if (q.t === 'fill') {
+        const cols = item.opts.length;
+        body = '<p class="qb-text">' + sentenceWithGap(q) + '</p><div class="qb-opts qb-row" style="--qb-cols:' + cols + '"></div>';
+      } else if (q.t === 'check') {
+        body = '<p class="qb-text">' + esc(q.q) + '</p><div class="qb-opts qb-row"></div>';
+      } else {
+        body = (q.q ? '<p class="qb-text">' + esc(q.q) + '</p>' : '') + '<div class="qb-opts"></div>';
+      }
+      card.innerHTML =
+        (CAN_SPEAK ? '<button type="button" class="qb-speak" aria-label="Read this question aloud">🔊 Read it to me</button>' : '') +
+        '<p class="qb-num">Question ' + (i + 1) + ' of ' + current.length + '</p>' +
+        '<p class="qb-ask">' + esc(q.ask || ASK[q.t]) + '</p>' + body +
+        '<div class="qb-feedback" role="status"></div>';
+      if (CAN_SPEAK) {
+        const bits = [q.ask || ASK[q.t]];
+        if (q.t === 'spot') bits.push(q.parts.join(' '));
+        else if (q.q) bits.push(q.q.replace('___', 'blank'));
+        const sayOpt = t => { const x = t.trim(); return x === '' ? 'nothing' : x === '.' ? 'full stop' : x === ',' ? 'comma' : x === '?' ? 'question mark' : x === '!' ? 'exclamation mark' : x; };
+        if (q.t === 'pick' || q.t === 'fill') item.opts.forEach((o, j) => bits.push((q.t === 'pick' ? String.fromCharCode(65 + j) + ': ' : '') + sayOpt(o.text)));
+        if (q.t === 'check') bits.push(YN.join(', or '));
+        const spoken = bits.map(t => t.trim().replace(/[.\s]+$/, '')).filter(Boolean)
+          .map(t => /[?!]$/.test(t) ? t : t + '.').join(' ');
+        card.querySelector('.qb-speak').addEventListener('click', () => speak(spoken));
+      }
+      if (q.t === 'spot') {
+        card.querySelectorAll('.qb-part').forEach(b => b.addEventListener('click', () => answer(i, +b.dataset.k, card)));
+      } else {
+        const opts = card.querySelector('.qb-opts');
+        item.opts.forEach((o, j) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'qb-opt';
+          b.innerHTML = (q.t === 'pick' ? '<span class="qb-letter">' + String.fromCharCode(65 + j) + '</span>' : '') + optLabel(o.text);
+          b.addEventListener('click', () => answer(i, j, card));
+          opts.appendChild(b);
+        });
+      }
+      listEl.appendChild(card);
+    });
+    updateScore();
+  }
+
+  function answer(i, j, card) {
+    const item = current[i];
+    if (item.done) return;
+    item.done = true; done++;
+    const q = item.q, ok = j === item.answer;
+    if (ok) score++; else missed.push(q.tag);
+    card.querySelectorAll(q.t === 'spot' ? '.qb-part' : '.qb-opt').forEach((b, k) => {
+      b.disabled = true;
+      if (k === j) b.classList.add(ok ? 'qb-correct' : 'qb-incorrect');
+      else if (k === item.answer && !ok) b.classList.add('qb-reveal');
+    });
+    if (q.t === 'fill') card.querySelector('.qb-text').innerHTML = sentenceWithGap(q, item.opts[j].text);
+    let right;
+    if (q.t === 'spot') right = 'The mistake is in "' + esc(q.parts[item.answer]) + '".';
+    else if (q.t === 'pick') right = 'The answer is ' + String.fromCharCode(65 + item.answer) + '.';
+    else right = 'The answer is ' + esc(plainLabel(item.opts[item.answer].text)) + '.';
+    const fb = card.querySelector('.qb-feedback');
+    fb.classList.add('qb-show', ok ? 'qb-fb-ok' : 'qb-fb-no');
+    fb.innerHTML = '<span class="qb-verdict">' + (ok ? RIGHT[Math.floor(Math.random() * RIGHT.length)] : WRONG + ' ' + right) + '</span>' + esc(q.why);
+    updateScore();
+    if (done === current.length) showSummary();
+  }
+
+  function showSummary() {
+    const best = Math.max(store.get('best', 0), score);
+    store.set('best', best);
+    const attempts = store.get('attempts', 0) + 1;
+    store.set('attempts', attempts);
+    const counts = {};
+    missed.forEach(t => counts[t] = (counts[t] || 0) + 1);
+    const areas = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+    const n = current.length;
+    let msg;
+    if (score === n) msg = SUM.perfect;
+    else if (score >= Math.ceil(n * 0.8)) msg = SUM.high;
+    else if (score >= Math.ceil(n * 0.6)) msg = SUM.mid;
+    else msg = SUM.low;
+    summaryEl.innerHTML =
+      '<h3>You scored ' + score + ' / ' + n + '</h3><p>' + msg + '</p>' +
+      (areas.length ? '<p class="qb-sum-label">' + esc(SUM.review) + '</p><ul class="qb-areas">' + areas.map(t =>
+        '<li><a href="' + TAGS[t].href + '">' + esc(TAGS[t].label) + '</a><span>' + counts[t] + ' wrong</span></li>').join('') + '</ul>' : '') +
+      '<p class="qb-meta">Attempts on this device: ' + attempts + ' · Best score: ' + best + ' / ' + n + '</p>' +
+      '<button type="button" class="qb-go" id="qbAgain">Try ' + n + ' new questions</button>';
+    summaryEl.hidden = false;
+    document.getElementById('qbAgain').addEventListener('click', () => { newQuiz(); listEl.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    summaryEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function newQuiz() {
+    current = drawQuiz(); score = 0; done = 0; missed = [];
+    render();
+  }
+
+  const bankEl = document.getElementById('qbBank'), drawEl = document.getElementById('qbDraw');
+  if (bankEl) bankEl.textContent = BANK.length;
+  if (drawEl) drawEl.textContent = DRAW;
+  document.getElementById('qbNew').addEventListener('click', () => {
+    newQuiz();
+    listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  newQuiz();
+  } /* qb-end */
+})();
+</script>
+</body>
+</html>
