@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Count It or Scoop It? Countable and Uncountable Nouns</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍬</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FCE4EA;            /* sweet-shop pink */
+    --surface: #FFFFFF;
+    --ink: #2A1420;
+    --ink-soft: #6B4E5A;
+    --count: #C2410C;         /* counter tray: tomato */
+    --count-soft: #FFE4D4;
+    --scoop: #0F7C80;         /* scoop jar: teal glass */
+    --scoop-soft: #D6F0EF;
+    --label: #F2C230;         /* jar-label yellow */
+    --label-soft: #FFF3C4;
+    --right: #1F7A45;   --right-soft: #DDF1E4;
+    --wrong: #B3261E;   --wrong-soft: #F8DEDC;
+    --rule: rgba(42,20,32,0.14);
+    --font-display: 'Shrikhand', Georgia, serif;
+    --font-body: 'Nunito Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1E1218; --surface: #2C1C24; --ink: #F8E9EE; --ink-soft: #C9AEB9;
+      --count: #FF8A57; --count-soft: #3D2016;
+      --scoop: #5DD3D2; --scoop-soft: #12302F;
+      --label: #F2C230; --label-soft: #3A3010;
+      --right: #6FD49A; --right-soft: #17321F;
+      --wrong: #F08A82; --wrong-soft: #3A1E1C;
+      --rule: rgba(248,233,238,0.14);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1E1218; --surface: #2C1C24; --ink: #F8E9EE; --ink-soft: #C9AEB9;
+    --count: #FF8A57; --count-soft: #3D2016;
+    --scoop: #5DD3D2; --scoop-soft: #12302F;
+    --label: #F2C230; --label-soft: #3A3010;
+    --right: #6FD49A; --right-soft: #17321F;
+    --wrong: #F08A82; --wrong-soft: #3A1E1C;
+    --rule: rgba(248,233,238,0.14);
+  }
+
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16.5px; }
+  .wrap { max-width: 740px; margin: 0 auto; padding: 28px 18px 64px; }
+  img, svg { max-width: 100%; }
+  section { margin-bottom: 48px; }
+  h1, h2 { font-family: var(--font-display); font-weight: 400; }
+  h2 { font-size: 29px; line-height: 1.15; margin: 0 0 8px; }
+  h3 { font-weight: 800; font-size: 18.5px; margin: 0 0 8px; }
+  p { line-height: 1.55; }
+  .sub { color: var(--ink-soft); margin: 0 0 20px; max-width: 60ch; }
+  :focus-visible { outline: 3px solid var(--scoop); outline-offset: 2px; }
+  .cn { color: var(--count); font-weight: 800; }
+  .sc { color: var(--scoop); font-weight: 800; }
+  .bad { color: var(--wrong); text-decoration: line-through; text-decoration-thickness: 1.5px; }
+  .good { color: var(--right); font-weight: 700; }
+  .why { color: var(--ink-soft); font-size: 15px; }
+
+  .back-link {
+    display: inline-block; margin: 0 0 22px; padding: 9px 16px; min-height: 40px;
+    font-weight: 800; font-size: 14px; color: var(--ink); text-decoration: none;
+    border-radius: 22px; background: var(--surface); border: 2px dashed var(--rule);
+  }
+
+  /* Jar and tray shapes */
+  .jar { background: var(--surface); border: 3px solid var(--scoop); border-radius: 26px 26px 18px 18px; padding: 16px 18px; position: relative; }
+  .jar::before { content: ""; position: absolute; left: 18%; right: 18%; top: -11px; height: 10px; border-radius: 6px 6px 0 0; background: var(--scoop); }
+  .tray { background: var(--surface); border: 3px solid var(--count); border-radius: 10px; padding: 16px 18px; box-shadow: 0 6px 0 var(--count-soft); }
+  .tag-l { display: inline-block; font-weight: 800; font-size: 13px; padding: 3px 10px; border-radius: 4px; background: var(--label); color: #2A1420; margin-bottom: 8px; transform: rotate(-2deg); }
+
+  /* ---------- Hero ---------- */
+  .hero h1 { font-size: clamp(38px, 10vw, 60px); line-height: 1.02; margin: 0 0 14px; }
+  .hero h1 .c { color: var(--count); } .hero h1 .s { color: var(--scoop); }
+  .lead { font-size: 17px; max-width: 58ch; margin: 0 0 22px; }
+  .shop { background: var(--surface); border-radius: 16px; padding: 18px 16px; border: 2px solid var(--rule); }
+  .shop-item { text-align: center; margin: 4px 0 14px; }
+  .shop-item .emo { font-size: 44px; line-height: 1; display: block; }
+  .shop-item .word { font-family: var(--font-display); font-size: 30px; }
+  .shop-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .sbtn { font: inherit; font-weight: 800; font-size: 16px; min-height: 52px; border-radius: 14px; cursor: pointer; }
+  .sbtn.c { border: 3px solid var(--count); background: var(--count-soft); color: var(--ink); }
+  .sbtn.s { border: 3px solid var(--scoop); background: var(--scoop-soft); color: var(--ink); }
+  .sbtn:disabled { opacity: 0.55; cursor: default; }
+  .shop-msg { margin: 14px 2px 6px; min-height: 72px; font-size: 15.5px; }
+  .shelves { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
+  .shelf-box { border-radius: 12px; padding: 10px; min-height: 64px; font-size: 14px; }
+  .shelf-box b { display: block; font-size: 13px; margin-bottom: 4px; }
+  .shelf-box.c { background: var(--count-soft); } .shelf-box.s { background: var(--scoop-soft); }
+  .shelf-box span { display: inline-block; margin: 2px 4px 2px 0; padding: 2px 8px; border-radius: 10px; background: var(--surface); font-weight: 700; }
+  .next { font: inherit; font-weight: 800; font-size: 14.5px; min-height: 44px; padding: 10px 18px; border-radius: 22px; border: 2px solid var(--ink); background: var(--ink); color: var(--surface); cursor: pointer; margin-top: 12px; }
+
+  /* ---------- Rule ---------- */
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px; }
+  @media (max-width: 560px) { .two { grid-template-columns: 1fr; } }
+  .two ul { margin: 6px 0 0; padding-left: 18px; line-height: 1.7; font-size: 15px; }
+  .test { margin-top: 18px; background: var(--label-soft); border-left: 6px solid var(--label); border-radius: 0 10px 10px 0; padding: 14px 16px; }
+  .test p { margin: 0 0 6px; } .test p:last-child { margin: 0; }
+
+  /* ---------- Traps ---------- */
+  .trap { background: var(--surface); border-radius: 12px; padding: 16px 18px; margin-bottom: 12px; border: 2.5px dashed var(--wrong); }
+  .trap h3 { color: var(--wrong); }
+  .trap p { margin: 0 0 8px; }
+
+  /* ---------- Cases ---------- */
+  .stack { display: grid; gap: 22px; }
+  .stack > *, .two > *, .grid-2 > * { min-width: 0; }
+  .chips li { overflow-wrap: anywhere; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; padding: 0; margin: 6px 0 10px; }
+  .chips li { font-size: 14px; font-weight: 700; padding: 3px 10px; border-radius: 12px; background: var(--scoop-soft); }
+  .chips.c li { background: var(--count-soft); }
+  .stack p { margin: 0 0 7px; font-size: 15.5px; }
+  .tbl { overflow-x: auto; }
+  table.q { border-collapse: collapse; width: 100%; min-width: 320px; font-size: 15px; }
+  table.q th, table.q td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  table.q th { font-size: 13.5px; }
+  table.q td:first-child { font-weight: 800; white-space: nowrap; }
+
+  /* ---------- Specials ---------- */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 560px) { .grid-2 { grid-template-columns: 1fr; } }
+  .special { background: var(--surface); border-radius: 12px; padding: 16px; border-top: 6px solid var(--label); }
+  .special p { margin: 0 0 8px; font-size: 15px; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 14.5px; margin-bottom: 6px; }
+  .pair div { padding: 6px 8px; border-radius: 8px; }
+  .pair .s { background: var(--scoop-soft); } .pair .c { background: var(--count-soft); }
+
+  /* ---------- Summary ---------- */
+  .summary { background: var(--surface); border-radius: 16px; padding: 20px; border: 3px solid var(--scoop); box-shadow: 6px 6px 0 var(--count); }
+  .summary ul { margin: 0; padding-left: 20px; line-height: 1.8; }
+  .chant { margin: 18px 0 0; padding: 14px 16px; background: var(--label-soft); border-radius: 10px; font-family: var(--font-display); font-size: 20px; line-height: 1.45; text-align: center; }
+  footer { text-align: center; color: var(--ink-soft); font-size: 13px; margin-top: 30px; }
+
+  /* ================= QUIZ BANK ENGINE (shared by every lesson; qb- prefix avoids clashes) ================= */
+  .qb { --qb-cols: 2; }
+  .qb-bar {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 3;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 10px 16px; margin: 0 0 18px; border-radius: var(--qb-radius);
+    background: var(--qb-bar); color: var(--qb-bar-ink);
+  }
+  .qb-label { font-size: 12.5px; opacity: 0.8; }
+  .qb-score { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 28px; line-height: 1.05; }
+  .qb-progress { font-size: 12.5px; opacity: 0.85; margin-top: 2px; }
+  .qb-new {
+    font: inherit; font-weight: 700; font-size: 14px; padding: 10px 16px; min-height: 44px;
+    border-radius: 999px; border: 2px solid currentColor; background: transparent; color: inherit; cursor: pointer;
+  }
+  .qb-list, .qb-summary { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 96px); }
+  .qb-card {
+    background: var(--qb-card); border: var(--qb-card-border); box-shadow: var(--qb-card-shadow);
+    border-radius: var(--qb-radius); padding: 16px 16px 14px; margin: 0 0 14px; color: var(--qb-ink);
+  }
+  .qb-speak {
+    float: right; margin: -4px 0 6px 10px; font: inherit; font-size: 13.5px; font-weight: 700;
+    padding: 7px 12px; min-height: 38px; border-radius: 999px; cursor: pointer;
+    border: 2px solid var(--qb-accent); background: var(--qb-accent-soft); color: var(--qb-ink);
+  }
+  .qb-num { font-size: 12.5px; color: var(--qb-soft); margin: 0 0 4px; }
+  .qb-ask { font-size: 13.5px; font-weight: 700; color: var(--qb-accent); margin: 0 0 6px; }
+  .qb-text { font-size: var(--qb-text-size, 16.5px); line-height: 1.6; margin: 0 0 14px; }
+  .qb-blank {
+    display: inline-block; min-width: 60px; padding: 0 3px; text-align: center;
+    border-bottom: 2.5px dashed var(--qb-soft); color: var(--qb-soft);
+  }
+  .qb-blank.qb-filled { border-bottom-style: solid; border-bottom-color: var(--qb-accent); color: var(--qb-accent); font-weight: 700; }
+  .qb-blank.qb-none { font-style: italic; font-weight: 400; }
+  .qb-opts { display: flex; flex-direction: column; gap: 9px; }
+  .qb-opts.qb-row { display: grid; grid-template-columns: repeat(var(--qb-cols), minmax(0, 1fr)); }
+  .qb-opt {
+    font: inherit; font-size: var(--qb-opt-size, 15.5px); line-height: 1.45; text-align: left; color: var(--qb-ink);
+    padding: 11px 14px; min-height: var(--qb-tap, 46px); border-radius: var(--qb-radius-opt);
+    border: 2px solid var(--qb-rule); background: var(--qb-page); cursor: pointer;
+  }
+  .qb-row .qb-opt { text-align: center; font-weight: 600; padding-left: 6px; padding-right: 6px; }
+  .qb-opt:not(:disabled):hover { border-color: var(--qb-accent); }
+  .qb-opt:disabled, .qb-part:disabled { cursor: default; }
+  .qb-letter { font-family: var(--qb-font); font-weight: var(--qb-font-weight); margin-right: 10px; color: var(--qb-accent); }
+  .qb-note { font-size: 12.5px; font-weight: 400; color: var(--qb-soft); }
+  .qb-punct { font-size: 22px; line-height: 0; font-weight: 700; }
+  .qb-spot { display: flex; flex-wrap: wrap; gap: 8px 6px; margin: 0 0 4px; }
+  .qb-part {
+    font: inherit; font-size: var(--qb-opt-size, 16px); line-height: 1.35; text-align: left; color: var(--qb-ink); cursor: pointer;
+    background: var(--qb-accent-soft); border: none; border-bottom: 3px dashed var(--qb-accent);
+    border-radius: 4px 4px 0 0; padding: 7px 9px; min-height: 40px;
+  }
+  .qb-opt.qb-correct, .qb-opt.qb-reveal { background: var(--qb-right-soft); border-color: var(--qb-right); }
+  .qb-opt.qb-incorrect { background: var(--qb-wrong-soft); border-color: var(--qb-wrong); }
+  .qb-part.qb-correct, .qb-part.qb-reveal { background: var(--qb-right-soft); border-bottom: 3px solid var(--qb-right); }
+  .qb-part.qb-incorrect { background: var(--qb-wrong-soft); border-bottom: 3px solid var(--qb-wrong); }
+  .qb-feedback { display: none; margin-top: 12px; padding-top: 12px; border-top: 2px dashed var(--qb-rule); font-size: 14px; line-height: 1.55; }
+  .qb-feedback.qb-show { display: block; }
+  .qb-verdict { display: block; font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 18px; margin-bottom: 2px; }
+  .qb-fb-ok .qb-verdict { color: var(--qb-right); }
+  .qb-fb-no .qb-verdict { color: var(--qb-wrong); }
+  .qb-summary {
+    background: var(--qb-card); color: var(--qb-ink); border: 3px solid var(--qb-accent);
+    border-radius: var(--qb-radius); padding: 18px 20px; margin-top: 8px;
+  }
+  .qb-summary h3 { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 30px; line-height: 1.1; margin: 0 0 6px; color: var(--qb-accent); }
+  .qb-summary p { margin: 0 0 10px; line-height: 1.55; }
+  .qb-sum-label { font-weight: 700; margin-top: 14px !important; }
+  .qb-areas { list-style: none; margin: 0 0 12px; padding: 0; }
+  .qb-areas li { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--qb-rule); }
+  .qb-areas a { color: var(--qb-ink); font-weight: 600; }
+  .qb-areas span { color: var(--qb-wrong); font-weight: 700; white-space: nowrap; }
+  .qb-meta { font-size: 13px; color: var(--qb-soft); }
+  .qb-go {
+    font: inherit; font-weight: 700; font-size: 16px; width: 100%; min-height: 50px; margin-top: 4px; cursor: pointer;
+    border: none; border-radius: var(--qb-radius); background: var(--qb-accent); color: var(--qb-on-accent);
+  }
+
+  /* Theme the quiz engine through these tokens only. */
+  :root {
+    --qb-page: var(--bg);
+    --qb-card: var(--surface);
+    --qb-ink: var(--ink);
+    --qb-soft: var(--ink-soft);
+    --qb-accent: var(--scoop);
+    --qb-accent-soft: var(--scoop-soft);
+    --qb-on-accent: #FFFFFF;
+    --qb-right: var(--right);
+    --qb-right-soft: var(--right-soft);
+    --qb-wrong: var(--wrong);
+    --qb-wrong-soft: var(--wrong-soft);
+    --qb-rule: var(--rule);
+    --qb-bar: var(--count);
+    --qb-bar-ink: #FFFFFF;
+    --qb-font: var(--font-display);
+    --qb-font-weight: 400;
+    --qb-radius: 14px;
+    --qb-radius-opt: 10px;
+    --qb-card-border: none;
+    --qb-card-shadow: none;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --qb-on-accent: #12302F; --qb-bar: #9A3412; } }
+  :root[data-theme="dark"] { --qb-on-accent: #12302F; --qb-bar: #9A3412; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back-link" href="index.html#upper">← Back to the shelf</a>
+
+  <!-- 1. HERO -->
+  <header class="hero">
+    <h1><span class="c">Count</span> It or <span class="s">Scoop</span> It?</h1>
+    <p class="lead">Picture the mama shop near your block. Some things sit on the counter one by one: sweets, eggs, erasers. You <b class="cn">count</b> them: "three erasers, please." Other things sit in big jars or sacks: rice, sugar, ice. You can't count grains of rice, so you <b class="sc">scoop</b> them and count the bags instead: "a bag of rice." English nouns work the same way. Some go on the <b class="cn">counter tray</b>, and some go in the <b class="sc">scoop jar</b>, even ones you can't touch, like <i>advice</i> and <i>homework</i>.</p>
+
+    <div class="shop">
+      <div class="shop-item" aria-live="polite"><span class="emo" id="shopEmo"></span><span class="word" id="shopWord"></span></div>
+      <div class="shop-btns">
+        <button class="sbtn c" type="button" id="btnCount">Count it 🧺</button>
+        <button class="sbtn s" type="button" id="btnScoop">Scoop it 🥄</button>
+      </div>
+      <p class="shop-msg" id="shopMsg"></p>
+      <div class="shelves">
+        <div class="shelf-box c"><b>Counter tray</b><div id="trayList"></div></div>
+        <div class="shelf-box s"><b>Scoop jar</b><div id="jarList"></div></div>
+      </div>
+      <button class="next" type="button" id="shopNext">Next item →</button>
+    </div>
+  </header>
+
+  <!-- 2. THE RULE -->
+  <section id="rule">
+    <h2>Tray or jar?</h2>
+    <p class="sub">Every noun goes in one place, and that decides which words can go with it.</p>
+    <div class="two">
+      <div class="tray">
+        <span class="tag-l">Counter tray: countable</span>
+        <p>You can put a number in front: <i>one</i> egg, <i>two</i> eggs.</p>
+        <ul>
+          <li>one: <b>a / an</b> egg</li>
+          <li>more than one: add <b>-s</b>, eggs</li>
+          <li><b>many</b>, <b>a few</b>, <b>fewer</b></li>
+        </ul>
+      </div>
+      <div class="jar">
+        <span class="tag-l">Scoop jar: uncountable</span>
+        <p>You measure it, pour it, or it's an idea. No number fits: <span class="bad">two rices</span>.</p>
+        <ul>
+          <li><b>no a / an</b>: <span class="bad">a rice</span></li>
+          <li><b>no -s</b>: <span class="bad">rices</span></li>
+          <li><b>much</b>, <b>a little</b>, <b>less</b></li>
+          <li>singular verb: the rice <b>is</b></li>
+        </ul>
+      </div>
+    </div>
+    <div class="test">
+      <p><b>The shop test:</b> say "two ___" or "three ___" out loud.</p>
+      <p>"Three chairs" works, so chair goes on the <span class="cn">tray</span>. "Three furnitures" sounds wrong, so furniture goes in the <span class="sc">jar</span>. To count a jar word, count its container or its pieces: <b>three pieces of furniture</b>, <b>a bag of rice</b>.</p>
+    </div>
+  </section>
+
+  <!-- 3. TRAPS -->
+  <section id="traps">
+    <h2>Three traps</h2>
+    <p class="sub">The first one turned up again and again in real compositions.</p>
+    <div class="trap">
+      <h3>Trap 1: Adding -s to a jar word</h3>
+      <p><span class="bad">further clarifications</span> → <span class="good">further clarification</span></p>
+      <p><span class="bad">all my homeworks</span> → <span class="good">all my homework</span> · <span class="bad">informations</span> → <span class="good">information</span> · <span class="bad">equipments</span> → <span class="good">equipment</span></p>
+      <p class="why">These words feel like "lots of things", so it's tempting to add -s. But they're scoop-jar words, and jar words never take -s.</p>
+    </div>
+    <div class="trap">
+      <h3>Trap 2: Putting "a" or "an" on a jar word</h3>
+      <p><span class="bad">Grandpa gave me an advice.</span> → <span class="good">Grandpa gave me some advice / a piece of advice.</span></p>
+      <p><span class="bad">I heard a news.</span> → <span class="good">I heard some news / a piece of news.</span></p>
+      <p class="why">"A" means "one", and you can't have one of a jar word. Use <i>some</i>, or count it with <i>a piece of</i>.</p>
+    </div>
+    <div class="trap">
+      <h3>Trap 3: Using the wrong amount word</h3>
+      <p><span class="bad">How many money do you have?</span> → <span class="good">How much money do you have?</span></p>
+      <p><span class="bad">Less people came because of the rain.</span> → <span class="good">Fewer people came because of the rain.</span></p>
+      <p class="why"><i>Many, few, fewer</i> are tray words. <i>Much, little, less</i> are jar words. Check which place the noun belongs in first.</p>
+    </div>
+  </section>
+
+  <!-- 4. CASES -->
+  <section id="cases">
+    <h2>What's in the jars, and how to count them</h2>
+    <p class="sub">Learn these groups of jar words, the measuring words that count them, and which amount words go with each place.</p>
+    <div class="stack">
+      <div class="jar">
+        <span class="tag-l">Jar 1: things you pour, scoop or weigh</span>
+        <ul class="chips"><li>water</li><li>milk</li><li>rice</li><li>sugar</li><li>bread</li><li>ice</li><li>sand</li><li>paper</li><li>glass</li><li>plastic</li><li>money</li></ul>
+        <p>The <span class="sc">water</span> in the pool <b>was</b> cold. Mum bought some <span class="sc">rice</span> and <span class="sc">bread</span>.</p>
+      </div>
+      <div class="jar">
+        <span class="tag-l">Jar 2: "lots of things" words</span>
+        <ul class="chips"><li>homework</li><li>furniture</li><li>luggage</li><li>equipment</li><li>stationery</li><li>information</li><li>advice</li><li>feedback</li><li>news</li><li>rubbish</li><li>traffic</li><li>scenery</li><li>weather</li></ul>
+        <p>Thank you for your <span class="sc">advice</span> and <span class="sc">feedback</span>. All the <span class="sc">furniture</span> <b>was</b> new.</p>
+        <p class="why">These are the sneaky ones. They describe a whole group, so the group word stays single. The countable parts are different words: pens and rulers are stationery; chairs and tables are furniture.</p>
+      </div>
+      <div class="jar">
+        <span class="tag-l">Jar 3: feelings and ideas</span>
+        <ul class="chips"><li>fun</li><li>help</li><li>support</li><li>patience</li><li>courage</li><li>knowledge</li><li>excitement</li></ul>
+        <p>We had lots of <span class="sc">fun</span>. Thank you for all your <span class="sc">help</span> and <span class="sc">support</span>.</p>
+      </div>
+      <div class="tray">
+        <span class="tag-l">Measuring words: how to count a jar word</span>
+        <p>Measuring word + <b>of</b> + jar word. The measuring word is countable, so it takes a/an and -s.</p>
+        <ul class="chips c"><li>a glass of water</li><li>a bowl of rice</li><li>a loaf of bread</li><li>a slice of cake</li><li>a sheet of paper</li><li>a carton of milk</li><li>a spoonful of sugar</li><li>a piece of advice / news / information / furniture / luggage</li><li>a pair of shoes / scissors</li></ul>
+        <p>I drank <b>two glasses of</b> water. The coach loaded <b>six pieces of</b> luggage.</p>
+        <p class="why">Don't drop the "of": <span class="bad">a glass water</span> → <span class="good">a glass of water</span>.</p>
+      </div>
+      <div class="tray">
+        <span class="tag-l">Amount words: which place do they fit?</span>
+        <div class="tbl">
+          <table class="q">
+            <tr><th></th><th><span class="cn">Tray</span> (countable)</th><th><span class="sc">Jar</span> (uncountable)</th></tr>
+            <tr><td>How?</td><td>how <b>many</b> pupils</td><td>how <b>much</b> water</td></tr>
+            <tr><td>A small amount</td><td><b>a few</b> friends</td><td><b>a little</b> sugar</td></tr>
+            <tr><td>Not as many</td><td><b>fewer</b> people</td><td><b>less</b> plastic</td></tr>
+            <tr><td>A big amount</td><td>a large <b>number of</b> students</td><td>a large <b>amount of</b> rubbish</td></tr>
+            <tr><td>Both</td><td colspan="2"><b>some, any, a lot of, lots of, plenty of, more, no</b>: some pupils, some food</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. SPECIAL CASES -->
+  <section id="specials">
+    <h2>Four tricky shelves</h2>
+    <p class="sub">The quiz checks these too.</p>
+    <div class="grid-2">
+      <div class="special">
+        <h3>Jar words take a singular verb</h3>
+        <p>A jar word is one mass, so it takes <i>is / was / has</i>, even when it looks plural.</p>
+        <p>The news <b>is</b> good. The equipment <b>was</b> checked. Mathematics <b>is</b> my favourite subject.</p>
+        <p class="why"><i>News</i> and <i>mathematics</i> end in -s, but they're single jar words.</p>
+      </div>
+      <div class="special">
+        <h3>Same word, two shelves</h3>
+        <p>Some words change place when their meaning changes.</p>
+        <div class="pair"><div class="s"><b>paper</b>: the material. Wrap it in colourful paper.</div><div class="c"><b>a paper</b>: a test or newspaper. Two exam papers.</div></div>
+        <div class="pair"><div class="s"><b>time</b>: minutes passing. Not enough time.</div><div class="c"><b>a time</b>: an occasion. Three times. We had a great time.</div></div>
+        <div class="pair"><div class="s"><b>glass</b>: the material. Made of glass.</div><div class="c"><b>a glass / glasses</b>: a cup, or spectacles.</div></div>
+        <div class="pair"><div class="s"><b>chicken</b>: the food. Roast chicken.</div><div class="c"><b>a chicken</b>: the bird. Ten chickens.</div></div>
+        <div class="pair"><div class="s"><b>hair</b>: all of it. Long black hair.</div><div class="c"><b>a hair</b>: one strand. A hair in my soup!</div></div>
+        <div class="pair"><div class="s"><b>room</b>: space. Is there room for one more?</div><div class="c"><b>a room</b>: a place with walls. Two rooms.</div></div>
+        <div class="pair"><div class="s"><b>artwork</b>: art as an activity. We did artwork.</div><div class="c"><b>artworks</b>: separate pieces in a gallery.</div></div>
+      </div>
+      <div class="special">
+        <h3>Already plural: no -s needed</h3>
+        <p><i>People, children</i> and <i>police</i> are already plural. Don't add -s, and use a plural verb.</p>
+        <p><span class="bad">many peoples</span> → <span class="good">many people</span> · The children <b>were</b> excited. The police <b>have</b> arrived.</p>
+      </div>
+      <div class="special">
+        <h3>Groups of a number</h3>
+        <p>After "groups of" or "teams of", the number stays a plain number.</p>
+        <p><span class="bad">We were split into groups of threes.</span></p>
+        <p><span class="good">We were split into groups of three.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. PRACTICE -->
+  <section id="practice">
+    <h2>Stock the shelves</h2>
+    <p class="sub">Each attempt draws <span id="qbDraw">20</span> questions from a bank of <span id="qbBank">150</span>, so every try is different. The questions get trickier as you go. Finish them all to see which shelves to review.</p>
+    <div class="qb" id="qb">
+      <div class="qb-bar">
+        <div><div class="qb-label">Your score</div><div class="qb-score" id="qbScore">0 / 20</div><div class="qb-progress" id="qbProgress">0 of 20 answered</div></div>
+        <button class="qb-new" id="qbNew" type="button">New quiz</button>
+      </div>
+      <div class="qb-list" id="qbList"></div>
+      <div class="qb-summary" id="qbSummary" hidden></div>
+    </div>
+  </section>
+
+  <!-- 7. PIN THIS UP -->
+  <section class="summary">
+    <h2>Pin This Up</h2>
+    <ul>
+      <li><b class="cn">Tray (countable):</b> a/an, -s, many, a few, fewer, a number of.</li>
+      <li><b class="sc">Jar (uncountable):</b> no a/an, no -s, much, a little, less, an amount of, singular verb.</li>
+      <li><b>Sneaky jar words:</b> homework, furniture, luggage, equipment, stationery, information, advice, feedback, news.</li>
+      <li><b>To count a jar word:</b> a piece of advice, a glass of water, a loaf of bread.</li>
+      <li><b>Watch for:</b> words with two meanings (paper, time), already-plural people/children, and "groups of three".</li>
+    </ul>
+    <p class="chant">Count it on the tray, with many and -s;<br>scoop it from the jar: much, and no -s!</p>
+  </section>
+
+  <footer>My Grammar Shelf · Lesson 10</footer>
+</div>
+
+<script>
+(function () {
+  /* ---------- Hero: the mama shop ---------- */
+  const ITEMS = [
+    { w: 'eraser', e: '🧽', k: 'count', say: 'three erasers', m: 'You can say “three erasers”, so it goes on the tray.' },
+    { w: 'rice', e: '🍚', k: 'scoop', say: 'a bag of rice', m: 'You can\'t count grains of rice. Scoop it, and count the bag: “a bag of rice”.' },
+    { w: 'egg', e: '🥚', k: 'count', say: 'six eggs', m: '“Six eggs” works, so eggs go on the tray.' },
+    { w: 'advice', e: '💬', k: 'scoop', say: 'a piece of advice', m: '“Two advices” sounds wrong. Advice is a jar word: “a piece of advice”.' },
+    { w: 'chair', e: '🪑', k: 'count', say: 'four chairs', m: '“Four chairs” works, so chair goes on the tray.' },
+    { w: 'furniture', e: '🛋️', k: 'scoop', say: 'three pieces of furniture', m: 'Chairs are countable, but “furniture” is the whole group, so it goes in the jar.' },
+    { w: 'sweet', e: '🍬', k: 'count', say: 'ten sweets', m: '“Ten sweets” works, so sweets go on the tray.' },
+    { w: 'homework', e: '📚', k: 'scoop', say: 'some homework', m: 'Sneaky! Homework is a jar word: “some homework”, never “homeworks”.' },
+    { w: 'sugar', e: '🧂', k: 'scoop', say: 'a spoonful of sugar', m: 'You scoop sugar: “a spoonful of sugar”.' },
+    { w: 'information', e: 'ℹ️', k: 'scoop', say: 'a piece of information', m: 'Information is a jar word: no “an”, no -s.' }
+  ];
+  let shopI = 0;
+  const emoEl = document.getElementById('shopEmo'), wordEl = document.getElementById('shopWord'), msgEl = document.getElementById('shopMsg');
+  const bC = document.getElementById('btnCount'), bS = document.getElementById('btnScoop');
+  const trayL = document.getElementById('trayList'), jarL = document.getElementById('jarList');
+  function showItem() {
+    const it = ITEMS[shopI];
+    emoEl.textContent = it.e; wordEl.textContent = it.w;
+    msgEl.textContent = 'Can you count it, or do you scoop it?';
+    bC.disabled = false; bS.disabled = false;
+  }
+  function pickShop(kind) {
+    const it = ITEMS[shopI];
+    if (kind === it.k) {
+      msgEl.innerHTML = '<b>Yes!</b> ' + it.m;
+      const chip = document.createElement('span'); chip.textContent = it.say;
+      (it.k === 'count' ? trayL : jarL).appendChild(chip);
+      bC.disabled = true; bS.disabled = true;
+    } else {
+      msgEl.innerHTML = '<b>Try the shop test.</b> Say “two ' + it.w + 's” out loud. Does it sound right?';
+    }
+  }
+  bC.addEventListener('click', () => pickShop('count'));
+  bS.addEventListener('click', () => pickShop('scoop'));
+  document.getElementById('shopNext').addEventListener('click', () => {
+    shopI = (shopI + 1) % ITEMS.length;
+    if (shopI === 0) { trayL.innerHTML = ''; jarL.innerHTML = ''; }
+    showItem();
+  });
+  showItem();
+
+  { /* qb-start: quiz engine in its own scope, so its names can't clash with the lesson's */
+  /* ================= QUIZ: question bank (153 questions) ================= */
+  const LESSON_KEY = "shelf-l10";
+  const QB_TEXT = {"ask": {"check": "Is this sentence correct?", "pick": "Pick the correct sentence.", "fill": "Which choice fills the gap?", "spot": "Tap the part with the mistake."}, "yn": ["Needs fixing", "Correct"], "summary": {"review": "Shelves to review"}};
+  const TAGS = {
+    count: { label: "Counter tray: a/an and -s for countable nouns", href: '#rule' },
+    scoop: { label: "Trap 1: no -s on jar words (homework, information)", href: '#traps' },
+    noa: { label: "Trap 2: no a/an on jar words (use a piece of)", href: '#traps' },
+    quantity: { label: "Amount words: many/much, fewer/less, number/amount", href: '#cases' },
+    measure: { label: "Measuring words: a glass of, a loaf of", href: '#cases' },
+    verb: { label: "Jar words take a singular verb", href: '#specials' },
+    twomeaning: { label: "Same word, two shelves (paper, time)", href: '#specials' },
+    plural: { label: "Already plural (people) and groups of three", href: '#specials' },
+  };
+  const BANK = [
+    {"id": "c01", "t": "fill", "d": 1, "tag": "count", "q": "I bought three ___ at the bookshop.", "o": ["books", "book"], "why": "Books can be counted one by one, so after \"three\" use the plural: books."},
+    {"id": "c02", "t": "fill", "d": 1, "tag": "count", "q": "There is ___ apple in my lunchbox.", "o": ["an", "a", "some"], "why": "Apple is countable and starts with a vowel sound, so one apple is \"an apple\"."},
+    {"id": "c03", "t": "fill", "d": 1, "tag": "count", "q": "Ms Goh gave each of us ___ worksheet.", "o": ["a", "some"], "why": "A worksheet is one countable thing, so it takes \"a\"."},
+    {"id": "c04", "t": "fill", "d": 1, "tag": "count", "q": "Two ___ were waiting at the bus stop.", "o": ["boys", "boy"], "why": "Boys are counted, so after \"two\" use the plural."},
+    {"id": "c05", "t": "fill", "d": 1, "tag": "count", "q": "We need five more ___ for the class party.", "o": ["chairs", "chair"], "why": "Chairs are counted one by one, so use the plural after \"five\"."},
+    {"id": "c06", "t": "fill", "d": 2, "tag": "count", "q": "My little brother lost ___ tooth yesterday!", "o": ["a", "some"], "why": "A tooth is one countable thing, so it takes \"a\"."},
+    {"id": "c07", "t": "fill", "d": 2, "tag": "count", "q": "Mum packed two ___ for our picnic.", "o": ["sandwiches", "sandwich"], "why": "Sandwiches are counted, so after \"two\" use the plural."},
+    {"id": "c08", "t": "check", "d": 1, "tag": "count", "q": "I have two pencil in my pencil case.", "a": 0, "why": "Pencils are countable, so after \"two\" it must be plural: two pencils."},
+    {"id": "c09", "t": "check", "d": 1, "tag": "count", "q": "Arjun brought a ball to the field.", "a": 1, "why": "A ball is one countable thing, so \"a ball\" is right."},
+    {"id": "c10", "t": "check", "d": 2, "tag": "count", "q": "The canteen auntie sold many curry puffs today.", "a": 1, "why": "Curry puffs are counted one by one, so \"many curry puffs\" is right."},
+    {"id": "c11", "t": "check", "d": 2, "tag": "count", "q": "Our class planted three tree in the garden.", "a": 0, "why": "Trees are countable, so after \"three\" use the plural: three trees."},
+    {"id": "c12", "t": "spot", "d": 1, "tag": "count", "parts": ["Wei Ling has", "two cat", "and", "a dog."], "a": 1, "why": "Cats are countable, so after \"two\" it must be \"two cats\"."},
+    {"id": "c13", "t": "spot", "d": 2, "tag": "count", "parts": ["Each of us", "received", "three sticker", "from Mr Tan."], "a": 2, "why": "Stickers are counted, so after \"three\" use \"three stickers\"."},
+    {"id": "c14", "t": "pick", "d": 2, "tag": "count", "ask": "Which sentence is correct?", "o": ["We saw a few monkeys at the zoo.", "We saw a few monkey at the zoo.", "We saw a little monkeys at the zoo."], "why": "Monkeys are countable, so use \"a few\" and the plural: a few monkeys."},
+    {"id": "u01", "t": "fill", "d": 1, "tag": "scoop", "q": "Please pour me some ___.", "o": ["water", "waters"], "why": "Water is something you pour, not count, so it never takes -s."},
+    {"id": "u02", "t": "fill", "d": 1, "tag": "scoop", "q": "Mum bought a bag of ___ from the market.", "o": ["rice", "rices"], "why": "Rice is a mass you scoop, so it has no plural: rice."},
+    {"id": "u03", "t": "fill", "d": 1, "tag": "scoop", "q": "We have a lot of ___ to finish this weekend.", "o": ["homework", "homeworks"], "why": "Homework is uncountable, so it never takes -s."},
+    {"id": "u04", "t": "fill", "d": 1, "tag": "scoop", "q": "Thank you for your kind ___.", "o": ["advice", "advices"], "why": "Advice is uncountable, so it has no -s."},
+    {"id": "u05", "t": "fill", "d": 2, "tag": "scoop", "q": "The website had useful ___ about the camp.", "o": ["information", "informations"], "why": "Information is uncountable, so it never takes -s."},
+    {"id": "u06", "t": "fill", "d": 2, "tag": "scoop", "q": "The new ___ in the library is very comfortable.", "o": ["furniture", "furnitures"], "why": "Furniture is uncountable. Count the pieces instead: a chair, a table."},
+    {"id": "u07", "t": "fill", "d": 2, "tag": "scoop", "q": "Please pack your ___ before the coach arrives.", "o": ["luggage", "luggages"], "why": "Luggage is uncountable. Count bags or suitcases instead."},
+    {"id": "u08", "t": "fill", "d": 2, "tag": "scoop", "q": "The PE teacher put away all the sports ___.", "o": ["equipment", "equipments"], "why": "Equipment is uncountable, so it never takes -s."},
+    {"id": "u09", "t": "fill", "d": 2, "tag": "scoop", "q": "I bought new ___ for the school year: pens, erasers and a ruler.", "o": ["stationery", "stationeries"], "why": "Stationery is uncountable. The pens and erasers are the countable parts."},
+    {"id": "u10", "t": "fill", "d": 2, "tag": "scoop", "q": "Thank you for your ___ on my composition.", "o": ["feedback", "feedbacks"], "why": "Feedback is uncountable, so it has no -s."},
+    {"id": "u11", "t": "fill", "d": 3, "tag": "scoop", "q": "If you require further ___, please let me know.", "o": ["clarification", "clarifications"], "why": "In this formal phrase, clarification is used as uncountable: \"further clarification\"."},
+    {"id": "u12", "t": "fill", "d": 3, "tag": "twomeaning", "q": "We made gifts and did ___ with the children at the home.", "o": ["artwork", "artworks"], "why": "Artwork that children make together is uncountable: \"did artwork\"."},
+    {"id": "u13", "t": "check", "d": 1, "tag": "scoop", "q": "My grandmother gave me some good advice.", "a": 1, "why": "Advice is uncountable, so \"some good advice\" with no -s is right."},
+    {"id": "u14", "t": "check", "d": 1, "tag": "scoop", "q": "I have too many homeworks today.", "a": 0, "why": "Homework is uncountable: \"too much homework\"."},
+    {"id": "u15", "t": "check", "d": 2, "tag": "scoop", "q": "The teacher gave us all the informations we needed.", "a": 0, "why": "Information is uncountable, so it has no -s: all the information."},
+    {"id": "u16", "t": "check", "d": 2, "tag": "scoop", "q": "We carried our luggage onto the bus.", "a": 1, "why": "Luggage is uncountable, so \"our luggage\" is right."},
+    {"id": "u17", "t": "check", "d": 3, "tag": "scoop", "q": "If you require further clarifications, please contact me.", "a": 0, "why": "In this formal phrase it is \"further clarification\", with no -s."},
+    {"id": "u18", "t": "spot", "d": 1, "tag": "scoop", "parts": ["After school,", "I did", "all my homeworks", "before dinner."], "a": 2, "why": "Homework is uncountable: \"all my homework\"."},
+    {"id": "u19", "t": "spot", "d": 2, "tag": "scoop", "parts": ["The hall", "was filled with", "new furnitures", "for the event."], "a": 2, "why": "Furniture is uncountable: \"new furniture\"."},
+    {"id": "u20", "t": "spot", "d": 2, "tag": "scoop", "parts": ["We borrowed", "some equipments", "from the", "science lab."], "a": 1, "why": "Equipment is uncountable: \"some equipment\"."},
+    {"id": "u21", "t": "spot", "d": 3, "tag": "twomeaning", "parts": ["We played games,", "made friends", "and did artworks", "with the residents."], "a": 2, "why": "Art made together like this is uncountable: \"did artwork\"."},
+    {"id": "u22", "t": "pick", "d": 2, "tag": "scoop", "ask": "Which sentence is correct?", "o": ["Dad needs some information about the trip.", "Dad needs some informations about the trip.", "Dad needs an information about the trip."], "why": "Information is uncountable: no -s and no \"an\"."},
+    {"id": "u23", "t": "pick", "d": 3, "tag": "scoop", "ask": "Which line from a letter is correct?", "o": ["Thank you for your advice and feedback.", "Thank you for your advices and feedbacks.", "Thank you for your advice and feedbacks.", "Thank you for your advices and feedback."], "why": "Advice and feedback are both uncountable, so neither takes -s."},
+    {"id": "u24", "t": "fill", "d": 3, "tag": "scoop", "q": "Each room in the hostel had very little ___.", "o": ["furniture", "furnitures"], "why": "Furniture is uncountable, so it has no -s."},
+    {"id": "a01", "t": "fill", "d": 1, "tag": "noa", "q": "Can I give you ___ advice?", "o": ["some", "an"], "why": "Advice is uncountable, so it can't take \"an\". Use \"some\" or \"a piece of\"."},
+    {"id": "a02", "t": "fill", "d": 1, "tag": "noa", "q": "My uncle gave me ___ advice that I will never forget.", "o": ["a piece of", "an"], "why": "Advice is uncountable, so count it with \"a piece of advice\"."},
+    {"id": "a03", "t": "fill", "d": 2, "tag": "noa", "q": "Ms Goh shared ___ good news with the class.", "o": ["some", "a"], "why": "News is uncountable, so it can't take \"a\": some good news, or a piece of good news."},
+    {"id": "a04", "t": "fill", "d": 2, "tag": "noa", "q": "I have ___ homework to finish tonight.", "o": ["some", "a"], "why": "Homework is uncountable, so use \"some\", not \"a\"."},
+    {"id": "a05", "t": "fill", "d": 2, "tag": "noa", "q": "We need ___ information about the excursion.", "o": ["more", "an"], "why": "Information is uncountable, so it can't take \"an\"."},
+    {"id": "a06", "t": "fill", "d": 2, "tag": "noa", "q": "My brother bought ___ new furniture for his room.", "o": ["some", "a"], "why": "Furniture is uncountable, so it can't take \"a\". A sofa or a desk could."},
+    {"id": "a07", "t": "check", "d": 1, "tag": "noa", "q": "Grandpa gave me an advice before my exam.", "a": 0, "why": "Advice is uncountable: \"some advice\" or \"a piece of advice\"."},
+    {"id": "a08", "t": "check", "d": 2, "tag": "noa", "q": "That was a useful piece of information.", "a": 1, "why": "Information is uncountable, so \"a piece of information\" is the right way to count it."},
+    {"id": "a09", "t": "check", "d": 2, "tag": "noa", "q": "I heard a news about our school on the radio.", "a": 0, "why": "News is uncountable: \"some news\" or \"a piece of news\"."},
+    {"id": "a10", "t": "check", "d": 2, "tag": "noa", "q": "Mr Tan gave us a homework on fractions.", "a": 0, "why": "Homework is uncountable: \"some homework\" or \"a homework assignment\"."},
+    {"id": "a11", "t": "check", "d": 3, "tag": "noa", "q": "The sofa is a heavy piece of furniture.", "a": 1, "why": "Furniture is uncountable, so \"a piece of furniture\" is how you count one item."},
+    {"id": "a12", "t": "spot", "d": 2, "tag": "noa", "parts": ["Before the race,", "the coach", "gave us", "an advice."], "a": 3, "why": "Advice is uncountable: \"some advice\" or \"a piece of advice\"."},
+    {"id": "a13", "t": "spot", "d": 3, "tag": "noa", "parts": ["Ravi shared", "a good news", "with us", "at recess."], "a": 1, "why": "News is uncountable: \"some good news\" or \"a piece of good news\"."},
+    {"id": "a14", "t": "pick", "d": 2, "tag": "noa", "ask": "Which sentence is correct?", "o": ["Let me give you a piece of advice.", "Let me give you an advice.", "Let me give you a advice."], "why": "Advice can't take \"a\" or \"an\". Count it with \"a piece of advice\"."},
+    {"id": "a15", "t": "pick", "d": 3, "tag": "noa", "ask": "Which sentence is correct?", "o": ["We received some exciting news this morning.", "We received an exciting news this morning.", "We received some exciting newses this morning.", "We received an exciting newses this morning."], "why": "News is uncountable: no \"an\" and no extra -s."},
+    {"id": "a16", "t": "fill", "d": 3, "tag": "noa", "q": "Each bag holds ___ of luggage.", "o": ["one piece", "one luggage"], "why": "Luggage is uncountable, so count it with \"piece\": one piece of luggage."},
+    {"id": "m01", "t": "fill", "d": 1, "tag": "measure", "q": "I drank a glass ___ water after the run.", "o": ["of", "with"], "why": "A measuring word needs \"of\": a glass of water."},
+    {"id": "m02", "t": "fill", "d": 1, "tag": "measure", "q": "Mum cut me a ___ of cake.", "o": ["slice", "glass"], "why": "A slice of cake is how you count cake."},
+    {"id": "m03", "t": "fill", "d": 1, "tag": "measure", "q": "Can you buy a ___ of bread from the bakery?", "o": ["loaf", "bread"], "why": "Bread is uncountable, so count it with a loaf: a loaf of bread."},
+    {"id": "m04", "t": "fill", "d": 2, "tag": "measure", "q": "Please hand out one ___ of paper to each pupil.", "o": ["sheet", "paper"], "why": "Paper (the material) is uncountable, so count it in sheets."},
+    {"id": "m05", "t": "fill", "d": 2, "tag": "measure", "q": "Grandma made a big ___ of noodles for us.", "o": ["bowl", "noodle"], "why": "A bowl of noodles is a measuring word + of."},
+    {"id": "m06", "t": "fill", "d": 2, "tag": "measure", "q": "The cashier gave me a few ___ of advice on saving money.", "o": ["pieces", "piece"], "why": "\"Pieces\" is countable, so \"a few pieces of advice\" is plural."},
+    {"id": "m07", "t": "fill", "d": 2, "tag": "measure", "q": "We need two ___ of milk for the recipe.", "o": ["cartons", "milks"], "why": "Milk is uncountable, so count the containers: two cartons of milk."},
+    {"id": "m08", "t": "fill", "d": 3, "tag": "measure", "q": "The bus driver loaded six ___ of luggage.", "o": ["pieces", "luggages"], "why": "Luggage is uncountable, so count it in pieces: six pieces of luggage."},
+    {"id": "m09", "t": "check", "d": 1, "tag": "measure", "q": "I poured a glass water for my grandmother.", "a": 0, "why": "A measuring word needs \"of\": a glass of water."},
+    {"id": "m10", "t": "check", "d": 1, "tag": "measure", "q": "Dad bought two loaves of bread.", "a": 1, "why": "Count bread in loaves, and \"loaves\" is the plural of \"loaf\"."},
+    {"id": "m11", "t": "check", "d": 2, "tag": "measure", "q": "Mum added two sugars to the cake batter.", "a": 0, "why": "Sugar is uncountable: two spoonfuls of sugar."},
+    {"id": "m12", "t": "check", "d": 2, "tag": "measure", "q": "She gave me three sheets of paper.", "a": 1, "why": "Paper is counted in sheets, so this is right."},
+    {"id": "m13", "t": "check", "d": 3, "tag": "measure", "q": "He ate two slices of watermelon and a bowl of rice.", "a": 1, "why": "Both use a measuring word + of: slices of, a bowl of."},
+    {"id": "m14", "t": "spot", "d": 2, "tag": "measure", "parts": ["After the match,", "I drank", "a bottle water", "in one go."], "a": 2, "why": "A measuring word needs \"of\": a bottle of water."},
+    {"id": "m15", "t": "spot", "d": 3, "tag": "measure", "parts": ["Mr Lim", "brought", "two breads", "for the picnic."], "a": 2, "why": "Bread is uncountable: two loaves of bread."},
+    {"id": "m16", "t": "pick", "d": 2, "tag": "measure", "ask": "Which sentence is correct?", "o": ["I ate a bowl of rice for lunch.", "I ate a bowl rice for lunch.", "I ate a rice for lunch.", "I ate a bowl of rices for lunch."], "why": "Rice is uncountable, so count it with \"a bowl of rice\"."},
+    {"id": "m17", "t": "pick", "d": 3, "tag": "measure", "ask": "Which is the right way to count furniture?", "o": ["three pieces of furniture", "three furnitures", "three piece of furnitures", "three furniture"], "why": "Furniture is uncountable, so count the pieces: three pieces of furniture."},
+    {"id": "m18", "t": "fill", "d": 3, "tag": "measure", "q": "She bought a new ___ of shoes for Sports Day.", "o": ["pair", "piece"], "why": "Shoes come in twos, so count them in pairs: a pair of shoes."},
+    {"id": "q01", "t": "fill", "d": 1, "tag": "quantity", "q": "How ___ water should I add?", "o": ["much", "many"], "why": "Water is uncountable, so use \"much\"."},
+    {"id": "q02", "t": "fill", "d": 1, "tag": "quantity", "q": "How ___ pupils are in your class?", "o": ["many", "much"], "why": "Pupils are countable, so use \"many\"."},
+    {"id": "q03", "t": "fill", "d": 1, "tag": "quantity", "q": "There isn't ___ time left before recess ends.", "o": ["much", "many"], "why": "Time (minutes passing) is uncountable here, so use \"much\"."},
+    {"id": "q04", "t": "fill", "d": 1, "tag": "quantity", "q": "I have ___ friends in my new school.", "o": ["a few", "a little"], "why": "Friends are countable, so use \"a few\"."},
+    {"id": "q05", "t": "fill", "d": 1, "tag": "quantity", "q": "Add ___ sugar to the tea, please.", "o": ["a little", "a few"], "why": "Sugar is uncountable, so use \"a little\"."},
+    {"id": "q06", "t": "fill", "d": 2, "tag": "quantity", "q": "There were ___ people at the carnival this year than last year.", "o": ["fewer", "less"], "why": "People are countable, so use \"fewer\"."},
+    {"id": "q07", "t": "fill", "d": 2, "tag": "quantity", "q": "We should use ___ plastic to protect the environment.", "o": ["less", "fewer"], "why": "Plastic is uncountable, so use \"less\"."},
+    {"id": "q08", "t": "fill", "d": 2, "tag": "quantity", "q": "A large ___ of students signed up for the recycling drive.", "o": ["number", "amount"], "why": "Students are countable, so use \"a number of\"."},
+    {"id": "q09", "t": "fill", "d": 2, "tag": "quantity", "q": "A large ___ of rubbish was collected from the beach.", "o": ["amount", "number"], "why": "Rubbish is uncountable, so use \"an amount of\"."},
+    {"id": "q10", "t": "fill", "d": 2, "tag": "quantity", "q": "Mum doesn't have ___ patience left after a long day.", "o": ["much", "many"], "why": "Patience is uncountable, so use \"much\"."},
+    {"id": "q11", "t": "fill", "d": 2, "tag": "quantity", "q": "Only ___ pupils forgot their consent forms.", "o": ["a few", "a little"], "why": "Pupils are countable, so use \"a few\"."},
+    {"id": "q12", "t": "fill", "d": 3, "tag": "quantity", "q": "This queue has ___ than ten people, so it moves faster.", "o": ["fewer", "less"], "why": "People are countable, so use \"fewer than ten people\"."},
+    {"id": "q13", "t": "fill", "d": 3, "tag": "quantity", "q": "I spent ___ money this week than last week.", "o": ["less", "fewer"], "why": "Money is uncountable, so use \"less\"."},
+    {"id": "q14", "t": "fill", "d": 3, "tag": "quantity", "q": "How ___ furniture did the movers carry?", "o": ["much", "many"], "why": "Furniture is uncountable, so use \"much\"."},
+    {"id": "q15", "t": "check", "d": 1, "tag": "quantity", "q": "How many money do you have?", "a": 0, "why": "Money is uncountable: \"How much money\"."},
+    {"id": "q16", "t": "check", "d": 1, "tag": "quantity", "q": "There are many books on the shelf.", "a": 1, "why": "Books are countable, so \"many books\" is right."},
+    {"id": "q17", "t": "check", "d": 2, "tag": "quantity", "q": "Less people came to the concert because of the rain.", "a": 0, "why": "People are countable: \"Fewer people\"."},
+    {"id": "q18", "t": "check", "d": 2, "tag": "quantity", "q": "We have a little time before the bus comes.", "a": 1, "why": "Time is uncountable here, so \"a little time\" is right."},
+    {"id": "q19", "t": "check", "d": 2, "tag": "quantity", "q": "The amount of students in the hall was surprising.", "a": 0, "why": "Students are countable: \"The number of students\"."},
+    {"id": "q20", "t": "check", "d": 3, "tag": "quantity", "q": "We bought fewer snacks and drank less soft drinks.", "a": 0, "why": "Soft drinks (bottles of them) are countable here: \"fewer soft drinks\"."},
+    {"id": "q21", "t": "check", "d": 3, "tag": "quantity", "q": "Fewer cars on the road means less traffic.", "a": 1, "why": "Cars are countable (fewer); traffic is uncountable (less). Both are right."},
+    {"id": "q22", "t": "spot", "d": 1, "tag": "quantity", "parts": ["How much", "pencils", "do you", "need?"], "a": 0, "why": "Pencils are countable: \"How many pencils\"."},
+    {"id": "q23", "t": "spot", "d": 2, "tag": "quantity", "parts": ["There were", "less students", "in class", "today."], "a": 1, "why": "Students are countable: \"fewer students\"."},
+    {"id": "q24", "t": "spot", "d": 2, "tag": "quantity", "parts": ["We have", "too many", "homework", "this week."], "a": 1, "why": "Homework is uncountable: \"too much homework\"."},
+    {"id": "q25", "t": "spot", "d": 3, "tag": "quantity", "parts": ["A huge", "number", "of rubbish", "was collected."], "a": 1, "why": "Rubbish is uncountable: \"amount of rubbish\"."},
+    {"id": "q26", "t": "pick", "d": 2, "tag": "quantity", "ask": "Which sentence is correct?", "o": ["How much luggage are you bringing?", "How many luggage are you bringing?", "How many luggages are you bringing?"], "why": "Luggage is uncountable, so use \"much\" and no -s."},
+    {"id": "q27", "t": "pick", "d": 3, "tag": "quantity", "ask": "Which sentence is correct?", "o": ["There were fewer cars and less noise on Sunday.", "There were less cars and less noise on Sunday.", "There were fewer cars and fewer noise on Sunday.", "There were less cars and fewer noise on Sunday."], "why": "Cars are countable (fewer); noise is uncountable (less)."},
+    {"id": "q28", "t": "pick", "d": 3, "tag": "quantity", "ask": "Which sentence is correct?", "o": ["A number of parents helped, and a large amount of food was donated.", "An amount of parents helped, and a large number of food was donated.", "A number of parents helped, and a large number of food was donated.", "An amount of parents helped, and a large amount of food was donated."], "why": "Parents are countable (number); food here is uncountable (amount)."},
+    {"id": "v01", "t": "fill", "d": 1, "tag": "verb", "q": "The water in the pool ___ very cold.", "o": ["was", "were"], "why": "Water is uncountable, so it takes a singular verb: was."},
+    {"id": "v02", "t": "fill", "d": 1, "tag": "verb", "q": "Your advice ___ very helpful.", "o": ["is", "are"], "why": "Advice is uncountable, so it takes \"is\"."},
+    {"id": "v03", "t": "fill", "d": 2, "tag": "verb", "q": "The news ___ shocking.", "o": ["was", "were"], "why": "News looks plural but is uncountable, so it takes \"was\"."},
+    {"id": "v04", "t": "fill", "d": 2, "tag": "verb", "q": "All the furniture ___ moved to the hall.", "o": ["was", "were"], "why": "Furniture is uncountable, so \"all the furniture was\"."},
+    {"id": "v05", "t": "fill", "d": 2, "tag": "verb", "q": "The information on the poster ___ wrong.", "o": ["was", "were"], "why": "Information is uncountable, so it takes \"was\"."},
+    {"id": "v06", "t": "fill", "d": 2, "tag": "verb", "q": "My homework ___ done.", "o": ["is", "are"], "why": "Homework is uncountable, so it takes \"is\"."},
+    {"id": "v07", "t": "fill", "d": 3, "tag": "verb", "q": "Mathematics ___ my favourite subject.", "o": ["is", "are"], "why": "Mathematics ends in -s but is one subject, so it takes \"is\"."},
+    {"id": "v08", "t": "fill", "d": 3, "tag": "verb", "q": "The money in my piggy bank ___ enough to buy the book.", "o": ["was", "were"], "why": "Money is uncountable, so it takes \"was\"."},
+    {"id": "v09", "t": "check", "d": 1, "tag": "verb", "q": "The rice is ready.", "a": 1, "why": "Rice is uncountable, so \"is\" is right."},
+    {"id": "v10", "t": "check", "d": 2, "tag": "verb", "q": "The news are good.", "a": 0, "why": "News is uncountable: \"The news is good.\""},
+    {"id": "v11", "t": "check", "d": 2, "tag": "verb", "q": "The equipment were checked before the race.", "a": 0, "why": "Equipment is uncountable: \"The equipment was checked\"."},
+    {"id": "v12", "t": "check", "d": 3, "tag": "verb", "q": "The luggage was too heavy to carry.", "a": 1, "why": "Luggage is uncountable, so \"was\" is right."},
+    {"id": "v13", "t": "spot", "d": 2, "tag": "verb", "parts": ["The traffic", "on the expressway", "were", "terrible."], "a": 2, "why": "Traffic is uncountable: \"was terrible\"."},
+    {"id": "v14", "t": "spot", "d": 3, "tag": "verb", "parts": ["All the stationery", "in the cupboard", "have been", "used up."], "a": 2, "why": "Stationery is uncountable: \"has been used up\"."},
+    {"id": "v15", "t": "pick", "d": 2, "tag": "verb", "ask": "Which sentence is correct?", "o": ["The weather was perfect for Sports Day.", "The weather were perfect for Sports Day.", "The weathers were perfect for Sports Day."], "why": "Weather is uncountable, so it takes \"was\" and no -s."},
+    {"id": "v16", "t": "pick", "d": 3, "tag": "verb", "ask": "Which sentence is correct?", "o": ["The information you gave me was very useful.", "The informations you gave me were very useful.", "The information you gave me were very useful.", "The informations you gave me was very useful."], "why": "Information is uncountable: no -s, and a singular verb (was)."},
+    {"id": "t01", "t": "fill", "d": 2, "tag": "twomeaning", "q": "Please wrap the present in colourful ___.", "o": ["paper", "papers"], "why": "Wrapping paper is the material, so it's uncountable: paper."},
+    {"id": "t02", "t": "fill", "d": 2, "tag": "twomeaning", "q": "We sat two ___ for the mid-year exams today.", "o": ["papers", "paper"], "why": "An exam paper is one countable test, so two of them are \"papers\"."},
+    {"id": "t03", "t": "fill", "d": 2, "tag": "twomeaning", "q": "I have been to Japan three ___.", "o": ["times", "time"], "why": "\"Times\" meaning occasions is countable: three times."},
+    {"id": "t04", "t": "fill", "d": 2, "tag": "twomeaning", "q": "We didn't have enough ___ to finish the game.", "o": ["time", "times"], "why": "Time passing is uncountable: enough time."},
+    {"id": "t05", "t": "fill", "d": 2, "tag": "twomeaning", "q": "The window is made of ___.", "o": ["glass", "glasses"], "why": "Glass the material is uncountable."},
+    {"id": "t06", "t": "fill", "d": 3, "tag": "twomeaning", "q": "Grandpa can't read without his ___.", "o": ["glasses", "glass"], "why": "Glasses (spectacles) are counted, and always plural."},
+    {"id": "t07", "t": "fill", "d": 3, "tag": "twomeaning", "q": "We had roast ___ for dinner.", "o": ["chicken", "chickens"], "why": "Chicken as food is uncountable."},
+    {"id": "t08", "t": "fill", "d": 3, "tag": "twomeaning", "q": "The farmer keeps ten ___ in the coop.", "o": ["chickens", "chicken"], "why": "Live chickens are countable: ten chickens."},
+    {"id": "t09", "t": "fill", "d": 3, "tag": "twomeaning", "q": "Is there ___ for one more person in the car?", "o": ["room", "a room"], "why": "\"Room\" meaning space is uncountable: Is there room?"},
+    {"id": "t10", "t": "fill", "d": 3, "tag": "twomeaning", "q": "My sister has long black ___.", "o": ["hair", "hairs"], "why": "All the hair on your head is uncountable: long black hair."},
+    {"id": "t11", "t": "check", "d": 2, "tag": "twomeaning", "q": "She wrapped the gift in colourful papers.", "a": 0, "why": "Wrapping paper is uncountable: \"colourful paper\"."},
+    {"id": "t12", "t": "check", "d": 2, "tag": "twomeaning", "q": "I read three newspapers this week.", "a": 1, "why": "A newspaper is one countable thing, so \"three newspapers\" is right."},
+    {"id": "t13", "t": "check", "d": 3, "tag": "twomeaning", "q": "I found a hair in my soup!", "a": 1, "why": "One single strand is countable: a hair."},
+    {"id": "t14", "t": "check", "d": 3, "tag": "twomeaning", "q": "We had a great times at the camp.", "a": 0, "why": "\"Have a great time\" is a fixed phrase with no -s: a great time."},
+    {"id": "t15", "t": "spot", "d": 2, "tag": "twomeaning", "parts": ["Each present", "was wrapped", "in shiny papers", "and ribbon."], "a": 2, "why": "Wrapping paper is uncountable: \"in shiny paper\"."},
+    {"id": "t16", "t": "pick", "d": 3, "tag": "twomeaning", "ask": "Which sentence is correct?", "o": ["I have watched that movie three times, but I never have time to rewatch it.", "I have watched that movie three time, but I never have time to rewatch it.", "I have watched that movie three times, but I never have times to rewatch it.", "I have watched that movie three time, but I never have times to rewatch it."], "why": "\"Times\" as occasions is countable; \"time\" passing is uncountable."},
+    {"id": "p01", "t": "fill", "d": 1, "tag": "plural", "q": "Many ___ came to watch the parade.", "o": ["people", "peoples"], "why": "\"People\" is already plural, so it never needs -s."},
+    {"id": "p02", "t": "fill", "d": 1, "tag": "plural", "q": "The ___ are playing in the field.", "o": ["children", "childrens"], "why": "\"Children\" is already the plural of child."},
+    {"id": "p03", "t": "fill", "d": 2, "tag": "plural", "q": "The people ___ cheering loudly.", "o": ["were", "was"], "why": "\"People\" is plural, so it takes \"were\"."},
+    {"id": "p04", "t": "fill", "d": 2, "tag": "plural", "q": "The police ___ arrived quickly.", "o": ["have", "has"], "why": "\"Police\" is plural, so it takes \"have\"."},
+    {"id": "p05", "t": "fill", "d": 2, "tag": "plural", "q": "We were split into groups of ___.", "o": ["three", "threes"], "why": "After \"groups of\", the number stays a number: groups of three."},
+    {"id": "p06", "t": "fill", "d": 3, "tag": "plural", "q": "Our class was divided into teams of ___ for the quiz.", "o": ["four", "fours"], "why": "After \"teams of\", the number stays a number: teams of four."},
+    {"id": "p08", "t": "check", "d": 1, "tag": "plural", "q": "There were many peoples at the hawker centre.", "a": 0, "why": "\"People\" is already plural: many people."},
+    {"id": "p09", "t": "check", "d": 2, "tag": "plural", "q": "The children were excited about the trip.", "a": 1, "why": "\"Children\" is plural, so \"were\" is right."},
+    {"id": "p10", "t": "check", "d": 3, "tag": "plural", "q": "We were split into groups of threes.", "a": 0, "why": "After \"groups of\", use the number: groups of three."},
+    {"id": "p11", "t": "check", "d": 3, "tag": "plural", "q": "The police were looking for the missing boy.", "a": 1, "why": "\"Police\" is plural, so \"were\" is right."},
+    {"id": "p12", "t": "spot", "d": 2, "tag": "plural", "parts": ["Lots of", "peoples", "queued for", "the new bubble tea shop."], "a": 1, "why": "\"People\" is already plural: lots of people."},
+    {"id": "p13", "t": "spot", "d": 3, "tag": "plural", "parts": ["The teacher", "put us", "into groups", "of fours."], "a": 3, "why": "After \"groups of\", use the number: of four."},
+    {"id": "p14", "t": "pick", "d": 2, "tag": "plural", "ask": "Which sentence is correct?", "o": ["The people at the bus stop were friendly.", "The peoples at the bus stop were friendly.", "The people at the bus stop was friendly."], "why": "\"People\" is plural with no -s, so it takes \"were\"."},
+    {"id": "p15", "t": "pick", "d": 3, "tag": "plural", "ask": "Which sentence is correct?", "o": ["The children worked in groups of five.", "The childrens worked in groups of five.", "The children worked in groups of fives.", "The childrens worked in groups of fives."], "why": "\"Children\" is already plural; after \"groups of\" the number stays: five."},
+    {"id": "x01", "t": "fill", "d": 1, "tag": "scoop", "q": "Can I have some ___ in my drink?", "o": ["ice", "ices"], "why": "Ice is uncountable, so it has no -s."},
+    {"id": "x02", "t": "fill", "d": 1, "tag": "count", "q": "There are seven ___ in a week.", "o": ["days", "day"], "why": "Days are counted, so after \"seven\" use the plural."},
+    {"id": "x03", "t": "fill", "d": 3, "tag": "scoop", "q": "The ___ from the top of Bukit Timah Hill was beautiful.", "o": ["scenery", "sceneries"], "why": "Scenery is uncountable, so it has no -s."},
+    {"id": "x04", "t": "check", "d": 3, "tag": "scoop", "q": "Thank you for all your help and support.", "a": 1, "why": "Help and support are uncountable, so neither takes -s."},
+    {"id": "x05", "t": "check", "d": 3, "tag": "quantity", "q": "We had lots of fun, and we made lots of friends.", "a": 1, "why": "\"Lots of\" works with both uncountable (fun) and countable (friends)."},
+    {"id": "x06", "t": "fill", "d": 2, "tag": "quantity", "q": "There were ___ students in the hall.", "o": ["plenty of", "much"], "why": "\"Plenty of\" works with both kinds; \"much\" can't go with countable students."},
+    {"id": "x07", "t": "pick", "d": 3, "tag": "quantity", "ask": "Which sentence is correct?", "o": ["Some pupils brought some food to share.", "Some pupils brought a food to share.", "Much pupils brought some food to share.", "Some pupils brought many food to share."], "why": "\"Some\" works with both kinds of noun, but food here is uncountable."},
+  ];
+
+  /* ================= QUIZ BANK ENGINE (shared by every lesson) =================
+     Needs, defined above it: LESSON_KEY, TAGS, BANK.
+     Optional: QB_BANDS = [easy, medium, tricky] questions per attempt (default 7/7/6 = 20);
+     QB_TEXT = { ask: {...}, yn: [...], right: [...], wrong: '...', speak: true, summary: {...} }.
+     Each attempt draws BAND_SIZES questions (easy, medium, tricky). The draw builds many
+     candidate quizzes and keeps the best: every tag present, 3+ of each type, balanced
+     check answers, unseen questions first. Options are shuffled; ids seen are remembered. */
+  const BAND_SIZES = (typeof QB_BANDS !== 'undefined') ? QB_BANDS : [7, 7, 6];
+  const DRAW = BAND_SIZES.reduce((a, b) => a + b, 0);
+  const TYPE_TARGET = Math.max(1, Math.min(3, Math.floor(DRAW / new Set(BANK.map(q => q.t)).size)));   // e.g. 20 Qs → 3 of each type, 10 Qs with 4 types → 2
+  const QBT = (typeof QB_TEXT !== 'undefined') ? QB_TEXT : {};
+  const ASK = Object.assign({
+    check: 'Is this sentence correct?',
+    pick:  'Pick the correct sentence.',
+    fill:  'Which choice fills the gap correctly?',
+    spot:  'Tap the part with the mistake.'
+  }, QBT.ask || {});
+  const YN = QBT.yn || ['Needs fixing', 'Correct'];
+  const RIGHT = QBT.right || ['Correct!'];
+  const WRONG = QBT.wrong || 'Not quite.';
+  const SUM = Object.assign({
+    perfect: 'A perfect run! Try another set to make sure it sticks.',
+    high: 'Strong work. Have a quick look at the areas below, then try a fresh set.',
+    mid: 'Good progress. Re-read the parts below before your next attempt.',
+    low: 'Worth another look at the lesson. Start with the areas below, then try a fresh set.',
+    review: 'Areas to review'
+  }, QBT.summary || {});
+  const CAN_SPEAK = !!QBT.speak && typeof window !== 'undefined' && !!window.speechSynthesis &&
+    typeof window.speechSynthesis.speak === 'function' && typeof SpeechSynthesisUtterance !== 'undefined';
+  function speak(text) {
+    try {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-GB'; u.rate = 0.9;
+      window.speechSynthesis.speak(u);
+    } catch (e) { /* no speech on this device */ }
+  }
+
+  const store = {
+    get(k, fallback) { try { const v = localStorage.getItem(LESSON_KEY + ':' + k); return v === null ? fallback : JSON.parse(v); } catch (e) { return fallback; } },
+    set(k, v) { try { localStorage.setItem(LESSON_KEY + ':' + k, JSON.stringify(v)); } catch (e) { /* storage unavailable: quiz still works */ } }
+  };
+  const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  function buildCandidate(seen) {
+    const chosen = [], tagN = {}, typeN = {};
+    let fixN = 0, okN = 0;
+    for (let band = 1; band <= 3; band++) {
+      const picks = [];
+      for (let k = 0; k < BAND_SIZES[band - 1]; k++) {
+        let best = null, bestScore = -Infinity;
+        BANK.forEach(q => {
+          if (q.d !== band || picks.includes(q)) return;
+          let s = Math.random() * 3;
+          if (!seen.has(q.id)) s += 6;
+          if (!tagN[q.tag]) s += 12;
+          s -= (typeN[q.t] || 0) * 1.2;
+          if ((typeN[q.t] || 0) < TYPE_TARGET) s += 3;   // nudge every type up to its target
+          if (q.t === 'check') { const lean = q.a === 0 ? fixN - okN : okN - fixN; if (lean >= 1) s -= 4; }
+          if (s > bestScore) { bestScore = s; best = q; }
+        });
+        if (!best) break;
+        picks.push(best);
+        tagN[best.tag] = (tagN[best.tag] || 0) + 1;
+        typeN[best.t] = (typeN[best.t] || 0) + 1;
+        if (best.t === 'check') { if (best.a === 0) fixN++; else okN++; }
+      }
+      chosen.push(...shuffle(picks));
+    }
+    return chosen;
+  }
+
+  function rateCandidate(c, seen) {
+    const tags = new Set(c.map(q => q.tag)).size;
+    const types = {};
+    c.forEach(q => types[q.t] = (types[q.t] || 0) + 1);
+    const used = [...new Set(BANK.map(q => q.t))];
+    const minType = Math.min(...used.map(t => types[t] || 0));
+    const checks = c.filter(q => q.t === 'check');
+    const lean = Math.abs(checks.filter(q => q.a === 0).length * 2 - checks.length);
+    return (tags === Object.keys(TAGS).length ? 10000 : tags * 500)
+         + (c.length === DRAW ? 5000 : 0)
+         + Math.min(minType, TYPE_TARGET) * 300
+         + (lean <= 2 ? 200 : 0)
+         + c.filter(q => !seen.has(q.id)).length * 10;
+  }
+
+  function drawQuiz() {
+    let seen = new Set(store.get('seen', []));
+    if (BANK.length - seen.size < DRAW) seen = new Set(store.get('last', []));   // new cycle, but skip the last attempt
+    let chosen = null, bestRate = -1;
+    for (let tries = 0; tries < 200; tries++) {
+      const c = buildCandidate(seen), r = rateCandidate(c, seen);
+      if (r > bestRate) { bestRate = r; chosen = c; }
+    }
+    chosen.forEach(q => seen.add(q.id));
+    store.set('seen', [...seen]);
+    store.set('last', chosen.map(q => q.id));
+    return chosen.map(q => {
+      if (q.t === 'pick' || q.t === 'fill') {
+        const opts = shuffle(q.o.map((text, i) => ({ text, ok: i === 0 })));
+        return { q, opts, answer: opts.findIndex(o => o.ok) };
+      }
+      if (q.t === 'check') return { q, opts: YN.map(text => ({ text })), answer: q.a };
+      return { q, opts: null, answer: q.a };
+    });
+  }
+
+  const listEl = document.getElementById('qbList');
+  const scoreEl = document.getElementById('qbScore');
+  const progressEl = document.getElementById('qbProgress');
+  const summaryEl = document.getElementById('qbSummary');
+  let current = [], score = 0, done = 0, missed = [];
+
+  function updateScore() {
+    scoreEl.textContent = score + ' / ' + current.length;
+    progressEl.textContent = done + ' of ' + current.length + ' answered';
+  }
+
+  /* Small or empty options are hard to see on a button, so label them. */
+  function optLabel(text) {
+    const t = text.trim();
+    if (t === '') return '<span class="qb-note">(nothing)</span>';
+    if (t === ',') return '<span class="qb-punct">,</span> <span class="qb-note">(a comma)</span>';
+    if (t === '.') return '<span class="qb-punct">.</span> <span class="qb-note">(a full stop)</span>';
+    if (t === '?') return '<span class="qb-punct">?</span> <span class="qb-note">(a question mark)</span>';
+    if (t === '!') return '<span class="qb-punct">!</span> <span class="qb-note">(an exclamation mark)</span>';
+    return esc(text);
+  }
+  function plainLabel(text) {
+    const t = text.trim();
+    return t === '' ? 'nothing' : t === ',' ? 'a comma' : t === '.' ? 'a full stop'
+      : t === '?' ? 'a question mark' : t === '!' ? 'an exclamation mark' : '"' + t + '"';
+  }
+  function sentenceWithGap(q, text) {
+    let filler = '<span class="qb-blank">___</span>';
+    if (text !== undefined) {
+      filler = text.trim() === ''
+        ? '<span class="qb-blank qb-filled qb-none">(nothing)</span>'
+        : '<span class="qb-blank qb-filled">' + esc(text) + '</span>';
+    }
+    return esc(q.q).replace('___', filler);
+  }
+
+  function render() {
+    listEl.innerHTML = '';
+    summaryEl.hidden = true;
+    current.forEach((item, i) => {
+      const q = item.q;
+      const card = document.createElement('div');
+      card.className = 'qb-card';
+      card.dataset.type = q.t;
+      let body;
+      if (q.t === 'spot') {
+        body = '<div class="qb-spot">' + q.parts.map((p, k) =>
+          '<button type="button" class="qb-part" data-k="' + k + '">' + esc(p) + '</button>').join('') + '</div>';
+      } else if (q.t === 'fill') {
+        const cols = item.opts.length;
+        body = '<p class="qb-text">' + sentenceWithGap(q) + '</p><div class="qb-opts qb-row" style="--qb-cols:' + cols + '"></div>';
+      } else if (q.t === 'check') {
+        body = '<p class="qb-text">' + esc(q.q) + '</p><div class="qb-opts qb-row"></div>';
+      } else {
+        body = (q.q ? '<p class="qb-text">' + esc(q.q) + '</p>' : '') + '<div class="qb-opts"></div>';
+      }
+      card.innerHTML =
+        (CAN_SPEAK ? '<button type="button" class="qb-speak" aria-label="Read this question aloud">🔊 Read it to me</button>' : '') +
+        '<p class="qb-num">Question ' + (i + 1) + ' of ' + current.length + '</p>' +
+        '<p class="qb-ask">' + esc(q.ask || ASK[q.t]) + '</p>' + body +
+        '<div class="qb-feedback" role="status"></div>';
+      if (CAN_SPEAK) {
+        const bits = [q.ask || ASK[q.t]];
+        if (q.t === 'spot') bits.push(q.parts.join(' '));
+        else if (q.q) bits.push(q.q.replace('___', 'blank'));
+        const sayOpt = t => { const x = t.trim(); return x === '' ? 'nothing' : x === '.' ? 'full stop' : x === ',' ? 'comma' : x === '?' ? 'question mark' : x === '!' ? 'exclamation mark' : x; };
+        if (q.t === 'pick' || q.t === 'fill') item.opts.forEach((o, j) => bits.push((q.t === 'pick' ? String.fromCharCode(65 + j) + ': ' : '') + sayOpt(o.text)));
+        if (q.t === 'check') bits.push(YN.join(', or '));
+        const spoken = bits.map(t => t.trim().replace(/[.\s]+$/, '')).filter(Boolean)
+          .map(t => /[?!]$/.test(t) ? t : t + '.').join(' ');
+        card.querySelector('.qb-speak').addEventListener('click', () => speak(spoken));
+      }
+      if (q.t === 'spot') {
+        card.querySelectorAll('.qb-part').forEach(b => b.addEventListener('click', () => answer(i, +b.dataset.k, card)));
+      } else {
+        const opts = card.querySelector('.qb-opts');
+        item.opts.forEach((o, j) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'qb-opt';
+          b.innerHTML = (q.t === 'pick' ? '<span class="qb-letter">' + String.fromCharCode(65 + j) + '</span>' : '') + optLabel(o.text);
+          b.addEventListener('click', () => answer(i, j, card));
+          opts.appendChild(b);
+        });
+      }
+      listEl.appendChild(card);
+    });
+    updateScore();
+  }
+
+  function answer(i, j, card) {
+    const item = current[i];
+    if (item.done) return;
+    item.done = true; done++;
+    const q = item.q, ok = j === item.answer;
+    if (ok) score++; else missed.push(q.tag);
+    card.querySelectorAll(q.t === 'spot' ? '.qb-part' : '.qb-opt').forEach((b, k) => {
+      b.disabled = true;
+      if (k === j) b.classList.add(ok ? 'qb-correct' : 'qb-incorrect');
+      else if (k === item.answer && !ok) b.classList.add('qb-reveal');
+    });
+    if (q.t === 'fill') card.querySelector('.qb-text').innerHTML = sentenceWithGap(q, item.opts[j].text);
+    let right;
+    if (q.t === 'spot') right = 'The mistake is in "' + esc(q.parts[item.answer]) + '".';
+    else if (q.t === 'pick') right = 'The answer is ' + String.fromCharCode(65 + item.answer) + '.';
+    else right = 'The answer is ' + esc(plainLabel(item.opts[item.answer].text)) + '.';
+    const fb = card.querySelector('.qb-feedback');
+    fb.classList.add('qb-show', ok ? 'qb-fb-ok' : 'qb-fb-no');
+    fb.innerHTML = '<span class="qb-verdict">' + (ok ? RIGHT[Math.floor(Math.random() * RIGHT.length)] : WRONG + ' ' + right) + '</span>' + esc(q.why);
+    updateScore();
+    if (done === current.length) showSummary();
+  }
+
+  function showSummary() {
+    const best = Math.max(store.get('best', 0), score);
+    store.set('best', best);
+    const attempts = store.get('attempts', 0) + 1;
+    store.set('attempts', attempts);
+    const counts = {};
+    missed.forEach(t => counts[t] = (counts[t] || 0) + 1);
+    const areas = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+    const n = current.length;
+    let msg;
+    if (score === n) msg = SUM.perfect;
+    else if (score >= Math.ceil(n * 0.8)) msg = SUM.high;
+    else if (score >= Math.ceil(n * 0.6)) msg = SUM.mid;
+    else msg = SUM.low;
+    summaryEl.innerHTML =
+      '<h3>You scored ' + score + ' / ' + n + '</h3><p>' + msg + '</p>' +
+      (areas.length ? '<p class="qb-sum-label">' + esc(SUM.review) + '</p><ul class="qb-areas">' + areas.map(t =>
+        '<li><a href="' + TAGS[t].href + '">' + esc(TAGS[t].label) + '</a><span>' + counts[t] + ' wrong</span></li>').join('') + '</ul>' : '') +
+      '<p class="qb-meta">Attempts on this device: ' + attempts + ' · Best score: ' + best + ' / ' + n + '</p>' +
+      '<button type="button" class="qb-go" id="qbAgain">Try ' + n + ' new questions</button>';
+    summaryEl.hidden = false;
+    document.getElementById('qbAgain').addEventListener('click', () => { newQuiz(); listEl.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    summaryEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function newQuiz() {
+    current = drawQuiz(); score = 0; done = 0; missed = [];
+    render();
+  }
+
+  const bankEl = document.getElementById('qbBank'), drawEl = document.getElementById('qbDraw');
+  if (bankEl) bankEl.textContent = BANK.length;
+  if (drawEl) drawEl.textContent = DRAW;
+  document.getElementById('qbNew').addEventListener('click', () => {
+    newQuiz();
+    listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  newQuiz();
+  } /* qb-end */
+})();
+</script>
+</body>
+</html>
