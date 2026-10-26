@@ -7,7 +7,7 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Atkinson+Hyperlegible:wght@400;700&family=Spectral:wght@700&family=Bangers&family=Lilita+One&family=Big+Shoulders+Display:wght@800&family=Fraunces:opsz,wght@9..144,800&family=Alfa+Slab+One&family=Caveat+Brush&family=Baloo+2:wght@800&family=Zilla+Slab:wght@700&family=Fredoka:wght@700&family=Sniglet:wght@800&family=Grandstander:wght@800&family=Chewy&family=Shrikhand&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Atkinson+Hyperlegible:wght@400;700&family=Spectral:wght@700&family=Bangers&family=Lilita+One&family=Big+Shoulders+Display:wght@800&family=Fraunces:opsz,wght@9..144,800&family=Alfa+Slab+One&family=Caveat+Brush&family=Baloo+2:wght@800&family=Zilla+Slab:wght@700&family=Fredoka:wght@700&family=Sniglet:wght@800&family=Grandstander:wght@800&family=Chewy&family=Shrikhand&family=Bubblegum+Sans&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #E4EAE1;
@@ -184,6 +184,11 @@
   .book.b10 .t { font-family: 'Shrikhand', Georgia, serif; font-weight: 400; font-size: 25px; }
   .book.b10 .t span { color: #0F7C80; }
 
+  /* Lower 05: hug words, coral and teal */
+  .book.bL05 { width: 85%; background: #FFE9E1; color: #2B1E24; border: 3px solid #136F73; border-right: 10px solid #D8436B; }
+  .book.bL05 .t { font-family: 'Bubblegum Sans', 'Trebuchet MS', sans-serif; font-size: 30px; color: #136F73; }
+  .book.bL05 .t span { color: #D8436B; }
+
   /* The next book still to be written */
   .slot {
     width: 80%;
@@ -256,6 +261,17 @@
     <p class="shelf-label">For Primary 1 and 2: short lessons, big buttons, and a "Read it to me" button on every question.</p>
     <ol class="stack" reversed>
       <li><div class="slot">Next book coming soon</div></li>
+
+      <li>
+        <a class="book bL05" href="lower-05-short-forms.html">
+          <span class="num">05</span>
+          <span class="text">
+            <span class="t"><span>Hug</span> Words</span>
+            <span class="d">Short forms: don't, I'll, she's</span>
+          </span>
+          <span class="q">78 Qs</span>
+        </a>
+      </li>
 
       <li>
         <a class="book bL04" href="lower-04-commas.html">
@@ -453,7 +469,7 @@
   let start = location.hash.replace('#', '');
   if (!levels.includes(start)) { try { start = localStorage.getItem('shelf-level'); } catch (e) { start = null; } }
   show(levels.includes(start) ? start : 'upper', false);
-  tabs.forEach(t => t.addEventListener('click', () => { show(t.dataset.level, true); history.replaceState(null, '', '#' + t.dataset.level); }));
+  tabs.forEach(t => t.addEventListener('click', () => { show(t.dataset.level, true); try { history.replaceState(null, '', '#' + t.dataset.level); } catch (e) { /* previews can't change the address: the tab still switches */ } }));
   document.querySelector('.levels').addEventListener('keydown', e => {
     const i = [...tabs].findIndex(t => t.getAttribute('aria-selected') === 'true');
     const n = e.key === 'ArrowRight' ? i + 1 : e.key === 'ArrowLeft' ? i - 1 : null;

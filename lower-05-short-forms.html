@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hug Words: Short Forms</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤗</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Nunito+Sans:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FFE9E1;
+    --surface: #FFFFFF;
+    --surface-2: #FFF5F1;
+    --ink: #2B1E24;
+    --ink-soft: #634F57;
+    --hug: #D8436B;   --hug-soft: #FCDDE5;    /* the hug / apostrophe */
+    --word: #136F73;  --word-soft: #D4EFEF;   /* the words */
+    --pop: #A86A00;   --pop-soft: #FFEFC9;    /* letters that squeeze out */
+    --right: #1D7A45; --right-soft: #DCF1E3;
+    --wrong: #B3261E; --wrong-soft: #F9DEDC;
+    --rule: rgba(43,30,36,0.14);
+    --font-display: 'Bubblegum Sans', 'Arial Rounded MT Bold', 'Trebuchet MS', sans-serif;
+    --font-body: 'Nunito Sans', -apple-system, 'Segoe UI', sans-serif;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1E1519; --surface: #2A1F24; --surface-2: #33262C;
+      --ink: #FBEFF2; --ink-soft: #C9B5BC;
+      --hug: #FF8BA9; --hug-soft: #45222D;
+      --word: #7FD6D6; --word-soft: #17363A;
+      --pop: #FFC85A; --pop-soft: #3D2E12;
+      --right: #72D69D; --right-soft: #17311F;
+      --wrong: #F48D84; --wrong-soft: #3D1F1D;
+      --rule: rgba(251,239,242,0.16);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1E1519; --surface: #2A1F24; --surface-2: #33262C;
+    --ink: #FBEFF2; --ink-soft: #C9B5BC;
+    --hug: #FF8BA9; --hug-soft: #45222D;
+    --word: #7FD6D6; --word-soft: #17363A;
+    --pop: #FFC85A; --pop-soft: #3D2E12;
+    --right: #72D69D; --right-soft: #17311F;
+    --wrong: #F48D84; --wrong-soft: #3D1F1D;
+    --rule: rgba(251,239,242,0.16);
+  }
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 19px; line-height: 1.55; }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 22px 18px 64px; }
+  :focus-visible { outline: 3px solid var(--hug); outline-offset: 3px; }
+
+  .back-link {
+    display: inline-block; margin: 0 0 20px; padding: 10px 16px; min-height: 44px;
+    font-weight: 700; font-size: 16px; color: var(--ink); text-decoration: none;
+    background: var(--surface); border: 2px solid var(--rule); border-radius: 999px;
+  }
+  h1, h2, h3 { font-family: var(--font-display); font-weight: 400; line-height: 1.1; }
+  h2 { font-size: 34px; margin: 0 0 8px; }
+  section { margin-bottom: 48px; }
+  .sub { color: var(--ink-soft); margin: 0 0 18px; }
+
+  .ap { color: var(--hug); font-weight: 800; font-size: 1.2em; line-height: 0; }   /* the apostrophe */
+  .gone { color: var(--pop); font-weight: 800; text-decoration: line-through; }    /* letters that leave */
+  .no { color: var(--wrong); text-decoration: line-through; text-decoration-thickness: 2px; }
+  .yes { color: var(--right); font-weight: 800; }
+
+  .say {
+    display: none; font: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
+    padding: 6px 12px; min-height: 40px; margin-left: 6px; vertical-align: middle;
+    border-radius: 999px; border: 2px solid var(--hug); background: var(--hug-soft); color: var(--ink);
+  }
+  .can-speak .say { display: inline-block; }
+
+  /* ---------- Hero ---------- */
+  .hero h1 { font-size: clamp(50px, 14vw, 74px); margin: 0 0 12px; }
+  .hero h1 .h { color: var(--hug); }
+  .lead { font-size: 21px; margin: 0 0 18px; }
+  .hugbox { background: var(--surface); border-radius: 22px; padding: 16px 14px 18px; border: 3px solid var(--rule); text-align: center; }
+  .pairs { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 16px; }
+  .pair-btn {
+    font: inherit; font-weight: 700; font-size: 17px; cursor: pointer; padding: 8px 14px; min-height: 48px;
+    border-radius: 999px; border: 2px solid var(--word-soft); background: var(--surface-2); color: var(--ink);
+  }
+  .pair-btn[aria-pressed="true"] { border-color: var(--word); background: var(--word-soft); }
+  .stage { display: flex; justify-content: center; align-items: flex-end; min-height: 92px; font-family: var(--font-display); font-size: 56px; line-height: 1; }
+  .ch { display: inline-block; color: var(--word); transition: transform .45s, opacity .45s, max-width .45s, margin .45s; max-width: 1.2em; overflow: visible; }
+  .ch.drop { color: var(--pop); }
+  .ch.sp { max-width: 0.45em; }
+  .ch.out { transform: translateY(-46px) rotate(-25deg) scale(.6); opacity: 0; max-width: 0; }
+  .ch.sp.out { transform: none; }
+  .ch.apos { color: var(--hug); max-width: 0; opacity: 0; transform: translateY(-30px) scale(1.6); }
+  .ch.apos.in { max-width: .5em; opacity: 1; transform: none; }
+  .hug-btn {
+    margin: 14px auto 0; font: inherit; font-family: var(--font-display); font-size: 26px; cursor: pointer;
+    padding: 8px 26px; min-height: 56px; border-radius: 999px; border: none; background: var(--hug); color: var(--surface);
+  }
+  .hug-btn[disabled] { opacity: .45; cursor: default; }
+  .hug-msg { margin: 12px 4px 0; font-size: 19px; min-height: 2.6em; }
+  @media (prefers-reduced-motion: reduce) { .ch { transition: none; } }
+
+  /* ---------- Rule ---------- */
+  .steps { display: grid; gap: 12px; }
+  .step { background: var(--surface); border-radius: 18px; padding: 16px 18px; display: flex; gap: 14px; align-items: flex-start; }
+  .step .n { flex: 0 0 auto; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 26px; background: var(--hug); color: var(--surface); }
+  .step p { margin: 0; font-size: 20px; }
+  .step .hint { font-size: 21px; margin-top: 6px; }
+
+  .trap { background: var(--surface); border-radius: 18px; padding: 18px; border-left: 8px solid var(--wrong); }
+  .trap p { margin: 0 0 10px; }
+  .eg { font-size: 22px; margin: 0 0 6px !important; }
+
+  .cards { display: grid; gap: 12px; }
+  .card { background: var(--surface); border-radius: 20px; padding: 16px 18px; }
+  .card h3 { margin: 0 0 4px; font-size: 30px; color: var(--hug); }
+  .card p { margin: 0 0 8px; }
+  .list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; }
+  @media (max-width: 420px) { .list { grid-template-columns: 1fr; } }
+  .list li { font-size: 20px; }
+  .list li .lf { color: var(--ink-soft); font-size: 17px; }
+
+  .specials { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 520px) { .specials { grid-template-columns: 1fr; } }
+  .special { background: var(--surface-2); border-radius: 20px; padding: 16px 18px; border: 2px dashed var(--pop); }
+  .special h3 { margin: 0 0 6px; font-size: 28px; }
+  .special p { margin: 0 0 6px; }
+
+  .pin { background: var(--surface); border-radius: 22px; padding: 20px; border: 3px solid var(--rule); }
+  .pin ul { margin: 0; padding-left: 22px; font-size: 20px; line-height: 1.7; }
+  .chant { margin: 16px 0 0; padding: 16px; border-radius: 16px; text-align: center; background: var(--hug-soft);
+    font-family: var(--font-display); font-size: 27px; line-height: 1.3; }
+  footer { text-align: center; font-size: 14px; color: var(--ink-soft); margin-top: 32px; }
+  /* ================= QUIZ BANK ENGINE (shared by every lesson; qb- prefix avoids clashes) ================= */
+  .qb { --qb-cols: 2; }
+  .qb-bar {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 3;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 10px 16px; margin: 0 0 18px; border-radius: var(--qb-radius);
+    background: var(--qb-bar); color: var(--qb-bar-ink);
+  }
+  .qb-label { font-size: 12.5px; opacity: 0.8; }
+  .qb-score { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 28px; line-height: 1.05; }
+  .qb-progress { font-size: 12.5px; opacity: 0.85; margin-top: 2px; }
+  .qb-new {
+    font: inherit; font-weight: 700; font-size: 14px; padding: 10px 16px; min-height: 44px;
+    border-radius: 999px; border: 2px solid currentColor; background: transparent; color: inherit; cursor: pointer;
+  }
+  .qb-list, .qb-summary { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 96px); }
+  .qb-card {
+    background: var(--qb-card); border: var(--qb-card-border); box-shadow: var(--qb-card-shadow);
+    border-radius: var(--qb-radius); padding: 16px 16px 14px; margin: 0 0 14px; color: var(--qb-ink);
+  }
+  .qb-speak {
+    float: right; margin: -4px 0 6px 10px; font: inherit; font-size: 13.5px; font-weight: 700;
+    padding: 7px 12px; min-height: 38px; border-radius: 999px; cursor: pointer;
+    border: 2px solid var(--qb-accent); background: var(--qb-accent-soft); color: var(--qb-ink);
+  }
+  .qb-num { font-size: 12.5px; color: var(--qb-soft); margin: 0 0 4px; }
+  .qb-ask { font-size: 13.5px; font-weight: 700; color: var(--qb-accent); margin: 0 0 6px; }
+  .qb-text { font-size: var(--qb-text-size, 16.5px); line-height: 1.6; margin: 0 0 14px; }
+  .qb-blank {
+    display: inline-block; min-width: 60px; padding: 0 3px; text-align: center;
+    border-bottom: 2.5px dashed var(--qb-soft); color: var(--qb-soft);
+  }
+  .qb-blank.qb-filled { border-bottom-style: solid; border-bottom-color: var(--qb-accent); color: var(--qb-accent); font-weight: 700; }
+  .qb-blank.qb-none { font-style: italic; font-weight: 400; }
+  .qb-opts { display: flex; flex-direction: column; gap: 9px; }
+  .qb-opts.qb-row { display: grid; grid-template-columns: repeat(var(--qb-cols), minmax(0, 1fr)); }
+  .qb-opt {
+    font: inherit; font-size: var(--qb-opt-size, 15.5px); line-height: 1.45; text-align: left; color: var(--qb-ink);
+    padding: 11px 14px; min-height: var(--qb-tap, 46px); border-radius: var(--qb-radius-opt);
+    border: 2px solid var(--qb-rule); background: var(--qb-page); cursor: pointer;
+  }
+  .qb-row .qb-opt { text-align: center; font-weight: 600; padding-left: 6px; padding-right: 6px; }
+  .qb-opt:not(:disabled):hover { border-color: var(--qb-accent); }
+  .qb-opt:disabled, .qb-part:disabled { cursor: default; }
+  .qb-letter { font-family: var(--qb-font); font-weight: var(--qb-font-weight); margin-right: 10px; color: var(--qb-accent); }
+  .qb-note { font-size: 12.5px; font-weight: 400; color: var(--qb-soft); }
+  .qb-punct { font-size: 22px; line-height: 0; font-weight: 700; }
+  .qb-spot { display: flex; flex-wrap: wrap; gap: 8px 6px; margin: 0 0 4px; }
+  .qb-part {
+    font: inherit; font-size: var(--qb-opt-size, 16px); line-height: 1.35; text-align: left; color: var(--qb-ink); cursor: pointer;
+    background: var(--qb-accent-soft); border: none; border-bottom: 3px dashed var(--qb-accent);
+    border-radius: 4px 4px 0 0; padding: 7px 9px; min-height: 40px;
+  }
+  .qb-opt.qb-correct, .qb-opt.qb-reveal { background: var(--qb-right-soft); border-color: var(--qb-right); }
+  .qb-opt.qb-incorrect { background: var(--qb-wrong-soft); border-color: var(--qb-wrong); }
+  .qb-part.qb-correct, .qb-part.qb-reveal { background: var(--qb-right-soft); border-bottom: 3px solid var(--qb-right); }
+  .qb-part.qb-incorrect { background: var(--qb-wrong-soft); border-bottom: 3px solid var(--qb-wrong); }
+  .qb-feedback { display: none; margin-top: 12px; padding-top: 12px; border-top: 2px dashed var(--qb-rule); font-size: 14px; line-height: 1.55; }
+  .qb-feedback.qb-show { display: block; }
+  .qb-verdict { display: block; font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 18px; margin-bottom: 2px; }
+  .qb-fb-ok .qb-verdict { color: var(--qb-right); }
+  .qb-fb-no .qb-verdict { color: var(--qb-wrong); }
+  .qb-summary {
+    background: var(--qb-card); color: var(--qb-ink); border: 3px solid var(--qb-accent);
+    border-radius: var(--qb-radius); padding: 18px 20px; margin-top: 8px;
+  }
+  .qb-summary h3 { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 30px; line-height: 1.1; margin: 0 0 6px; color: var(--qb-accent); }
+  .qb-summary p { margin: 0 0 10px; line-height: 1.55; }
+  .qb-sum-label { font-weight: 700; margin-top: 14px !important; }
+  .qb-areas { list-style: none; margin: 0 0 12px; padding: 0; }
+  .qb-areas li { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--qb-rule); }
+  .qb-areas a { color: var(--qb-ink); font-weight: 600; }
+  .qb-areas span { color: var(--qb-wrong); font-weight: 700; white-space: nowrap; }
+  .qb-meta { font-size: 13px; color: var(--qb-soft); }
+  .qb-go {
+    font: inherit; font-weight: 700; font-size: 16px; width: 100%; min-height: 50px; margin-top: 4px; cursor: pointer;
+    border: none; border-radius: var(--qb-radius); background: var(--qb-accent); color: var(--qb-on-accent);
+  }
+
+  /* Theme the quiz engine through these tokens only. */
+  :root {
+    --qb-page: var(--surface-2); --qb-card: var(--surface); --qb-ink: var(--ink); --qb-soft: var(--ink-soft);
+    --qb-accent: var(--hug); --qb-accent-soft: var(--hug-soft); --qb-on-accent: var(--surface);
+    --qb-right: var(--right); --qb-right-soft: var(--right-soft); --qb-wrong: var(--wrong); --qb-wrong-soft: var(--wrong-soft);
+    --qb-rule: var(--rule); --qb-bar: var(--word); --qb-bar-ink: var(--surface);
+    --qb-font: var(--font-display); --qb-font-weight: 400; --qb-radius: 18px; --qb-radius-opt: 14px;
+    --qb-card-border: none; --qb-card-shadow: none;
+    --qb-text-size: 21px; --qb-opt-size: 19px; --qb-tap: 56px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back-link" href="index.html#lower">← Back to the shelf</a>
+
+  <!-- 1. HERO -->
+  <header class="hero">
+    <h1><span class="h">Hug</span> Words</h1>
+    <p class="lead">Sometimes two words give each other a big hug. They squeeze so tight that some letters pop out! The little mark <span class="ap">'</span> shows where they were. <button class="say" type="button" data-say="Sometimes two words give each other a big hug. They squeeze so tight that some letters pop out! The little mark, called an apostrophe, shows where they were.">🔊</button></p>
+    <div class="hugbox">
+      <div class="pairs" id="pairs" role="group" aria-label="Choose two words"></div>
+      <div class="stage" id="stage" aria-live="polite"></div>
+      <button class="hug-btn" id="hugBtn" type="button">Hug! 🤗</button>
+      <p class="hug-msg" id="hugMsg" aria-live="polite">Pick two words, then tap Hug!</p>
+    </div>
+  </header>
+
+  <!-- 2. THE RULE -->
+  <section id="rule">
+    <h2>Two steps</h2>
+    <p class="sub">How to make a hug word.</p>
+    <div class="steps">
+      <div class="step"><span class="n">1</span><div><p>Push the two words together. <button class="say" type="button" data-say="Step one. Push the two words together. Do, not.">🔊</button></p>
+        <p class="hint">do not → donot</p></div></div>
+      <div class="step"><span class="n">2</span><div><p>Take out the squeezed letters. Put <span class="ap">'</span> in their place. <button class="say" type="button" data-say="Step two. Take out the squeezed letters. Put an apostrophe in their place. Don't.">🔊</button></p>
+        <p class="hint">don<span class="gone">o</span>t → don<span class="ap">'</span>t</p></div></div>
+    </div>
+  </section>
+
+  <!-- 3. THE TRAP -->
+  <section id="traps">
+    <h2>Put <span class="ap">'</span> where the letters left</h2>
+    <div class="trap">
+      <p>The <span class="ap">'</span> does not go between the two words. It goes where the missing letters were. <button class="say" type="button" data-say="The apostrophe does not go between the two words. It goes where the missing letters were. Don't. Isn't.">🔊</button></p>
+      <p class="eg"><span class="no">do'nt</span> → <span class="yes">don't</span></p>
+      <p class="eg"><span class="no">is'nt</span> → <span class="yes">isn't</span></p>
+      <p>And don't forget it! <span class="no">dont</span> → <span class="yes">don't</span></p>
+    </div>
+  </section>
+
+  <!-- 4. THE HUG FAMILIES -->
+  <section id="cases">
+    <h2>Hug word families</h2>
+    <p class="sub">Each family loses the same letters.</p>
+    <div class="cards">
+      <div class="card"><h3>n't = not</h3>
+        <p>The <span class="gone">o</span> in "not" pops out. <button class="say" type="button" data-say="The o in not pops out. Is not, isn't. Are not, aren't. Do not, don't. Does not, doesn't. Did not, didn't. Should not, shouldn't.">🔊</button></p>
+        <ul class="list">
+          <li>isn't <span class="lf">is not</span></li><li>aren't <span class="lf">are not</span></li>
+          <li>don't <span class="lf">do not</span></li><li>doesn't <span class="lf">does not</span></li>
+          <li>didn't <span class="lf">did not</span></li><li>shouldn't <span class="lf">should not</span></li>
+          <li>wasn't <span class="lf">was not</span></li><li>haven't <span class="lf">have not</span></li>
+        </ul></div>
+      <div class="card"><h3>'ll = will</h3>
+        <p>The <span class="gone">wi</span> in "will" pops out. <button class="say" type="button" data-say="The w i in will pops out. I will, I'll. You will, you'll. He will, he'll. She will, she'll. We will, we'll. They will, they'll.">🔊</button></p>
+        <ul class="list">
+          <li>I'll <span class="lf">I will</span></li><li>you'll <span class="lf">you will</span></li>
+          <li>he'll <span class="lf">he will</span></li><li>she'll <span class="lf">she will</span></li>
+          <li>we'll <span class="lf">we will</span></li><li>they'll <span class="lf">they will</span></li>
+        </ul></div>
+      <div class="card"><h3>'s 'm 're = is, am, are</h3>
+        <p>The first letter of "is", "am" or "are" pops out. <button class="say" type="button" data-say="The first letter of is, am, or are pops out. He is, he's. She is, she's. It is, it's. I am, I'm. You are, you're. We are, we're. They are, they're.">🔊</button></p>
+        <ul class="list">
+          <li>he's <span class="lf">he is</span></li><li>she's <span class="lf">she is</span></li>
+          <li>it's <span class="lf">it is</span></li><li>I'm <span class="lf">I am</span></li>
+          <li>you're <span class="lf">you are</span></li><li>we're <span class="lf">we are</span></li>
+          <li>they're <span class="lf">they are</span></li>
+        </ul></div>
+    </div>
+  </section>
+
+  <!-- 5. SPECIAL CASES -->
+  <section id="specials">
+    <h2>Two odd ones</h2>
+    <p class="sub">These two hug words are a little different.</p>
+    <div class="specials">
+      <div class="special"><h3>won't 🙅</h3>
+        <p><b>will not</b> does not become "willn't". It becomes <b>won't</b>! <button class="say" type="button" data-say="Will not does not become willn't. It becomes won't! I won't tell anyone.">🔊</button></p>
+        <p class="eg">I won't tell anyone.</p></div>
+      <div class="special"><h3>can't 🙌</h3>
+        <p><b>cannot</b> is one word. Squeeze out the <span class="gone">no</span>: <b>can't</b>. <button class="say" type="button" data-say="Cannot is one word. Squeeze out the n o, and you get can't. Fish can't fly.">🔊</button></p>
+        <p class="eg">Fish can't fly.</p></div>
+    </div>
+  </section>
+
+  <!-- 6. PRACTICE -->
+  <section id="practice">
+    <h2>Your turn!</h2>
+    <p class="sub">Answer <span id="qbDraw">10</span> questions. Tap 🔊 to hear each one. Every time you play, you get new questions! <span hidden id="qbBank">78</span></p>
+    <div class="qb" id="qb">
+      <div class="qb-bar">
+        <div><div class="qb-label">Your score</div><div class="qb-score" id="qbScore">0 / 10</div><div class="qb-progress" id="qbProgress">0 of 10 answered</div></div>
+        <button class="qb-new" id="qbNew" type="button">New quiz</button>
+      </div>
+      <div class="qb-list" id="qbList"></div>
+      <div class="qb-summary" id="qbSummary" hidden></div>
+    </div>
+  </section>
+
+  <!-- 7. PIN THIS UP -->
+  <section class="pin">
+    <h2>Pin This Up</h2>
+    <ul>
+      <li>Two words hug: push them together.</li>
+      <li>Take out the squeezed letters. Put <span class="ap">'</span> in their place.</li>
+      <li>n't = not · 'll = will · 's = is · 'm = am · 're = are</li>
+      <li>Odd ones: will not → won't · cannot → can't</li>
+    </ul>
+    <p class="chant">Squeeze, squeeze, the letters go,<br>a little mark takes their place, you know!</p>
+  </section>
+
+  <footer>My Grammar Shelf · Lower shelf, Lesson 05</footer>
+</div>
+
+<script>
+(function () {
+  /* ---------- Read-aloud for lesson text ---------- */
+  const canSpeak = !!window.speechSynthesis && typeof window.speechSynthesis.speak === 'function' && typeof SpeechSynthesisUtterance !== 'undefined';
+  function sayIt(text) {
+    try { window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'en-GB'; u.rate = 0.9; window.speechSynthesis.speak(u); } catch (e) {}
+  }
+  if (canSpeak) {
+    document.body.classList.add('can-speak');
+    document.querySelectorAll('.say').forEach(b => {
+      b.setAttribute('aria-label', 'Read this aloud');
+      b.addEventListener('click', () => sayIt(b.dataset.say));
+    });
+  }
+
+  /* ---------- Hero: hug two words ---------- */
+  /* [first word, second word, where the dropped letters start in word 2, how many] */
+  const HUGS = [
+    ['do', 'not', 1, 1], ['is', 'not', 1, 1], ['are', 'not', 1, 1],
+    ['I', 'will', 0, 2], ['we', 'will', 0, 2], ['she', 'is', 0, 1], ['I', 'am', 0, 1], ['they', 'are', 0, 1]
+  ];
+  const pairsEl = document.getElementById('pairs'), stage = document.getElementById('stage');
+  const hugBtn = document.getElementById('hugBtn'), hugMsg = document.getElementById('hugMsg');
+  let pick = 0;
+  const shortOf = h => h[0] + h[1].slice(0, h[2]) + "'" + h[1].slice(h[2] + h[3]);
+  function setUp() {
+    const h = HUGS[pick];
+    stage.innerHTML = '';
+    const add = (c, cls) => { const s = document.createElement('span'); s.className = 'ch ' + (cls || ''); s.textContent = c; stage.appendChild(s); return s; };
+    [...h[0]].forEach(c => add(c));
+    add(' ', 'sp');
+    [...h[1]].forEach((c, i) => {
+      if (i === h[2]) add("'", 'apos');
+      add(c, (i >= h[2] && i < h[2] + h[3]) ? 'drop' : '');
+    });
+    hugBtn.disabled = false;
+    hugMsg.textContent = 'Tap Hug! and watch.';
+  }
+  HUGS.forEach((h, i) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'pair-btn'; b.textContent = h[0] + ' ' + h[1];
+    b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
+    b.addEventListener('click', () => {
+      pick = i;
+      pairsEl.querySelectorAll('.pair-btn').forEach((x, k) => x.setAttribute('aria-pressed', k === i ? 'true' : 'false'));
+      setUp();
+    });
+    pairsEl.appendChild(b);
+  });
+  hugBtn.addEventListener('click', () => {
+    const h = HUGS[pick];
+    hugBtn.disabled = true;
+    stage.querySelectorAll('.sp').forEach(s => s.classList.add('out'));
+    stage.querySelectorAll('.drop').forEach(s => s.classList.add('out'));
+    setTimeout(() => stage.querySelectorAll('.apos').forEach(s => s.classList.add('in')), 350);
+    const gone = h[1].substr(h[2], h[3]);
+    hugMsg.innerHTML = '<b>' + h[0] + ' ' + h[1] + '</b> → <b>' + shortOf(h) + '</b>. The <b>' + gone + '</b> popped out, and <span class="ap">\'</span> took its place!';
+    if (canSpeak) sayIt(h[0] + ' ' + h[1] + '. ' + shortOf(h) + '.');
+  });
+  setUp();
+
+  { /* qb-start: quiz engine in its own scope, so its names can't clash with the lesson's */
+  /* ================= QUIZ: question bank (78 questions) ================= */
+  const LESSON_KEY = "shelf-lower-05";
+  const QB_BANDS = [4, 4, 2];
+  const QB_TEXT = {"ask": {"check": "Is the hug word right?", "pick": "Which one is right?", "fill": "Which hug word fits?", "spot": "Tap the word with the mistake."}, "yn": ["Wrong", "Right"], "speak": true,
+    "right": ["Well done!", "Great job!", "You got it!", "Super!"], "wrong": "Good try!",
+    "summary": {"perfect": "All correct! Big hugs for you! Try a new set!", "high": "Great work! Look at the part below, then try a new set.", "mid": "Good effort! Read the parts below again, then try a new set.", "low": "Let's look at the lesson again together, then try a new set.", "review": "Have another look at"}};
+  const TAGS = {
+    nt: { label: "n't words: isn't, don't, didn't", href: '#cases' },
+    will: { label: "'ll words: I'll, we'll", href: '#cases' },
+    isare: { label: "'s 'm 're words: he's, I'm, they're", href: '#cases' },
+    place: { label: "Put ' where the letters left", href: '#traps' },
+    odd: { label: "The odd ones: won't, can't", href: '#specials' },
+  };
+  const BANK = [
+    {"id": "f01", "t": "fill", "d": 1, "tag": "nt", "q": "I ___ like spiders.", "o": ["don't", "do'nt", "dont"], "why": "do + not hug: the o in not squeezes out, and ' takes its place.", "ask": "Which short word fits?"},
+    {"id": "f02", "t": "fill", "d": 1, "tag": "nt", "q": "My cat ___ hungry.", "o": ["isn't", "is'nt", "isnt"], "why": "is + not → isn't. The ' goes where the o was.", "ask": "Which short word fits?"},
+    {"id": "f03", "t": "fill", "d": 1, "tag": "nt", "q": "We ___ late.", "o": ["aren't", "are'nt", "arent"], "why": "are + not → aren't.", "ask": "Which short word fits?"},
+    {"id": "f04", "t": "fill", "d": 1, "tag": "nt", "q": "Ali ___ come to school today.", "o": ["didn't", "did'nt", "didnt"], "why": "did + not → didn't.", "ask": "Which short word fits?"},
+    {"id": "f05", "t": "fill", "d": 2, "tag": "nt", "q": "You ___ run in the classroom.", "o": ["shouldn't", "should'nt", "shouldnt"], "why": "should + not → shouldn't.", "ask": "Which short word fits?"},
+    {"id": "f06", "t": "fill", "d": 2, "tag": "nt", "q": "Mum ___ like loud music.", "o": ["doesn't", "does'nt", "doesnt"], "why": "does + not → doesn't.", "ask": "Which short word fits?"},
+    {"id": "f07", "t": "fill", "d": 2, "tag": "nt", "q": "The shop ___ open yesterday.", "o": ["wasn't", "was'nt", "wasnt"], "why": "was + not → wasn't.", "ask": "Which short word fits?"},
+    {"id": "f08", "t": "fill", "d": 2, "tag": "nt", "q": "I ___ finished my lunch yet.", "o": ["haven't", "have'nt", "havent"], "why": "have + not → haven't.", "ask": "Which short word fits?"},
+    {"id": "f09", "t": "fill", "d": 1, "tag": "nt", "q": "is not → ___", "o": ["isn't", "aren't", "don't"], "why": "is + not hug to make isn't.", "ask": "What is the short word?"},
+    {"id": "f10", "t": "fill", "d": 1, "tag": "nt", "q": "do not → ___", "o": ["don't", "didn't", "doesn't"], "why": "do + not hug to make don't.", "ask": "What is the short word?"},
+    {"id": "f11", "t": "fill", "d": 2, "tag": "nt", "q": "were not → ___", "o": ["weren't", "wasn't", "aren't"], "why": "were + not hug to make weren't.", "ask": "What is the short word?"},
+    {"id": "f12", "t": "fill", "d": 2, "tag": "nt", "q": "aren't → are ___", "o": ["not", "no", "now"], "why": "The n't in aren't comes from not.", "ask": "What are the two words?"},
+    {"id": "c01", "t": "check", "d": 1, "tag": "nt", "q": "I don't want to go.", "a": 1, "why": "do + not → don't, with ' where the o was. Right!"},
+    {"id": "c02", "t": "check", "d": 1, "tag": "nt", "q": "It isnt raining.", "a": 0, "why": "The ' is missing: isn't."},
+    {"id": "c03", "t": "check", "d": 1, "tag": "nt", "q": "We didn't see the bus.", "a": 1, "why": "did + not → didn't. Right!"},
+    {"id": "c04", "t": "check", "d": 2, "tag": "nt", "q": "She doesnt like carrots.", "a": 0, "why": "The ' is missing: doesn't."},
+    {"id": "c05", "t": "check", "d": 2, "tag": "nt", "q": "They aren't at home.", "a": 1, "why": "are + not → aren't. Right!"},
+    {"id": "c06", "t": "check", "d": 2, "tag": "nt", "q": "You shouldnt shout.", "a": 0, "why": "The ' is missing: shouldn't."},
+    {"id": "p01", "t": "pick", "d": 1, "tag": "nt", "ask": "Which short word means \"is not\"?", "o": ["isn't", "aren't", "don't"], "why": "is + not → isn't."},
+    {"id": "p02", "t": "pick", "d": 2, "tag": "nt", "ask": "Which short word means \"does not\"?", "o": ["doesn't", "didn't", "don't"], "why": "does + not → doesn't."},
+    {"id": "p03", "t": "pick", "d": 2, "tag": "nt", "ask": "Which one is right?", "o": ["The tap wasn't on.", "The tap was'nt on.", "The tap wasnt on."], "why": "was + not → wasn't, with ' where the o was."},
+    {"id": "f13", "t": "fill", "d": 1, "tag": "will", "q": "___ help you, Mum.", "o": ["I'll", "Il'l", "I'l"], "why": "I + will → I'll. The wi squeezes out.", "ask": "Which short word fits?"},
+    {"id": "f14", "t": "fill", "d": 1, "tag": "will", "q": "___ go to the park later.", "o": ["We'll", "Wel'l", "Well"], "why": "We + will → We'll.", "ask": "Which short word fits?"},
+    {"id": "f15", "t": "fill", "d": 2, "tag": "will", "q": "Hurry up or ___ be late!", "o": ["you'll", "youl'l", "youll"], "why": "you + will → you'll.", "ask": "Which short word fits?"},
+    {"id": "f16", "t": "fill", "d": 2, "tag": "will", "q": "Mei says ___ bring the cake.", "o": ["she'll", "shel'l", "shell"], "why": "she + will → she'll.", "ask": "Which short word fits?"},
+    {"id": "f17", "t": "fill", "d": 2, "tag": "will", "q": "The children say ___ clean up.", "o": ["they'll", "theyl'l", "theyll"], "why": "they + will → they'll.", "ask": "Which short word fits?"},
+    {"id": "f18", "t": "fill", "d": 1, "tag": "will", "q": "I will → ___", "o": ["I'll", "I'm", "I've"], "why": "I + will hug to make I'll.", "ask": "What is the short word?"},
+    {"id": "f19", "t": "fill", "d": 2, "tag": "will", "q": "he will → ___", "o": ["he'll", "he's", "he'd"], "why": "he + will hug to make he'll.", "ask": "What is the short word?"},
+    {"id": "f20", "t": "fill", "d": 2, "tag": "will", "q": "we'll → we ___", "o": ["will", "are", "is"], "why": "The 'll in we'll comes from will.", "ask": "What are the two words?"},
+    {"id": "c07", "t": "check", "d": 1, "tag": "will", "q": "I'll call you later.", "a": 1, "why": "I + will → I'll. Right!"},
+    {"id": "c08", "t": "check", "d": 2, "tag": "will", "q": "Well see you tomorrow.", "a": 0, "why": "We + will needs a ': We'll see you tomorrow."},
+    {"id": "c09", "t": "check", "d": 2, "tag": "will", "q": "They'll be here soon.", "a": 1, "why": "they + will → they'll. Right!"},
+    {"id": "c10", "t": "check", "d": 3, "tag": "will", "q": "Youl'l love this game!", "a": 0, "why": "The ' goes where wi was: You'll."},
+    {"id": "p04", "t": "pick", "d": 1, "tag": "will", "ask": "Which short word means \"I will\"?", "o": ["I'll", "I'm", "Ill"], "why": "I + will → I'll."},
+    {"id": "p05", "t": "pick", "d": 2, "tag": "will", "ask": "Which one is right?", "o": ["We'll play after lunch.", "Wel'l play after lunch.", "Well play after lunch."], "why": "we + will → we'll."},
+    {"id": "f21", "t": "fill", "d": 1, "tag": "isare", "q": "___ my best friend.", "o": ["She's", "Sh'es", "Shes"], "why": "She + is → She's. The i squeezes out.", "ask": "Which short word fits?"},
+    {"id": "f22", "t": "fill", "d": 1, "tag": "isare", "q": "___ seven years old.", "o": ["I'm", "Im'", "Im"], "why": "I + am → I'm. The a squeezes out.", "ask": "Which short word fits?"},
+    {"id": "f23", "t": "fill", "d": 1, "tag": "isare", "q": "___ my new bag.", "o": ["It's", "Its'", "I'ts"], "why": "It + is → It's.", "ask": "Which short word fits?"},
+    {"id": "f24", "t": "fill", "d": 2, "tag": "isare", "q": "___ going to the zoo!", "o": ["We're", "Wer'e", "Were"], "why": "We + are → We're. \"Were\" is a different word.", "ask": "Which short word fits?"},
+    {"id": "f25", "t": "fill", "d": 2, "tag": "isare", "q": "Look, ___ dancing!", "o": ["they're", "theyr'e", "theyre"], "why": "they + are → they're.", "ask": "Which short word fits?"},
+    {"id": "f26", "t": "fill", "d": 2, "tag": "isare", "q": "___ very kind, Grandma.", "o": ["You're", "Your'e", "Youre"], "why": "You + are → You're.", "ask": "Which short word fits?"},
+    {"id": "f27", "t": "fill", "d": 1, "tag": "isare", "q": "I am → ___", "o": ["I'm", "I'll", "I've"], "why": "I + am hug to make I'm.", "ask": "What is the short word?"},
+    {"id": "f28", "t": "fill", "d": 2, "tag": "isare", "q": "they are → ___", "o": ["they're", "they'll", "they've"], "why": "they + are hug to make they're.", "ask": "What is the short word?"},
+    {"id": "f29", "t": "fill", "d": 2, "tag": "isare", "q": "he is → ___", "o": ["he's", "he'll", "he'd"], "why": "he + is hug to make he's.", "ask": "What is the short word?"},
+    {"id": "f30", "t": "fill", "d": 2, "tag": "isare", "q": "I'm → I ___", "o": ["am", "will", "is"], "why": "The 'm in I'm comes from am.", "ask": "What are the two words?"},
+    {"id": "c11", "t": "check", "d": 1, "tag": "isare", "q": "I'm hungry.", "a": 1, "why": "I + am → I'm. Right!"},
+    {"id": "c12", "t": "check", "d": 1, "tag": "isare", "q": "Hes my brother.", "a": 0, "why": "He + is needs a ': He's my brother."},
+    {"id": "c13", "t": "check", "d": 2, "tag": "isare", "q": "We're ready!", "a": 1, "why": "We + are → We're. Right!"},
+    {"id": "c14", "t": "check", "d": 2, "tag": "isare", "q": "Theyre playing tag.", "a": 0, "why": "They + are needs a ': They're playing tag."},
+    {"id": "c15", "t": "check", "d": 3, "tag": "isare", "q": "It's a sunny day.", "a": 1, "why": "It + is → It's. Right!"},
+    {"id": "p06", "t": "pick", "d": 1, "tag": "isare", "ask": "Which short word means \"I am\"?", "o": ["I'm", "I'll", "Im"], "why": "I + am → I'm."},
+    {"id": "p07", "t": "pick", "d": 2, "tag": "isare", "ask": "Which one is right?", "o": ["You're my hero!", "Your'e my hero!", "Youre my hero!"], "why": "you + are → you're."},
+    {"id": "p08", "t": "pick", "d": 3, "tag": "isare", "ask": "Which short word means \"we are\"?", "o": ["we're", "were", "we'll"], "why": "we + are → we're. \"were\" has no apostrophe and means something else."},
+    {"id": "f31", "t": "fill", "d": 2, "tag": "place", "q": "The baby ___ sleeping.", "o": ["isn't", "is'nt", "isn'"], "why": "The ' goes where the o of not was: isn't.", "ask": "Which short word fits?"},
+    {"id": "f32", "t": "fill", "d": 3, "tag": "place", "q": "I ___ know the answer.", "o": ["don't", "do'nt", "d'ont"], "why": "The ' goes in place of the missing o: don't.", "ask": "Which short word fits?"},
+    {"id": "c16", "t": "check", "d": 2, "tag": "place", "q": "I do'nt like rain.", "a": 0, "why": "The ' goes where the o was, not between the words: don't."},
+    {"id": "c17", "t": "check", "d": 2, "tag": "place", "q": "Raju is'nt here.", "a": 0, "why": "The ' goes where the o of not was: isn't."},
+    {"id": "c18", "t": "check", "d": 3, "tag": "place", "q": "They are'nt ready.", "a": 0, "why": "The ' goes where the o was: aren't."},
+    {"id": "c19", "t": "check", "d": 3, "tag": "place", "q": "The milk wasn't cold.", "a": 1, "why": "The ' is where the o of not was. Right!"},
+    {"id": "p09", "t": "pick", "d": 2, "tag": "place", "ask": "Which one is right?", "o": ["didn't", "did'nt", "di'dnt"], "why": "The ' goes where the o of not was."},
+    {"id": "p10", "t": "pick", "d": 3, "tag": "place", "ask": "Which one is right?", "o": ["They don't want it.", "They do'nt want it.", "They d'ont want it."], "why": "The ' goes where the o of not was."},
+    {"id": "p11", "t": "pick", "d": 3, "tag": "place", "ask": "Which one is right?", "o": ["I'll", "Il'l", "I'l"], "why": "I + will: wi squeezes out, so the ' goes right after I."},
+    {"id": "s01", "t": "spot", "d": 2, "tag": "place", "parts": ["I", "do'nt", "like", "peas."], "a": 1, "why": "The ' goes where the o was: don't."},
+    {"id": "s02", "t": "spot", "d": 3, "tag": "place", "parts": ["My dog", "is'nt", "very", "big."], "a": 1, "why": "The ' goes where the o of not was: isn't."},
+    {"id": "s03", "t": "spot", "d": 3, "tag": "place", "parts": ["We", "are'nt", "going", "out."], "a": 1, "why": "The ' goes where the o was: aren't."},
+    {"id": "s04", "t": "spot", "d": 2, "tag": "nt", "parts": ["Mum", "doesnt", "like", "snakes."], "a": 1, "why": "The ' is missing: doesn't."},
+    {"id": "s05", "t": "spot", "d": 3, "tag": "isare", "parts": ["Look!", "Theyre", "flying", "kites."], "a": 1, "why": "They + are needs a ': They're."},
+    {"id": "s06", "t": "spot", "d": 3, "tag": "will", "parts": ["I think", "Ill", "win", "the race."], "a": 1, "why": "I + will needs a ': I'll."},
+    {"id": "f33", "t": "fill", "d": 2, "tag": "odd", "q": "I ___ tell anyone. I promise!", "o": ["won't", "willn't", "wo'nt"], "why": "will + not is an odd one: it becomes won't.", "ask": "Which short word fits?"},
+    {"id": "f34", "t": "fill", "d": 2, "tag": "odd", "q": "Birds can fly, but fish ___ fly.", "o": ["can't", "ca'nt", "cant"], "why": "cannot → can't.", "ask": "Which short word fits?"},
+    {"id": "f35", "t": "fill", "d": 3, "tag": "odd", "q": "will not → ___", "o": ["won't", "willn't", "wouldn't"], "why": "will + not is special: won't.", "ask": "What is the short word?"},
+    {"id": "f36", "t": "fill", "d": 3, "tag": "odd", "q": "cannot → ___", "o": ["can't", "cann't", "ca'nt"], "why": "cannot → can't.", "ask": "What is the short word?"},
+    {"id": "f37", "t": "fill", "d": 3, "tag": "odd", "q": "won't → ___ not", "o": ["will", "would", "want"], "why": "won't is the odd one: it means will not.", "ask": "What are the two words?"},
+    {"id": "c20", "t": "check", "d": 2, "tag": "odd", "q": "I won't be long.", "a": 1, "why": "will + not → won't. Right!"},
+    {"id": "c21", "t": "check", "d": 2, "tag": "odd", "q": "The dog willn't sit.", "a": 0, "why": "will + not is special: won't."},
+    {"id": "c22", "t": "check", "d": 3, "tag": "odd", "q": "I can't reach the shelf.", "a": 1, "why": "cannot → can't. Right!"},
+    {"id": "p12", "t": "pick", "d": 2, "tag": "odd", "ask": "Which short word means \"will not\"?", "o": ["won't", "willn't", "wouldn't"], "why": "will + not becomes won't."},
+    {"id": "p13", "t": "pick", "d": 3, "tag": "odd", "ask": "Which short word means \"cannot\"?", "o": ["can't", "cann't", "couldn't"], "why": "cannot → can't."},
+  ];
+
+  /* ================= QUIZ BANK ENGINE (shared by every lesson) =================
+     Needs, defined above it: LESSON_KEY, TAGS, BANK.
+     Optional: QB_BANDS = [easy, medium, tricky] questions per attempt (default 7/7/6 = 20);
+     QB_TEXT = { ask: {...}, yn: [...], right: [...], wrong: '...', speak: true, summary: {...} }.
+     Each attempt draws BAND_SIZES questions (easy, medium, tricky). The draw builds many
+     candidate quizzes and keeps the best: every tag present, 3+ of each type, balanced
+     check answers, unseen questions first. Options are shuffled; ids seen are remembered. */
+  const BAND_SIZES = (typeof QB_BANDS !== 'undefined') ? QB_BANDS : [7, 7, 6];
+  const DRAW = BAND_SIZES.reduce((a, b) => a + b, 0);
+  const TYPE_TARGET = Math.max(1, Math.min(3, Math.floor(DRAW / new Set(BANK.map(q => q.t)).size)));   // e.g. 20 Qs → 3 of each type, 10 Qs with 4 types → 2
+  const QBT = (typeof QB_TEXT !== 'undefined') ? QB_TEXT : {};
+  const ASK = Object.assign({
+    check: 'Is this sentence correct?',
+    pick:  'Pick the correct sentence.',
+    fill:  'Which choice fills the gap correctly?',
+    spot:  'Tap the part with the mistake.'
+  }, QBT.ask || {});
+  const YN = QBT.yn || ['Needs fixing', 'Correct'];
+  const RIGHT = QBT.right || ['Correct!'];
+  const WRONG = QBT.wrong || 'Not quite.';
+  const SUM = Object.assign({
+    perfect: 'A perfect run! Try another set to make sure it sticks.',
+    high: 'Strong work. Have a quick look at the areas below, then try a fresh set.',
+    mid: 'Good progress. Re-read the parts below before your next attempt.',
+    low: 'Worth another look at the lesson. Start with the areas below, then try a fresh set.',
+    review: 'Areas to review'
+  }, QBT.summary || {});
+  const CAN_SPEAK = !!QBT.speak && typeof window !== 'undefined' && !!window.speechSynthesis &&
+    typeof window.speechSynthesis.speak === 'function' && typeof SpeechSynthesisUtterance !== 'undefined';
+  function speak(text) {
+    try {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-GB'; u.rate = 0.9;
+      window.speechSynthesis.speak(u);
+    } catch (e) { /* no speech on this device */ }
+  }
+
+  const store = {
+    get(k, fallback) { try { const v = localStorage.getItem(LESSON_KEY + ':' + k); return v === null ? fallback : JSON.parse(v); } catch (e) { return fallback; } },
+    set(k, v) { try { localStorage.setItem(LESSON_KEY + ':' + k, JSON.stringify(v)); } catch (e) { /* storage unavailable: quiz still works */ } }
+  };
+  const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  function buildCandidate(seen) {
+    const chosen = [], tagN = {}, typeN = {};
+    let fixN = 0, okN = 0;
+    for (let band = 1; band <= 3; band++) {
+      const picks = [];
+      for (let k = 0; k < BAND_SIZES[band - 1]; k++) {
+        let best = null, bestScore = -Infinity;
+        BANK.forEach(q => {
+          if (q.d !== band || picks.includes(q)) return;
+          let s = Math.random() * 3;
+          if (!seen.has(q.id)) s += 6;
+          if (!tagN[q.tag]) s += 12;
+          s -= (typeN[q.t] || 0) * 1.2;
+          if ((typeN[q.t] || 0) < TYPE_TARGET) s += 3;   // nudge every type up to its target
+          if (q.t === 'check') { const lean = q.a === 0 ? fixN - okN : okN - fixN; if (lean >= 1) s -= 4; }
+          if (s > bestScore) { bestScore = s; best = q; }
+        });
+        if (!best) break;
+        picks.push(best);
+        tagN[best.tag] = (tagN[best.tag] || 0) + 1;
+        typeN[best.t] = (typeN[best.t] || 0) + 1;
+        if (best.t === 'check') { if (best.a === 0) fixN++; else okN++; }
+      }
+      chosen.push(...shuffle(picks));
+    }
+    return chosen;
+  }
+
+  function rateCandidate(c, seen) {
+    const tags = new Set(c.map(q => q.tag)).size;
+    const types = {};
+    c.forEach(q => types[q.t] = (types[q.t] || 0) + 1);
+    const used = [...new Set(BANK.map(q => q.t))];
+    const minType = Math.min(...used.map(t => types[t] || 0));
+    const checks = c.filter(q => q.t === 'check');
+    const lean = Math.abs(checks.filter(q => q.a === 0).length * 2 - checks.length);
+    return (tags === Object.keys(TAGS).length ? 10000 : tags * 500)
+         + (c.length === DRAW ? 5000 : 0)
+         + Math.min(minType, TYPE_TARGET) * 300
+         + (lean <= 2 ? 200 : 0)
+         + c.filter(q => !seen.has(q.id)).length * 10;
+  }
+
+  function drawQuiz() {
+    let seen = new Set(store.get('seen', []));
+    if (BANK.length - seen.size < DRAW) seen = new Set(store.get('last', []));   // new cycle, but skip the last attempt
+    let chosen = null, bestRate = -1;
+    for (let tries = 0; tries < 200; tries++) {
+      const c = buildCandidate(seen), r = rateCandidate(c, seen);
+      if (r > bestRate) { bestRate = r; chosen = c; }
+    }
+    chosen.forEach(q => seen.add(q.id));
+    store.set('seen', [...seen]);
+    store.set('last', chosen.map(q => q.id));
+    return chosen.map(q => {
+      if (q.t === 'pick' || q.t === 'fill') {
+        const opts = shuffle(q.o.map((text, i) => ({ text, ok: i === 0 })));
+        return { q, opts, answer: opts.findIndex(o => o.ok) };
+      }
+      if (q.t === 'check') return { q, opts: YN.map(text => ({ text })), answer: q.a };
+      return { q, opts: null, answer: q.a };
+    });
+  }
+
+  const listEl = document.getElementById('qbList');
+  const scoreEl = document.getElementById('qbScore');
+  const progressEl = document.getElementById('qbProgress');
+  const summaryEl = document.getElementById('qbSummary');
+  let current = [], score = 0, done = 0, missed = [];
+
+  function updateScore() {
+    scoreEl.textContent = score + ' / ' + current.length;
+    progressEl.textContent = done + ' of ' + current.length + ' answered';
+  }
+
+  /* Small or empty options are hard to see on a button, so label them. */
+  function optLabel(text) {
+    const t = text.trim();
+    if (t === '') return '<span class="qb-note">(nothing)</span>';
+    if (t === ',') return '<span class="qb-punct">,</span> <span class="qb-note">(a comma)</span>';
+    if (t === '.') return '<span class="qb-punct">.</span> <span class="qb-note">(a full stop)</span>';
+    if (t === '?') return '<span class="qb-punct">?</span> <span class="qb-note">(a question mark)</span>';
+    if (t === '!') return '<span class="qb-punct">!</span> <span class="qb-note">(an exclamation mark)</span>';
+    return esc(text);
+  }
+  function plainLabel(text) {
+    const t = text.trim();
+    return t === '' ? 'nothing' : t === ',' ? 'a comma' : t === '.' ? 'a full stop'
+      : t === '?' ? 'a question mark' : t === '!' ? 'an exclamation mark' : '"' + t + '"';
+  }
+  function sentenceWithGap(q, text) {
+    let filler = '<span class="qb-blank">___</span>';
+    if (text !== undefined) {
+      filler = text.trim() === ''
+        ? '<span class="qb-blank qb-filled qb-none">(nothing)</span>'
+        : '<span class="qb-blank qb-filled">' + esc(text) + '</span>';
+    }
+    return esc(q.q).replace('___', filler);
+  }
+
+  function render() {
+    listEl.innerHTML = '';
+    summaryEl.hidden = true;
+    current.forEach((item, i) => {
+      const q = item.q;
+      const card = document.createElement('div');
+      card.className = 'qb-card';
+      card.dataset.type = q.t;
+      let body;
+      if (q.t === 'spot') {
+        body = '<div class="qb-spot">' + q.parts.map((p, k) =>
+          '<button type="button" class="qb-part" data-k="' + k + '">' + esc(p) + '</button>').join('') + '</div>';
+      } else if (q.t === 'fill') {
+        const cols = item.opts.length;
+        body = '<p class="qb-text">' + sentenceWithGap(q) + '</p><div class="qb-opts qb-row" style="--qb-cols:' + cols + '"></div>';
+      } else if (q.t === 'check') {
+        body = '<p class="qb-text">' + esc(q.q) + '</p><div class="qb-opts qb-row"></div>';
+      } else {
+        body = (q.q ? '<p class="qb-text">' + esc(q.q) + '</p>' : '') + '<div class="qb-opts"></div>';
+      }
+      card.innerHTML =
+        (CAN_SPEAK ? '<button type="button" class="qb-speak" aria-label="Read this question aloud">🔊 Read it to me</button>' : '') +
+        '<p class="qb-num">Question ' + (i + 1) + ' of ' + current.length + '</p>' +
+        '<p class="qb-ask">' + esc(q.ask || ASK[q.t]) + '</p>' + body +
+        '<div class="qb-feedback" role="status"></div>';
+      if (CAN_SPEAK) {
+        const bits = [q.ask || ASK[q.t]];
+        if (q.t === 'spot') bits.push(q.parts.join(' '));
+        else if (q.q) bits.push(q.q.replace('___', 'blank'));
+        const sayOpt = t => { const x = t.trim(); return x === '' ? 'nothing' : x === '.' ? 'full stop' : x === ',' ? 'comma' : x === '?' ? 'question mark' : x === '!' ? 'exclamation mark' : x; };
+        if (q.t === 'pick' || q.t === 'fill') item.opts.forEach((o, j) => bits.push((q.t === 'pick' ? String.fromCharCode(65 + j) + ': ' : '') + sayOpt(o.text)));
+        if (q.t === 'check') bits.push(YN.join(', or '));
+        const spoken = bits.map(t => t.trim().replace(/[.\s]+$/, '')).filter(Boolean)
+          .map(t => /[?!]$/.test(t) ? t : t + '.').join(' ');
+        card.querySelector('.qb-speak').addEventListener('click', () => speak(spoken));
+      }
+      if (q.t === 'spot') {
+        card.querySelectorAll('.qb-part').forEach(b => b.addEventListener('click', () => answer(i, +b.dataset.k, card)));
+      } else {
+        const opts = card.querySelector('.qb-opts');
+        item.opts.forEach((o, j) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'qb-opt';
+          b.innerHTML = (q.t === 'pick' ? '<span class="qb-letter">' + String.fromCharCode(65 + j) + '</span>' : '') + optLabel(o.text);
+          b.addEventListener('click', () => answer(i, j, card));
+          opts.appendChild(b);
+        });
+      }
+      listEl.appendChild(card);
+    });
+    updateScore();
+  }
+
+  function answer(i, j, card) {
+    const item = current[i];
+    if (item.done) return;
+    item.done = true; done++;
+    const q = item.q, ok = j === item.answer;
+    if (ok) score++; else missed.push(q.tag);
+    card.querySelectorAll(q.t === 'spot' ? '.qb-part' : '.qb-opt').forEach((b, k) => {
+      b.disabled = true;
+      if (k === j) b.classList.add(ok ? 'qb-correct' : 'qb-incorrect');
+      else if (k === item.answer && !ok) b.classList.add('qb-reveal');
+    });
+    if (q.t === 'fill') card.querySelector('.qb-text').innerHTML = sentenceWithGap(q, item.opts[j].text);
+    let right;
+    if (q.t === 'spot') right = 'The mistake is in "' + esc(q.parts[item.answer]) + '".';
+    else if (q.t === 'pick') right = 'The answer is ' + String.fromCharCode(65 + item.answer) + '.';
+    else right = 'The answer is ' + esc(plainLabel(item.opts[item.answer].text)) + '.';
+    const fb = card.querySelector('.qb-feedback');
+    fb.classList.add('qb-show', ok ? 'qb-fb-ok' : 'qb-fb-no');
+    fb.innerHTML = '<span class="qb-verdict">' + (ok ? RIGHT[Math.floor(Math.random() * RIGHT.length)] : WRONG + ' ' + right) + '</span>' + esc(q.why);
+    updateScore();
+    if (done === current.length) showSummary();
+  }
+
+  function showSummary() {
+    const best = Math.max(store.get('best', 0), score);
+    store.set('best', best);
+    const attempts = store.get('attempts', 0) + 1;
+    store.set('attempts', attempts);
+    const counts = {};
+    missed.forEach(t => counts[t] = (counts[t] || 0) + 1);
+    const areas = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+    const n = current.length;
+    let msg;
+    if (score === n) msg = SUM.perfect;
+    else if (score >= Math.ceil(n * 0.8)) msg = SUM.high;
+    else if (score >= Math.ceil(n * 0.6)) msg = SUM.mid;
+    else msg = SUM.low;
+    summaryEl.innerHTML =
+      '<h3>You scored ' + score + ' / ' + n + '</h3><p>' + msg + '</p>' +
+      (areas.length ? '<p class="qb-sum-label">' + esc(SUM.review) + '</p><ul class="qb-areas">' + areas.map(t =>
+        '<li><a href="' + TAGS[t].href + '">' + esc(TAGS[t].label) + '</a><span>' + counts[t] + ' wrong</span></li>').join('') + '</ul>' : '') +
+      '<p class="qb-meta">Attempts on this device: ' + attempts + ' · Best score: ' + best + ' / ' + n + '</p>' +
+      '<button type="button" class="qb-go" id="qbAgain">Try ' + n + ' new questions</button>';
+    summaryEl.hidden = false;
+    document.getElementById('qbAgain').addEventListener('click', () => { newQuiz(); listEl.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    summaryEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function newQuiz() {
+    current = drawQuiz(); score = 0; done = 0; missed = [];
+    render();
+  }
+
+  const bankEl = document.getElementById('qbBank'), drawEl = document.getElementById('qbDraw');
+  if (bankEl) bankEl.textContent = BANK.length;
+  if (drawEl) drawEl.textContent = DRAW;
+  document.getElementById('qbNew').addEventListener('click', () => {
+    newQuiz();
+    listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  newQuiz();
+  } /* qb-end */
+})();
+</script>
+</body>
+</html>
