@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Whose Is It? Lost and Found</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📦</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Urbanist:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ECE6DF;
+    --surface: #FFFFFF;
+    --surface-2: #F7F3EE;
+    --ink: #1E1A17;
+    --ink-soft: #5B524A;
+    --accent: #22406B;
+    --accent-soft: #DCE5F2;
+    --tag: #B3203A;
+    --tag-soft: #F8DCE1;
+    --box: #7A4B1F;
+    --box-soft: #EBD9C2;
+    --rule: rgba(30,26,23,0.14);
+    --r-card: 12px;
+    --r-num: 8px;
+    --font-display: 'Mochiy Pop One', 'Arial Rounded MT Bold', 'Trebuchet MS', sans-serif;
+    --font-body: 'Urbanist', -apple-system, 'Segoe UI', sans-serif;
+    --right: #1D7A45; --right-soft: #DCF1E3;
+    --wrong: #B3261E; --wrong-soft: #F9DEDC;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #16130F; --surface: #221D18; --surface-2: #2A241E; --ink: #F4EEE7; --ink-soft: #C4B8AA; --accent: #9DBBEA; --accent-soft: #1C2C44; --tag: #FF8FA0; --tag-soft: #421C24; --box: #E1B27A; --box-soft: #3A2A18; --rule: rgba(244,238,231,0.16); --right: #72D69D; --right-soft: #17311F; --wrong: #F48D84; --wrong-soft: #3D1F1D; }
+  }
+  :root[data-theme="dark"] { --bg: #16130F; --surface: #221D18; --surface-2: #2A241E; --ink: #F4EEE7; --ink-soft: #C4B8AA; --accent: #9DBBEA; --accent-soft: #1C2C44; --tag: #FF8FA0; --tag-soft: #421C24; --box: #E1B27A; --box-soft: #3A2A18; --rule: rgba(244,238,231,0.16); --right: #72D69D; --right-soft: #17311F; --wrong: #F48D84; --wrong-soft: #3D1F1D; }
+
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 19px; line-height: 1.55; }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 22px 18px 64px; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+  .back-link {
+    display: inline-block; margin: 0 0 20px; padding: 10px 16px; min-height: 44px;
+    font-weight: 700; font-size: 16px; color: var(--ink); text-decoration: none;
+    background: var(--surface); border: 2px solid var(--rule); border-radius: var(--r-btn, 999px);
+  }
+  h1, h2, h3 { font-family: var(--font-display); font-weight: var(--display-weight, 400); line-height: 1.12; }
+  h2 { font-size: 30px; margin: 0 0 8px; }
+  section { margin-bottom: 48px; }
+  .sub { color: var(--ink-soft); margin: 0 0 18px; }
+  .lead { font-size: 21px; margin: 0 0 18px; }
+  .no { color: var(--wrong); text-decoration: line-through; text-decoration-thickness: 2px; }
+  .yes { color: var(--right); font-weight: 700; }
+  .say {
+    display: none; font: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
+    padding: 6px 12px; min-height: 40px; margin-left: 6px; vertical-align: middle;
+    border-radius: 999px; border: 2px solid var(--accent); background: var(--accent-soft); color: var(--ink);
+  }
+  .can-speak .say { display: inline-block; }
+  .steps { display: grid; gap: 12px; }
+  .step { background: var(--surface); border-radius: var(--r-card, 18px); padding: 16px 18px; display: flex; gap: 14px; align-items: flex-start; }
+  .step .n { flex: 0 0 auto; width: 44px; height: 44px; border-radius: var(--r-num, 50%); display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 22px; background: var(--accent); color: var(--surface); }
+  .step p { margin: 0; font-size: 20px; }
+  .step .hint { font-size: 20px; margin-top: 6px; color: var(--ink-soft); }
+  .traps { display: grid; gap: 12px; }
+  .trap { background: var(--surface); border-radius: var(--r-card, 18px); padding: 18px; border-left: 8px solid var(--wrong); }
+  .trap h3 { margin: 0 0 6px; font-size: 24px; }
+  .trap p { margin: 0 0 10px; }
+  .eg { font-size: 21px; margin: 0 0 6px !important; }
+  .cards { display: grid; gap: 12px; }
+  .card { background: var(--surface); border-radius: var(--r-card, 18px); padding: 16px 18px; scroll-margin-top: 20px; }
+  .card h3 { margin: 0 0 6px; font-size: 26px; }
+  .card p { margin: 0 0 6px; }
+  .specials { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 520px) { .specials { grid-template-columns: 1fr; } }
+  .special { background: var(--surface-2); border-radius: var(--r-card, 18px); padding: 16px 18px; border: 3px dashed var(--accent); scroll-margin-top: 20px; }
+  .special h3 { margin: 0 0 6px; font-size: 24px; }
+  .special ul { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 2px; }
+  .special li { font-size: 20px; }
+  .special p { margin: 0 0 6px; }
+  .pin { background: var(--surface); border-radius: var(--r-card, 22px); padding: 20px; border: 3px solid var(--rule); }
+  .pin ul { margin: 0; padding-left: 22px; font-size: 20px; line-height: 1.7; }
+  .chant { margin: 16px 0 0; padding: 16px; border-radius: 16px; text-align: center; background: var(--accent-soft);
+    font-family: var(--font-display); font-size: 22px; line-height: 1.4; }
+  footer { text-align: center; font-size: 14px; color: var(--ink-soft); margin-top: 32px; }
+  .hmsg { margin: 10px 2px 0; font-size: 18px; min-height: 2.8em; }
+  .hmsg b.good { color: var(--right); } .hmsg b.try { color: var(--wrong); }
+
+
+  .tg { color: var(--tag); font-weight: 700; } .bx { color: var(--box); font-weight: 700; }
+  .hero h1 { font-size: clamp(34px, 10vw, 52px); margin: 0 0 12px; }
+  .hero h1 span { color: var(--tag); }
+  .counter { background: var(--box-soft); border: 4px solid var(--box); border-radius: 12px; padding: 0 14px 14px; position: relative; }
+  .counter-sign { display: block; width: fit-content; margin: -2px auto 12px; background: var(--box); color: var(--surface);
+    font-family: var(--font-display); font-size: 17px; padding: 6px 16px; border-radius: 0 0 10px 10px; }
+  .lost { display: flex; gap: 14px; align-items: center; background: var(--surface); border-radius: 10px; padding: 12px; margin-bottom: 12px; }
+  .lost .e { font-size: 50px; line-height: 1; }
+  .lost p { margin: 0; font-size: 20px; font-weight: 700; }
+  .lost small { display: block; font-size: 15px; color: var(--ink-soft); font-weight: 600; }
+  .labels { display: grid; gap: 8px; }
+  .label { font: inherit; font-size: 20px; font-weight: 700; text-align: left; min-height: 56px; padding: 8px 14px 8px 40px; cursor: pointer;
+    color: var(--ink); background: var(--surface); border: 3px solid var(--tag); position: relative;
+    clip-path: polygon(14px 0, 100% 0, 100% 100%, 14px 100%, 0 50%); }
+  .label::before { content: ""; position: absolute; left: 20px; top: 50%; width: 10px; height: 10px; margin-top: -5px; border-radius: 50%;
+    border: 3px solid var(--tag); }
+  .label:disabled { opacity: .45; cursor: default; }
+  .label.got { background: var(--right-soft); border-color: var(--right); opacity: 1; }
+  .l-next { font: inherit; font-weight: 700; font-size: 17px; min-height: 48px; padding: 8px 18px; border-radius: 8px;
+    border: none; background: var(--accent); color: var(--surface); cursor: pointer; }
+  .tick { font-size: 15px; color: var(--ink-soft); margin: 8px 0 0; }
+  .owner-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 20px; }
+  .owner-table th { text-align: left; font-size: 15px; color: var(--ink-soft); padding: 4px 6px; }
+  .owner-table td { padding: 6px; border-top: 1px solid var(--rule); }
+  .owner-table td b { color: var(--tag); }
+  .card.one { border-top: 10px solid var(--tag); } .card.many { border-top: 10px solid var(--box); } .card.ow { border-top: 10px solid var(--accent); }
+  .card.one h3 { color: var(--tag); } .card.many h3 { color: var(--box); } .card.ow h3 { color: var(--accent); }
+  .apos { color: var(--tag); font-weight: 700; font-size: 1.15em; }
+
+  /* ================= QUIZ BANK ENGINE (shared by every lesson; qb- prefix avoids clashes) ================= */
+  .qb { --qb-cols: 2; }
+  .qb-bar {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 3;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 10px 16px; margin: 0 0 18px; border-radius: var(--qb-radius);
+    background: var(--qb-bar); color: var(--qb-bar-ink);
+  }
+  .qb-label { font-size: 12.5px; opacity: 0.8; }
+  .qb-score { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 28px; line-height: 1.05; }
+  .qb-progress { font-size: 12.5px; opacity: 0.85; margin-top: 2px; }
+  .qb-new {
+    font: inherit; font-weight: 700; font-size: 14px; padding: 10px 16px; min-height: 44px;
+    border-radius: 999px; border: 2px solid currentColor; background: transparent; color: inherit; cursor: pointer;
+  }
+  .qb-list, .qb-summary { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 96px); }
+  .qb-card {
+    background: var(--qb-card); border: var(--qb-card-border); box-shadow: var(--qb-card-shadow);
+    border-radius: var(--qb-radius); padding: 16px 16px 14px; margin: 0 0 14px; color: var(--qb-ink);
+  }
+  .qb-speak {
+    float: right; margin: -4px 0 6px 10px; font: inherit; font-size: 13.5px; font-weight: 700;
+    padding: 7px 12px; min-height: 38px; border-radius: 999px; cursor: pointer;
+    border: 2px solid var(--qb-accent); background: var(--qb-accent-soft); color: var(--qb-ink);
+  }
+  .qb-num { font-size: 12.5px; color: var(--qb-soft); margin: 0 0 4px; }
+  .qb-ask { font-size: 13.5px; font-weight: 700; color: var(--qb-accent); margin: 0 0 6px; }
+  .qb-text { font-size: var(--qb-text-size, 16.5px); line-height: 1.6; margin: 0 0 14px; }
+  .qb-blank {
+    display: inline-block; min-width: 60px; padding: 0 3px; text-align: center;
+    border-bottom: 2.5px dashed var(--qb-soft); color: var(--qb-soft);
+  }
+  .qb-blank.qb-filled { border-bottom-style: solid; border-bottom-color: var(--qb-accent); color: var(--qb-accent); font-weight: 700; }
+  .qb-blank.qb-none { font-style: italic; font-weight: 400; }
+  .qb-opts { display: flex; flex-direction: column; gap: 9px; }
+  .qb-opts.qb-row { display: grid; grid-template-columns: repeat(var(--qb-cols), minmax(0, 1fr)); }
+  .qb-opt {
+    font: inherit; font-size: var(--qb-opt-size, 15.5px); line-height: 1.45; text-align: left; color: var(--qb-ink);
+    padding: 11px 14px; min-height: var(--qb-tap, 46px); border-radius: var(--qb-radius-opt);
+    border: 2px solid var(--qb-rule); background: var(--qb-page); cursor: pointer;
+  }
+  .qb-row .qb-opt { text-align: center; font-weight: 600; padding-left: 6px; padding-right: 6px; }
+  .qb-opt:not(:disabled):hover { border-color: var(--qb-accent); }
+  .qb-opt:disabled, .qb-part:disabled { cursor: default; }
+  .qb-letter { font-family: var(--qb-font); font-weight: var(--qb-font-weight); margin-right: 10px; color: var(--qb-accent); }
+  .qb-note { font-size: 12.5px; font-weight: 400; color: var(--qb-soft); }
+  .qb-punct { font-size: 22px; line-height: 0; font-weight: 700; }
+  .qb-spot { display: flex; flex-wrap: wrap; gap: 8px 6px; margin: 0 0 4px; }
+  .qb-part {
+    font: inherit; font-size: var(--qb-opt-size, 16px); line-height: 1.35; text-align: left; color: var(--qb-ink); cursor: pointer;
+    background: var(--qb-accent-soft); border: none; border-bottom: 3px dashed var(--qb-accent);
+    border-radius: 4px 4px 0 0; padding: 7px 9px; min-height: 40px;
+  }
+  .qb-opt.qb-correct, .qb-opt.qb-reveal { background: var(--qb-right-soft); border-color: var(--qb-right); }
+  .qb-opt.qb-incorrect { background: var(--qb-wrong-soft); border-color: var(--qb-wrong); }
+  .qb-part.qb-correct, .qb-part.qb-reveal { background: var(--qb-right-soft); border-bottom: 3px solid var(--qb-right); }
+  .qb-part.qb-incorrect { background: var(--qb-wrong-soft); border-bottom: 3px solid var(--qb-wrong); }
+  .qb-feedback { display: none; margin-top: 12px; padding-top: 12px; border-top: 2px dashed var(--qb-rule); font-size: 14px; line-height: 1.55; }
+  .qb-feedback.qb-show { display: block; }
+  .qb-verdict { display: block; font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 18px; margin-bottom: 2px; }
+  .qb-fb-ok .qb-verdict { color: var(--qb-right); }
+  .qb-fb-no .qb-verdict { color: var(--qb-wrong); }
+  .qb-summary {
+    background: var(--qb-card); color: var(--qb-ink); border: 3px solid var(--qb-accent);
+    border-radius: var(--qb-radius); padding: 18px 20px; margin-top: 8px;
+  }
+  .qb-summary h3 { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 30px; line-height: 1.1; margin: 0 0 6px; color: var(--qb-accent); }
+  .qb-summary p { margin: 0 0 10px; line-height: 1.55; }
+  .qb-sum-label { font-weight: 700; margin-top: 14px !important; }
+  .qb-areas { list-style: none; margin: 0 0 12px; padding: 0; }
+  .qb-areas li { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--qb-rule); }
+  .qb-areas a { color: var(--qb-ink); font-weight: 600; }
+  .qb-areas span { color: var(--qb-wrong); font-weight: 700; white-space: nowrap; }
+  .qb-meta { font-size: 13px; color: var(--qb-soft); }
+  .qb-go {
+    font: inherit; font-weight: 700; font-size: 16px; width: 100%; min-height: 50px; margin-top: 4px; cursor: pointer;
+    border: none; border-radius: var(--qb-radius); background: var(--qb-accent); color: var(--qb-on-accent);
+  }
+
+  /* Theme the quiz engine through these tokens only. */
+  :root {
+    --qb-page: var(--surface-2);
+    --qb-card: var(--surface);
+    --qb-ink: var(--ink);
+    --qb-soft: var(--ink-soft);
+    --qb-on-accent: var(--surface);
+    --qb-right: var(--right);
+    --qb-right-soft: var(--right-soft);
+    --qb-wrong: var(--wrong);
+    --qb-wrong-soft: var(--wrong-soft);
+    --qb-rule: var(--rule);
+    --qb-bar-ink: var(--surface);
+    --qb-font: var(--font-display);
+    --qb-font-weight: var(--display-weight, 400);
+    --qb-radius: var(--r-card, 18px);
+    --qb-radius-opt: 14px;
+    --qb-card-border: none;
+    --qb-card-shadow: none;
+    --qb-text-size: 21px;
+    --qb-opt-size: 19px;
+    --qb-tap: 56px;
+    --qb-accent: var(--accent);
+    --qb-accent-soft: var(--accent-soft);
+    --qb-bar: var(--accent);
+  }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back-link" href="index.html#lower">← Back to the shelf</a>
+
+  <!-- 1. HERO -->
+  <header class="hero">
+    <h1>Whose Is It? <span>Lost and Found</span></h1>
+    <p class="lead">Things got lost at school! Pick the right <b>label</b> so each thing goes back to its owner. <button class="say" type="button" data-say="Things got lost at school! Pick the right label so each thing goes back to its owner.">🔊</button></p>
+    <div class="counter">
+      <span class="counter-sign">📦 LOST AND FOUND</span>
+      <div class="lost"><span class="e" id="lostE">🧢</span><p id="lostWho">This cap belongs to Ravi.<small>Which label is right?</small></p></div>
+      <div class="labels" id="labels"></div>
+      <p class="hmsg" id="lostMsg" aria-live="polite"></p>
+      <button class="l-next" id="lostNext" type="button" hidden>Next thing →</button>
+      <p class="tick" id="lostCount"></p>
+    </div>
+  </header>
+
+  <!-- 2. THE RULE -->
+  <section id="rule">
+    <h2>Three ways to say whose</h2>
+    <p class="sub">Ask: who is the owner?</p>
+    <div class="steps">
+      <div class="step"><span class="n">1</span><div><p><b>One owner?</b> Add <span class="apos">'s</span>. <button class="say" type="button" data-say="One owner? Add apostrophe s. Ravi's bag. The cat's bowl.">🔊</button></p>
+        <p class="hint">Ravi<span class="apos">'s</span> bag · the cat<span class="apos">'s</span> bowl</p></div></div>
+      <div class="step"><span class="n">2</span><div><p><b>Many owners, ending in s?</b> Just add <span class="apos">'</span> after the s. <button class="say" type="button" data-say="Many owners, ending in s? Just add an apostrophe after the s. The ducks' pond.">🔊</button></p>
+        <p class="hint">the ducks<span class="apos">'</span> pond 🦆🦆</p></div></div>
+      <div class="step"><span class="n">3</span><div><p><b>No name?</b> Use an owner word: <b>my</b> bag, or the bag is <b>mine</b>. <button class="say" type="button" data-say="No name? Use an owner word. My bag. The bag is mine.">🔊</button></p></div></div>
+    </div>
+  </section>
+
+  <!-- 3. THE TRAPS -->
+  <section id="traps">
+    <h2>Watch out!</h2>
+    <p class="sub">Two mistakes with the little mark '.</p>
+    <div class="traps">
+      <div class="trap">
+        <h3>Don't forget it on names</h3>
+        <p>Without the mark, "Ravis" sounds like many Ravis! <button class="say" type="button" data-say="Don't forget it on names. Ravi's bag needs the little mark. Ali's eraser.">🔊</button></p>
+        <p class="eg"><span class="no">Ravis bag</span> → <span class="yes">Ravi's bag</span></p>
+        <p class="eg"><span class="no">Alis eraser</span> → <span class="yes">Ali's eraser</span></p>
+      </div>
+      <div class="trap">
+        <h3>Owner words never have one</h3>
+        <p>yours, hers, ours, theirs and mine have <b>no</b> ' at all. <button class="say" type="button" data-say="Owner words never have one. Yours, hers, ours, theirs and mine have no apostrophe at all. The bag is yours. The bike is mine.">🔊</button></p>
+        <p class="eg"><span class="no">your's</span> → <span class="yes">yours</span> · <span class="no">her's</span> → <span class="yes">hers</span></p>
+        <p class="eg"><span class="no">their's</span> → <span class="yes">theirs</span> · <span class="no">mine's</span> → <span class="yes">mine</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. CASES -->
+  <section id="cases">
+    <h2>The labels</h2>
+    <p class="sub">Three kinds of label for the lost things.</p>
+    <div class="cards">
+      <div class="card one" id="one-owner"><h3>One owner: 's</h3>
+        <p class="eg">Siti<span class="apos">'s</span> pencil ✏️</p><p class="eg">Dad<span class="apos">'s</span> hat 🎩</p><p class="eg">the dog<span class="apos">'s</span> bowl 🐶</p>
+        <button class="say" type="button" data-say="One owner: add apostrophe s. Siti's pencil. Dad's hat. The dog's bowl.">🔊</button></div>
+      <div class="card many" id="many-owners"><h3>Many owners: s'</h3>
+        <p>The word already ends in <b>s</b>, so just add <span class="apos">'</span>. <button class="say" type="button" data-say="Many owners. The word already ends in s, so just add the apostrophe. The ducks' pond. The girls' room. The cats' toys.">🔊</button></p>
+        <p class="eg">the ducks<span class="apos">'</span> pond 🦆🦆🦆</p><p class="eg">the girls<span class="apos">'</span> room 👧👧</p><p class="eg">the cats<span class="apos">'</span> toys 🐱🐱</p></div>
+      <div class="card ow" id="owner-words"><h3>Owner words</h3>
+        <p>Thing next? Use the first word. Nothing next? Use the second. <button class="say" type="button" data-say="Owner words. If a thing comes next, use the first word. If nothing comes next, use the second word. My bag. The bag is mine. Your book. The book is yours. His cap. The cap is his. Her doll. The doll is hers. Our car. The car is ours. Their seats. The seats are theirs.">🔊</button></p>
+        <table class="owner-table">
+          <tr><th>who</th><th>thing next</th><th>nothing next</th></tr>
+          <tr><td>I</td><td><b>my</b> bag</td><td>it is <b>mine</b></td></tr>
+          <tr><td>you</td><td><b>your</b> book</td><td>it is <b>yours</b></td></tr>
+          <tr><td>he</td><td><b>his</b> cap</td><td>it is <b>his</b></td></tr>
+          <tr><td>she</td><td><b>her</b> doll</td><td>it is <b>hers</b></td></tr>
+          <tr><td>we</td><td><b>our</b> car</td><td>it is <b>ours</b></td></tr>
+          <tr><td>they</td><td><b>their</b> seats</td><td>they are <b>theirs</b></td></tr>
+        </table></div>
+    </div>
+  </section>
+
+  <!-- 5. SPECIAL CASES -->
+  <section id="specials">
+    <h2>Surprise owners</h2>
+    <p class="sub">Remember the surprise words from Lesson 9?</p>
+    <div class="specials">
+      <div class="special" id="surprise-owners"><h3>No s at the end? Add 's</h3>
+        <ul>
+          <li>children → the <b>children<span class="apos">'s</span></b> playground</li>
+          <li>men → the <b>men<span class="apos">'s</span></b> toilet</li>
+          <li>women → the <b>women<span class="apos">'s</span></b> team</li>
+        </ul>
+        <p>These mean many people, but they don't end in s. So they get <span class="apos">'s</span>. <button class="say" type="button" data-say="No s at the end? Add apostrophe s. The children's playground. The men's toilet. The women's team. These mean many people, but they don't end in s. So they get apostrophe s.">🔊</button></p></div>
+      <div class="special"><h3>Many teachers, one room</h3>
+        <p>Lots of teachers share one staff room. Teachers ends in s, so: the <b>teachers<span class="apos">'</span></b> room.</p>
+        <p>One teacher's bag: the <b>teacher<span class="apos">'s</span></b> bag. <button class="say" type="button" data-say="Many teachers, one room. Lots of teachers share one staff room. Teachers ends in s, so: the teachers' room. One teacher's bag: the teacher's bag.">🔊</button></p></div>
+    </div>
+  </section>
+
+  <!-- 6. PRACTICE -->
+  <section id="practice">
+    <h2>Your turn!</h2>
+    <p class="sub">Answer <span id="qbDraw">10</span> questions. Tap 🔊 to hear each one. Every time you play, you get new questions! <span hidden id="qbBank">61</span></p>
+    <div class="qb" id="qb">
+      <div class="qb-bar">
+        <div><div class="qb-label">Your score</div><div class="qb-score" id="qbScore">0 / 10</div><div class="qb-progress" id="qbProgress">0 of 10 answered</div></div>
+        <button class="qb-new" id="qbNew" type="button">New quiz</button>
+      </div>
+      <div class="qb-list" id="qbList"></div>
+      <div class="qb-summary" id="qbSummary" hidden></div>
+    </div>
+  </section>
+
+  <!-- 7. PIN THIS UP -->
+  <section class="pin">
+    <h2>Pin This Up</h2>
+    <ul>
+      <li>One owner: <span class="tg">'s</span>. Ravi's bag</li>
+      <li>Many owners ending in s: <span class="tg">'</span>. the ducks' pond</li>
+      <li>No s at the end: <span class="tg">'s</span>. the children's playground</li>
+      <li><b>my</b> bag, the bag is <b>mine</b> (your/yours, her/hers, our/ours, their/theirs)</li>
+      <li>yours, hers, ours, theirs, mine: <b>no</b> ' ever!</li>
+    </ul>
+    <p class="chant">Ravi's cap and the ducks' pond,<br>the children's ball, of which they're fond!<br>Is it yours? Is it mine?<br>No little mark, and that's just fine!</p>
+  </section>
+
+  <footer>My Grammar Shelf · Lower shelf, Lesson 14</footer>
+</div>
+
+<script>
+(function () {
+
+  const canSpeak = !!window.speechSynthesis && typeof window.speechSynthesis.speak === 'function' && typeof SpeechSynthesisUtterance !== 'undefined';
+  function sayIt(text) {
+    try { window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'en-GB'; u.rate = 0.9; window.speechSynthesis.speak(u); } catch (e) {}
+  }
+  if (canSpeak) {
+    document.body.classList.add('can-speak');
+    document.querySelectorAll('.say').forEach(b => {
+      b.setAttribute('aria-label', 'Read this aloud');
+      b.addEventListener('click', () => sayIt(b.dataset.say));
+    });
+  }
+
+  /* ---------- Hero ---------- */
+  /* [emoji, owner line, right label, wrong, wrong, why] */
+  const LOST = [
+    ['🧢', 'This cap belongs to Ravi.', "Ravi's cap", 'Ravis cap', "Ravis' cap", "One owner, Ravi: add 's."],
+    ['🦆', 'This pond belongs to three ducks.', "the ducks' pond", "the duck's pond", 'the ducks pond', "Many ducks, ending in s: just add ' after the s."],
+    ['🎒', 'This bag belongs to me.', 'The bag is mine.', "The bag is mine's.", 'The bag is my.', 'Nothing comes after it, so: mine. No mark!'],
+    ['⚽', 'This ball belongs to the children.', "the children's ball", "the childrens' ball", 'the childrens ball', "Children doesn't end in s, so add 's."],
+    ['🧸', 'This teddy belongs to Mei.', 'The teddy is hers.', "The teddy is her's.", 'The teddy is her.', 'Nothing comes after it, so: hers. No mark!'],
+    ['🐱', 'This bowl belongs to the cat.', "the cat's bowl", 'the cats bowl', "the cats' bowl", "One owner, the cat: add 's."],
+    ['🚲', 'This bike belongs to you.', 'The bike is yours.', "The bike is your's.", 'The bike is your.', 'Nothing comes after it, so: yours. No mark!']
+  ];
+  const lostE = document.getElementById('lostE'), lostWho = document.getElementById('lostWho'), labelsEl = document.getElementById('labels');
+  const lostMsg = document.getElementById('lostMsg'), lostNext = document.getElementById('lostNext'), lostCount = document.getElementById('lostCount');
+  let lostN = 0, returned = 0;
+  function showLost() {
+    const t = LOST[lostN];
+    lostE.textContent = t[0];
+    lostWho.innerHTML = t[1] + '<small>Which label is right?</small>';
+    lostMsg.textContent = ''; lostNext.hidden = true; labelsEl.innerHTML = '';
+    const opts = [t[2], t[3], t[4]];
+    for (let i = opts.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [opts[i], opts[j]] = [opts[j], opts[i]]; }
+    opts.forEach(o => {
+      const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'label'; btn.textContent = o;
+      btn.addEventListener('click', () => {
+        if (o === t[2]) {
+          btn.classList.add('got');
+          labelsEl.querySelectorAll('button').forEach(x => x.disabled = true);
+          lostMsg.innerHTML = '<b class="good">Back to its owner!</b> ' + t[5];
+          returned++; lostCount.textContent = '✅ ' + returned + ' returned';
+          if (canSpeak) sayIt(o);
+          lostNext.hidden = false; lostNext.textContent = lostN === LOST.length - 1 ? 'Start again ↺' : 'Next thing →';
+        } else {
+          lostMsg.innerHTML = '<b class="try">Good try!</b> Who is the owner? One, or many? Does a thing come after it?';
+        }
+      });
+      labelsEl.appendChild(btn);
+    });
+  }
+  lostNext.addEventListener('click', () => { lostN = (lostN + 1) % LOST.length; showLost(); });
+  showLost();
+
+  { /* qb-start: quiz engine in its own scope, so its names can't clash with the lesson's */
+  /* ================= QUIZ: question bank (61 questions) ================= */
+  const LESSON_KEY = "shelf-lower-14";
+  const QB_BANDS = [4, 4, 2];
+  const QB_TEXT = {"speak": true, "right": ["Well done!", "Great job!", "You got it!", "Super!"], "wrong": "Good try!", "summary": {"perfect": "All correct! Everything is back with its owner! Try a new set!", "high": "Great work! Look at the part below, then try a new set.", "mid": "Good effort! Read the parts below again, then try a new set.", "low": "Let's look at the lesson again together, then try a new set.", "review": "Have another look at"}, "ask": {"check": "Is this right?", "pick": "Which one is right?", "fill": "Which word fits?", "spot": "Tap the word with the mistake."}, "yn": ["Wrong", "Right"]};
+  const TAGS = {
+    one: { label: "One owner: Ravi's bag", href: '#one-owner' },
+    many: { label: "Many owners: the ducks' pond", href: '#many-owners' },
+    kids: { label: "children's, men's, women's", href: '#surprise-owners' },
+    mymine: { label: "my bag, or the bag is mine?", href: '#owner-words' },
+    owners: { label: "his, her, our, their", href: '#owner-words' },
+    noapos: { label: "Trap: yours, not your's", href: '#traps' },
+  };
+  const BANK = [
+    {"id": "a01", "t": "fill", "d": 1, "tag": "one", "q": "This is ___ bag.", "o": ["Ravi's", "Ravis"], "why": "One owner, Ravi: add 's. Ravi's bag."},
+    {"id": "a02", "t": "fill", "d": 1, "tag": "one", "q": "The ___ tail is long.", "o": ["cat's", "cats"], "why": "One owner, the cat: add 's. The cat's tail."},
+    {"id": "a03", "t": "fill", "d": 1, "tag": "one", "q": "That is ___ hat.", "o": ["Dad's", "Dads"], "why": "One owner, Dad: add 's. Dad's hat."},
+    {"id": "a04", "t": "fill", "d": 2, "tag": "one", "q": "We played at ___ house.", "o": ["Mei's", "Meis"], "why": "One owner, Mei: add 's. Mei's house."},
+    {"id": "a05", "t": "fill", "d": 2, "tag": "one", "q": "The ___ bowl is empty. He is hungry!", "o": ["dog's", "dogs"], "why": "One owner, the dog: add 's. The dog's bowl."},
+    {"id": "a06", "t": "check", "d": 1, "tag": "one", "q": "This is Siti's pencil.", "a": 1, "why": "One owner, Siti: Siti's. Right!"},
+    {"id": "a07", "t": "check", "d": 1, "tag": "one", "q": "I found Alis eraser.", "a": 0, "why": "One owner needs 's: Ali's eraser."},
+    {"id": "a08", "t": "check", "d": 2, "tag": "one", "q": "Grandma's kueh is the best.", "a": 1, "why": "One owner, Grandma: Grandma's. Right!"},
+    {"id": "a09", "t": "spot", "d": 2, "tag": "one", "parts": ["We went to", "Jun Weis", "birthday party", "on Sunday."], "a": 1, "why": "One owner needs 's: Jun Wei's party.", "ask": "Tap the word with the mistake."},
+    {"id": "a10", "t": "pick", "d": 3, "tag": "one", "ask": "Which one is right?", "o": ["Priya's book", "Priyas book", "Priyas' book"], "why": "One owner, Priya: add 's.", "q": "The book belongs to Priya."},
+    {"id": "a11", "t": "check", "d": 3, "tag": "one", "q": "Our teacher's bag is on the desk.", "a": 1, "why": "One owner, our teacher: teacher's. Right!"},
+    {"id": "b01", "t": "fill", "d": 1, "tag": "many", "q": "One cat: the cat's toy. Many cats: the ___ toys.", "o": ["cats'", "cat's"], "why": "Many cats, ending in s: just add ' after the s."},
+    {"id": "b02", "t": "fill", "d": 2, "tag": "many", "q": "Two ducks share a pond. It is the ___ pond.", "o": ["ducks'", "duck's"], "why": "Two ducks, ending in s: the ducks' pond."},
+    {"id": "b03", "t": "fill", "d": 2, "tag": "many", "q": "Three girls share a room. It is the ___ room.", "o": ["girls'", "girl's"], "why": "Three girls, ending in s: the girls' room."},
+    {"id": "b04", "t": "fill", "d": 2, "tag": "many", "q": "My two brothers share a bike. It is my ___ bike.", "o": ["brothers'", "brother's"], "why": "Two brothers, ending in s: my brothers' bike."},
+    {"id": "b05", "t": "fill", "d": 3, "tag": "many", "q": "Many birds built nests here. Look at the ___ nests!", "o": ["birds'", "bird's"], "why": "Many birds, ending in s: the birds' nests."},
+    {"id": "b06", "t": "check", "d": 2, "tag": "many", "q": "Two cats share one bed. It is the cat's bed.", "a": 0, "why": "Two cats, ending in s: the cats' bed."},
+    {"id": "b07", "t": "pick", "d": 2, "tag": "many", "ask": "Whose pond is it?", "o": ["the ducks' pond", "the duck's pond", "the ducks pond"], "why": "Many ducks, ending in s: add ' after the s.", "q": "Many ducks share a pond."},
+    {"id": "b08", "t": "pick", "d": 3, "tag": "many", "ask": "Whose tent is it?", "o": ["the boys' tent", "the boy's tent", "the boys tent"], "why": "Four boys, ending in s: the boys' tent.", "q": "Four boys share a tent."},
+    {"id": "b09", "t": "check", "d": 3, "tag": "many", "q": "Two girls share a locker. It is the girls' locker.", "a": 1, "why": "Two girls, ending in s: girls'. Right!"},
+    {"id": "b10", "t": "check", "d": 3, "tag": "many", "q": "All the puppies sleep in one basket. It is the puppies' basket.", "a": 1, "why": "Many puppies, ending in s: puppies'. Right!"},
+    {"id": "c01", "t": "fill", "d": 2, "tag": "kids", "q": "This is the ___ playground.", "o": ["children's", "childrens'"], "why": "Children doesn't end in s, so add 's: children's."},
+    {"id": "c02", "t": "fill", "d": 2, "tag": "kids", "q": "The ___ toilet is over there.", "o": ["men's", "mens'"], "why": "Men doesn't end in s, so add 's: men's."},
+    {"id": "c03", "t": "fill", "d": 3, "tag": "kids", "q": "We read the ___ books in the library corner.", "o": ["children's", "childrens'"], "why": "Children doesn't end in s, so add 's: children's."},
+    {"id": "c04", "t": "check", "d": 2, "tag": "kids", "q": "The children's toys are on the floor.", "a": 1, "why": "Children doesn't end in s, so: children's. Right!"},
+    {"id": "c05", "t": "check", "d": 3, "tag": "kids", "q": "The womens' team won.", "a": 0, "why": "Women doesn't end in s, so add 's: women's."},
+    {"id": "c06", "t": "pick", "d": 3, "tag": "kids", "ask": "Which one is right?", "o": ["the children's party", "the childrens' party", "the childrens party"], "why": "Children doesn't end in s, so add 's: children's."},
+    {"id": "c07", "t": "check", "d": 3, "tag": "kids", "q": "The men's shoes are on sale.", "a": 1, "why": "Men doesn't end in s, so: men's. Right!"},
+    {"id": "c08", "t": "fill", "d": 3, "tag": "kids", "q": "Many teachers share one room. It is the ___ room.", "o": ["teachers'", "teacher's"], "why": "Many teachers share it. Teachers ends in s: teachers'."},
+    {"id": "d01", "t": "fill", "d": 1, "tag": "mymine", "q": "This is ___ bag.", "o": ["my", "mine"], "why": "A thing comes next (bag), so: my bag."},
+    {"id": "d02", "t": "fill", "d": 1, "tag": "mymine", "q": "This bag is ___.", "o": ["mine", "my"], "why": "Nothing comes next, so: mine."},
+    {"id": "d03", "t": "fill", "d": 1, "tag": "mymine", "q": "Is this ___ book?", "o": ["your", "yours"], "why": "A thing comes next (book), so: your book."},
+    {"id": "d04", "t": "fill", "d": 2, "tag": "mymine", "q": "The red pencil is ___.", "o": ["yours", "your"], "why": "Nothing comes next, so: yours."},
+    {"id": "d05", "t": "fill", "d": 2, "tag": "mymine", "q": "That is ___ house.", "o": ["our", "ours"], "why": "A thing comes next (house), so: our house."},
+    {"id": "d06", "t": "fill", "d": 2, "tag": "mymine", "q": "The blue car is ___.", "o": ["ours", "our"], "why": "Nothing comes next, so: ours."},
+    {"id": "d07", "t": "fill", "d": 3, "tag": "mymine", "q": "These seats are ___.", "o": ["theirs", "their"], "why": "Nothing comes next, so: theirs."},
+    {"id": "d08", "t": "check", "d": 1, "tag": "mymine", "q": "This is mine bag.", "a": 0, "why": "A thing comes next (bag), so: my bag."},
+    {"id": "d09", "t": "check", "d": 2, "tag": "mymine", "q": "The kite is mine.", "a": 1, "why": "Nothing comes next, so: mine. Right!"},
+    {"id": "d10", "t": "check", "d": 2, "tag": "mymine", "q": "Is this book your?", "a": 0, "why": "Nothing comes next, so: yours."},
+    {"id": "d11", "t": "check", "d": 3, "tag": "mymine", "q": "Their house is near ours.", "a": 1, "why": "Their house (a thing comes next), ours (nothing next). Right!"},
+    {"id": "d12", "t": "pick", "d": 2, "tag": "mymine", "ask": "Which one is right?", "o": ["This pen is hers.", "This pen is her.", "This is hers pen."], "why": "Nothing comes next, so: hers."},
+    {"id": "e01", "t": "fill", "d": 1, "tag": "owners", "q": "Ravi lost ___ cap.", "o": ["his", "her"], "why": "Ravi is a boy, so: his."},
+    {"id": "e02", "t": "fill", "d": 1, "tag": "owners", "q": "Mei loves ___ doll.", "o": ["her", "his"], "why": "Mei is a girl, so: her."},
+    {"id": "e03", "t": "fill", "d": 1, "tag": "owners", "q": "We cleaned ___ classroom.", "o": ["our", "their"], "why": "We goes with our."},
+    {"id": "e04", "t": "fill", "d": 2, "tag": "owners", "q": "The twins brought ___ lunchboxes.", "o": ["their", "our"], "why": "The twins are \"they\", so: their."},
+    {"id": "e05", "t": "fill", "d": 2, "tag": "owners", "q": "I washed ___ hands.", "o": ["my", "your"], "why": "I goes with my."},
+    {"id": "e06", "t": "fill", "d": 2, "tag": "owners", "q": "Arjun says the kite is ___.", "o": ["his", "hers"], "why": "Arjun is a boy, so: his."},
+    {"id": "e07", "t": "check", "d": 1, "tag": "owners", "q": "Nurul brushed her teeth.", "a": 1, "why": "Nurul is a girl, so: her. Right!"},
+    {"id": "e08", "t": "check", "d": 2, "tag": "owners", "q": "Ali forgot her water bottle.", "a": 0, "why": "Ali is a boy, so: his water bottle."},
+    {"id": "e09", "t": "check", "d": 3, "tag": "owners", "q": "Mum and Dad washed their car.", "a": 1, "why": "Mum and Dad are \"they\", so: their. Right!"},
+    {"id": "e10", "t": "pick", "d": 3, "tag": "owners", "ask": "Which one is right?", "o": ["The bag is hers.", "The bag is his.", "The bag is theirs."], "why": "Siti is one girl, so: hers.", "q": "The bag belongs to Siti."},
+    {"id": "f01", "t": "fill", "d": 1, "tag": "noapos", "q": "The bag is ___.", "o": ["yours", "your's"], "why": "Owner words never have an apostrophe: yours."},
+    {"id": "f02", "t": "fill", "d": 1, "tag": "noapos", "q": "That ball is ___.", "o": ["hers", "her's"], "why": "Owner words never have an apostrophe: hers."},
+    {"id": "f03", "t": "fill", "d": 2, "tag": "noapos", "q": "This seat is ___.", "o": ["ours", "our's"], "why": "Owner words never have an apostrophe: ours."},
+    {"id": "f04", "t": "fill", "d": 2, "tag": "noapos", "q": "Those toys are ___.", "o": ["theirs", "their's"], "why": "Owner words never have an apostrophe: theirs."},
+    {"id": "f05", "t": "check", "d": 1, "tag": "noapos", "q": "This pencil is your's.", "a": 0, "why": "Owner words never have an apostrophe: yours."},
+    {"id": "f06", "t": "check", "d": 2, "tag": "noapos", "q": "The red cup is hers.", "a": 1, "why": "No apostrophe in hers. Right!"},
+    {"id": "f07", "t": "check", "d": 3, "tag": "noapos", "q": "The shoes are their's.", "a": 0, "why": "Owner words never have an apostrophe: theirs."},
+    {"id": "f08", "t": "spot", "d": 3, "tag": "noapos", "parts": ["Is", "this kite", "your's", "or mine?"], "a": 2, "why": "Owner words never have an apostrophe: yours.", "ask": "Tap the word with the mistake."},
+    {"id": "f09", "t": "pick", "d": 3, "tag": "noapos", "ask": "Which one is right?", "o": ["The cake is ours.", "The cake is our's.", "The cake is ours'."], "why": "Owner words never have an apostrophe: ours."},
+    {"id": "f10", "t": "check", "d": 3, "tag": "noapos", "q": "The bike is mine's.", "a": 0, "why": "Mine never takes 's: The bike is mine."},
+  ];
+
+  /* ================= QUIZ BANK ENGINE (shared by every lesson) =================
+     Needs, defined above it: LESSON_KEY, TAGS, BANK.
+     Optional: QB_BANDS = [easy, medium, tricky] questions per attempt (default 7/7/6 = 20);
+     QB_TEXT = { ask: {...}, yn: [...], right: [...], wrong: '...', speak: true, summary: {...} }.
+     Each attempt draws BAND_SIZES questions (easy, medium, tricky). The draw builds many
+     candidate quizzes and keeps the best: every tag present, 3+ of each type, balanced
+     check answers, unseen questions first. Options are shuffled; ids seen are remembered. */
+  const BAND_SIZES = (typeof QB_BANDS !== 'undefined') ? QB_BANDS : [7, 7, 6];
+  const DRAW = BAND_SIZES.reduce((a, b) => a + b, 0);
+  const TYPE_TARGET = Math.max(1, Math.min(3, Math.floor(DRAW / new Set(BANK.map(q => q.t)).size)));   // e.g. 20 Qs → 3 of each type, 10 Qs with 4 types → 2
+  const QBT = (typeof QB_TEXT !== 'undefined') ? QB_TEXT : {};
+  const ASK = Object.assign({
+    check: 'Is this sentence correct?',
+    pick:  'Pick the correct sentence.',
+    fill:  'Which choice fills the gap correctly?',
+    spot:  'Tap the part with the mistake.'
+  }, QBT.ask || {});
+  const YN = QBT.yn || ['Needs fixing', 'Correct'];
+  const RIGHT = QBT.right || ['Correct!'];
+  const WRONG = QBT.wrong || 'Not quite.';
+  const SUM = Object.assign({
+    perfect: 'A perfect run! Try another set to make sure it sticks.',
+    high: 'Strong work. Have a quick look at the areas below, then try a fresh set.',
+    mid: 'Good progress. Re-read the parts below before your next attempt.',
+    low: 'Worth another look at the lesson. Start with the areas below, then try a fresh set.',
+    review: 'Areas to review'
+  }, QBT.summary || {});
+  const CAN_SPEAK = !!QBT.speak && typeof window !== 'undefined' && !!window.speechSynthesis &&
+    typeof window.speechSynthesis.speak === 'function' && typeof SpeechSynthesisUtterance !== 'undefined';
+  function speak(text) {
+    try {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-GB'; u.rate = 0.9;
+      window.speechSynthesis.speak(u);
+    } catch (e) { /* no speech on this device */ }
+  }
+
+  const store = {
+    get(k, fallback) { try { const v = localStorage.getItem(LESSON_KEY + ':' + k); return v === null ? fallback : JSON.parse(v); } catch (e) { return fallback; } },
+    set(k, v) { try { localStorage.setItem(LESSON_KEY + ':' + k, JSON.stringify(v)); } catch (e) { /* storage unavailable: quiz still works */ } }
+  };
+  const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  function buildCandidate(seen) {
+    const chosen = [], tagN = {}, typeN = {};
+    let fixN = 0, okN = 0;
+    for (let band = 1; band <= 3; band++) {
+      const picks = [];
+      for (let k = 0; k < BAND_SIZES[band - 1]; k++) {
+        let best = null, bestScore = -Infinity;
+        BANK.forEach(q => {
+          if (q.d !== band || picks.includes(q)) return;
+          let s = Math.random() * 3;
+          if (!seen.has(q.id)) s += 6;
+          if (!tagN[q.tag]) s += 12;
+          s -= (typeN[q.t] || 0) * 1.2;
+          if ((typeN[q.t] || 0) < TYPE_TARGET) s += 3;   // nudge every type up to its target
+          if (q.t === 'check') { const lean = q.a === 0 ? fixN - okN : okN - fixN; if (lean >= 1) s -= 4; }
+          if (s > bestScore) { bestScore = s; best = q; }
+        });
+        if (!best) break;
+        picks.push(best);
+        tagN[best.tag] = (tagN[best.tag] || 0) + 1;
+        typeN[best.t] = (typeN[best.t] || 0) + 1;
+        if (best.t === 'check') { if (best.a === 0) fixN++; else okN++; }
+      }
+      chosen.push(...shuffle(picks));
+    }
+    return chosen;
+  }
+
+  function rateCandidate(c, seen) {
+    const tags = new Set(c.map(q => q.tag)).size;
+    const types = {};
+    c.forEach(q => types[q.t] = (types[q.t] || 0) + 1);
+    const used = [...new Set(BANK.map(q => q.t))];
+    const minType = Math.min(...used.map(t => types[t] || 0));
+    const checks = c.filter(q => q.t === 'check');
+    const lean = Math.abs(checks.filter(q => q.a === 0).length * 2 - checks.length);
+    return (tags === Object.keys(TAGS).length ? 10000 : tags * 500)
+         + (c.length === DRAW ? 5000 : 0)
+         + Math.min(minType, TYPE_TARGET) * 300
+         + (lean <= 2 ? 200 : 0)
+         + c.filter(q => !seen.has(q.id)).length * 10;
+  }
+
+  function drawQuiz() {
+    let seen = new Set(store.get('seen', []));
+    if (BANK.length - seen.size < DRAW) seen = new Set(store.get('last', []));   // new cycle, but skip the last attempt
+    let chosen = null, bestRate = -1;
+    for (let tries = 0; tries < 200; tries++) {
+      const c = buildCandidate(seen), r = rateCandidate(c, seen);
+      if (r > bestRate) { bestRate = r; chosen = c; }
+    }
+    chosen.forEach(q => seen.add(q.id));
+    store.set('seen', [...seen]);
+    store.set('last', chosen.map(q => q.id));
+    return chosen.map(q => {
+      if (q.t === 'pick' || q.t === 'fill') {
+        const opts = shuffle(q.o.map((text, i) => ({ text, ok: i === 0 })));
+        return { q, opts, answer: opts.findIndex(o => o.ok) };
+      }
+      if (q.t === 'check') return { q, opts: YN.map(text => ({ text })), answer: q.a };
+      return { q, opts: null, answer: q.a };
+    });
+  }
+
+  const listEl = document.getElementById('qbList');
+  const scoreEl = document.getElementById('qbScore');
+  const progressEl = document.getElementById('qbProgress');
+  const summaryEl = document.getElementById('qbSummary');
+  let current = [], score = 0, done = 0, missed = [];
+
+  function updateScore() {
+    scoreEl.textContent = score + ' / ' + current.length;
+    progressEl.textContent = done + ' of ' + current.length + ' answered';
+  }
+
+  /* Small or empty options are hard to see on a button, so label them. */
+  function optLabel(text) {
+    const t = text.trim();
+    if (t === '') return '<span class="qb-note">(nothing)</span>';
+    if (t === ',') return '<span class="qb-punct">,</span> <span class="qb-note">(a comma)</span>';
+    if (t === '.') return '<span class="qb-punct">.</span> <span class="qb-note">(a full stop)</span>';
+    if (t === '?') return '<span class="qb-punct">?</span> <span class="qb-note">(a question mark)</span>';
+    if (t === '!') return '<span class="qb-punct">!</span> <span class="qb-note">(an exclamation mark)</span>';
+    return esc(text);
+  }
+  function plainLabel(text) {
+    const t = text.trim();
+    return t === '' ? 'nothing' : t === ',' ? 'a comma' : t === '.' ? 'a full stop'
+      : t === '?' ? 'a question mark' : t === '!' ? 'an exclamation mark' : '"' + t + '"';
+  }
+  function sentenceWithGap(q, text) {
+    let filler = '<span class="qb-blank">___</span>';
+    if (text !== undefined) {
+      filler = text.trim() === ''
+        ? '<span class="qb-blank qb-filled qb-none">(nothing)</span>'
+        : '<span class="qb-blank qb-filled">' + esc(text) + '</span>';
+    }
+    return esc(q.q).replace('___', filler);
+  }
+
+  function render() {
+    listEl.innerHTML = '';
+    summaryEl.hidden = true;
+    current.forEach((item, i) => {
+      const q = item.q;
+      const card = document.createElement('div');
+      card.className = 'qb-card';
+      card.dataset.type = q.t;
+      let body;
+      if (q.t === 'spot') {
+        body = '<div class="qb-spot">' + q.parts.map((p, k) =>
+          '<button type="button" class="qb-part" data-k="' + k + '">' + esc(p) + '</button>').join('') + '</div>';
+      } else if (q.t === 'fill') {
+        const cols = item.opts.length;
+        body = '<p class="qb-text">' + sentenceWithGap(q) + '</p><div class="qb-opts qb-row" style="--qb-cols:' + cols + '"></div>';
+      } else if (q.t === 'check') {
+        body = '<p class="qb-text">' + esc(q.q) + '</p><div class="qb-opts qb-row"></div>';
+      } else {
+        body = (q.q ? '<p class="qb-text">' + esc(q.q) + '</p>' : '') + '<div class="qb-opts"></div>';
+      }
+      card.innerHTML =
+        (CAN_SPEAK ? '<button type="button" class="qb-speak" aria-label="Read this question aloud">🔊 Read it to me</button>' : '') +
+        '<p class="qb-num">Question ' + (i + 1) + ' of ' + current.length + '</p>' +
+        '<p class="qb-ask">' + esc(q.ask || ASK[q.t]) + '</p>' + body +
+        '<div class="qb-feedback" role="status"></div>';
+      if (CAN_SPEAK) {
+        const bits = [q.ask || ASK[q.t]];
+        if (q.t === 'spot') bits.push(q.parts.join(' '));
+        else if (q.q) bits.push(q.q.replace('___', 'blank'));
+        const sayOpt = t => { const x = t.trim(); return x === '' ? 'nothing' : x === '.' ? 'full stop' : x === ',' ? 'comma' : x === '?' ? 'question mark' : x === '!' ? 'exclamation mark' : x; };
+        if (q.t === 'pick' || q.t === 'fill') item.opts.forEach((o, j) => bits.push((q.t === 'pick' ? String.fromCharCode(65 + j) + ': ' : '') + sayOpt(o.text)));
+        if (q.t === 'check') bits.push(YN.join(', or '));
+        const spoken = bits.map(t => t.trim().replace(/[.\s]+$/, '')).filter(Boolean)
+          .map(t => /[?!]$/.test(t) ? t : t + '.').join(' ');
+        card.querySelector('.qb-speak').addEventListener('click', () => speak(spoken));
+      }
+      if (q.t === 'spot') {
+        card.querySelectorAll('.qb-part').forEach(b => b.addEventListener('click', () => answer(i, +b.dataset.k, card)));
+      } else {
+        const opts = card.querySelector('.qb-opts');
+        item.opts.forEach((o, j) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'qb-opt';
+          b.innerHTML = (q.t === 'pick' ? '<span class="qb-letter">' + String.fromCharCode(65 + j) + '</span>' : '') + optLabel(o.text);
+          b.addEventListener('click', () => answer(i, j, card));
+          opts.appendChild(b);
+        });
+      }
+      listEl.appendChild(card);
+    });
+    updateScore();
+  }
+
+  function answer(i, j, card) {
+    const item = current[i];
+    if (item.done) return;
+    item.done = true; done++;
+    const q = item.q, ok = j === item.answer;
+    if (ok) score++; else missed.push(q.tag);
+    card.querySelectorAll(q.t === 'spot' ? '.qb-part' : '.qb-opt').forEach((b, k) => {
+      b.disabled = true;
+      if (k === j) b.classList.add(ok ? 'qb-correct' : 'qb-incorrect');
+      else if (k === item.answer && !ok) b.classList.add('qb-reveal');
+    });
+    if (q.t === 'fill') card.querySelector('.qb-text').innerHTML = sentenceWithGap(q, item.opts[j].text);
+    let right;
+    if (q.t === 'spot') right = 'The mistake is in "' + esc(q.parts[item.answer]) + '".';
+    else if (q.t === 'pick') right = 'The answer is ' + String.fromCharCode(65 + item.answer) + '.';
+    else right = 'The answer is ' + esc(plainLabel(item.opts[item.answer].text)) + '.';
+    const fb = card.querySelector('.qb-feedback');
+    fb.classList.add('qb-show', ok ? 'qb-fb-ok' : 'qb-fb-no');
+    fb.innerHTML = '<span class="qb-verdict">' + (ok ? RIGHT[Math.floor(Math.random() * RIGHT.length)] : WRONG + ' ' + right) + '</span>' + esc(q.why);
+    updateScore();
+    if (done === current.length) showSummary();
+  }
+
+  function showSummary() {
+    const best = Math.max(store.get('best', 0), score);
+    store.set('best', best);
+    const attempts = store.get('attempts', 0) + 1;
+    store.set('attempts', attempts);
+    const counts = {};
+    missed.forEach(t => counts[t] = (counts[t] || 0) + 1);
+    const areas = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+    const n = current.length;
+    let msg;
+    if (score === n) msg = SUM.perfect;
+    else if (score >= Math.ceil(n * 0.8)) msg = SUM.high;
+    else if (score >= Math.ceil(n * 0.6)) msg = SUM.mid;
+    else msg = SUM.low;
+    summaryEl.innerHTML =
+      '<h3>You scored ' + score + ' / ' + n + '</h3><p>' + msg + '</p>' +
+      (areas.length ? '<p class="qb-sum-label">' + esc(SUM.review) + '</p><ul class="qb-areas">' + areas.map(t =>
+        '<li><a href="' + TAGS[t].href + '">' + esc(TAGS[t].label) + '</a><span>' + counts[t] + ' wrong</span></li>').join('') + '</ul>' : '') +
+      '<p class="qb-meta">Attempts on this device: ' + attempts + ' · Best score: ' + best + ' / ' + n + '</p>' +
+      '<button type="button" class="qb-go" id="qbAgain">Try ' + n + ' new questions</button>';
+    summaryEl.hidden = false;
+    document.getElementById('qbAgain').addEventListener('click', () => { newQuiz(); listEl.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    summaryEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function newQuiz() {
+    current = drawQuiz(); score = 0; done = 0; missed = [];
+    render();
+  }
+
+  const bankEl = document.getElementById('qbBank'), drawEl = document.getElementById('qbDraw');
+  if (bankEl) bankEl.textContent = BANK.length;
+  if (drawEl) drawEl.textContent = DRAW;
+  document.getElementById('qbNew').addEventListener('click', () => {
+    newQuiz();
+    listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  newQuiz();
+  } /* qb-end */
+})();
+</script>
+</body>
+</html>

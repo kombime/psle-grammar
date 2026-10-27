@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Near or Far? this, that, these, those</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔭</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rammetto+One&family=Hanken+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F2EAD8;
+    --surface: #FFFFFF;
+    --surface-2: #FBF7EE;
+    --ink: #1F1A12;
+    --ink-soft: #5E5444;
+    --accent: #145E8C;
+    --accent-soft: #D7E8F3;
+    --near: #2E7D32;
+    --near-soft: #DDF0DC;
+    --far: #145E8C;
+    --far-soft: #D7E8F3;
+    --sea: #9CCDE3;
+    --sand: #E6D3A8;
+    --rule: rgba(31,26,18,0.14);
+    --r-card: 16px;
+    --font-display: 'Rammetto One', 'Arial Rounded MT Bold', 'Trebuchet MS', sans-serif;
+    --font-body: 'Hanken Grotesk', -apple-system, 'Segoe UI', sans-serif;
+    --right: #1D7A45; --right-soft: #DCF1E3;
+    --wrong: #B3261E; --wrong-soft: #F9DEDC;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #17140E; --surface: #221E16; --surface-2: #2A251C; --ink: #F5EFE2; --ink-soft: #C3B9A5; --accent: #7FC3EC; --accent-soft: #16303F; --near: #8CD68F; --near-soft: #1A3219; --far: #7FC3EC; --far-soft: #16303F; --sea: #1D4255; --sand: #3A321F; --rule: rgba(245,239,226,0.16); --right: #72D69D; --right-soft: #17311F; --wrong: #F48D84; --wrong-soft: #3D1F1D; }
+  }
+  :root[data-theme="dark"] { --bg: #17140E; --surface: #221E16; --surface-2: #2A251C; --ink: #F5EFE2; --ink-soft: #C3B9A5; --accent: #7FC3EC; --accent-soft: #16303F; --near: #8CD68F; --near-soft: #1A3219; --far: #7FC3EC; --far-soft: #16303F; --sea: #1D4255; --sand: #3A321F; --rule: rgba(245,239,226,0.16); --right: #72D69D; --right-soft: #17311F; --wrong: #F48D84; --wrong-soft: #3D1F1D; }
+
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 19px; line-height: 1.55; }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 22px 18px 64px; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+  .back-link {
+    display: inline-block; margin: 0 0 20px; padding: 10px 16px; min-height: 44px;
+    font-weight: 700; font-size: 16px; color: var(--ink); text-decoration: none;
+    background: var(--surface); border: 2px solid var(--rule); border-radius: var(--r-btn, 999px);
+  }
+  h1, h2, h3 { font-family: var(--font-display); font-weight: var(--display-weight, 400); line-height: 1.12; }
+  h2 { font-size: 30px; margin: 0 0 8px; }
+  section { margin-bottom: 48px; }
+  .sub { color: var(--ink-soft); margin: 0 0 18px; }
+  .lead { font-size: 21px; margin: 0 0 18px; }
+  .no { color: var(--wrong); text-decoration: line-through; text-decoration-thickness: 2px; }
+  .yes { color: var(--right); font-weight: 700; }
+  .say {
+    display: none; font: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
+    padding: 6px 12px; min-height: 40px; margin-left: 6px; vertical-align: middle;
+    border-radius: 999px; border: 2px solid var(--accent); background: var(--accent-soft); color: var(--ink);
+  }
+  .can-speak .say { display: inline-block; }
+  .steps { display: grid; gap: 12px; }
+  .step { background: var(--surface); border-radius: var(--r-card, 18px); padding: 16px 18px; display: flex; gap: 14px; align-items: flex-start; }
+  .step .n { flex: 0 0 auto; width: 44px; height: 44px; border-radius: var(--r-num, 50%); display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 22px; background: var(--accent); color: var(--surface); }
+  .step p { margin: 0; font-size: 20px; }
+  .step .hint { font-size: 20px; margin-top: 6px; color: var(--ink-soft); }
+  .traps { display: grid; gap: 12px; }
+  .trap { background: var(--surface); border-radius: var(--r-card, 18px); padding: 18px; border-left: 8px solid var(--wrong); }
+  .trap h3 { margin: 0 0 6px; font-size: 24px; }
+  .trap p { margin: 0 0 10px; }
+  .eg { font-size: 21px; margin: 0 0 6px !important; }
+  .cards { display: grid; gap: 12px; }
+  .card { background: var(--surface); border-radius: var(--r-card, 18px); padding: 16px 18px; scroll-margin-top: 20px; }
+  .card h3 { margin: 0 0 6px; font-size: 26px; }
+  .card p { margin: 0 0 6px; }
+  .specials { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 520px) { .specials { grid-template-columns: 1fr; } }
+  .special { background: var(--surface-2); border-radius: var(--r-card, 18px); padding: 16px 18px; border: 3px dashed var(--accent); scroll-margin-top: 20px; }
+  .special h3 { margin: 0 0 6px; font-size: 24px; }
+  .special ul { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 2px; }
+  .special li { font-size: 20px; }
+  .special p { margin: 0 0 6px; }
+  .pin { background: var(--surface); border-radius: var(--r-card, 22px); padding: 20px; border: 3px solid var(--rule); }
+  .pin ul { margin: 0; padding-left: 22px; font-size: 20px; line-height: 1.7; }
+  .chant { margin: 16px 0 0; padding: 16px; border-radius: 16px; text-align: center; background: var(--accent-soft);
+    font-family: var(--font-display); font-size: 22px; line-height: 1.4; }
+  footer { text-align: center; font-size: 14px; color: var(--ink-soft); margin-top: 32px; }
+  .hmsg { margin: 10px 2px 0; font-size: 18px; min-height: 2.8em; }
+  .hmsg b.good { color: var(--right); } .hmsg b.try { color: var(--wrong); }
+
+
+  .nw { color: var(--near); font-weight: 700; } .fw { color: var(--far); font-weight: 700; }
+  .hero h1 { font-size: clamp(36px, 10vw, 54px); margin: 0 0 12px; }
+  .hero h1 .nw, .hero h1 .fw { font-weight: 400; }
+  .beach { border-radius: 16px; overflow: hidden; border: 3px solid var(--rule); background: var(--surface); }
+  .zones { display: grid; grid-template-columns: 1fr 1fr; }
+  .zone { padding: 10px; }
+  .zone.far { background: var(--sea); }
+  .zone.near { background: var(--sand); }
+  .zone h3 { font-family: var(--font-body); font-weight: 700; font-size: 16px; margin: 0 0 8px; color: var(--ink); }
+  .zone .things { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .thing { font: inherit; font-size: 15px; font-weight: 700; min-height: 70px; border-radius: 12px; cursor: pointer; color: var(--ink);
+    background: var(--surface); border: 3px solid transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4px 2px; }
+  .thing .e { font-size: 24px; line-height: 1.15; letter-spacing: -2px; }
+  .zone.far .thing .e { font-size: 17px; }
+  .thing[aria-pressed="true"] { border-color: var(--accent); }
+  .thing.done { opacity: .5; }
+  .pickbox { padding: 12px 14px 14px; }
+  .say-line { font-size: 22px; font-weight: 700; text-align: center; margin: 4px 0 10px; min-height: 1.5em; }
+  .grid4 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .w4 { font: inherit; font-family: var(--font-display); font-size: 20px; min-height: 64px; border-radius: 12px; cursor: pointer; border: 3px solid currentColor; }
+  .w4 small { display: block; font-family: var(--font-body); font-size: 13px; font-weight: 600; color: var(--ink-soft); }
+  .w4.n { color: var(--near); background: var(--near-soft); } .w4.f { color: var(--far); background: var(--far-soft); }
+  .w4:disabled { opacity: .45; cursor: default; }
+  .quad { display: grid; grid-template-columns: auto 1fr 1fr; gap: 6px; margin-top: 12px; text-align: center; font-size: 19px; }
+  .quad .h { font-weight: 700; color: var(--ink-soft); padding: 6px; }
+  .quad .q { border-radius: 12px; padding: 10px 6px; font-family: var(--font-display); font-size: 22px; }
+  .quad .q small { display: block; font-family: var(--font-body); font-size: 15px; color: var(--ink); }
+  .quad .q.n { background: var(--near-soft); color: var(--near); } .quad .q.f { background: var(--far-soft); color: var(--far); }
+  .words4 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 520px) { .words4 { grid-template-columns: 1fr; } }
+  .card.n { border-left: 10px solid var(--near); } .card.f { border-left: 10px solid var(--far); }
+  .card.n h3 { color: var(--near); } .card.f h3 { color: var(--far); }
+
+  /* ================= QUIZ BANK ENGINE (shared by every lesson; qb- prefix avoids clashes) ================= */
+  .qb { --qb-cols: 2; }
+  .qb-bar {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 3;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 10px 16px; margin: 0 0 18px; border-radius: var(--qb-radius);
+    background: var(--qb-bar); color: var(--qb-bar-ink);
+  }
+  .qb-label { font-size: 12.5px; opacity: 0.8; }
+  .qb-score { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 28px; line-height: 1.05; }
+  .qb-progress { font-size: 12.5px; opacity: 0.85; margin-top: 2px; }
+  .qb-new {
+    font: inherit; font-weight: 700; font-size: 14px; padding: 10px 16px; min-height: 44px;
+    border-radius: 999px; border: 2px solid currentColor; background: transparent; color: inherit; cursor: pointer;
+  }
+  .qb-list, .qb-summary { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 96px); }
+  .qb-card {
+    background: var(--qb-card); border: var(--qb-card-border); box-shadow: var(--qb-card-shadow);
+    border-radius: var(--qb-radius); padding: 16px 16px 14px; margin: 0 0 14px; color: var(--qb-ink);
+  }
+  .qb-speak {
+    float: right; margin: -4px 0 6px 10px; font: inherit; font-size: 13.5px; font-weight: 700;
+    padding: 7px 12px; min-height: 38px; border-radius: 999px; cursor: pointer;
+    border: 2px solid var(--qb-accent); background: var(--qb-accent-soft); color: var(--qb-ink);
+  }
+  .qb-num { font-size: 12.5px; color: var(--qb-soft); margin: 0 0 4px; }
+  .qb-ask { font-size: 13.5px; font-weight: 700; color: var(--qb-accent); margin: 0 0 6px; }
+  .qb-text { font-size: var(--qb-text-size, 16.5px); line-height: 1.6; margin: 0 0 14px; }
+  .qb-blank {
+    display: inline-block; min-width: 60px; padding: 0 3px; text-align: center;
+    border-bottom: 2.5px dashed var(--qb-soft); color: var(--qb-soft);
+  }
+  .qb-blank.qb-filled { border-bottom-style: solid; border-bottom-color: var(--qb-accent); color: var(--qb-accent); font-weight: 700; }
+  .qb-blank.qb-none { font-style: italic; font-weight: 400; }
+  .qb-opts { display: flex; flex-direction: column; gap: 9px; }
+  .qb-opts.qb-row { display: grid; grid-template-columns: repeat(var(--qb-cols), minmax(0, 1fr)); }
+  .qb-opt {
+    font: inherit; font-size: var(--qb-opt-size, 15.5px); line-height: 1.45; text-align: left; color: var(--qb-ink);
+    padding: 11px 14px; min-height: var(--qb-tap, 46px); border-radius: var(--qb-radius-opt);
+    border: 2px solid var(--qb-rule); background: var(--qb-page); cursor: pointer;
+  }
+  .qb-row .qb-opt { text-align: center; font-weight: 600; padding-left: 6px; padding-right: 6px; }
+  .qb-opt:not(:disabled):hover { border-color: var(--qb-accent); }
+  .qb-opt:disabled, .qb-part:disabled { cursor: default; }
+  .qb-letter { font-family: var(--qb-font); font-weight: var(--qb-font-weight); margin-right: 10px; color: var(--qb-accent); }
+  .qb-note { font-size: 12.5px; font-weight: 400; color: var(--qb-soft); }
+  .qb-punct { font-size: 22px; line-height: 0; font-weight: 700; }
+  .qb-spot { display: flex; flex-wrap: wrap; gap: 8px 6px; margin: 0 0 4px; }
+  .qb-part {
+    font: inherit; font-size: var(--qb-opt-size, 16px); line-height: 1.35; text-align: left; color: var(--qb-ink); cursor: pointer;
+    background: var(--qb-accent-soft); border: none; border-bottom: 3px dashed var(--qb-accent);
+    border-radius: 4px 4px 0 0; padding: 7px 9px; min-height: 40px;
+  }
+  .qb-opt.qb-correct, .qb-opt.qb-reveal { background: var(--qb-right-soft); border-color: var(--qb-right); }
+  .qb-opt.qb-incorrect { background: var(--qb-wrong-soft); border-color: var(--qb-wrong); }
+  .qb-part.qb-correct, .qb-part.qb-reveal { background: var(--qb-right-soft); border-bottom: 3px solid var(--qb-right); }
+  .qb-part.qb-incorrect { background: var(--qb-wrong-soft); border-bottom: 3px solid var(--qb-wrong); }
+  .qb-feedback { display: none; margin-top: 12px; padding-top: 12px; border-top: 2px dashed var(--qb-rule); font-size: 14px; line-height: 1.55; }
+  .qb-feedback.qb-show { display: block; }
+  .qb-verdict { display: block; font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 18px; margin-bottom: 2px; }
+  .qb-fb-ok .qb-verdict { color: var(--qb-right); }
+  .qb-fb-no .qb-verdict { color: var(--qb-wrong); }
+  .qb-summary {
+    background: var(--qb-card); color: var(--qb-ink); border: 3px solid var(--qb-accent);
+    border-radius: var(--qb-radius); padding: 18px 20px; margin-top: 8px;
+  }
+  .qb-summary h3 { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 30px; line-height: 1.1; margin: 0 0 6px; color: var(--qb-accent); }
+  .qb-summary p { margin: 0 0 10px; line-height: 1.55; }
+  .qb-sum-label { font-weight: 700; margin-top: 14px !important; }
+  .qb-areas { list-style: none; margin: 0 0 12px; padding: 0; }
+  .qb-areas li { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--qb-rule); }
+  .qb-areas a { color: var(--qb-ink); font-weight: 600; }
+  .qb-areas span { color: var(--qb-wrong); font-weight: 700; white-space: nowrap; }
+  .qb-meta { font-size: 13px; color: var(--qb-soft); }
+  .qb-go {
+    font: inherit; font-weight: 700; font-size: 16px; width: 100%; min-height: 50px; margin-top: 4px; cursor: pointer;
+    border: none; border-radius: var(--qb-radius); background: var(--qb-accent); color: var(--qb-on-accent);
+  }
+
+  /* Theme the quiz engine through these tokens only. */
+  :root {
+    --qb-page: var(--surface-2);
+    --qb-card: var(--surface);
+    --qb-ink: var(--ink);
+    --qb-soft: var(--ink-soft);
+    --qb-on-accent: var(--surface);
+    --qb-right: var(--right);
+    --qb-right-soft: var(--right-soft);
+    --qb-wrong: var(--wrong);
+    --qb-wrong-soft: var(--wrong-soft);
+    --qb-rule: var(--rule);
+    --qb-bar-ink: var(--surface);
+    --qb-font: var(--font-display);
+    --qb-font-weight: var(--display-weight, 400);
+    --qb-radius: var(--r-card, 18px);
+    --qb-radius-opt: 14px;
+    --qb-card-border: none;
+    --qb-card-shadow: none;
+    --qb-text-size: 21px;
+    --qb-opt-size: 19px;
+    --qb-tap: 56px;
+    --qb-accent: var(--accent);
+    --qb-accent-soft: var(--accent-soft);
+    --qb-bar: var(--accent);
+  }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back-link" href="index.html#lower">← Back to the shelf</a>
+
+  <!-- 1. HERO -->
+  <header class="hero">
+    <h1><span class="nw">Near</span> or <span class="fw">Far?</span></h1>
+    <p class="lead">At the beach, some things are <span class="nw">near</span>, right in your hands. Some are <span class="fw">far</span>, out at sea. Tap a thing, then pick the word! <button class="say" type="button" data-say="At the beach, some things are near, right in your hands. Some are far, out at sea. Tap a thing, then pick the word!">🔊</button></p>
+    <div class="beach">
+      <div class="zones">
+        <div class="zone far"><h3>🔭 Far away</h3><div class="things" id="farThings"></div></div>
+        <div class="zone near"><h3>🤲 Near, in my hands</h3><div class="things" id="nearThings"></div></div>
+      </div>
+      <div class="pickbox">
+        <p class="say-line" id="beachLine" aria-live="polite">Tap something on the beach!</p>
+        <div class="grid4" id="beachBtns">
+          <button class="w4 n" type="button" data-w="this" disabled>this<small>near · one</small></button>
+          <button class="w4 n" type="button" data-w="these" disabled>these<small>near · more</small></button>
+          <button class="w4 f" type="button" data-w="that" disabled>that<small>far · one</small></button>
+          <button class="w4 f" type="button" data-w="those" disabled>those<small>far · more</small></button>
+        </div>
+        <p class="hmsg" id="beachMsg" aria-live="polite"></p>
+      </div>
+    </div>
+  </header>
+
+  <!-- 2. THE RULE -->
+  <section id="rule">
+    <h2>Two questions</h2>
+    <p class="sub">Ask both, then find the word in the box.</p>
+    <div class="steps">
+      <div class="step"><span class="n">1</span><div><p><b>Near or far?</b> Near is here, in your hand. Far is over there. <button class="say" type="button" data-say="Question one. Near or far? Near is here, in your hand. Far is over there.">🔊</button></p></div></div>
+      <div class="step"><span class="n">2</span><div><p><b>One or more?</b> Is there one thing, or more than one? <button class="say" type="button" data-say="Question two. One or more? Is there one thing, or more than one?">🔊</button></p></div></div>
+    </div>
+    <div class="quad" role="table" aria-label="this, these, that, those">
+      <div class="h"></div><div class="h">one</div><div class="h">more</div>
+      <div class="h nw">near</div><div class="q n">this<small>this shell 🐚</small></div><div class="q n">these<small>these shells 🐚🐚</small></div>
+      <div class="h fw">far</div><div class="q f">that<small>that boat ⛵</small></div><div class="q f">those<small>those boats ⛵⛵</small></div>
+    </div>
+    <p><button class="say" type="button" data-say="Near and one: this. Near and more: these. Far and one: that. Far and more: those.">🔊 Read the box</button></p>
+  </section>
+
+  <!-- 3. THE TRAP -->
+  <section id="traps">
+    <h2>Watch out!</h2>
+    <p class="sub">The word and the thing must match: one with one, more with more.</p>
+    <div class="trap">
+      <p>"This" and "that" are for <b>one</b>. "These" and "those" are for <b>more than one</b>. <button class="say" type="button" data-say="This and that are for one. These and those are for more than one. These shoes, not this shoes. That book, not those book.">🔊</button></p>
+      <p class="eg"><span class="no">this shoes</span> → <span class="yes">these shoes</span> 👟👟</p>
+      <p class="eg"><span class="no">those book</span> → <span class="yes">that book</span> 📕</p>
+    </div>
+  </section>
+
+  <!-- 4. CASES -->
+  <section id="cases">
+    <h2>The four words</h2>
+    <p class="sub">Two near words, two far words.</p>
+    <div class="words4">
+      <div class="card n" id="word-this"><h3>this</h3><p>near · one</p>
+        <p class="eg">This apple in my hand is red. 🍎</p><p class="eg">I am holding this book.</p>
+        <button class="say" type="button" data-say="This. Near, and one. This apple in my hand is red. I am holding this book.">🔊</button></div>
+      <div class="card n" id="word-these"><h3>these</h3><p>near · more than one</p>
+        <p class="eg">These sweets in my hand are yummy. 🍬</p><p class="eg">I am wearing these shoes.</p>
+        <button class="say" type="button" data-say="These. Near, and more than one. These sweets in my hand are yummy. I am wearing these shoes.">🔊</button></div>
+      <div class="card f" id="word-that"><h3>that</h3><p>far · one</p>
+        <p class="eg">Look at that bird up in the sky! 🐦</p><p class="eg">That house over there is big.</p>
+        <button class="say" type="button" data-say="That. Far, and one. Look at that bird up in the sky! That house over there is big.">🔊</button></div>
+      <div class="card f" id="word-those"><h3>those</h3><p>far · more than one</p>
+        <p class="eg">Those clouds over there are dark. ☁️</p><p class="eg">Who are those children over there?</p>
+        <button class="say" type="button" data-say="Those. Far, and more than one. Those clouds over there are dark. Who are those children over there?">🔊</button></div>
+    </div>
+  </section>
+
+  <!-- 5. SPECIAL CASES -->
+  <section id="specials">
+    <h2>Two more things</h2>
+    <p class="sub">Good to know.</p>
+    <div class="specials">
+      <div class="special" id="isare"><h3>is or are?</h3>
+        <ul>
+          <li>this <b>is</b> · that <b>is</b></li>
+          <li>these <b>are</b> · those <b>are</b></li>
+        </ul>
+        <p><span class="no">These is my toys.</span><br><span class="yes">These are my toys.</span> <button class="say" type="button" data-say="Is or are? This is. That is. These are. Those are. These are my toys.">🔊</button></p></div>
+      <div class="special" id="not-them"><h3>those, not them</h3>
+        <p>Never put "them" in front of a thing. Say <b>those</b>.</p>
+        <p><span class="no">Look at them birds!</span><br><span class="yes">Look at those birds!</span> <button class="say" type="button" data-say="Those, not them. Never put them in front of a thing. Say those. Look at those birds!">🔊</button></p></div>
+    </div>
+  </section>
+
+  <!-- 6. PRACTICE -->
+  <section id="practice">
+    <h2>Your turn!</h2>
+    <p class="sub">Answer <span id="qbDraw">10</span> questions. Tap 🔊 to hear each one. Every time you play, you get new questions! <span hidden id="qbBank">60</span></p>
+    <div class="qb" id="qb">
+      <div class="qb-bar">
+        <div><div class="qb-label">Your score</div><div class="qb-score" id="qbScore">0 / 10</div><div class="qb-progress" id="qbProgress">0 of 10 answered</div></div>
+        <button class="qb-new" id="qbNew" type="button">New quiz</button>
+      </div>
+      <div class="qb-list" id="qbList"></div>
+      <div class="qb-summary" id="qbSummary" hidden></div>
+    </div>
+  </section>
+
+  <!-- 7. PIN THIS UP -->
+  <section class="pin">
+    <h2>Pin This Up</h2>
+    <ul>
+      <li>Near and one: <span class="nw">this</span>. Near and more: <span class="nw">these</span>.</li>
+      <li>Far and one: <span class="fw">that</span>. Far and more: <span class="fw">those</span>.</li>
+      <li>this cat, these cats (match the number!)</li>
+      <li>this <b>is</b>, these <b>are</b></li>
+      <li>those books, never "them books"</li>
+    </ul>
+    <p class="chant">This and these are here with me,<br>that and those are far at sea!<br>One gets this, and one gets that,<br>these and those for every hat!</p>
+  </section>
+
+  <footer>My Grammar Shelf · Lower shelf, Lesson 13</footer>
+</div>
+
+<script>
+(function () {
+
+  const canSpeak = !!window.speechSynthesis && typeof window.speechSynthesis.speak === 'function' && typeof SpeechSynthesisUtterance !== 'undefined';
+  function sayIt(text) {
+    try { window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'en-GB'; u.rate = 0.9; window.speechSynthesis.speak(u); } catch (e) {}
+  }
+  if (canSpeak) {
+    document.body.classList.add('can-speak');
+    document.querySelectorAll('.say').forEach(b => {
+      b.setAttribute('aria-label', 'Read this aloud');
+      b.addEventListener('click', () => sayIt(b.dataset.say));
+    });
+  }
+
+  /* ---------- Hero ---------- */
+  /* [emoji, near?, more than one?, thing words] */
+  const BEACH = [
+    ['⛵', false, false, 'boat'], ['🐦🐦🐦', false, true, 'birds'], ['🏝️', false, false, 'island'], ['☁️☁️', false, true, 'clouds'],
+    ['🐚', true, false, 'shell'], ['🐚🐚🐚', true, true, 'shells'], ['🍦', true, false, 'ice cream'], ['🦀🦀', true, true, 'crabs']
+  ];
+  const WORD = (near, more) => near ? (more ? 'these' : 'this') : (more ? 'those' : 'that');
+  const farEl = document.getElementById('farThings'), nearEl = document.getElementById('nearThings');
+  const line = document.getElementById('beachLine'), bMsg = document.getElementById('beachMsg');
+  const wbtns = document.querySelectorAll('.w4');
+  let beachPick = -1;
+  const allThings = [];
+  BEACH.forEach((t, i) => {
+    const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'thing'; btn.setAttribute('aria-pressed', 'false');
+    btn.innerHTML = '<span class="e">' + t[0] + '</span>' + t[3];
+    btn.addEventListener('click', () => {
+      beachPick = i;
+      allThings.forEach((x, k) => x.setAttribute('aria-pressed', k === i ? 'true' : 'false'));
+      line.textContent = 'Look at ____ ' + t[3] + '!';
+      wbtns.forEach(w => w.disabled = false); bMsg.textContent = '';
+    });
+    allThings.push(btn);
+    (t[1] ? nearEl : farEl).appendChild(btn);
+  });
+  wbtns.forEach(w => w.addEventListener('click', () => {
+    if (beachPick < 0) return;
+    const t = BEACH[beachPick], right = WORD(t[1], t[2]), chosen = w.dataset.w;
+    if (chosen === right) {
+      line.textContent = 'Look at ' + right + ' ' + t[3] + '!';
+      bMsg.innerHTML = '<b class="good">Yes!</b> ' + (t[1] ? 'Near' : 'Far') + ' and ' + (t[2] ? 'more than one' : 'one') + ': ' + right + '.';
+      allThings[beachPick].classList.add('done');
+      wbtns.forEach(x => x.disabled = true);
+      if (canSpeak) sayIt(line.textContent);
+    } else {
+      const cNear = chosen === 'this' || chosen === 'these', cMore = chosen === 'these' || chosen === 'those';
+      bMsg.innerHTML = '<b class="try">Good try!</b> ' + (cNear !== t[1]
+        ? 'Is it in your hands, or far away?' : (cMore !== t[2] ? 'Count them: one, or more than one?' : ''));
+    }
+  }));
+
+  { /* qb-start: quiz engine in its own scope, so its names can't clash with the lesson's */
+  /* ================= QUIZ: question bank (60 questions) ================= */
+  const LESSON_KEY = "shelf-lower-13";
+  const QB_BANDS = [4, 4, 2];
+  const QB_TEXT = {"speak": true, "right": ["Well done!", "Great job!", "You got it!", "Super!"], "wrong": "Good try!", "summary": {"perfect": "All correct! You can spot near and far! Try a new set!", "high": "Great work! Look at the part below, then try a new set.", "mid": "Good effort! Read the parts below again, then try a new set.", "low": "Let's look at the lesson again together, then try a new set.", "review": "Have another look at"}, "ask": {"check": "Is this right?", "pick": "Which one is right?", "fill": "Which word fits?", "spot": "Tap the word with the mistake."}, "yn": ["Wrong", "Right"]};
+  const TAGS = {
+    this: { label: "this: near, one", href: '#word-this' },
+    that: { label: "that: far, one", href: '#word-that' },
+    these: { label: "these: near, more than one", href: '#word-these' },
+    those: { label: "those: far, more than one", href: '#word-those' },
+    match: { label: "Trap: this cat, these cats", href: '#traps' },
+    isare: { label: "this is, these are", href: '#isare' },
+    them: { label: "those books, not them books", href: '#not-them' },
+  };
+  const BANK = [
+    {"id": "a01", "t": "fill", "d": 1, "tag": "this", "q": "___ apple in my hand is red.", "o": ["This", "That"], "why": "It's in my hand (near), and there is one: this."},
+    {"id": "a02", "t": "fill", "d": 1, "tag": "this", "q": "Look at ___ kitten on my lap!", "o": ["this", "those"], "why": "On my lap is near, and one kitten: this."},
+    {"id": "a03", "t": "fill", "d": 2, "tag": "this", "q": "I am holding ___ book.", "o": ["this", "that"], "why": "I'm holding it (near), and one book: this."},
+    {"id": "a04", "t": "fill", "d": 2, "tag": "this", "q": "___ pencil here is sharp.", "o": ["This", "Those"], "why": "Here is near, and one pencil: this."},
+    {"id": "a05", "t": "check", "d": 1, "tag": "this", "q": "This cup in my hand is hot.", "a": 1, "why": "In my hand is near, one cup: this. Right!"},
+    {"id": "a06", "t": "check", "d": 2, "tag": "this", "q": "That bag on my back is heavy.", "a": 0, "why": "On my back is near, so: This bag."},
+    {"id": "a07", "t": "pick", "d": 2, "tag": "this", "ask": "Which one is right?", "o": ["this shell", "that shell", "these shell"], "why": "Near and one: this shell.", "q": "The shell is in your hand."},
+    {"id": "a08", "t": "check", "d": 3, "tag": "this", "q": "Can you help me carry this box right here?", "a": 1, "why": "Right here is near, one box: this. Right!"},
+    {"id": "b01", "t": "fill", "d": 1, "tag": "that", "q": "Look at ___ bird far up in the sky!", "o": ["that", "this"], "why": "Far up in the sky, one bird: that."},
+    {"id": "b02", "t": "fill", "d": 1, "tag": "that", "q": "___ house over there is big.", "o": ["That", "This"], "why": "Over there is far, one house: that."},
+    {"id": "b03", "t": "fill", "d": 2, "tag": "that", "q": "Can you see ___ ship far away?", "o": ["that", "this"], "why": "Far away, one ship: that."},
+    {"id": "b04", "t": "check", "d": 1, "tag": "that", "q": "That plane up in the sky is fast.", "a": 1, "why": "Far up in the sky, one plane: that. Right!"},
+    {"id": "b05", "t": "check", "d": 2, "tag": "that", "q": "Look at this kite flying far away!", "a": 0, "why": "Far away, one kite: that kite."},
+    {"id": "b06", "t": "pick", "d": 2, "tag": "that", "ask": "Which one is right?", "o": ["that bus", "this bus", "those bus"], "why": "Far and one: that bus.", "q": "The bus is far down the road."},
+    {"id": "b07", "t": "spot", "d": 3, "tag": "that", "parts": ["Look at", "this", "aeroplane", "far up in the sky!"], "a": 1, "why": "Far up in the sky, one aeroplane: that.", "ask": "Tap the word with the mistake."},
+    {"id": "b08", "t": "fill", "d": 3, "tag": "that", "q": "Who lives in ___ flat across the road?", "o": ["that", "this"], "why": "Across the road is far, one flat: that."},
+    {"id": "c01", "t": "fill", "d": 1, "tag": "these", "q": "___ sweets in my hand are yummy.", "o": ["These", "Those"], "why": "In my hand (near), more than one: these."},
+    {"id": "c02", "t": "fill", "d": 1, "tag": "these", "q": "I am wearing ___ shoes.", "o": ["these", "those"], "why": "I'm wearing them (near), more than one: these."},
+    {"id": "c03", "t": "fill", "d": 2, "tag": "these", "q": "___ books right here on my desk are new.", "o": ["These", "Those"], "why": "Right here is near, more than one: these."},
+    {"id": "c04", "t": "check", "d": 1, "tag": "these", "q": "These flowers in my hand smell nice.", "a": 1, "why": "Near and more than one: these. Right!"},
+    {"id": "c05", "t": "check", "d": 2, "tag": "these", "q": "Those socks I am wearing are blue.", "a": 0, "why": "I'm wearing them, so they're near: These socks."},
+    {"id": "c06", "t": "pick", "d": 2, "tag": "these", "ask": "Which one is right?", "o": ["these marbles", "those marbles", "this marbles"], "why": "Near and more than one: these marbles.", "q": "The marbles are in your hand."},
+    {"id": "c07", "t": "spot", "d": 3, "tag": "these", "parts": ["Taste", "those", "cookies", "on my plate!"], "a": 1, "why": "On my plate is near, more than one: these.", "ask": "Tap the word with the mistake."},
+    {"id": "c08", "t": "fill", "d": 3, "tag": "these", "q": "Please hold ___ bags for me. Here you go!", "o": ["these", "those"], "why": "I'm handing them to you, so they're near: these."},
+    {"id": "d01", "t": "fill", "d": 1, "tag": "those", "q": "Look at ___ birds far up in the sky!", "o": ["those", "these"], "why": "Far away, more than one: those."},
+    {"id": "d02", "t": "fill", "d": 1, "tag": "those", "q": "___ clouds over there are dark.", "o": ["Those", "These"], "why": "Over there is far, more than one: those."},
+    {"id": "d03", "t": "fill", "d": 2, "tag": "those", "q": "Who are ___ children over there?", "o": ["those", "these"], "why": "Over there is far, more than one: those."},
+    {"id": "d04", "t": "check", "d": 1, "tag": "those", "q": "Those boats far out at sea are tiny.", "a": 1, "why": "Far away, more than one: those. Right!"},
+    {"id": "d05", "t": "check", "d": 2, "tag": "those", "q": "These stars far away are bright.", "a": 0, "why": "Far away, more than one: Those stars."},
+    {"id": "d06", "t": "pick", "d": 2, "tag": "those", "ask": "Which one is right?", "o": ["those ducks", "these ducks", "that ducks"], "why": "Far and more than one: those ducks.", "q": "The ducks are far across the pond."},
+    {"id": "d07", "t": "fill", "d": 3, "tag": "those", "q": "Can you see ___ monkeys up in the trees over there?", "o": ["those", "these"], "why": "Over there is far, more than one: those."},
+    {"id": "e01", "t": "fill", "d": 1, "tag": "match", "q": "this ___", "o": ["cat", "cats"], "why": "This is for one: this cat."},
+    {"id": "e02", "t": "fill", "d": 1, "tag": "match", "q": "these ___", "o": ["cats", "cat"], "why": "These is for more than one: these cats."},
+    {"id": "e03", "t": "fill", "d": 1, "tag": "match", "q": "that ___", "o": ["kite", "kites"], "why": "That is for one: that kite."},
+    {"id": "e04", "t": "fill", "d": 1, "tag": "match", "q": "those ___", "o": ["kites", "kite"], "why": "Those is for more than one: those kites."},
+    {"id": "e05", "t": "fill", "d": 2, "tag": "match", "q": "Look at ___ boxes here.", "o": ["these", "this"], "why": "Boxes is more than one, and here is near: these."},
+    {"id": "e06", "t": "fill", "d": 2, "tag": "match", "q": "___ toys over there are broken.", "o": ["Those", "That"], "why": "Toys is more than one, and over there is far: those."},
+    {"id": "e07", "t": "check", "d": 2, "tag": "match", "q": "I like this shoes.", "a": 0, "why": "Shoes is more than one, so not \"this\": these shoes."},
+    {"id": "e08", "t": "check", "d": 2, "tag": "match", "q": "Those buses are full.", "a": 1, "why": "Those goes with more than one. Right!"},
+    {"id": "e09", "t": "check", "d": 3, "tag": "match", "q": "That children over there are noisy.", "a": 0, "why": "Children is more than one: Those children."},
+    {"id": "e10", "t": "pick", "d": 3, "tag": "match", "ask": "Which one is right?", "o": ["these children", "this children", "those child"], "why": "Near and more than one: these children.", "q": "The children are next to you."},
+    {"id": "f01", "t": "fill", "d": 1, "tag": "isare", "q": "This ___ my bag.", "o": ["is", "are"], "why": "This is for one, so: is."},
+    {"id": "f02", "t": "fill", "d": 1, "tag": "isare", "q": "These ___ my shoes.", "o": ["are", "is"], "why": "These is for more than one, so: are."},
+    {"id": "f03", "t": "fill", "d": 2, "tag": "isare", "q": "That ___ a big ship.", "o": ["is", "are"], "why": "That is for one, so: is."},
+    {"id": "f04", "t": "fill", "d": 2, "tag": "isare", "q": "Those ___ my friends over there.", "o": ["are", "is"], "why": "Those is for more than one, so: are."},
+    {"id": "f05", "t": "check", "d": 1, "tag": "isare", "q": "These are my crayons.", "a": 1, "why": "These goes with are. Right!"},
+    {"id": "f06", "t": "check", "d": 2, "tag": "isare", "q": "Those is my cousins.", "a": 0, "why": "Those goes with are: Those are my cousins."},
+    {"id": "f07", "t": "check", "d": 3, "tag": "isare", "q": "This are my new toys.", "a": 0, "why": "Toys is more than one: These are my new toys."},
+    {"id": "f08", "t": "pick", "d": 3, "tag": "isare", "ask": "Which one is right?", "o": ["These are mangoes.", "These is mangoes.", "This are mangoes."], "why": "These goes with are."},
+    {"id": "f09", "t": "check", "d": 3, "tag": "isare", "q": "That is my school over there.", "a": 1, "why": "That goes with is. Right!"},
+    {"id": "g01", "t": "fill", "d": 1, "tag": "them", "q": "Pass me ___ books over there.", "o": ["those", "them"], "why": "Say \"those books\", never \"them books\"."},
+    {"id": "g02", "t": "fill", "d": 2, "tag": "them", "q": "I like ___ shoes over there in the window.", "o": ["those", "them"], "why": "Say \"those shoes\", never \"them shoes\"."},
+    {"id": "g03", "t": "check", "d": 1, "tag": "them", "q": "Look at them birds!", "a": 0, "why": "Say \"those birds\", never \"them birds\"."},
+    {"id": "g04", "t": "check", "d": 2, "tag": "them", "q": "Can you see those clouds?", "a": 1, "why": "Those clouds: right!"},
+    {"id": "g05", "t": "spot", "d": 3, "tag": "them", "parts": ["Who", "left", "them", "bags on the bus?"], "a": 2, "why": "Say \"those bags\", never \"them bags\".", "ask": "Tap the word with the mistake."},
+    {"id": "g06", "t": "spot", "d": 2, "tag": "them", "parts": ["Grandma", "planted", "them", "flowers over there."], "a": 2, "why": "Say \"those flowers\", never \"them flowers\".", "ask": "Tap the word with the mistake."},
+    {"id": "g07", "t": "pick", "d": 3, "tag": "them", "ask": "Which one is right?", "o": ["those toys", "them toys", "that toys"], "why": "Far and more than one: those toys. Never \"them toys\".", "q": "The toys are over there."},
+    {"id": "d08", "t": "check", "d": 3, "tag": "those", "q": "Look at those fireworks far away!", "a": 1, "why": "Far away, more than one: those. Right!"},
+    {"id": "g08", "t": "fill", "d": 3, "tag": "them", "q": "Don't touch ___ wires over there!", "o": ["those", "them"], "why": "Say \"those wires\", never \"them wires\"."},
+    {"id": "e11", "t": "check", "d": 3, "tag": "match", "q": "I found this pencils under my chair.", "a": 0, "why": "Pencils is more than one, so not \"this\": these pencils."},
+  ];
+
+  /* ================= QUIZ BANK ENGINE (shared by every lesson) =================
+     Needs, defined above it: LESSON_KEY, TAGS, BANK.
+     Optional: QB_BANDS = [easy, medium, tricky] questions per attempt (default 7/7/6 = 20);
+     QB_TEXT = { ask: {...}, yn: [...], right: [...], wrong: '...', speak: true, summary: {...} }.
+     Each attempt draws BAND_SIZES questions (easy, medium, tricky). The draw builds many
+     candidate quizzes and keeps the best: every tag present, 3+ of each type, balanced
+     check answers, unseen questions first. Options are shuffled; ids seen are remembered. */
+  const BAND_SIZES = (typeof QB_BANDS !== 'undefined') ? QB_BANDS : [7, 7, 6];
+  const DRAW = BAND_SIZES.reduce((a, b) => a + b, 0);
+  const TYPE_TARGET = Math.max(1, Math.min(3, Math.floor(DRAW / new Set(BANK.map(q => q.t)).size)));   // e.g. 20 Qs → 3 of each type, 10 Qs with 4 types → 2
+  const QBT = (typeof QB_TEXT !== 'undefined') ? QB_TEXT : {};
+  const ASK = Object.assign({
+    check: 'Is this sentence correct?',
+    pick:  'Pick the correct sentence.',
+    fill:  'Which choice fills the gap correctly?',
+    spot:  'Tap the part with the mistake.'
+  }, QBT.ask || {});
+  const YN = QBT.yn || ['Needs fixing', 'Correct'];
+  const RIGHT = QBT.right || ['Correct!'];
+  const WRONG = QBT.wrong || 'Not quite.';
+  const SUM = Object.assign({
+    perfect: 'A perfect run! Try another set to make sure it sticks.',
+    high: 'Strong work. Have a quick look at the areas below, then try a fresh set.',
+    mid: 'Good progress. Re-read the parts below before your next attempt.',
+    low: 'Worth another look at the lesson. Start with the areas below, then try a fresh set.',
+    review: 'Areas to review'
+  }, QBT.summary || {});
+  const CAN_SPEAK = !!QBT.speak && typeof window !== 'undefined' && !!window.speechSynthesis &&
+    typeof window.speechSynthesis.speak === 'function' && typeof SpeechSynthesisUtterance !== 'undefined';
+  function speak(text) {
+    try {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-GB'; u.rate = 0.9;
+      window.speechSynthesis.speak(u);
+    } catch (e) { /* no speech on this device */ }
+  }
+
+  const store = {
+    get(k, fallback) { try { const v = localStorage.getItem(LESSON_KEY + ':' + k); return v === null ? fallback : JSON.parse(v); } catch (e) { return fallback; } },
+    set(k, v) { try { localStorage.setItem(LESSON_KEY + ':' + k, JSON.stringify(v)); } catch (e) { /* storage unavailable: quiz still works */ } }
+  };
+  const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  function buildCandidate(seen) {
+    const chosen = [], tagN = {}, typeN = {};
+    let fixN = 0, okN = 0;
+    for (let band = 1; band <= 3; band++) {
+      const picks = [];
+      for (let k = 0; k < BAND_SIZES[band - 1]; k++) {
+        let best = null, bestScore = -Infinity;
+        BANK.forEach(q => {
+          if (q.d !== band || picks.includes(q)) return;
+          let s = Math.random() * 3;
+          if (!seen.has(q.id)) s += 6;
+          if (!tagN[q.tag]) s += 12;
+          s -= (typeN[q.t] || 0) * 1.2;
+          if ((typeN[q.t] || 0) < TYPE_TARGET) s += 3;   // nudge every type up to its target
+          if (q.t === 'check') { const lean = q.a === 0 ? fixN - okN : okN - fixN; if (lean >= 1) s -= 4; }
+          if (s > bestScore) { bestScore = s; best = q; }
+        });
+        if (!best) break;
+        picks.push(best);
+        tagN[best.tag] = (tagN[best.tag] || 0) + 1;
+        typeN[best.t] = (typeN[best.t] || 0) + 1;
+        if (best.t === 'check') { if (best.a === 0) fixN++; else okN++; }
+      }
+      chosen.push(...shuffle(picks));
+    }
+    return chosen;
+  }
+
+  function rateCandidate(c, seen) {
+    const tags = new Set(c.map(q => q.tag)).size;
+    const types = {};
+    c.forEach(q => types[q.t] = (types[q.t] || 0) + 1);
+    const used = [...new Set(BANK.map(q => q.t))];
+    const minType = Math.min(...used.map(t => types[t] || 0));
+    const checks = c.filter(q => q.t === 'check');
+    const lean = Math.abs(checks.filter(q => q.a === 0).length * 2 - checks.length);
+    return (tags === Object.keys(TAGS).length ? 10000 : tags * 500)
+         + (c.length === DRAW ? 5000 : 0)
+         + Math.min(minType, TYPE_TARGET) * 300
+         + (lean <= 2 ? 200 : 0)
+         + c.filter(q => !seen.has(q.id)).length * 10;
+  }
+
+  function drawQuiz() {
+    let seen = new Set(store.get('seen', []));
+    if (BANK.length - seen.size < DRAW) seen = new Set(store.get('last', []));   // new cycle, but skip the last attempt
+    let chosen = null, bestRate = -1;
+    for (let tries = 0; tries < 200; tries++) {
+      const c = buildCandidate(seen), r = rateCandidate(c, seen);
+      if (r > bestRate) { bestRate = r; chosen = c; }
+    }
+    chosen.forEach(q => seen.add(q.id));
+    store.set('seen', [...seen]);
+    store.set('last', chosen.map(q => q.id));
+    return chosen.map(q => {
+      if (q.t === 'pick' || q.t === 'fill') {
+        const opts = shuffle(q.o.map((text, i) => ({ text, ok: i === 0 })));
+        return { q, opts, answer: opts.findIndex(o => o.ok) };
+      }
+      if (q.t === 'check') return { q, opts: YN.map(text => ({ text })), answer: q.a };
+      return { q, opts: null, answer: q.a };
+    });
+  }
+
+  const listEl = document.getElementById('qbList');
+  const scoreEl = document.getElementById('qbScore');
+  const progressEl = document.getElementById('qbProgress');
+  const summaryEl = document.getElementById('qbSummary');
+  let current = [], score = 0, done = 0, missed = [];
+
+  function updateScore() {
+    scoreEl.textContent = score + ' / ' + current.length;
+    progressEl.textContent = done + ' of ' + current.length + ' answered';
+  }
+
+  /* Small or empty options are hard to see on a button, so label them. */
+  function optLabel(text) {
+    const t = text.trim();
+    if (t === '') return '<span class="qb-note">(nothing)</span>';
+    if (t === ',') return '<span class="qb-punct">,</span> <span class="qb-note">(a comma)</span>';
+    if (t === '.') return '<span class="qb-punct">.</span> <span class="qb-note">(a full stop)</span>';
+    if (t === '?') return '<span class="qb-punct">?</span> <span class="qb-note">(a question mark)</span>';
+    if (t === '!') return '<span class="qb-punct">!</span> <span class="qb-note">(an exclamation mark)</span>';
+    return esc(text);
+  }
+  function plainLabel(text) {
+    const t = text.trim();
+    return t === '' ? 'nothing' : t === ',' ? 'a comma' : t === '.' ? 'a full stop'
+      : t === '?' ? 'a question mark' : t === '!' ? 'an exclamation mark' : '"' + t + '"';
+  }
+  function sentenceWithGap(q, text) {
+    let filler = '<span class="qb-blank">___</span>';
+    if (text !== undefined) {
+      filler = text.trim() === ''
+        ? '<span class="qb-blank qb-filled qb-none">(nothing)</span>'
+        : '<span class="qb-blank qb-filled">' + esc(text) + '</span>';
+    }
+    return esc(q.q).replace('___', filler);
+  }
+
+  function render() {
+    listEl.innerHTML = '';
+    summaryEl.hidden = true;
+    current.forEach((item, i) => {
+      const q = item.q;
+      const card = document.createElement('div');
+      card.className = 'qb-card';
+      card.dataset.type = q.t;
+      let body;
+      if (q.t === 'spot') {
+        body = '<div class="qb-spot">' + q.parts.map((p, k) =>
+          '<button type="button" class="qb-part" data-k="' + k + '">' + esc(p) + '</button>').join('') + '</div>';
+      } else if (q.t === 'fill') {
+        const cols = item.opts.length;
+        body = '<p class="qb-text">' + sentenceWithGap(q) + '</p><div class="qb-opts qb-row" style="--qb-cols:' + cols + '"></div>';
+      } else if (q.t === 'check') {
+        body = '<p class="qb-text">' + esc(q.q) + '</p><div class="qb-opts qb-row"></div>';
+      } else {
+        body = (q.q ? '<p class="qb-text">' + esc(q.q) + '</p>' : '') + '<div class="qb-opts"></div>';
+      }
+      card.innerHTML =
+        (CAN_SPEAK ? '<button type="button" class="qb-speak" aria-label="Read this question aloud">🔊 Read it to me</button>' : '') +
+        '<p class="qb-num">Question ' + (i + 1) + ' of ' + current.length + '</p>' +
+        '<p class="qb-ask">' + esc(q.ask || ASK[q.t]) + '</p>' + body +
+        '<div class="qb-feedback" role="status"></div>';
+      if (CAN_SPEAK) {
+        const bits = [q.ask || ASK[q.t]];
+        if (q.t === 'spot') bits.push(q.parts.join(' '));
+        else if (q.q) bits.push(q.q.replace('___', 'blank'));
+        const sayOpt = t => { const x = t.trim(); return x === '' ? 'nothing' : x === '.' ? 'full stop' : x === ',' ? 'comma' : x === '?' ? 'question mark' : x === '!' ? 'exclamation mark' : x; };
+        if (q.t === 'pick' || q.t === 'fill') item.opts.forEach((o, j) => bits.push((q.t === 'pick' ? String.fromCharCode(65 + j) + ': ' : '') + sayOpt(o.text)));
+        if (q.t === 'check') bits.push(YN.join(', or '));
+        const spoken = bits.map(t => t.trim().replace(/[.\s]+$/, '')).filter(Boolean)
+          .map(t => /[?!]$/.test(t) ? t : t + '.').join(' ');
+        card.querySelector('.qb-speak').addEventListener('click', () => speak(spoken));
+      }
+      if (q.t === 'spot') {
+        card.querySelectorAll('.qb-part').forEach(b => b.addEventListener('click', () => answer(i, +b.dataset.k, card)));
+      } else {
+        const opts = card.querySelector('.qb-opts');
+        item.opts.forEach((o, j) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'qb-opt';
+          b.innerHTML = (q.t === 'pick' ? '<span class="qb-letter">' + String.fromCharCode(65 + j) + '</span>' : '') + optLabel(o.text);
+          b.addEventListener('click', () => answer(i, j, card));
+          opts.appendChild(b);
+        });
+      }
+      listEl.appendChild(card);
+    });
+    updateScore();
+  }
+
+  function answer(i, j, card) {
+    const item = current[i];
+    if (item.done) return;
+    item.done = true; done++;
+    const q = item.q, ok = j === item.answer;
+    if (ok) score++; else missed.push(q.tag);
+    card.querySelectorAll(q.t === 'spot' ? '.qb-part' : '.qb-opt').forEach((b, k) => {
+      b.disabled = true;
+      if (k === j) b.classList.add(ok ? 'qb-correct' : 'qb-incorrect');
+      else if (k === item.answer && !ok) b.classList.add('qb-reveal');
+    });
+    if (q.t === 'fill') card.querySelector('.qb-text').innerHTML = sentenceWithGap(q, item.opts[j].text);
+    let right;
+    if (q.t === 'spot') right = 'The mistake is in "' + esc(q.parts[item.answer]) + '".';
+    else if (q.t === 'pick') right = 'The answer is ' + String.fromCharCode(65 + item.answer) + '.';
+    else right = 'The answer is ' + esc(plainLabel(item.opts[item.answer].text)) + '.';
+    const fb = card.querySelector('.qb-feedback');
+    fb.classList.add('qb-show', ok ? 'qb-fb-ok' : 'qb-fb-no');
+    fb.innerHTML = '<span class="qb-verdict">' + (ok ? RIGHT[Math.floor(Math.random() * RIGHT.length)] : WRONG + ' ' + right) + '</span>' + esc(q.why);
+    updateScore();
+    if (done === current.length) showSummary();
+  }
+
+  function showSummary() {
+    const best = Math.max(store.get('best', 0), score);
+    store.set('best', best);
+    const attempts = store.get('attempts', 0) + 1;
+    store.set('attempts', attempts);
+    const counts = {};
+    missed.forEach(t => counts[t] = (counts[t] || 0) + 1);
+    const areas = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+    const n = current.length;
+    let msg;
+    if (score === n) msg = SUM.perfect;
+    else if (score >= Math.ceil(n * 0.8)) msg = SUM.high;
+    else if (score >= Math.ceil(n * 0.6)) msg = SUM.mid;
+    else msg = SUM.low;
+    summaryEl.innerHTML =
+      '<h3>You scored ' + score + ' / ' + n + '</h3><p>' + msg + '</p>' +
+      (areas.length ? '<p class="qb-sum-label">' + esc(SUM.review) + '</p><ul class="qb-areas">' + areas.map(t =>
+        '<li><a href="' + TAGS[t].href + '">' + esc(TAGS[t].label) + '</a><span>' + counts[t] + ' wrong</span></li>').join('') + '</ul>' : '') +
+      '<p class="qb-meta">Attempts on this device: ' + attempts + ' · Best score: ' + best + ' / ' + n + '</p>' +
+      '<button type="button" class="qb-go" id="qbAgain">Try ' + n + ' new questions</button>';
+    summaryEl.hidden = false;
+    document.getElementById('qbAgain').addEventListener('click', () => { newQuiz(); listEl.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    summaryEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function newQuiz() {
+    current = drawQuiz(); score = 0; done = 0; missed = [];
+    render();
+  }
+
+  const bankEl = document.getElementById('qbBank'), drawEl = document.getElementById('qbDraw');
+  if (bankEl) bankEl.textContent = BANK.length;
+  if (drawEl) drawEl.textContent = DRAW;
+  document.getElementById('qbNew').addEventListener('click', () => {
+    newQuiz();
+    listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  newQuiz();
+  } /* qb-end */
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Big Parade: Partner and Group Words</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎺</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Albert+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FCE6EF;
+    --surface: #FFFFFF;
+    --surface-2: #FFF4F8;
+    --ink: #25162A;
+    --ink-soft: #62506A;
+    --accent: #24306B;
+    --accent-soft: #DFE3F5;
+    --pa: #0F6E6A;
+    --pa-soft: #D5EFEC;
+    --pb: #8B2FA0;
+    --pb-soft: #F1DDF6;
+    --brass: #9A5B00;
+    --brass-soft: #FCEBC8;
+    --rule: rgba(37,22,42,0.14);
+    --font-display: 'Luckiest Guy', 'Arial Rounded MT Bold', 'Trebuchet MS', sans-serif;
+    --font-body: 'Albert Sans', -apple-system, 'Segoe UI', sans-serif;
+    --right: #1D7A45; --right-soft: #DCF1E3;
+    --wrong: #B3261E; --wrong-soft: #F9DEDC;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #1C1220; --surface: #281B2E; --surface-2: #302236; --ink: #F6EAF2; --ink-soft: #C6B2C3; --accent: #A9B6F2; --accent-soft: #262D52; --pa: #6FD6CD; --pa-soft: #143633; --pb: #E39AF3; --pb-soft: #3A1F42; --brass: #F5C35E; --brass-soft: #3A2B10; --rule: rgba(246,234,242,0.16); --right: #72D69D; --right-soft: #17311F; --wrong: #F48D84; --wrong-soft: #3D1F1D; }
+  }
+  :root[data-theme="dark"] { --bg: #1C1220; --surface: #281B2E; --surface-2: #302236; --ink: #F6EAF2; --ink-soft: #C6B2C3; --accent: #A9B6F2; --accent-soft: #262D52; --pa: #6FD6CD; --pa-soft: #143633; --pb: #E39AF3; --pb-soft: #3A1F42; --brass: #F5C35E; --brass-soft: #3A2B10; --rule: rgba(246,234,242,0.16); --right: #72D69D; --right-soft: #17311F; --wrong: #F48D84; --wrong-soft: #3D1F1D; }
+
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 19px; line-height: 1.55; }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 22px 18px 64px; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+  .back-link {
+    display: inline-block; margin: 0 0 20px; padding: 10px 16px; min-height: 44px;
+    font-weight: 700; font-size: 16px; color: var(--ink); text-decoration: none;
+    background: var(--surface); border: 2px solid var(--rule); border-radius: var(--r-btn, 999px);
+  }
+  h1, h2, h3 { font-family: var(--font-display); font-weight: var(--display-weight, 400); line-height: 1.12; }
+  h2 { font-size: 30px; margin: 0 0 8px; }
+  section { margin-bottom: 48px; }
+  .sub { color: var(--ink-soft); margin: 0 0 18px; }
+  .lead { font-size: 21px; margin: 0 0 18px; }
+  .no { color: var(--wrong); text-decoration: line-through; text-decoration-thickness: 2px; }
+  .yes { color: var(--right); font-weight: 700; }
+  .say {
+    display: none; font: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
+    padding: 6px 12px; min-height: 40px; margin-left: 6px; vertical-align: middle;
+    border-radius: 999px; border: 2px solid var(--accent); background: var(--accent-soft); color: var(--ink);
+  }
+  .can-speak .say { display: inline-block; }
+  .steps { display: grid; gap: 12px; }
+  .step { background: var(--surface); border-radius: var(--r-card, 18px); padding: 16px 18px; display: flex; gap: 14px; align-items: flex-start; }
+  .step .n { flex: 0 0 auto; width: 44px; height: 44px; border-radius: var(--r-num, 50%); display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 22px; background: var(--accent); color: var(--surface); }
+  .step p { margin: 0; font-size: 20px; }
+  .step .hint { font-size: 20px; margin-top: 6px; color: var(--ink-soft); }
+  .traps { display: grid; gap: 12px; }
+  .trap { background: var(--surface); border-radius: var(--r-card, 18px); padding: 18px; border-left: 8px solid var(--wrong); }
+  .trap h3 { margin: 0 0 6px; font-size: 24px; }
+  .trap p { margin: 0 0 10px; }
+  .eg { font-size: 21px; margin: 0 0 6px !important; }
+  .cards { display: grid; gap: 12px; }
+  .card { background: var(--surface); border-radius: var(--r-card, 18px); padding: 16px 18px; scroll-margin-top: 20px; }
+  .card h3 { margin: 0 0 6px; font-size: 26px; }
+  .card p { margin: 0 0 6px; }
+  .specials { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 520px) { .specials { grid-template-columns: 1fr; } }
+  .special { background: var(--surface-2); border-radius: var(--r-card, 18px); padding: 16px 18px; border: 3px dashed var(--accent); scroll-margin-top: 20px; }
+  .special h3 { margin: 0 0 6px; font-size: 24px; }
+  .special ul { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 2px; }
+  .special li { font-size: 20px; }
+  .special p { margin: 0 0 6px; }
+  .pin { background: var(--surface); border-radius: var(--r-card, 22px); padding: 20px; border: 3px solid var(--rule); }
+  .pin ul { margin: 0; padding-left: 22px; font-size: 20px; line-height: 1.7; }
+  .chant { margin: 16px 0 0; padding: 16px; border-radius: 16px; text-align: center; background: var(--accent-soft);
+    font-family: var(--font-display); font-size: 22px; line-height: 1.4; }
+  footer { text-align: center; font-size: 14px; color: var(--ink-soft); margin-top: 32px; }
+  .hmsg { margin: 10px 2px 0; font-size: 18px; min-height: 2.8em; }
+  .hmsg b.good { color: var(--right); } .hmsg b.try { color: var(--wrong); }
+
+
+  .pa { color: var(--pa); font-weight: 700; } .pb { color: var(--pb); font-weight: 700; } .gw { color: var(--brass); font-weight: 700; }
+  .hero h1 { font-size: clamp(44px, 12vw, 66px); margin: 0 0 10px; letter-spacing: .01em; }
+  .hero h1 span { color: var(--accent); }
+  .bunting { height: 22px; margin: 0 0 -2px;
+    background: linear-gradient(135deg, var(--brass) 25%, transparent 25%) -11px 0 / 22px 22px,
+                linear-gradient(225deg, var(--pb) 25%, transparent 25%) -11px 0 / 22px 22px; }
+  .parade { background: var(--surface); border-radius: 0 0 22px 22px; border-top: 6px solid var(--accent); padding: 14px; }
+  .row-label { font-weight: 700; font-size: 16px; margin: 0 0 6px; }
+  .row-label.a { color: var(--pa); } .row-label.b { color: var(--pb); }
+  .tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 12px; }
+  .tile { font: inherit; font-weight: 700; font-size: 18px; min-height: 58px; border-radius: 12px; cursor: pointer; color: var(--ink);
+    border: 3px solid currentColor; }
+  .tile.a { color: var(--pa); background: var(--pa-soft); } .tile.b { color: var(--pb); background: var(--pb-soft); }
+  .tile span { color: var(--ink); }
+  .tile[aria-pressed="true"] { box-shadow: 0 0 0 4px var(--accent); }
+  .tile:disabled { opacity: .35; cursor: default; }
+  .road { border-radius: 14px; background: var(--accent-soft); padding: 10px; min-height: 70px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .road:empty::before { content: "The parade starts here!"; color: var(--ink-soft); font-size: 16px; margin: 0 auto; }
+  .marcher { background: var(--surface); border-radius: 999px; padding: 6px 12px; font-weight: 700; font-size: 17px; animation: march .5s ease-out; }
+  @keyframes march { from { transform: translateX(-30px); opacity: 0; } to { transform: none; opacity: 1; } }
+  .pair-list { list-style: none; margin: 8px 0 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; font-size: 20px; }
+  @media (max-width: 420px) { .pair-list { grid-template-columns: 1fr; } }
+  .card.partners { border-top: 10px solid var(--pa); }
+  .card.ess { border-top: 10px solid var(--pb); }
+  .banners { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+  @media (max-width: 420px) { .banners { grid-template-columns: 1fr; } }
+  .banner { background: var(--brass-soft); border: 3px solid var(--brass); border-radius: 10px 10px 4px 4px; padding: 10px 12px 14px;
+    clip-path: polygon(0 0, 100% 0, 100% 86%, 50% 100%, 0 86%); text-align: center; }
+  .banner b { display: block; font-family: var(--font-display); font-weight: 400; font-size: 26px; color: var(--brass); }
+  .banner span { font-size: 18px; }
+
+  /* ================= QUIZ BANK ENGINE (shared by every lesson; qb- prefix avoids clashes) ================= */
+  .qb { --qb-cols: 2; }
+  .qb-bar {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 3;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 10px 16px; margin: 0 0 18px; border-radius: var(--qb-radius);
+    background: var(--qb-bar); color: var(--qb-bar-ink);
+  }
+  .qb-label { font-size: 12.5px; opacity: 0.8; }
+  .qb-score { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 28px; line-height: 1.05; }
+  .qb-progress { font-size: 12.5px; opacity: 0.85; margin-top: 2px; }
+  .qb-new {
+    font: inherit; font-weight: 700; font-size: 14px; padding: 10px 16px; min-height: 44px;
+    border-radius: 999px; border: 2px solid currentColor; background: transparent; color: inherit; cursor: pointer;
+  }
+  .qb-list, .qb-summary { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 96px); }
+  .qb-card {
+    background: var(--qb-card); border: var(--qb-card-border); box-shadow: var(--qb-card-shadow);
+    border-radius: var(--qb-radius); padding: 16px 16px 14px; margin: 0 0 14px; color: var(--qb-ink);
+  }
+  .qb-speak {
+    float: right; margin: -4px 0 6px 10px; font: inherit; font-size: 13.5px; font-weight: 700;
+    padding: 7px 12px; min-height: 38px; border-radius: 999px; cursor: pointer;
+    border: 2px solid var(--qb-accent); background: var(--qb-accent-soft); color: var(--qb-ink);
+  }
+  .qb-num { font-size: 12.5px; color: var(--qb-soft); margin: 0 0 4px; }
+  .qb-ask { font-size: 13.5px; font-weight: 700; color: var(--qb-accent); margin: 0 0 6px; }
+  .qb-text { font-size: var(--qb-text-size, 16.5px); line-height: 1.6; margin: 0 0 14px; }
+  .qb-blank {
+    display: inline-block; min-width: 60px; padding: 0 3px; text-align: center;
+    border-bottom: 2.5px dashed var(--qb-soft); color: var(--qb-soft);
+  }
+  .qb-blank.qb-filled { border-bottom-style: solid; border-bottom-color: var(--qb-accent); color: var(--qb-accent); font-weight: 700; }
+  .qb-blank.qb-none { font-style: italic; font-weight: 400; }
+  .qb-opts { display: flex; flex-direction: column; gap: 9px; }
+  .qb-opts.qb-row { display: grid; grid-template-columns: repeat(var(--qb-cols), minmax(0, 1fr)); }
+  .qb-opt {
+    font: inherit; font-size: var(--qb-opt-size, 15.5px); line-height: 1.45; text-align: left; color: var(--qb-ink);
+    padding: 11px 14px; min-height: var(--qb-tap, 46px); border-radius: var(--qb-radius-opt);
+    border: 2px solid var(--qb-rule); background: var(--qb-page); cursor: pointer;
+  }
+  .qb-row .qb-opt { text-align: center; font-weight: 600; padding-left: 6px; padding-right: 6px; }
+  .qb-opt:not(:disabled):hover { border-color: var(--qb-accent); }
+  .qb-opt:disabled, .qb-part:disabled { cursor: default; }
+  .qb-letter { font-family: var(--qb-font); font-weight: var(--qb-font-weight); margin-right: 10px; color: var(--qb-accent); }
+  .qb-note { font-size: 12.5px; font-weight: 400; color: var(--qb-soft); }
+  .qb-punct { font-size: 22px; line-height: 0; font-weight: 700; }
+  .qb-spot { display: flex; flex-wrap: wrap; gap: 8px 6px; margin: 0 0 4px; }
+  .qb-part {
+    font: inherit; font-size: var(--qb-opt-size, 16px); line-height: 1.35; text-align: left; color: var(--qb-ink); cursor: pointer;
+    background: var(--qb-accent-soft); border: none; border-bottom: 3px dashed var(--qb-accent);
+    border-radius: 4px 4px 0 0; padding: 7px 9px; min-height: 40px;
+  }
+  .qb-opt.qb-correct, .qb-opt.qb-reveal { background: var(--qb-right-soft); border-color: var(--qb-right); }
+  .qb-opt.qb-incorrect { background: var(--qb-wrong-soft); border-color: var(--qb-wrong); }
+  .qb-part.qb-correct, .qb-part.qb-reveal { background: var(--qb-right-soft); border-bottom: 3px solid var(--qb-right); }
+  .qb-part.qb-incorrect { background: var(--qb-wrong-soft); border-bottom: 3px solid var(--qb-wrong); }
+  .qb-feedback { display: none; margin-top: 12px; padding-top: 12px; border-top: 2px dashed var(--qb-rule); font-size: 14px; line-height: 1.55; }
+  .qb-feedback.qb-show { display: block; }
+  .qb-verdict { display: block; font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 18px; margin-bottom: 2px; }
+  .qb-fb-ok .qb-verdict { color: var(--qb-right); }
+  .qb-fb-no .qb-verdict { color: var(--qb-wrong); }
+  .qb-summary {
+    background: var(--qb-card); color: var(--qb-ink); border: 3px solid var(--qb-accent);
+    border-radius: var(--qb-radius); padding: 18px 20px; margin-top: 8px;
+  }
+  .qb-summary h3 { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 30px; line-height: 1.1; margin: 0 0 6px; color: var(--qb-accent); }
+  .qb-summary p { margin: 0 0 10px; line-height: 1.55; }
+  .qb-sum-label { font-weight: 700; margin-top: 14px !important; }
+  .qb-areas { list-style: none; margin: 0 0 12px; padding: 0; }
+  .qb-areas li { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--qb-rule); }
+  .qb-areas a { color: var(--qb-ink); font-weight: 600; }
+  .qb-areas span { color: var(--qb-wrong); font-weight: 700; white-space: nowrap; }
+  .qb-meta { font-size: 13px; color: var(--qb-soft); }
+  .qb-go {
+    font: inherit; font-weight: 700; font-size: 16px; width: 100%; min-height: 50px; margin-top: 4px; cursor: pointer;
+    border: none; border-radius: var(--qb-radius); background: var(--qb-accent); color: var(--qb-on-accent);
+  }
+
+  /* Theme the quiz engine through these tokens only. */
+  :root {
+    --qb-page: var(--surface-2);
+    --qb-card: var(--surface);
+    --qb-ink: var(--ink);
+    --qb-soft: var(--ink-soft);
+    --qb-on-accent: var(--surface);
+    --qb-right: var(--right);
+    --qb-right-soft: var(--right-soft);
+    --qb-wrong: var(--wrong);
+    --qb-wrong-soft: var(--wrong-soft);
+    --qb-rule: var(--rule);
+    --qb-bar-ink: var(--surface);
+    --qb-font: var(--font-display);
+    --qb-font-weight: var(--display-weight, 400);
+    --qb-radius: var(--r-card, 18px);
+    --qb-radius-opt: 14px;
+    --qb-card-border: none;
+    --qb-card-shadow: none;
+    --qb-text-size: 21px;
+    --qb-opt-size: 19px;
+    --qb-tap: 56px;
+    --qb-accent: var(--accent);
+    --qb-accent-soft: var(--accent-soft);
+    --qb-bar: var(--accent);
+  }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back-link" href="index.html#lower">← Back to the shelf</a>
+
+  <!-- 1. HERO -->
+  <header class="hero">
+    <h1>The Big <span>Parade</span></h1>
+    <p class="lead">In the parade, <b>partners</b> march two by two: a <span class="pa">boy word</span> and its <span class="pb">girl word</span>. Then whole <b>groups</b> march together, under one banner! <button class="say" type="button" data-say="In the parade, partners march two by two: a boy word and its girl word. Then whole groups march together, under one banner!">🔊</button></p>
+    <div class="bunting" aria-hidden="true"></div>
+    <div class="parade">
+      <p class="row-label a">1. Tap a boy word</p>
+      <div class="tiles" id="boyTiles" role="group" aria-label="Boy words"></div>
+      <p class="row-label b">2. Tap its partner</p>
+      <div class="tiles" id="girlTiles" role="group" aria-label="Girl words"></div>
+      <div class="road" id="road" aria-live="polite"></div>
+      <p class="hmsg" id="paradeMsg" aria-live="polite"></p>
+    </div>
+  </header>
+
+  <!-- 2. THE RULE -->
+  <section id="rule">
+    <h2>Two kinds of words</h2>
+    <p class="sub">Some words come in pairs. Some words are for a whole group.</p>
+    <div class="steps">
+      <div class="step"><span class="n">👫</span><div><p><b>Partner words.</b> Many boy words have a girl word partner. <button class="say" type="button" data-say="Partner words. Many boy words have a girl word partner. King and queen. Father and mother.">🔊</button></p>
+        <p class="hint"><span class="pa">king</span> → <span class="pb">queen</span> · <span class="pa">father</span> → <span class="pb">mother</span></p></div></div>
+      <div class="step"><span class="n">🚩</span><div><p><b>Group words.</b> Lots of the same thing together get a group word: <b>a ___ of ___</b>. <button class="say" type="button" data-say="Group words. Lots of the same thing together get a group word. A flock of birds. A bunch of flowers.">🔊</button></p>
+        <p class="hint">a <span class="gw">flock</span> of birds · a <span class="gw">bunch</span> of flowers</p></div></div>
+    </div>
+  </section>
+
+  <!-- 3. THE TRAPS -->
+  <section id="traps">
+    <h2>Watch out!</h2>
+    <p class="sub">Two mix-ups that happen a lot.</p>
+    <div class="traps">
+      <div class="trap">
+        <h3>Nephew or niece?</h3>
+        <p>Your brother's or sister's son is your <span class="pa">nephew</span>. Their daughter is your <span class="pb">niece</span>. <button class="say" type="button" data-say="Nephew or niece? Your brother's or sister's son is your nephew. Their daughter is your niece. Mei is my niece. Arjun is my nephew.">🔊</button></p>
+        <p class="eg"><span class="no">Mei is my nephew.</span> → <span class="yes">Mei is my niece.</span> 👧</p>
+        <p class="eg"><span class="no">Arjun is my niece.</span> → <span class="yes">Arjun is my nephew.</span> 👦</p>
+      </div>
+      <div class="trap">
+        <h3>Each animal has its own group</h3>
+        <p>Cows don't fly, so they are not a flock! <button class="say" type="button" data-say="Each animal has its own group. Cows don't fly, so they are not a flock! A herd of cows. Bees are not a herd. A swarm of bees.">🔊</button></p>
+        <p class="eg"><span class="no">a flock of cows</span> → <span class="yes">a herd of cows</span></p>
+        <p class="eg"><span class="no">a herd of bees</span> → <span class="yes">a swarm of bees</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. CASES -->
+  <section id="cases">
+    <h2>Who marches in the parade?</h2>
+    <p class="sub">Partners first, then the groups.</p>
+    <div class="cards">
+      <div class="card partners" id="partners"><h3 class="pa">Family partners</h3>
+        <p>Boy word first, then the girl word. <button class="say" type="button" data-say="Family partners. Boy, girl. Man, woman. Father, mother. Son, daughter. Brother, sister. Uncle, aunt. Nephew, niece. Husband, wife. Grandfather, grandmother.">🔊</button></p>
+        <ul class="pair-list">
+          <li><span class="pa">boy</span> · <span class="pb">girl</span></li><li><span class="pa">man</span> · <span class="pb">woman</span></li>
+          <li><span class="pa">father</span> · <span class="pb">mother</span></li><li><span class="pa">son</span> · <span class="pb">daughter</span></li>
+          <li><span class="pa">brother</span> · <span class="pb">sister</span></li><li><span class="pa">uncle</span> · <span class="pb">aunt</span></li>
+          <li><span class="pa">nephew</span> · <span class="pb">niece</span></li><li><span class="pa">husband</span> · <span class="pb">wife</span></li>
+          <li><span class="pa">grandfather</span> · <span class="pb">grandmother</span></li>
+        </ul></div>
+      <div class="card ess" id="partners-ess"><h3 class="pb">Royal and animal partners</h3>
+        <p>Some girl words just add <b>-ess</b>. <button class="say" type="button" data-say="Royal and animal partners. King, queen. Rooster, hen. Some girl words just add e s s. Prince, princess. Lion, lioness. Waiter, waitress. Actor, actress: the o drops out.">🔊</button></p>
+        <ul class="pair-list">
+          <li><span class="pa">king</span> · <span class="pb">queen</span> 👑</li><li><span class="pa">rooster</span> · <span class="pb">hen</span> 🐔</li>
+          <li><span class="pa">prince</span> · <span class="pb">prince<b>ss</b></span></li><li><span class="pa">lion</span> · <span class="pb">lion<b>ess</b></span></li>
+          <li><span class="pa">waiter</span> · <span class="pb">waitr<b>ess</b></span></li><li><span class="pa">actor</span> · <span class="pb">actr<b>ess</b></span></li>
+        </ul>
+        <p style="margin-top:8px">Look: waiter and actor lose a letter. Princess has <b>two s's</b>.</p></div>
+      <div class="card" id="groups"><h3 class="gw">Group banners 🚩</h3>
+        <p>Each group marches under its own banner. <button class="say" type="button" data-say="Group banners. A flock of birds. A herd of cows. A swarm of bees. A school of fish. A pack of wolves. A pride of lions. A bunch of flowers. A team of players. A crowd of people. A class of pupils.">🔊</button></p>
+        <div class="banners">
+          <div class="banner"><b>flock</b><span>of birds 🐦</span></div>
+          <div class="banner"><b>herd</b><span>of cows 🐄</span></div>
+          <div class="banner"><b>swarm</b><span>of bees 🐝</span></div>
+          <div class="banner"><b>school</b><span>of fish 🐟</span></div>
+          <div class="banner"><b>pack</b><span>of wolves 🐺</span></div>
+          <div class="banner"><b>pride</b><span>of lions 🦁</span></div>
+          <div class="banner"><b>bunch</b><span>of flowers 💐</span></div>
+          <div class="banner"><b>team</b><span>of players ⚽</span></div>
+          <div class="banner"><b>crowd</b><span>of people 👥</span></div>
+          <div class="banner"><b>class</b><span>of pupils 🏫</span></div>
+        </div></div>
+    </div>
+  </section>
+
+  <!-- 5. SPECIAL CASES -->
+  <section id="specials">
+    <h2>More about groups</h2>
+    <p class="sub">Two things to remember.</p>
+    <div class="specials">
+      <div class="special"><h3>One banner, many things</h3>
+        <ul>
+          <li>a <b class="gw">bunch</b> of flowers, grapes, bananas, keys</li>
+          <li>a <b class="gw">flock</b> of birds, sheep</li>
+          <li>a <b class="gw">herd</b> of cows, elephants</li>
+        </ul>
+        <p>A <b>school</b> of fish is a group of fish. No teachers! 🐟 <button class="say" type="button" data-say="One banner, many things. A bunch of flowers, grapes, bananas or keys. A flock of birds or sheep. A herd of cows or elephants. A school of fish is a group of fish. No teachers!">🔊</button></p></div>
+      <div class="special"><h3>After "of": more than one</h3>
+        <ul>
+          <li>a flock of <span class="no">bird</span> → <span class="yes">birds</span></li>
+          <li>a herd of <span class="no">cow</span> → <span class="yes">cows</span></li>
+          <li>a flock of <span class="no">sheeps</span> → <span class="yes">sheep</span></li>
+        </ul>
+        <p>A group has lots of them, so use the "more than one" word. Remember: sheep stays sheep! <button class="say" type="button" data-say="After of, more than one. A flock of birds, not bird. A herd of cows, not cow. A group has lots of them, so use the more than one word. Remember: sheep stays sheep!">🔊</button></p></div>
+    </div>
+  </section>
+
+  <!-- 6. PRACTICE -->
+  <section id="practice">
+    <h2>Your turn!</h2>
+    <p class="sub">Answer <span id="qbDraw">10</span> questions. Tap 🔊 to hear each one. Every time you play, you get new questions! <span hidden id="qbBank">66</span></p>
+    <div class="qb" id="qb">
+      <div class="qb-bar">
+        <div><div class="qb-label">Your score</div><div class="qb-score" id="qbScore">0 / 10</div><div class="qb-progress" id="qbProgress">0 of 10 answered</div></div>
+        <button class="qb-new" id="qbNew" type="button">New quiz</button>
+      </div>
+      <div class="qb-list" id="qbList"></div>
+      <div class="qb-summary" id="qbSummary" hidden></div>
+    </div>
+  </section>
+
+  <!-- 7. PIN THIS UP -->
+  <section class="pin">
+    <h2>Pin This Up</h2>
+    <ul>
+      <li>Partners: <span class="pa">king</span> · <span class="pb">queen</span>, <span class="pa">uncle</span> · <span class="pb">aunt</span>, <span class="pa">nephew</span> · <span class="pb">niece</span></li>
+      <li>Some girl words add <b>-ess</b>: princess, lioness</li>
+      <li>Groups: a <span class="gw">flock</span> of birds, a <span class="gw">herd</span> of cows, a <span class="gw">swarm</span> of bees, a <span class="gw">bunch</span> of flowers</li>
+      <li>People: a <span class="gw">team</span>, a <span class="gw">crowd</span>, a <span class="gw">class</span></li>
+      <li>After "of": more than one. a flock of birds</li>
+    </ul>
+    <p class="chant">King and queen march side by side,<br>a flock of birds flies high and wide!<br>A herd of cows, a swarm of bees,<br>a bunch of flowers, if you please!</p>
+  </section>
+
+  <footer>My Grammar Shelf · Lower shelf, Lesson 10</footer>
+</div>
+
+<script>
+(function () {
+
+  const canSpeak = !!window.speechSynthesis && typeof window.speechSynthesis.speak === 'function' && typeof SpeechSynthesisUtterance !== 'undefined';
+  function sayIt(text) {
+    try { window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'en-GB'; u.rate = 0.9; window.speechSynthesis.speak(u); } catch (e) {}
+  }
+  if (canSpeak) {
+    document.body.classList.add('can-speak');
+    document.querySelectorAll('.say').forEach(b => {
+      b.setAttribute('aria-label', 'Read this aloud');
+      b.addEventListener('click', () => sayIt(b.dataset.say));
+    });
+  }
+
+  /* ---------- Hero ---------- */
+  const PAIRS = [
+    ['🤴', 'prince', '👸', 'princess', 'Prince adds -ess. Look for the girl word that starts the same.'],
+    ['👨', 'father', '👩', 'mother', 'Father and ___ are your parents.'],
+    ['🧔', 'uncle', '👩', 'aunt', 'At home you might call her Aunty!'],
+    ['🦁', 'lion', '🦁', 'lioness', 'Lion adds -ess. Look for the girl word that starts the same.'],
+    ['👦', 'nephew', '👧', 'niece', 'Nephew and its partner both start with n.'],
+    ['🐓', 'rooster', '🐔', 'hen', 'A rooster\'s partner lays eggs!']
+  ];
+  const boyEl = document.getElementById('boyTiles'), girlEl = document.getElementById('girlTiles');
+  const road = document.getElementById('road'), pmsg = document.getElementById('paradeMsg');
+  let chosenBoy = -1;
+  function tile(cls, emoji, word) {
+    const t = document.createElement('button'); t.type = 'button'; t.className = 'tile ' + cls;
+    t.innerHTML = emoji + ' <span>' + word + '</span>'; return t;
+  }
+  PAIRS.forEach((p, i) => {
+    const t = tile('a', p[0], p[1]); t.setAttribute('aria-pressed', 'false');
+    t.addEventListener('click', () => {
+      chosenBoy = i;
+      boyEl.querySelectorAll('.tile').forEach((x, k) => x.setAttribute('aria-pressed', k === i ? 'true' : 'false'));
+      pmsg.textContent = 'Who is the partner for ' + p[1] + '?';
+    });
+    boyEl.appendChild(t);
+  });
+  const order = PAIRS.map((p, i) => i);
+  for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
+  order.forEach(i => {
+    const p = PAIRS[i], t = tile('b', p[2], p[3]);
+    t.addEventListener('click', () => {
+      if (chosenBoy < 0) { pmsg.textContent = 'First tap a boy word at the top.'; return; }
+      const boy = PAIRS[chosenBoy];
+      if (chosenBoy === i) {
+        boyEl.children[i].disabled = true; boyEl.children[i].setAttribute('aria-pressed', 'false'); t.disabled = true;
+        const m = document.createElement('span'); m.className = 'marcher';
+        m.innerHTML = p[0] + p[2] + ' <span class="pa">' + p[1] + '</span> &amp; <span class="pb">' + p[3] + '</span>';
+        road.appendChild(m);
+        pmsg.innerHTML = '<b class="good">Yes!</b> ' + p[1] + ' and ' + p[3] + ' are partners. March on!';
+        if (canSpeak) sayIt(p[1] + ' and ' + p[3]);
+        chosenBoy = -1;
+        if (road.children.length === PAIRS.length) pmsg.innerHTML = '<b class="good">The whole parade is marching!</b> 🎺 Every partner found.';
+      } else {
+        pmsg.innerHTML = '<b class="try">Good try!</b> ' + boy[4];
+      }
+    });
+    girlEl.appendChild(t);
+  });
+
+  { /* qb-start: quiz engine in its own scope, so its names can't clash with the lesson's */
+  /* ================= QUIZ: question bank (66 questions) ================= */
+  const LESSON_KEY = "shelf-lower-10";
+  const QB_BANDS = [4, 4, 2];
+  const QB_TEXT = {"speak": true, "right": ["Well done!", "Great job!", "You got it!", "Super!"], "wrong": "Good try!", "summary": {"perfect": "All correct! You lead the parade! Try a new set!", "high": "Great work! Look at the part below, then try a new set.", "mid": "Good effort! Read the parts below again, then try a new set.", "low": "Let's look at the lesson again together, then try a new set.", "review": "Have another look at"}, "ask": {"check": "Is this right?", "pick": "Which one is right?", "fill": "Which word fits?", "spot": "Tap the word with the mistake."}, "yn": ["Wrong", "Right"]};
+  const TAGS = {
+    fam: { label: "Family partners: uncle and aunt", href: '#partners' },
+    mix: { label: "Trap: nephew or niece?", href: '#traps' },
+    ess: { label: "King and queen, -ess words", href: '#partners-ess' },
+    animal: { label: "Animal groups: flock, herd, swarm", href: '#groups' },
+    bunch: { label: "A bunch of flowers, keys, grapes", href: '#groups' },
+    people: { label: "People groups: team, crowd, class", href: '#groups' },
+    of: { label: "After 'of': birds, not bird", href: '#specials' },
+  };
+  const BANK = [
+    {"id": "f01", "t": "fill", "d": 1, "tag": "fam", "q": "The girl word for father is ___.", "o": ["mother", "sister"], "why": "Father and mother are partners."},
+    {"id": "f02", "t": "fill", "d": 1, "tag": "fam", "q": "The girl word for brother is ___.", "o": ["sister", "mother"], "why": "Brother and sister are partners."},
+    {"id": "f03", "t": "fill", "d": 1, "tag": "fam", "q": "The girl word for boy is ___.", "o": ["girl", "woman"], "why": "Boy and girl are partners."},
+    {"id": "f04", "t": "fill", "d": 2, "tag": "fam", "q": "The girl word for son is ___.", "o": ["daughter", "aunt"], "why": "Son and daughter are partners."},
+    {"id": "f05", "t": "fill", "d": 2, "tag": "fam", "q": "The boy word for aunt is ___.", "o": ["uncle", "father"], "why": "Uncle and aunt are partners."},
+    {"id": "f06", "t": "fill", "d": 2, "tag": "fam", "q": "The girl word for grandfather is ___.", "o": ["grandmother", "aunt"], "why": "Grandfather and grandmother are partners."},
+    {"id": "f07", "t": "fill", "d": 2, "tag": "fam", "q": "The girl word for husband is ___.", "o": ["wife", "sister"], "why": "Husband and wife are partners."},
+    {"id": "f08", "t": "fill", "d": 3, "tag": "fam", "q": "The boy word for woman is ___.", "o": ["man", "boy"], "why": "Man and woman are partners. Boy goes with girl."},
+    {"id": "f09", "t": "check", "d": 1, "tag": "fam", "q": "The girl word for uncle is aunt.", "a": 1, "why": "Uncle and aunt are partners. Right!"},
+    {"id": "f10", "t": "check", "d": 2, "tag": "fam", "q": "The girl word for brother is mother.", "a": 0, "why": "Brother and sister are partners."},
+    {"id": "f11", "t": "pick", "d": 2, "tag": "fam", "ask": "Which pair are partners?", "o": ["son and daughter", "son and mother", "son and aunt"], "why": "Son and daughter are partners."},
+    {"id": "f12", "t": "pick", "d": 3, "tag": "fam", "ask": "Which pair are partners?", "o": ["husband and wife", "husband and sister", "husband and girl"], "why": "Husband and wife are partners."},
+    {"id": "f13", "t": "check", "d": 3, "tag": "fam", "q": "The boy word for daughter is son.", "a": 1, "why": "Son and daughter are partners. Right!"},
+    {"id": "m01", "t": "fill", "d": 1, "tag": "mix", "q": "The girl word for nephew is ___.", "o": ["niece", "aunt"], "why": "Nephew and niece are partners."},
+    {"id": "m02", "t": "fill", "d": 2, "tag": "mix", "q": "The boy word for niece is ___.", "o": ["nephew", "uncle"], "why": "Niece and nephew are partners."},
+    {"id": "m03", "t": "check", "d": 2, "tag": "mix", "q": "The girl word for nephew is niece.", "a": 1, "why": "Nephew and niece are partners. Right!"},
+    {"id": "m04", "t": "check", "d": 2, "tag": "mix", "q": "The boy word for niece is son.", "a": 0, "why": "The boy word for niece is nephew."},
+    {"id": "m05", "t": "pick", "d": 2, "tag": "mix", "ask": "Which one is a girl word?", "o": ["niece", "nephew", "uncle"], "why": "Niece is the girl word. Nephew is the boy word."},
+    {"id": "m06", "t": "pick", "d": 3, "tag": "mix", "ask": "Which one is a boy word?", "o": ["nephew", "niece", "aunt"], "why": "Nephew is the boy word. Niece is the girl word."},
+    {"id": "m07", "t": "check", "d": 3, "tag": "mix", "q": "Nephew is a girl word.", "a": 0, "why": "Nephew is a boy word. Niece is the girl word."},
+    {"id": "m08", "t": "pick", "d": 3, "tag": "mix", "ask": "Which pair are partners?", "o": ["nephew and niece", "nephew and aunt", "nephew and mother"], "why": "Nephew and niece are partners."},
+    {"id": "e01", "t": "fill", "d": 1, "tag": "ess", "q": "The girl word for king is ___.", "o": ["queen", "princess"], "why": "King and queen are partners. Prince goes with princess."},
+    {"id": "e02", "t": "fill", "d": 1, "tag": "ess", "q": "The girl word for prince is ___.", "o": ["princess", "queen"], "why": "Prince and princess are partners."},
+    {"id": "e03", "t": "fill", "d": 2, "tag": "ess", "q": "The girl word for lion is ___.", "o": ["lioness", "hen"], "why": "Lion adds -ess: lioness."},
+    {"id": "e04", "t": "fill", "d": 2, "tag": "ess", "q": "The girl word for rooster is ___.", "o": ["hen", "lioness"], "why": "Rooster and hen are partners."},
+    {"id": "e05", "t": "pick", "d": 2, "tag": "ess", "ask": "Which is the girl word for waiter?", "o": ["waitress", "waiteress", "waiters"], "why": "Waiter adds -ess: waitress."},
+    {"id": "e06", "t": "pick", "d": 3, "tag": "ess", "ask": "Which is the girl word for actor?", "o": ["actress", "actoress", "actors"], "why": "Actor adds -ess, and the o drops out: actress."},
+    {"id": "e07", "t": "check", "d": 1, "tag": "ess", "q": "The girl word for king is queen.", "a": 1, "why": "King and queen are partners. Right!"},
+    {"id": "e08", "t": "check", "d": 2, "tag": "ess", "q": "The girl word for rooster is lioness.", "a": 0, "why": "Rooster and hen are partners."},
+    {"id": "e09", "t": "check", "d": 3, "tag": "ess", "q": "The girl word for prince is princes.", "a": 0, "why": "Prince adds -ess with two s's: princess."},
+    {"id": "e10", "t": "fill", "d": 3, "tag": "ess", "q": "A ___ is a girl lion.", "o": ["lioness", "princess"], "why": "Lion adds -ess: lioness."},
+    {"id": "a01", "t": "fill", "d": 1, "tag": "animal", "q": "a ___ of birds", "o": ["flock", "herd"], "why": "Birds fly in a flock."},
+    {"id": "a02", "t": "fill", "d": 1, "tag": "animal", "q": "a ___ of cows", "o": ["herd", "swarm"], "why": "Cows walk in a herd."},
+    {"id": "a03", "t": "fill", "d": 1, "tag": "animal", "q": "a ___ of bees", "o": ["swarm", "pack"], "why": "Bees buzz in a swarm."},
+    {"id": "a04", "t": "fill", "d": 2, "tag": "animal", "q": "We saw a ___ of fish at the aquarium.", "o": ["school", "herd"], "why": "Fish swim in a school."},
+    {"id": "a05", "t": "fill", "d": 2, "tag": "animal", "q": "A ___ of wolves howled at night.", "o": ["pack", "school"], "why": "Wolves run in a pack."},
+    {"id": "a06", "t": "fill", "d": 2, "tag": "animal", "q": "A ___ of lions rested under a tree.", "o": ["pride", "flock"], "why": "Lions live in a pride."},
+    {"id": "a07", "t": "fill", "d": 3, "tag": "animal", "q": "A ___ of elephants walked to the river.", "o": ["herd", "swarm"], "why": "Elephants walk in a herd, like cows."},
+    {"id": "a08", "t": "check", "d": 1, "tag": "animal", "q": "I saw a flock of birds in the sky.", "a": 1, "why": "Birds fly in a flock. Right!"},
+    {"id": "a09", "t": "check", "d": 2, "tag": "animal", "q": "A swarm of cows ate the grass.", "a": 0, "why": "Cows walk in a herd: a herd of cows."},
+    {"id": "a10", "t": "pick", "d": 3, "tag": "animal", "ask": "Which one is right?", "o": ["a school of fish", "a school of bees", "a school of wolves"], "why": "Fish swim in a school. Bees are a swarm, wolves are a pack."},
+    {"id": "a11", "t": "check", "d": 3, "tag": "animal", "q": "A pack of wolves ran across the snow.", "a": 1, "why": "Wolves run in a pack. Right!"},
+    {"id": "b01", "t": "fill", "d": 1, "tag": "bunch", "q": "a ___ of flowers", "o": ["bunch", "herd"], "why": "Flowers come in a bunch."},
+    {"id": "b02", "t": "fill", "d": 1, "tag": "bunch", "q": "Mum bought a ___ of bananas.", "o": ["bunch", "flock"], "why": "Bananas come in a bunch."},
+    {"id": "b03", "t": "fill", "d": 2, "tag": "bunch", "q": "Dad lost his ___ of keys.", "o": ["bunch", "crowd"], "why": "Keys come in a bunch."},
+    {"id": "b04", "t": "fill", "d": 2, "tag": "bunch", "q": "We ate a ___ of grapes.", "o": ["bunch", "swarm"], "why": "Grapes come in a bunch."},
+    {"id": "b05", "t": "check", "d": 1, "tag": "bunch", "q": "Mei gave her teacher a bunch of flowers.", "a": 1, "why": "Flowers come in a bunch. Right!"},
+    {"id": "b06", "t": "check", "d": 2, "tag": "bunch", "q": "Grandma bought a herd of grapes.", "a": 0, "why": "Grapes come in a bunch: a bunch of grapes."},
+    {"id": "b07", "t": "pick", "d": 3, "tag": "bunch", "ask": "Which one comes in a bunch?", "o": ["keys", "cows", "bees"], "why": "Keys come in a bunch. Cows are a herd, bees are a swarm."},
+    {"id": "b08", "t": "check", "d": 3, "tag": "bunch", "q": "I found a bunch of keys on the floor.", "a": 1, "why": "Keys come in a bunch. Right!"},
+    {"id": "p01", "t": "fill", "d": 1, "tag": "people", "q": "A ___ of people waited for the bus.", "o": ["crowd", "herd"], "why": "Lots of people together are a crowd."},
+    {"id": "p02", "t": "fill", "d": 1, "tag": "people", "q": "Our football ___ won the match.", "o": ["team", "flock"], "why": "Players play in a team."},
+    {"id": "p03", "t": "fill", "d": 2, "tag": "people", "q": "There was a big ___ at the National Day Parade.", "o": ["crowd", "swarm"], "why": "Lots of people together are a crowd."},
+    {"id": "p04", "t": "fill", "d": 2, "tag": "people", "q": "A ___ of players ran onto the field.", "o": ["team", "pride"], "why": "Players play in a team."},
+    {"id": "p05", "t": "check", "d": 1, "tag": "people", "q": "A crowd of people watched the fireworks.", "a": 1, "why": "Lots of people are a crowd. Right!"},
+    {"id": "p06", "t": "check", "d": 2, "tag": "people", "q": "A flock of players won the game.", "a": 0, "why": "Players play in a team: a team of players."},
+    {"id": "p07", "t": "pick", "d": 3, "tag": "people", "ask": "Which one is right?", "o": ["a team of players", "a pride of players", "a school of players"], "why": "Players play in a team."},
+    {"id": "p08", "t": "fill", "d": 3, "tag": "people", "q": "A ___ of pupils sat in the classroom.", "o": ["class", "herd"], "why": "Pupils learn in a class."},
+    {"id": "o01", "t": "fill", "d": 1, "tag": "of", "q": "a flock of ___", "o": ["birds", "bird"], "why": "A group has more than one: a flock of birds."},
+    {"id": "o02", "t": "fill", "d": 1, "tag": "of", "q": "a bunch of ___", "o": ["flowers", "flower"], "why": "A group has more than one: a bunch of flowers."},
+    {"id": "o03", "t": "fill", "d": 2, "tag": "of", "q": "a herd of ___", "o": ["elephants", "elephant"], "why": "A group has more than one: a herd of elephants."},
+    {"id": "o04", "t": "check", "d": 2, "tag": "of", "q": "A swarm of bee flew past.", "a": 0, "why": "A group has more than one: a swarm of bees."},
+    {"id": "o05", "t": "check", "d": 2, "tag": "of", "q": "A team of players ran out.", "a": 1, "why": "More than one player: players. Right!"},
+    {"id": "o06", "t": "spot", "d": 3, "tag": "of", "parts": ["We saw", "a flock of", "sheeps", "on the hill."], "a": 2, "why": "Sheep stays the same: a flock of sheep.", "ask": "Tap the word with the mistake."},
+    {"id": "o07", "t": "spot", "d": 3, "tag": "of", "parts": ["A herd of", "cow", "drank", "from the river."], "a": 1, "why": "A group has more than one: a herd of cows.", "ask": "Tap the word with the mistake."},
+    {"id": "o08", "t": "pick", "d": 3, "tag": "of", "ask": "Which one is right?", "o": ["a bunch of bananas", "a bunch of banana", "a bunchs of bananas"], "why": "One bunch, many bananas: a bunch of bananas."},
+  ];
+
+  /* ================= QUIZ BANK ENGINE (shared by every lesson) =================
+     Needs, defined above it: LESSON_KEY, TAGS, BANK.
+     Optional: QB_BANDS = [easy, medium, tricky] questions per attempt (default 7/7/6 = 20);
+     QB_TEXT = { ask: {...}, yn: [...], right: [...], wrong: '...', speak: true, summary: {...} }.
+     Each attempt draws BAND_SIZES questions (easy, medium, tricky). The draw builds many
+     candidate quizzes and keeps the best: every tag present, 3+ of each type, balanced
+     check answers, unseen questions first. Options are shuffled; ids seen are remembered. */
+  const BAND_SIZES = (typeof QB_BANDS !== 'undefined') ? QB_BANDS : [7, 7, 6];
+  const DRAW = BAND_SIZES.reduce((a, b) => a + b, 0);
+  const TYPE_TARGET = Math.max(1, Math.min(3, Math.floor(DRAW / new Set(BANK.map(q => q.t)).size)));   // e.g. 20 Qs → 3 of each type, 10 Qs with 4 types → 2
+  const QBT = (typeof QB_TEXT !== 'undefined') ? QB_TEXT : {};
+  const ASK = Object.assign({
+    check: 'Is this sentence correct?',
+    pick:  'Pick the correct sentence.',
+    fill:  'Which choice fills the gap correctly?',
+    spot:  'Tap the part with the mistake.'
+  }, QBT.ask || {});
+  const YN = QBT.yn || ['Needs fixing', 'Correct'];
+  const RIGHT = QBT.right || ['Correct!'];
+  const WRONG = QBT.wrong || 'Not quite.';
+  const SUM = Object.assign({
+    perfect: 'A perfect run! Try another set to make sure it sticks.',
+    high: 'Strong work. Have a quick look at the areas below, then try a fresh set.',
+    mid: 'Good progress. Re-read the parts below before your next attempt.',
+    low: 'Worth another look at the lesson. Start with the areas below, then try a fresh set.',
+    review: 'Areas to review'
+  }, QBT.summary || {});
+  const CAN_SPEAK = !!QBT.speak && typeof window !== 'undefined' && !!window.speechSynthesis &&
+    typeof window.speechSynthesis.speak === 'function' && typeof SpeechSynthesisUtterance !== 'undefined';
+  function speak(text) {
+    try {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-GB'; u.rate = 0.9;
+      window.speechSynthesis.speak(u);
+    } catch (e) { /* no speech on this device */ }
+  }
+
+  const store = {
+    get(k, fallback) { try { const v = localStorage.getItem(LESSON_KEY + ':' + k); return v === null ? fallback : JSON.parse(v); } catch (e) { return fallback; } },
+    set(k, v) { try { localStorage.setItem(LESSON_KEY + ':' + k, JSON.stringify(v)); } catch (e) { /* storage unavailable: quiz still works */ } }
+  };
+  const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  function buildCandidate(seen) {
+    const chosen = [], tagN = {}, typeN = {};
+    let fixN = 0, okN = 0;
+    for (let band = 1; band <= 3; band++) {
+      const picks = [];
+      for (let k = 0; k < BAND_SIZES[band - 1]; k++) {
+        let best = null, bestScore = -Infinity;
+        BANK.forEach(q => {
+          if (q.d !== band || picks.includes(q)) return;
+          let s = Math.random() * 3;
+          if (!seen.has(q.id)) s += 6;
+          if (!tagN[q.tag]) s += 12;
+          s -= (typeN[q.t] || 0) * 1.2;
+          if ((typeN[q.t] || 0) < TYPE_TARGET) s += 3;   // nudge every type up to its target
+          if (q.t === 'check') { const lean = q.a === 0 ? fixN - okN : okN - fixN; if (lean >= 1) s -= 4; }
+          if (s > bestScore) { bestScore = s; best = q; }
+        });
+        if (!best) break;
+        picks.push(best);
+        tagN[best.tag] = (tagN[best.tag] || 0) + 1;
+        typeN[best.t] = (typeN[best.t] || 0) + 1;
+        if (best.t === 'check') { if (best.a === 0) fixN++; else okN++; }
+      }
+      chosen.push(...shuffle(picks));
+    }
+    return chosen;
+  }
+
+  function rateCandidate(c, seen) {
+    const tags = new Set(c.map(q => q.tag)).size;
+    const types = {};
+    c.forEach(q => types[q.t] = (types[q.t] || 0) + 1);
+    const used = [...new Set(BANK.map(q => q.t))];
+    const minType = Math.min(...used.map(t => types[t] || 0));
+    const checks = c.filter(q => q.t === 'check');
+    const lean = Math.abs(checks.filter(q => q.a === 0).length * 2 - checks.length);
+    return (tags === Object.keys(TAGS).length ? 10000 : tags * 500)
+         + (c.length === DRAW ? 5000 : 0)
+         + Math.min(minType, TYPE_TARGET) * 300
+         + (lean <= 2 ? 200 : 0)
+         + c.filter(q => !seen.has(q.id)).length * 10;
+  }
+
+  function drawQuiz() {
+    let seen = new Set(store.get('seen', []));
+    if (BANK.length - seen.size < DRAW) seen = new Set(store.get('last', []));   // new cycle, but skip the last attempt
+    let chosen = null, bestRate = -1;
+    for (let tries = 0; tries < 200; tries++) {
+      const c = buildCandidate(seen), r = rateCandidate(c, seen);
+      if (r > bestRate) { bestRate = r; chosen = c; }
+    }
+    chosen.forEach(q => seen.add(q.id));
+    store.set('seen', [...seen]);
+    store.set('last', chosen.map(q => q.id));
+    return chosen.map(q => {
+      if (q.t === 'pick' || q.t === 'fill') {
+        const opts = shuffle(q.o.map((text, i) => ({ text, ok: i === 0 })));
+        return { q, opts, answer: opts.findIndex(o => o.ok) };
+      }
+      if (q.t === 'check') return { q, opts: YN.map(text => ({ text })), answer: q.a };
+      return { q, opts: null, answer: q.a };
+    });
+  }
+
+  const listEl = document.getElementById('qbList');
+  const scoreEl = document.getElementById('qbScore');
+  const progressEl = document.getElementById('qbProgress');
+  const summaryEl = document.getElementById('qbSummary');
+  let current = [], score = 0, done = 0, missed = [];
+
+  function updateScore() {
+    scoreEl.textContent = score + ' / ' + current.length;
+    progressEl.textContent = done + ' of ' + current.length + ' answered';
+  }
+
+  /* Small or empty options are hard to see on a button, so label them. */
+  function optLabel(text) {
+    const t = text.trim();
+    if (t === '') return '<span class="qb-note">(nothing)</span>';
+    if (t === ',') return '<span class="qb-punct">,</span> <span class="qb-note">(a comma)</span>';
+    if (t === '.') return '<span class="qb-punct">.</span> <span class="qb-note">(a full stop)</span>';
+    if (t === '?') return '<span class="qb-punct">?</span> <span class="qb-note">(a question mark)</span>';
+    if (t === '!') return '<span class="qb-punct">!</span> <span class="qb-note">(an exclamation mark)</span>';
+    return esc(text);
+  }
+  function plainLabel(text) {
+    const t = text.trim();
+    return t === '' ? 'nothing' : t === ',' ? 'a comma' : t === '.' ? 'a full stop'
+      : t === '?' ? 'a question mark' : t === '!' ? 'an exclamation mark' : '"' + t + '"';
+  }
+  function sentenceWithGap(q, text) {
+    let filler = '<span class="qb-blank">___</span>';
+    if (text !== undefined) {
+      filler = text.trim() === ''
+        ? '<span class="qb-blank qb-filled qb-none">(nothing)</span>'
+        : '<span class="qb-blank qb-filled">' + esc(text) + '</span>';
+    }
+    return esc(q.q).replace('___', filler);
+  }
+
+  function render() {
+    listEl.innerHTML = '';
+    summaryEl.hidden = true;
+    current.forEach((item, i) => {
+      const q = item.q;
+      const card = document.createElement('div');
+      card.className = 'qb-card';
+      card.dataset.type = q.t;
+      let body;
+      if (q.t === 'spot') {
+        body = '<div class="qb-spot">' + q.parts.map((p, k) =>
+          '<button type="button" class="qb-part" data-k="' + k + '">' + esc(p) + '</button>').join('') + '</div>';
+      } else if (q.t === 'fill') {
+        const cols = item.opts.length;
+        body = '<p class="qb-text">' + sentenceWithGap(q) + '</p><div class="qb-opts qb-row" style="--qb-cols:' + cols + '"></div>';
+      } else if (q.t === 'check') {
+        body = '<p class="qb-text">' + esc(q.q) + '</p><div class="qb-opts qb-row"></div>';
+      } else {
+        body = (q.q ? '<p class="qb-text">' + esc(q.q) + '</p>' : '') + '<div class="qb-opts"></div>';
+      }
+      card.innerHTML =
+        (CAN_SPEAK ? '<button type="button" class="qb-speak" aria-label="Read this question aloud">🔊 Read it to me</button>' : '') +
+        '<p class="qb-num">Question ' + (i + 1) + ' of ' + current.length + '</p>' +
+        '<p class="qb-ask">' + esc(q.ask || ASK[q.t]) + '</p>' + body +
+        '<div class="qb-feedback" role="status"></div>';
+      if (CAN_SPEAK) {
+        const bits = [q.ask || ASK[q.t]];
+        if (q.t === 'spot') bits.push(q.parts.join(' '));
+        else if (q.q) bits.push(q.q.replace('___', 'blank'));
+        const sayOpt = t => { const x = t.trim(); return x === '' ? 'nothing' : x === '.' ? 'full stop' : x === ',' ? 'comma' : x === '?' ? 'question mark' : x === '!' ? 'exclamation mark' : x; };
+        if (q.t === 'pick' || q.t === 'fill') item.opts.forEach((o, j) => bits.push((q.t === 'pick' ? String.fromCharCode(65 + j) + ': ' : '') + sayOpt(o.text)));
+        if (q.t === 'check') bits.push(YN.join(', or '));
+        const spoken = bits.map(t => t.trim().replace(/[.\s]+$/, '')).filter(Boolean)
+          .map(t => /[?!]$/.test(t) ? t : t + '.').join(' ');
+        card.querySelector('.qb-speak').addEventListener('click', () => speak(spoken));
+      }
+      if (q.t === 'spot') {
+        card.querySelectorAll('.qb-part').forEach(b => b.addEventListener('click', () => answer(i, +b.dataset.k, card)));
+      } else {
+        const opts = card.querySelector('.qb-opts');
+        item.opts.forEach((o, j) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'qb-opt';
+          b.innerHTML = (q.t === 'pick' ? '<span class="qb-letter">' + String.fromCharCode(65 + j) + '</span>' : '') + optLabel(o.text);
+          b.addEventListener('click', () => answer(i, j, card));
+          opts.appendChild(b);
+        });
+      }
+      listEl.appendChild(card);
+    });
+    updateScore();
+  }
+
+  function answer(i, j, card) {
+    const item = current[i];
+    if (item.done) return;
+    item.done = true; done++;
+    const q = item.q, ok = j === item.answer;
+    if (ok) score++; else missed.push(q.tag);
+    card.querySelectorAll(q.t === 'spot' ? '.qb-part' : '.qb-opt').forEach((b, k) => {
+      b.disabled = true;
+      if (k === j) b.classList.add(ok ? 'qb-correct' : 'qb-incorrect');
+      else if (k === item.answer && !ok) b.classList.add('qb-reveal');
+    });
+    if (q.t === 'fill') card.querySelector('.qb-text').innerHTML = sentenceWithGap(q, item.opts[j].text);
+    let right;
+    if (q.t === 'spot') right = 'The mistake is in "' + esc(q.parts[item.answer]) + '".';
+    else if (q.t === 'pick') right = 'The answer is ' + String.fromCharCode(65 + item.answer) + '.';
+    else right = 'The answer is ' + esc(plainLabel(item.opts[item.answer].text)) + '.';
+    const fb = card.querySelector('.qb-feedback');
+    fb.classList.add('qb-show', ok ? 'qb-fb-ok' : 'qb-fb-no');
+    fb.innerHTML = '<span class="qb-verdict">' + (ok ? RIGHT[Math.floor(Math.random() * RIGHT.length)] : WRONG + ' ' + right) + '</span>' + esc(q.why);
+    updateScore();
+    if (done === current.length) showSummary();
+  }
+
+  function showSummary() {
+    const best = Math.max(store.get('best', 0), score);
+    store.set('best', best);
+    const attempts = store.get('attempts', 0) + 1;
+    store.set('attempts', attempts);
+    const counts = {};
+    missed.forEach(t => counts[t] = (counts[t] || 0) + 1);
+    const areas = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+    const n = current.length;
+    let msg;
+    if (score === n) msg = SUM.perfect;
+    else if (score >= Math.ceil(n * 0.8)) msg = SUM.high;
+    else if (score >= Math.ceil(n * 0.6)) msg = SUM.mid;
+    else msg = SUM.low;
+    summaryEl.innerHTML =
+      '<h3>You scored ' + score + ' / ' + n + '</h3><p>' + msg + '</p>' +
+      (areas.length ? '<p class="qb-sum-label">' + esc(SUM.review) + '</p><ul class="qb-areas">' + areas.map(t =>
+        '<li><a href="' + TAGS[t].href + '">' + esc(TAGS[t].label) + '</a><span>' + counts[t] + ' wrong</span></li>').join('') + '</ul>' : '') +
+      '<p class="qb-meta">Attempts on this device: ' + attempts + ' · Best score: ' + best + ' / ' + n + '</p>' +
+      '<button type="button" class="qb-go" id="qbAgain">Try ' + n + ' new questions</button>';
+    summaryEl.hidden = false;
+    document.getElementById('qbAgain').addEventListener('click', () => { newQuiz(); listEl.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    summaryEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function newQuiz() {
+    current = drawQuiz(); score = 0; done = 0; missed = [];
+    render();
+  }
+
+  const bankEl = document.getElementById('qbBank'), drawEl = document.getElementById('qbDraw');
+  if (bankEl) bankEl.textContent = BANK.length;
+  if (drawEl) drawEl.textContent = DRAW;
+  document.getElementById('qbNew').addEventListener('click', () => {
+    newQuiz();
+    listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  newQuiz();
+  } /* qb-end */
+})();
+</script>
+</body>
+</html>
