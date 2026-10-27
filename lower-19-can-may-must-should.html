@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Helper Heroes: can, may, must, should</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦸</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Onest:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FDE9EC;
+    --surface: #FFFFFF;
+    --surface-2: #FFF5F6;
+    --ink: #24141A;
+    --ink-soft: #64505A;
+    --accent: #6B21A8;
+    --accent-soft: #EBDDF6;
+    --can: #1F64A8;
+    --can-soft: #DCE9F6;
+    --may: #2A7A33;
+    --may-soft: #DCF0DD;
+    --must: #BE2525;
+    --must-soft: #F9DCDC;
+    --should: #946000;
+    --should-soft: #FBEBC6;
+    --rule: rgba(36,20,26,0.14);
+    --r-card: 16px;
+    --font-display: 'Dela Gothic One', 'Arial Black', 'Trebuchet MS', sans-serif;
+    --font-body: 'Onest', -apple-system, 'Segoe UI', sans-serif;
+    --right: #1D7A45; --right-soft: #DCF1E3;
+    --wrong: #B3261E; --wrong-soft: #F9DEDC;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #1A1014; --surface: #26181E; --surface-2: #2F1F26; --ink: #F8EEF1; --ink-soft: #C9B4BD; --accent: #D2A6F5; --accent-soft: #33204A; --can: #8EC1F5; --can-soft: #172E45; --may: #8AD892; --may-soft: #173119; --must: #FF9090; --must-soft: #421D1D; --should: #F4C66A; --should-soft: #3A2C12; --rule: rgba(248,238,241,0.16); --right: #72D69D; --right-soft: #17311F; --wrong: #F48D84; --wrong-soft: #3D1F1D; }
+  }
+  :root[data-theme="dark"] { --bg: #1A1014; --surface: #26181E; --surface-2: #2F1F26; --ink: #F8EEF1; --ink-soft: #C9B4BD; --accent: #D2A6F5; --accent-soft: #33204A; --can: #8EC1F5; --can-soft: #172E45; --may: #8AD892; --may-soft: #173119; --must: #FF9090; --must-soft: #421D1D; --should: #F4C66A; --should-soft: #3A2C12; --rule: rgba(248,238,241,0.16); --right: #72D69D; --right-soft: #17311F; --wrong: #F48D84; --wrong-soft: #3D1F1D; }
+
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 19px; line-height: 1.55; }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 22px 18px 64px; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+  .back-link {
+    display: inline-block; margin: 0 0 20px; padding: 10px 16px; min-height: 44px;
+    font-weight: 700; font-size: 16px; color: var(--ink); text-decoration: none;
+    background: var(--surface); border: 2px solid var(--rule); border-radius: var(--r-btn, 999px);
+  }
+  h1, h2, h3 { font-family: var(--font-display); font-weight: var(--display-weight, 400); line-height: 1.12; }
+  h2 { font-size: 30px; margin: 0 0 8px; }
+  section { margin-bottom: 48px; }
+  .sub { color: var(--ink-soft); margin: 0 0 18px; }
+  .lead { font-size: 21px; margin: 0 0 18px; }
+  .no { color: var(--wrong); text-decoration: line-through; text-decoration-thickness: 2px; }
+  .yes { color: var(--right); font-weight: 700; }
+  .say {
+    display: none; font: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
+    padding: 6px 12px; min-height: 40px; margin-left: 6px; vertical-align: middle;
+    border-radius: 999px; border: 2px solid var(--accent); background: var(--accent-soft); color: var(--ink);
+  }
+  .can-speak .say { display: inline-block; }
+  .steps { display: grid; gap: 12px; }
+  .step { background: var(--surface); border-radius: var(--r-card, 18px); padding: 16px 18px; display: flex; gap: 14px; align-items: flex-start; }
+  .step .n { flex: 0 0 auto; width: 44px; height: 44px; border-radius: var(--r-num, 50%); display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 22px; background: var(--accent); color: var(--surface); }
+  .step p { margin: 0; font-size: 20px; }
+  .step .hint { font-size: 20px; margin-top: 6px; color: var(--ink-soft); }
+  .traps { display: grid; gap: 12px; }
+  .trap { background: var(--surface); border-radius: var(--r-card, 18px); padding: 18px; border-left: 8px solid var(--wrong); }
+  .trap h3 { margin: 0 0 6px; font-size: 24px; }
+  .trap p { margin: 0 0 10px; }
+  .eg { font-size: 21px; margin: 0 0 6px !important; }
+  .cards { display: grid; gap: 12px; }
+  .card { background: var(--surface); border-radius: var(--r-card, 18px); padding: 16px 18px; scroll-margin-top: 20px; }
+  .card h3 { margin: 0 0 6px; font-size: 26px; }
+  .card p { margin: 0 0 6px; }
+  .specials { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 520px) { .specials { grid-template-columns: 1fr; } }
+  .special { background: var(--surface-2); border-radius: var(--r-card, 18px); padding: 16px 18px; border: 3px dashed var(--accent); scroll-margin-top: 20px; }
+  .special h3 { margin: 0 0 6px; font-size: 24px; }
+  .special ul { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 2px; }
+  .special li { font-size: 20px; }
+  .special p { margin: 0 0 6px; }
+  .pin { background: var(--surface); border-radius: var(--r-card, 22px); padding: 20px; border: 3px solid var(--rule); }
+  .pin ul { margin: 0; padding-left: 22px; font-size: 20px; line-height: 1.7; }
+  .chant { margin: 16px 0 0; padding: 16px; border-radius: 16px; text-align: center; background: var(--accent-soft);
+    font-family: var(--font-display); font-size: 22px; line-height: 1.4; }
+  footer { text-align: center; font-size: 14px; color: var(--ink-soft); margin-top: 32px; }
+  .hmsg { margin: 10px 2px 0; font-size: 18px; min-height: 2.8em; }
+  .hmsg b.good { color: var(--right); } .hmsg b.try { color: var(--wrong); }
+
+
+  h2 { font-size: 26px; }
+  .hc { color: var(--can); font-weight: 700; } .hm { color: var(--may); font-weight: 700; } .hr { color: var(--must); font-weight: 700; } .hs { color: var(--should); font-weight: 700; }
+  .hero h1 { font-size: clamp(32px, 9vw, 50px); margin: 0 0 12px; }
+  .hero h1 span { color: var(--accent); }
+  .hq { background: var(--surface); border-radius: 16px; padding: 14px; border: 4px solid var(--accent); }
+  .mission { background: var(--accent-soft); border-radius: 12px; padding: 12px; text-align: center; margin-bottom: 12px; }
+  .mission small { display: block; font-weight: 700; color: var(--accent); font-size: 14px; letter-spacing: .04em; }
+  .mission p { margin: 4px 0 0; font-size: 21px; font-weight: 700; }
+  .heroes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .hb { font: inherit; cursor: pointer; border-radius: 14px; min-height: 84px; padding: 6px; color: var(--ink); border: 3px solid currentColor; }
+  .hb .e { display: block; font-size: 28px; line-height: 1.1; }
+  .hb b { font-family: var(--font-display); font-weight: 400; font-size: 17px; }
+  .hb small { display: block; font-size: 13px; font-weight: 600; color: var(--ink); }
+  .hb.can { color: var(--can); background: var(--can-soft); } .hb.may { color: var(--may); background: var(--may-soft); }
+  .hb.must { color: var(--must); background: var(--must-soft); } .hb.should { color: var(--should); background: var(--should-soft); }
+  .hb:disabled { opacity: .45; cursor: default; }
+  .saved { margin: 12px 0 0; min-height: 1.6em; text-align: center; font-size: 22px; font-weight: 700; }
+  .nextb { font: inherit; font-weight: 700; font-size: 17px; min-height: 48px; padding: 8px 18px; border-radius: 999px; border: none; background: var(--accent); color: var(--surface); cursor: pointer; }
+  .hcards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 520px) { .hcards { grid-template-columns: 1fr; } }
+  .card.can { border-top: 10px solid var(--can); } .card.may { border-top: 10px solid var(--may); }
+  .card.must { border-top: 10px solid var(--must); } .card.should { border-top: 10px solid var(--should); }
+  .card.can h3 { color: var(--can); } .card.may h3 { color: var(--may); } .card.must h3 { color: var(--must); } .card.should h3 { color: var(--should); }
+  .card .badge { display: inline-block; font-size: 15px; font-weight: 700; padding: 2px 10px; border-radius: 999px; background: var(--surface-2); margin-bottom: 6px; }
+
+  /* ================= QUIZ BANK ENGINE (shared by every lesson; qb- prefix avoids clashes) ================= */
+  .qb { --qb-cols: 2; }
+  .qb-bar {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 3;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 10px 16px; margin: 0 0 18px; border-radius: var(--qb-radius);
+    background: var(--qb-bar); color: var(--qb-bar-ink);
+  }
+  .qb-label { font-size: 12.5px; opacity: 0.8; }
+  .qb-score { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 28px; line-height: 1.05; }
+  .qb-progress { font-size: 12.5px; opacity: 0.85; margin-top: 2px; }
+  .qb-new {
+    font: inherit; font-weight: 700; font-size: 14px; padding: 10px 16px; min-height: 44px;
+    border-radius: 999px; border: 2px solid currentColor; background: transparent; color: inherit; cursor: pointer;
+  }
+  .qb-list, .qb-summary { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 96px); }
+  .qb-card {
+    background: var(--qb-card); border: var(--qb-card-border); box-shadow: var(--qb-card-shadow);
+    border-radius: var(--qb-radius); padding: 16px 16px 14px; margin: 0 0 14px; color: var(--qb-ink);
+  }
+  .qb-speak {
+    float: right; margin: -4px 0 6px 10px; font: inherit; font-size: 13.5px; font-weight: 700;
+    padding: 7px 12px; min-height: 38px; border-radius: 999px; cursor: pointer;
+    border: 2px solid var(--qb-accent); background: var(--qb-accent-soft); color: var(--qb-ink);
+  }
+  .qb-num { font-size: 12.5px; color: var(--qb-soft); margin: 0 0 4px; }
+  .qb-ask { font-size: 13.5px; font-weight: 700; color: var(--qb-accent); margin: 0 0 6px; }
+  .qb-text { font-size: var(--qb-text-size, 16.5px); line-height: 1.6; margin: 0 0 14px; }
+  .qb-blank {
+    display: inline-block; min-width: 60px; padding: 0 3px; text-align: center;
+    border-bottom: 2.5px dashed var(--qb-soft); color: var(--qb-soft);
+  }
+  .qb-blank.qb-filled { border-bottom-style: solid; border-bottom-color: var(--qb-accent); color: var(--qb-accent); font-weight: 700; }
+  .qb-blank.qb-none { font-style: italic; font-weight: 400; }
+  .qb-opts { display: flex; flex-direction: column; gap: 9px; }
+  .qb-opts.qb-row { display: grid; grid-template-columns: repeat(var(--qb-cols), minmax(0, 1fr)); }
+  .qb-opt {
+    font: inherit; font-size: var(--qb-opt-size, 15.5px); line-height: 1.45; text-align: left; color: var(--qb-ink);
+    padding: 11px 14px; min-height: var(--qb-tap, 46px); border-radius: var(--qb-radius-opt);
+    border: 2px solid var(--qb-rule); background: var(--qb-page); cursor: pointer;
+  }
+  .qb-row .qb-opt { text-align: center; font-weight: 600; padding-left: 6px; padding-right: 6px; }
+  .qb-opt:not(:disabled):hover { border-color: var(--qb-accent); }
+  .qb-opt:disabled, .qb-part:disabled { cursor: default; }
+  .qb-letter { font-family: var(--qb-font); font-weight: var(--qb-font-weight); margin-right: 10px; color: var(--qb-accent); }
+  .qb-note { font-size: 12.5px; font-weight: 400; color: var(--qb-soft); }
+  .qb-punct { font-size: 22px; line-height: 0; font-weight: 700; }
+  .qb-spot { display: flex; flex-wrap: wrap; gap: 8px 6px; margin: 0 0 4px; }
+  .qb-part {
+    font: inherit; font-size: var(--qb-opt-size, 16px); line-height: 1.35; text-align: left; color: var(--qb-ink); cursor: pointer;
+    background: var(--qb-accent-soft); border: none; border-bottom: 3px dashed var(--qb-accent);
+    border-radius: 4px 4px 0 0; padding: 7px 9px; min-height: 40px;
+  }
+  .qb-opt.qb-correct, .qb-opt.qb-reveal { background: var(--qb-right-soft); border-color: var(--qb-right); }
+  .qb-opt.qb-incorrect { background: var(--qb-wrong-soft); border-color: var(--qb-wrong); }
+  .qb-part.qb-correct, .qb-part.qb-reveal { background: var(--qb-right-soft); border-bottom: 3px solid var(--qb-right); }
+  .qb-part.qb-incorrect { background: var(--qb-wrong-soft); border-bottom: 3px solid var(--qb-wrong); }
+  .qb-feedback { display: none; margin-top: 12px; padding-top: 12px; border-top: 2px dashed var(--qb-rule); font-size: 14px; line-height: 1.55; }
+  .qb-feedback.qb-show { display: block; }
+  .qb-verdict { display: block; font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 18px; margin-bottom: 2px; }
+  .qb-fb-ok .qb-verdict { color: var(--qb-right); }
+  .qb-fb-no .qb-verdict { color: var(--qb-wrong); }
+  .qb-summary {
+    background: var(--qb-card); color: var(--qb-ink); border: 3px solid var(--qb-accent);
+    border-radius: var(--qb-radius); padding: 18px 20px; margin-top: 8px;
+  }
+  .qb-summary h3 { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 30px; line-height: 1.1; margin: 0 0 6px; color: var(--qb-accent); }
+  .qb-summary p { margin: 0 0 10px; line-height: 1.55; }
+  .qb-sum-label { font-weight: 700; margin-top: 14px !important; }
+  .qb-areas { list-style: none; margin: 0 0 12px; padding: 0; }
+  .qb-areas li { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--qb-rule); }
+  .qb-areas a { color: var(--qb-ink); font-weight: 600; }
+  .qb-areas span { color: var(--qb-wrong); font-weight: 700; white-space: nowrap; }
+  .qb-meta { font-size: 13px; color: var(--qb-soft); }
+  .qb-go {
+    font: inherit; font-weight: 700; font-size: 16px; width: 100%; min-height: 50px; margin-top: 4px; cursor: pointer;
+    border: none; border-radius: var(--qb-radius); background: var(--qb-accent); color: var(--qb-on-accent);
+  }
+
+  /* Theme the quiz engine through these tokens only. */
+  :root {
+    --qb-page: var(--surface-2);
+    --qb-card: var(--surface);
+    --qb-ink: var(--ink);
+    --qb-soft: var(--ink-soft);
+    --qb-on-accent: var(--surface);
+    --qb-right: var(--right);
+    --qb-right-soft: var(--right-soft);
+    --qb-wrong: var(--wrong);
+    --qb-wrong-soft: var(--wrong-soft);
+    --qb-rule: var(--rule);
+    --qb-bar-ink: var(--surface);
+    --qb-font: var(--font-display);
+    --qb-font-weight: var(--display-weight, 400);
+    --qb-radius: var(--r-card, 18px);
+    --qb-radius-opt: 14px;
+    --qb-card-border: none;
+    --qb-card-shadow: none;
+    --qb-text-size: 21px;
+    --qb-opt-size: 19px;
+    --qb-tap: 56px;
+    --qb-accent: var(--accent);
+    --qb-accent-soft: var(--accent-soft);
+    --qb-bar: var(--accent);
+  }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back-link" href="index.html#lower">← Back to the shelf</a>
+
+  <!-- 1. HERO -->
+  <header class="hero">
+    <h1>The Helper <span>Heroes</span></h1>
+    <p class="lead">Four helper heroes help the doing word. Each one has its own power. Read the mission, then send the right hero! <button class="say" type="button" data-say="Four helper heroes help the doing word. Each one has its own power. Read the mission, then send the right hero!">🔊</button></p>
+    <div class="hq">
+      <div class="mission"><small>MISSION</small><p id="mission"></p></div>
+      <div class="heroes">
+        <button class="hb can" type="button" data-h="can"><span class="e">💪</span><b>Captain Can</b><small>able to</small></button>
+        <button class="hb may" type="button" data-h="may"><span class="e">🙋</span><b>Polite May</b><small>asking politely</small></button>
+        <button class="hb must" type="button" data-h="must"><span class="e">📏</span><b>Rule-Keeper Must</b><small>a rule</small></button>
+        <button class="hb should" type="button" data-h="should"><span class="e">💡</span><b>Bright-Idea Should</b><small>a good idea</small></button>
+      </div>
+      <p class="saved" id="saved" aria-live="polite"></p>
+      <p class="hmsg" id="hMsg" aria-live="polite"></p>
+      <button class="nextb" id="hNext" type="button" hidden>Next mission →</button>
+    </div>
+  </header>
+
+  <!-- 2. THE RULE -->
+  <section id="rule">
+    <h2>Two steps</h2>
+    <p class="sub">Pick the hero, then add the doing word.</p>
+    <div class="steps">
+      <div class="step"><span class="n">1</span><div><p><b>What do you mean?</b> <span class="hc">Able to</span>, <span class="hm">asking politely</span>, <span class="hr">a rule</span>, or <span class="hs">a good idea</span>? <button class="say" type="button" data-say="Step one. What do you mean? Able to: can. Asking politely: may. A rule: must. A good idea: should.">🔊</button></p>
+        <p class="hint"><span class="hc">can</span> · <span class="hm">may</span> · <span class="hr">must</span> · <span class="hs">should</span></p></div></div>
+      <div class="step"><span class="n">2</span><div><p><b>Add the plain doing word.</b> No -s, no -ed, no -ing, no "to". <button class="say" type="button" data-say="Step two. Add the plain doing word. No s, no e d, no i n g, and no to. Can swim. Must go.">🔊</button></p>
+        <p class="hint">can <b>swim</b> · must <b>go</b></p></div></div>
+    </div>
+  </section>
+
+  <!-- 3. THE TRAPS -->
+  <section id="traps">
+    <h2>Watch out!</h2>
+    <p class="sub">Heroes travel light.</p>
+    <div class="traps">
+      <div class="trap">
+        <h3>The doing word stays plain</h3>
+        <p>After a hero, use the plain doing word. <button class="say" type="button" data-say="The doing word stays plain. She can swim, not she can swims. You must go, not you must to go.">🔊</button></p>
+        <p class="eg"><span class="no">She can swims.</span> → <span class="yes">She can swim.</span></p>
+        <p class="eg"><span class="no">You must to go.</span> → <span class="yes">You must go.</span></p>
+      </div>
+      <div class="trap">
+        <h3>Heroes never take -s</h3>
+        <p>Even with he, she or one name! <button class="say" type="button" data-say="Heroes never take s, even with he, she, or one name! He can, not he cans. She should, not she shoulds.">🔊</button></p>
+        <p class="eg"><span class="no">He cans run.</span> → <span class="yes">He can run.</span></p>
+        <p class="eg"><span class="no">She shoulds rest.</span> → <span class="yes">She should rest.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. CASES -->
+  <section id="cases">
+    <h2>Meet the heroes</h2>
+    <p class="sub">Each hero has a badge. Look for the badges in the quiz!</p>
+    <div class="hcards">
+      <div class="card can" id="hero-can"><h3>💪 can</h3><span class="badge">💪 able to</span>
+        <p class="eg">Birds <b class="hc">can</b> fly.</p><p class="eg">I <b class="hc">can</b> ride a bike.</p>
+        <button class="say" type="button" data-say="Can means able to. Birds can fly. I can ride a bike.">🔊</button></div>
+      <div class="card may" id="hero-may"><h3>🙋 may</h3><span class="badge">🙋 asking politely</span>
+        <p class="eg"><b class="hm">May</b> I go to the toilet, please?</p><p class="eg"><b class="hm">May</b> I have some water?</p>
+        <button class="say" type="button" data-say="May is for asking politely. May I go to the toilet, please? May I have some water?">🔊</button></div>
+      <div class="card must" id="hero-must"><h3>📏 must</h3><span class="badge">📏 a rule</span>
+        <p class="eg">You <b class="hr">must</b> wear a seat belt.</p><p class="eg">We <b class="hr">must</b> stop at the red man.</p>
+        <button class="say" type="button" data-say="Must is for a rule. You must wear a seat belt. We must stop at the red man.">🔊</button></div>
+      <div class="card should" id="hero-should"><h3>💡 should</h3><span class="badge">💡 a good idea</span>
+        <p class="eg">You <b class="hs">should</b> drink water.</p><p class="eg">You <b class="hs">should</b> take an umbrella.</p>
+        <button class="say" type="button" data-say="Should is for a good idea. You should drink water. You should take an umbrella.">🔊</button></div>
+    </div>
+  </section>
+
+  <!-- 5. SPECIAL CASES -->
+  <section id="specials">
+    <h2>More hero powers</h2>
+    <p class="sub">Two more things to know.</p>
+    <div class="specials">
+      <div class="special" id="must-not"><h3>📏 must not</h3>
+        <p>A "don't" rule uses <b>must not</b>.</p>
+        <p class="eg">NO EATING 🚫🍔 → You <b class="hr">must not</b> eat here.</p>
+        <p class="eg">DO NOT TOUCH → You <b class="hr">must not</b> touch it.</p>
+        <button class="say" type="button" data-say="Must not. A don't rule uses must not. No eating: you must not eat here. Do not touch: you must not touch it.">🔊</button></div>
+      <div class="special" id="clues"><h3>🔍 Badge clues</h3>
+        <p>In the quiz, a badge in brackets tells you what the sentence means: <b>(💡 a good idea)</b>. Pick the hero with that badge!</p>
+        <p class="eg">(💡 a good idea) You <b class="hs">should</b> rest.</p>
+        <button class="say" type="button" data-say="Badge clues. In the quiz, a badge in brackets tells you what the sentence means, like: a good idea. Pick the hero with that badge! A good idea: you should rest.">🔊</button></div>
+    </div>
+  </section>
+
+  <!-- 6. PRACTICE -->
+  <section id="practice">
+    <h2>Your turn!</h2>
+    <p class="sub">Answer <span id="qbDraw">10</span> questions. Tap 🔊 to hear each one. Every time you play, you get new questions! <span hidden id="qbBank">62</span></p>
+    <div class="qb" id="qb">
+      <div class="qb-bar">
+        <div><div class="qb-label">Your score</div><div class="qb-score" id="qbScore">0 / 10</div><div class="qb-progress" id="qbProgress">0 of 10 answered</div></div>
+        <button class="qb-new" id="qbNew" type="button">New quiz</button>
+      </div>
+      <div class="qb-list" id="qbList"></div>
+      <div class="qb-summary" id="qbSummary" hidden></div>
+    </div>
+  </section>
+
+  <!-- 7. PIN THIS UP -->
+  <section class="pin">
+    <h2>Pin This Up</h2>
+    <ul>
+      <li>💪 <span class="hc">can</span>: able to</li>
+      <li>🙋 <span class="hm">may</span>: asking politely</li>
+      <li>📏 <span class="hr">must</span>: a rule (must not: a "don't" rule)</li>
+      <li>💡 <span class="hs">should</span>: a good idea</li>
+      <li>Then the plain doing word: can swim. No "cans", no "to"!</li>
+    </ul>
+    <p class="chant">Can is strong, and May says please,<br>Must keeps rules, and Should has ideas!<br>After a hero, keep it plain:<br>can swim, must go, again and again!</p>
+  </section>
+
+  <footer>My Grammar Shelf · Lower shelf, Lesson 19</footer>
+</div>
+
+<script>
+(function () {
+
+  const canSpeak = !!window.speechSynthesis && typeof window.speechSynthesis.speak === 'function' && typeof SpeechSynthesisUtterance !== 'undefined';
+  function sayIt(text) {
+    try { window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'en-GB'; u.rate = 0.9; window.speechSynthesis.speak(u); } catch (e) {}
+  }
+  if (canSpeak) {
+    document.body.classList.add('can-speak');
+    document.querySelectorAll('.say').forEach(b => {
+      b.setAttribute('aria-label', 'Read this aloud');
+      b.addEventListener('click', () => sayIt(b.dataset.say));
+    });
+  }
+
+  /* ---------- Hero ---------- */
+  /* [mission, hero, sentence when saved, why] */
+  const MISSIONS = [
+    ['Arjun knows how to swim.', 'can', 'Arjun can swim. 🏊', 'He is able to swim: can.'],
+    ['Ask Ms Goh nicely if you can go to the toilet.', 'may', 'May I go to the toilet, please?', 'Asking politely: may.'],
+    ['It is a rule to wear a helmet on your bike.', 'must', 'You must wear a helmet. 🚲', 'A rule: must.'],
+    ['Your tooth hurts. Seeing the dentist is a good idea.', 'should', 'You should see the dentist. 🦷', 'A good idea: should.'],
+    ['Birds are able to fly.', 'can', 'Birds can fly. 🐦', 'Able to: can.'],
+    ['It is a rule to stop at the red man.', 'must', 'We must stop at the red man. 🚦', 'A rule: must.'],
+    ['Ask Grandma nicely for a biscuit.', 'may', 'May I have a biscuit, please? 🍪', 'Asking politely: may.'],
+    ['It is hot. Drinking water is a good idea.', 'should', 'You should drink water. 💧', 'A good idea: should.']
+  ];
+  const HINTS = { can: 'Is it about being able to do something?', may: 'Is someone asking nicely?', must: 'Is it a rule?', should: 'Is it just a good idea?' };
+  const missionEl = document.getElementById('mission'), saved = document.getElementById('saved'), hMsg = document.getElementById('hMsg'), hNext = document.getElementById('hNext');
+  const hbs = document.querySelectorAll('.hb');
+  let mN = 0;
+  function loadMission() {
+    missionEl.textContent = MISSIONS[mN][0]; saved.textContent = ''; hMsg.textContent = ''; hNext.hidden = true;
+    hbs.forEach(x => x.disabled = false);
+  }
+  hbs.forEach(h => h.addEventListener('click', () => {
+    const m = MISSIONS[mN];
+    if (h.dataset.h === m[1]) {
+      saved.textContent = m[2];
+      hMsg.innerHTML = '<b class="good">Mission saved!</b> ' + m[3];
+      hbs.forEach(x => x.disabled = true);
+      if (canSpeak) sayIt(m[2]);
+      hNext.hidden = false; hNext.textContent = mN === MISSIONS.length - 1 ? 'Play again ↺' : 'Next mission →';
+    } else {
+      hMsg.innerHTML = '<b class="try">Good try!</b> ' + HINTS[h.dataset.h] + ' Read the mission again.';
+    }
+  }));
+  hNext.addEventListener('click', () => { mN = (mN + 1) % MISSIONS.length; loadMission(); });
+  loadMission();
+
+  { /* qb-start: quiz engine in its own scope, so its names can't clash with the lesson's */
+  /* ================= QUIZ: question bank (62 questions) ================= */
+  const LESSON_KEY = "shelf-lower-19";
+  const QB_BANDS = [4, 4, 2];
+  const QB_TEXT = {"speak": true, "right": ["Well done!", "Great job!", "You got it!", "Super!"], "wrong": "Good try!", "summary": {"perfect": "All correct! You're a super hero! Try a new set!", "high": "Great work! Look at the part below, then try a new set.", "mid": "Good effort! Read the parts below again, then try a new set.", "low": "Let's look at the lesson again together, then try a new set.", "review": "Have another look at"}, "ask": {"check": "Is this right?", "pick": "Which one is right?", "fill": "Which word fits?", "spot": "Tap the word with the mistake."}, "yn": ["Wrong", "Right"]};
+  const TAGS = {
+    can: { label: "Can: able to 💪", href: '#hero-can' },
+    may: { label: "May: asking politely 🙋", href: '#hero-may' },
+    must: { label: "Must: a rule 📏", href: '#hero-must' },
+    should: { label: "Should: a good idea 💡", href: '#hero-should' },
+    plain: { label: "Plain word after: can swim", href: '#traps' },
+    nos: { label: "No -s on helpers: she can", href: '#traps' },
+  };
+  const BANK = [
+    {"id": "c01", "t": "fill", "d": 1, "tag": "can", "q": "(💪 able to) Birds ___ fly.", "o": ["can", "must"], "why": "Birds are able to fly: can."},
+    {"id": "c02", "t": "fill", "d": 1, "tag": "can", "q": "(💪 able to) I ___ ride a bike.", "o": ["can", "should"], "why": "Able to: can."},
+    {"id": "c03", "t": "fill", "d": 2, "tag": "can", "q": "Mei has learnt to swim. Now she ___ swim.", "o": ["can", "must"], "why": "She is able to swim now: can."},
+    {"id": "c04", "t": "fill", "d": 2, "tag": "can", "q": "(💪 able to) My baby brother ___ walk now.", "o": ["can", "may"], "why": "Able to: can."},
+    {"id": "c05", "t": "check", "d": 1, "tag": "can", "q": "(💪 able to) Fish can swim.", "a": 1, "why": "Fish are able to swim: can. Right!"},
+    {"id": "c06", "t": "check", "d": 2, "tag": "can", "q": "Ali is strong. He can lift the box.", "a": 1, "why": "He is able to lift it: can. Right!"},
+    {"id": "c07", "t": "pick", "d": 2, "tag": "can", "ask": "Which word means 'able to'?", "o": ["can", "must", "should"], "why": "Can means able to."},
+    {"id": "c08", "t": "pick", "d": 3, "tag": "can", "ask": "Which one says this?", "o": ["Ravi can tie his shoes.", "Ravi must tie his shoes.", "Ravi may tie his shoes."], "why": "Knows how means able to: can.", "q": "Ravi knows how to tie his shoes."},
+    {"id": "c09", "t": "check", "d": 3, "tag": "can", "q": "(💪 able to) Grandpa should play the erhu very well.", "a": 0, "why": "Able to: Grandpa can play the erhu very well."},
+    {"id": "m01", "t": "fill", "d": 1, "tag": "may", "q": "(🙋 asking politely) ___ I go to the toilet, please?", "o": ["May", "Must"], "why": "Asking politely: May I…?"},
+    {"id": "m02", "t": "fill", "d": 1, "tag": "may", "q": "(🙋 asking politely) ___ I have some water, please?", "o": ["May", "Must"], "why": "Asking politely: May I…?"},
+    {"id": "m03", "t": "fill", "d": 2, "tag": "may", "q": "(🙋 asking politely) ___ I borrow your eraser, please?", "o": ["May", "Must"], "why": "Asking politely: May I…?"},
+    {"id": "m04", "t": "fill", "d": 2, "tag": "may", "q": "(🙋 asking politely) Teacher, ___ I sit here, please?", "o": ["may", "must"], "why": "Asking politely: may I…?"},
+    {"id": "m05", "t": "check", "d": 1, "tag": "may", "q": "(🙋 asking politely) May I have a biscuit, please?", "a": 1, "why": "Asking politely: May I. Right!"},
+    {"id": "m06", "t": "pick", "d": 2, "tag": "may", "ask": "Which is the polite way to ask?", "o": ["May I use your pencil, please?", "Give me your pencil.", "I must have your pencil."], "why": "\"May I…, please?\" asks politely."},
+    {"id": "m07", "t": "pick", "d": 3, "tag": "may", "ask": "Which word do we use to ask politely?", "o": ["may", "must", "should"], "why": "We use may to ask politely."},
+    {"id": "m08", "t": "check", "d": 3, "tag": "may", "q": "(🙋 asking politely) Must I open the window, please?", "a": 0, "why": "Asking politely: May I open the window, please?"},
+    {"id": "r01", "t": "fill", "d": 1, "tag": "must", "q": "(📏 a rule) You ___ wear a seat belt in the car.", "o": ["must", "may"], "why": "A rule: must."},
+    {"id": "r02", "t": "fill", "d": 1, "tag": "must", "q": "(📏 a rule) We ___ stop at the red man.", "o": ["must", "can"], "why": "A rule: must."},
+    {"id": "r03", "t": "fill", "d": 2, "tag": "must", "q": "The sign says NO RUNNING. You ___ walk.", "o": ["must", "may"], "why": "A sign gives a rule: must."},
+    {"id": "r04", "t": "fill", "d": 2, "tag": "must", "q": "(📏 a rule) Pupils ___ wear their name tags.", "o": ["must", "can"], "why": "A rule: must."},
+    {"id": "r05", "t": "check", "d": 1, "tag": "must", "q": "(📏 a rule) You must wear a helmet on your bike.", "a": 1, "why": "A rule: must. Right!"},
+    {"id": "r06", "t": "check", "d": 2, "tag": "must", "q": "(📏 a rule) We may keep quiet in the library.", "a": 0, "why": "A rule: We must keep quiet in the library."},
+    {"id": "r07", "t": "pick", "d": 2, "tag": "must", "ask": "Which word is for a rule?", "o": ["must", "can", "may"], "why": "Must is for a rule."},
+    {"id": "r08", "t": "check", "d": 3, "tag": "must", "q": "The sign says DO NOT TOUCH. You must not touch it.", "a": 1, "why": "A \"don't\" rule: must not. Right!"},
+    {"id": "r09", "t": "fill", "d": 3, "tag": "must", "q": "The sign says NO EATING. You ___ eat here.", "o": ["must not", "must"], "why": "A \"don't\" rule: must not."},
+    {"id": "s01", "t": "fill", "d": 1, "tag": "should", "q": "(💡 a good idea) You ___ drink water when it's hot.", "o": ["should", "may"], "why": "A good idea: should."},
+    {"id": "s02", "t": "fill", "d": 1, "tag": "should", "q": "(💡 a good idea) You look tired. You ___ rest.", "o": ["should", "can"], "why": "A good idea: should."},
+    {"id": "s03", "t": "fill", "d": 2, "tag": "should", "q": "(💡 a good idea) It's raining. You ___ take an umbrella.", "o": ["should", "may"], "why": "A good idea: should."},
+    {"id": "s04", "t": "fill", "d": 2, "tag": "should", "q": "(💡 a good idea) We ___ say sorry to Mei.", "o": ["should", "may"], "why": "A good idea: should."},
+    {"id": "s05", "t": "check", "d": 1, "tag": "should", "q": "(💡 a good idea) You should brush your teeth.", "a": 1, "why": "A good idea: should. Right!"},
+    {"id": "s06", "t": "check", "d": 2, "tag": "should", "q": "(💡 a good idea) You can eat more vegetables.", "a": 0, "why": "A good idea: You should eat more vegetables."},
+    {"id": "s07", "t": "pick", "d": 2, "tag": "should", "ask": "Which word is for a good idea?", "o": ["should", "can", "may"], "why": "Should is for a good idea."},
+    {"id": "s08", "t": "pick", "d": 3, "tag": "should", "ask": "Your tooth hurts. Which one gives a good idea?", "o": ["You should see the dentist.", "You may see the dentist.", "You can see the dentist."], "why": "A good idea: should."},
+    {"id": "s09", "t": "check", "d": 3, "tag": "should", "q": "(💡 a good idea) Wei Jie should go to bed early.", "a": 1, "why": "A good idea: should. Right!"},
+    {"id": "p01", "t": "fill", "d": 1, "tag": "plain", "q": "She can ___ fast.", "o": ["run", "runs"], "why": "After a helper word, use the plain doing word: can run."},
+    {"id": "p02", "t": "fill", "d": 1, "tag": "plain", "q": "You must ___ your hands.", "o": ["wash", "washes"], "why": "After a helper word, use the plain doing word: must wash."},
+    {"id": "p03", "t": "fill", "d": 2, "tag": "plain", "q": "We should ___ to bed early.", "o": ["go", "going"], "why": "After a helper word, no -ing: should go."},
+    {"id": "p04", "t": "fill", "d": 2, "tag": "plain", "q": "May I ___ a sweet?", "o": ["have", "has"], "why": "After a helper word, use the plain doing word: may I have."},
+    {"id": "p05", "t": "fill", "d": 2, "tag": "plain", "q": "Ali can ___ the guitar.", "o": ["play", "played"], "why": "After a helper word, no -ed: can play."},
+    {"id": "p06", "t": "check", "d": 1, "tag": "plain", "q": "Mei can draw well.", "a": 1, "why": "Can + plain word. Right!"},
+    {"id": "p07", "t": "check", "d": 2, "tag": "plain", "q": "You must to stop here.", "a": 0, "why": "No \"to\" after must: You must stop here."},
+    {"id": "p08", "t": "check", "d": 2, "tag": "plain", "q": "May I goes out to play?", "a": 0, "why": "After may, the plain word: May I go out to play?"},
+    {"id": "p09", "t": "check", "d": 3, "tag": "plain", "q": "He should eats his vegetables.", "a": 0, "why": "After should, no -s: he should eat."},
+    {"id": "p10", "t": "spot", "d": 3, "tag": "plain", "parts": ["My cat", "can", "climbs", "the tree."], "a": 2, "why": "After can, no -s: can climb.", "ask": "Tap the word with the mistake."},
+    {"id": "p11", "t": "pick", "d": 3, "tag": "plain", "ask": "Which one is right?", "o": ["You should sleep early.", "You should to sleep early.", "You should sleeps early."], "why": "After should, the plain word, no \"to\": should sleep."},
+    {"id": "n01", "t": "fill", "d": 1, "tag": "nos", "q": "She ___ swim.", "o": ["can", "cans"], "why": "Helper words never take -s: she can."},
+    {"id": "n02", "t": "fill", "d": 2, "tag": "nos", "q": "He ___ say sorry.", "o": ["should", "shoulds"], "why": "Helper words never take -s: he should."},
+    {"id": "n03", "t": "fill", "d": 2, "tag": "nos", "q": "Ravi ___ wear his school shoes.", "o": ["must", "musts"], "why": "Helper words never take -s: Ravi must."},
+    {"id": "n04", "t": "check", "d": 1, "tag": "nos", "q": "My dog cans catch a ball.", "a": 0, "why": "Helper words never take -s: my dog can catch."},
+    {"id": "n05", "t": "check", "d": 2, "tag": "nos", "q": "Siti can sing.", "a": 1, "why": "No -s on can. Right!"},
+    {"id": "n06", "t": "check", "d": 3, "tag": "nos", "q": "The baby shoulds sleep now.", "a": 0, "why": "Helper words never take -s: the baby should sleep."},
+    {"id": "n07", "t": "pick", "d": 2, "tag": "nos", "ask": "Which one is right?", "o": ["Dad can cook.", "Dad cans cook.", "Dad cans cooks."], "why": "No -s on can, and the plain word after it."},
+    {"id": "n08", "t": "spot", "d": 3, "tag": "nos", "parts": ["Every pupil", "musts", "wear", "a name tag."], "a": 1, "why": "Helper words never take -s: every pupil must wear.", "ask": "Tap the word with the mistake."},
+    {"id": "c10", "t": "fill", "d": 1, "tag": "can", "q": "(💪 able to) Siti ___ count to a hundred.", "o": ["can", "should"], "why": "Able to: can."},
+    {"id": "m09", "t": "fill", "d": 3, "tag": "may", "q": "(🙋 asking politely) Mum, ___ I watch TV after my homework?", "o": ["may", "must"], "why": "Asking politely: may I…?"},
+    {"id": "m10", "t": "check", "d": 2, "tag": "may", "q": "(🙋 asking politely) May we come in, please?", "a": 1, "why": "Asking politely: May we. Right!"},
+    {"id": "r10", "t": "fill", "d": 2, "tag": "must", "q": "(📏 a rule) Everyone ___ line up at the canteen.", "o": ["must", "may"], "why": "A rule: must."},
+    {"id": "s10", "t": "fill", "d": 3, "tag": "should", "q": "(💡 a good idea) Your shoes are dirty. You ___ wash them.", "o": ["should", "may"], "why": "A good idea: should."},
+    {"id": "p12", "t": "fill", "d": 1, "tag": "plain", "q": "I can ___ a song.", "o": ["sing", "sang"], "why": "After a helper word, use the plain doing word: can sing."},
+    {"id": "n09", "t": "check", "d": 2, "tag": "nos", "q": "Mei must finish her homework.", "a": 1, "why": "No -s on must. Right!"},
+    {"id": "n10", "t": "fill", "d": 1, "tag": "nos", "q": "My brother ___ ride a bike.", "o": ["can", "cans"], "why": "Helper words never take -s: my brother can."},
+  ];
+
+  /* ================= QUIZ BANK ENGINE (shared by every lesson) =================
+     Needs, defined above it: LESSON_KEY, TAGS, BANK.
+     Optional: QB_BANDS = [easy, medium, tricky] questions per attempt (default 7/7/6 = 20);
+     QB_TEXT = { ask: {...}, yn: [...], right: [...], wrong: '...', speak: true, summary: {...} }.
+     Each attempt draws BAND_SIZES questions (easy, medium, tricky). The draw builds many
+     candidate quizzes and keeps the best: every tag present, 3+ of each type, balanced
+     check answers, unseen questions first. Options are shuffled; ids seen are remembered. */
+  const BAND_SIZES = (typeof QB_BANDS !== 'undefined') ? QB_BANDS : [7, 7, 6];
+  const DRAW = BAND_SIZES.reduce((a, b) => a + b, 0);
+  const TYPE_TARGET = Math.max(1, Math.min(3, Math.floor(DRAW / new Set(BANK.map(q => q.t)).size)));   // e.g. 20 Qs → 3 of each type, 10 Qs with 4 types → 2
+  const QBT = (typeof QB_TEXT !== 'undefined') ? QB_TEXT : {};
+  const ASK = Object.assign({
+    check: 'Is this sentence correct?',
+    pick:  'Pick the correct sentence.',
+    fill:  'Which choice fills the gap correctly?',
+    spot:  'Tap the part with the mistake.'
+  }, QBT.ask || {});
+  const YN = QBT.yn || ['Needs fixing', 'Correct'];
+  const RIGHT = QBT.right || ['Correct!'];
+  const WRONG = QBT.wrong || 'Not quite.';
+  const SUM = Object.assign({
+    perfect: 'A perfect run! Try another set to make sure it sticks.',
+    high: 'Strong work. Have a quick look at the areas below, then try a fresh set.',
+    mid: 'Good progress. Re-read the parts below before your next attempt.',
+    low: 'Worth another look at the lesson. Start with the areas below, then try a fresh set.',
+    review: 'Areas to review'
+  }, QBT.summary || {});
+  const CAN_SPEAK = !!QBT.speak && typeof window !== 'undefined' && !!window.speechSynthesis &&
+    typeof window.speechSynthesis.speak === 'function' && typeof SpeechSynthesisUtterance !== 'undefined';
+  function speak(text) {
+    try {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-GB'; u.rate = 0.9;
+      window.speechSynthesis.speak(u);
+    } catch (e) { /* no speech on this device */ }
+  }
+
+  const store = {
+    get(k, fallback) { try { const v = localStorage.getItem(LESSON_KEY + ':' + k); return v === null ? fallback : JSON.parse(v); } catch (e) { return fallback; } },
+    set(k, v) { try { localStorage.setItem(LESSON_KEY + ':' + k, JSON.stringify(v)); } catch (e) { /* storage unavailable: quiz still works */ } }
+  };
+  const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  function buildCandidate(seen) {
+    const chosen = [], tagN = {}, typeN = {};
+    let fixN = 0, okN = 0;
+    for (let band = 1; band <= 3; band++) {
+      const picks = [];
+      for (let k = 0; k < BAND_SIZES[band - 1]; k++) {
+        let best = null, bestScore = -Infinity;
+        BANK.forEach(q => {
+          if (q.d !== band || picks.includes(q)) return;
+          let s = Math.random() * 3;
+          if (!seen.has(q.id)) s += 6;
+          if (!tagN[q.tag]) s += 12;
+          s -= (typeN[q.t] || 0) * 1.2;
+          if ((typeN[q.t] || 0) < TYPE_TARGET) s += 3;   // nudge every type up to its target
+          if (q.t === 'check') { const lean = q.a === 0 ? fixN - okN : okN - fixN; if (lean >= 1) s -= 4; }
+          if (s > bestScore) { bestScore = s; best = q; }
+        });
+        if (!best) break;
+        picks.push(best);
+        tagN[best.tag] = (tagN[best.tag] || 0) + 1;
+        typeN[best.t] = (typeN[best.t] || 0) + 1;
+        if (best.t === 'check') { if (best.a === 0) fixN++; else okN++; }
+      }
+      chosen.push(...shuffle(picks));
+    }
+    return chosen;
+  }
+
+  function rateCandidate(c, seen) {
+    const tags = new Set(c.map(q => q.tag)).size;
+    const types = {};
+    c.forEach(q => types[q.t] = (types[q.t] || 0) + 1);
+    const used = [...new Set(BANK.map(q => q.t))];
+    const minType = Math.min(...used.map(t => types[t] || 0));
+    const checks = c.filter(q => q.t === 'check');
+    const lean = Math.abs(checks.filter(q => q.a === 0).length * 2 - checks.length);
+    return (tags === Object.keys(TAGS).length ? 10000 : tags * 500)
+         + (c.length === DRAW ? 5000 : 0)
+         + Math.min(minType, TYPE_TARGET) * 300
+         + (lean <= 2 ? 200 : 0)
+         + c.filter(q => !seen.has(q.id)).length * 10;
+  }
+
+  function drawQuiz() {
+    let seen = new Set(store.get('seen', []));
+    if (BANK.length - seen.size < DRAW) seen = new Set(store.get('last', []));   // new cycle, but skip the last attempt
+    let chosen = null, bestRate = -1;
+    for (let tries = 0; tries < 200; tries++) {
+      const c = buildCandidate(seen), r = rateCandidate(c, seen);
+      if (r > bestRate) { bestRate = r; chosen = c; }
+    }
+    chosen.forEach(q => seen.add(q.id));
+    store.set('seen', [...seen]);
+    store.set('last', chosen.map(q => q.id));
+    return chosen.map(q => {
+      if (q.t === 'pick' || q.t === 'fill') {
+        const opts = shuffle(q.o.map((text, i) => ({ text, ok: i === 0 })));
+        return { q, opts, answer: opts.findIndex(o => o.ok) };
+      }
+      if (q.t === 'check') return { q, opts: YN.map(text => ({ text })), answer: q.a };
+      return { q, opts: null, answer: q.a };
+    });
+  }
+
+  const listEl = document.getElementById('qbList');
+  const scoreEl = document.getElementById('qbScore');
+  const progressEl = document.getElementById('qbProgress');
+  const summaryEl = document.getElementById('qbSummary');
+  let current = [], score = 0, done = 0, missed = [];
+
+  function updateScore() {
+    scoreEl.textContent = score + ' / ' + current.length;
+    progressEl.textContent = done + ' of ' + current.length + ' answered';
+  }
+
+  /* Small or empty options are hard to see on a button, so label them. */
+  function optLabel(text) {
+    const t = text.trim();
+    if (t === '') return '<span class="qb-note">(nothing)</span>';
+    if (t === ',') return '<span class="qb-punct">,</span> <span class="qb-note">(a comma)</span>';
+    if (t === '.') return '<span class="qb-punct">.</span> <span class="qb-note">(a full stop)</span>';
+    if (t === '?') return '<span class="qb-punct">?</span> <span class="qb-note">(a question mark)</span>';
+    if (t === '!') return '<span class="qb-punct">!</span> <span class="qb-note">(an exclamation mark)</span>';
+    return esc(text);
+  }
+  function plainLabel(text) {
+    const t = text.trim();
+    return t === '' ? 'nothing' : t === ',' ? 'a comma' : t === '.' ? 'a full stop'
+      : t === '?' ? 'a question mark' : t === '!' ? 'an exclamation mark' : '"' + t + '"';
+  }
+  function sentenceWithGap(q, text) {
+    let filler = '<span class="qb-blank">___</span>';
+    if (text !== undefined) {
+      filler = text.trim() === ''
+        ? '<span class="qb-blank qb-filled qb-none">(nothing)</span>'
+        : '<span class="qb-blank qb-filled">' + esc(text) + '</span>';
+    }
+    return esc(q.q).replace('___', filler);
+  }
+
+  function render() {
+    listEl.innerHTML = '';
+    summaryEl.hidden = true;
+    current.forEach((item, i) => {
+      const q = item.q;
+      const card = document.createElement('div');
+      card.className = 'qb-card';
+      card.dataset.type = q.t;
+      let body;
+      if (q.t === 'spot') {
+        body = '<div class="qb-spot">' + q.parts.map((p, k) =>
+          '<button type="button" class="qb-part" data-k="' + k + '">' + esc(p) + '</button>').join('') + '</div>';
+      } else if (q.t === 'fill') {
+        const cols = item.opts.length;
+        body = '<p class="qb-text">' + sentenceWithGap(q) + '</p><div class="qb-opts qb-row" style="--qb-cols:' + cols + '"></div>';
+      } else if (q.t === 'check') {
+        body = '<p class="qb-text">' + esc(q.q) + '</p><div class="qb-opts qb-row"></div>';
+      } else {
+        body = (q.q ? '<p class="qb-text">' + esc(q.q) + '</p>' : '') + '<div class="qb-opts"></div>';
+      }
+      card.innerHTML =
+        (CAN_SPEAK ? '<button type="button" class="qb-speak" aria-label="Read this question aloud">🔊 Read it to me</button>' : '') +
+        '<p class="qb-num">Question ' + (i + 1) + ' of ' + current.length + '</p>' +
+        '<p class="qb-ask">' + esc(q.ask || ASK[q.t]) + '</p>' + body +
+        '<div class="qb-feedback" role="status"></div>';
+      if (CAN_SPEAK) {
+        const bits = [q.ask || ASK[q.t]];
+        if (q.t === 'spot') bits.push(q.parts.join(' '));
+        else if (q.q) bits.push(q.q.replace('___', 'blank'));
+        const sayOpt = t => { const x = t.trim(); return x === '' ? 'nothing' : x === '.' ? 'full stop' : x === ',' ? 'comma' : x === '?' ? 'question mark' : x === '!' ? 'exclamation mark' : x; };
+        if (q.t === 'pick' || q.t === 'fill') item.opts.forEach((o, j) => bits.push((q.t === 'pick' ? String.fromCharCode(65 + j) + ': ' : '') + sayOpt(o.text)));
+        if (q.t === 'check') bits.push(YN.join(', or '));
+        const spoken = bits.map(t => t.trim().replace(/[.\s]+$/, '')).filter(Boolean)
+          .map(t => /[?!]$/.test(t) ? t : t + '.').join(' ');
+        card.querySelector('.qb-speak').addEventListener('click', () => speak(spoken));
+      }
+      if (q.t === 'spot') {
+        card.querySelectorAll('.qb-part').forEach(b => b.addEventListener('click', () => answer(i, +b.dataset.k, card)));
+      } else {
+        const opts = card.querySelector('.qb-opts');
+        item.opts.forEach((o, j) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'qb-opt';
+          b.innerHTML = (q.t === 'pick' ? '<span class="qb-letter">' + String.fromCharCode(65 + j) + '</span>' : '') + optLabel(o.text);
+          b.addEventListener('click', () => answer(i, j, card));
+          opts.appendChild(b);
+        });
+      }
+      listEl.appendChild(card);
+    });
+    updateScore();
+  }
+
+  function answer(i, j, card) {
+    const item = current[i];
+    if (item.done) return;
+    item.done = true; done++;
+    const q = item.q, ok = j === item.answer;
+    if (ok) score++; else missed.push(q.tag);
+    card.querySelectorAll(q.t === 'spot' ? '.qb-part' : '.qb-opt').forEach((b, k) => {
+      b.disabled = true;
+      if (k === j) b.classList.add(ok ? 'qb-correct' : 'qb-incorrect');
+      else if (k === item.answer && !ok) b.classList.add('qb-reveal');
+    });
+    if (q.t === 'fill') card.querySelector('.qb-text').innerHTML = sentenceWithGap(q, item.opts[j].text);
+    let right;
+    if (q.t === 'spot') right = 'The mistake is in "' + esc(q.parts[item.answer]) + '".';
+    else if (q.t === 'pick') right = 'The answer is ' + String.fromCharCode(65 + item.answer) + '.';
+    else right = 'The answer is ' + esc(plainLabel(item.opts[item.answer].text)) + '.';
+    const fb = card.querySelector('.qb-feedback');
+    fb.classList.add('qb-show', ok ? 'qb-fb-ok' : 'qb-fb-no');
+    fb.innerHTML = '<span class="qb-verdict">' + (ok ? RIGHT[Math.floor(Math.random() * RIGHT.length)] : WRONG + ' ' + right) + '</span>' + esc(q.why);
+    updateScore();
+    if (done === current.length) showSummary();
+  }
+
+  function showSummary() {
+    const best = Math.max(store.get('best', 0), score);
+    store.set('best', best);
+    const attempts = store.get('attempts', 0) + 1;
+    store.set('attempts', attempts);
+    const counts = {};
+    missed.forEach(t => counts[t] = (counts[t] || 0) + 1);
+    const areas = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+    const n = current.length;
+    let msg;
+    if (score === n) msg = SUM.perfect;
+    else if (score >= Math.ceil(n * 0.8)) msg = SUM.high;
+    else if (score >= Math.ceil(n * 0.6)) msg = SUM.mid;
+    else msg = SUM.low;
+    summaryEl.innerHTML =
+      '<h3>You scored ' + score + ' / ' + n + '</h3><p>' + msg + '</p>' +
+      (areas.length ? '<p class="qb-sum-label">' + esc(SUM.review) + '</p><ul class="qb-areas">' + areas.map(t =>
+        '<li><a href="' + TAGS[t].href + '">' + esc(TAGS[t].label) + '</a><span>' + counts[t] + ' wrong</span></li>').join('') + '</ul>' : '') +
+      '<p class="qb-meta">Attempts on this device: ' + attempts + ' · Best score: ' + best + ' / ' + n + '</p>' +
+      '<button type="button" class="qb-go" id="qbAgain">Try ' + n + ' new questions</button>';
+    summaryEl.hidden = false;
+    document.getElementById('qbAgain').addEventListener('click', () => { newQuiz(); listEl.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    summaryEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function newQuiz() {
+    current = drawQuiz(); score = 0; done = 0; missed = [];
+    render();
+  }
+
+  const bankEl = document.getElementById('qbBank'), drawEl = document.getElementById('qbDraw');
+  if (bankEl) bankEl.textContent = BANK.length;
+  if (drawEl) drawEl.textContent = DRAW;
+  document.getElementById('qbNew').addEventListener('click', () => {
+    newQuiz();
+    listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  newQuiz();
+  } /* qb-end */
+})();
+</script>
+</body>
+</html>

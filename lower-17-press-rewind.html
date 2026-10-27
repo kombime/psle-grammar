@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Press Rewind! ate, walked, was eating</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⏪</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700&family=Red+Hat+Text:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #EDEFE0;
+    --surface: #FFFFFF;
+    --surface-2: #F7F8EF;
+    --ink: #1D1F14;
+    --ink-soft: #575A45;
+    --accent: #5B2A86;
+    --accent-soft: #E9DDF4;
+    --past: #A9450E;
+    --past-soft: #FBE3D2;
+    --tape: #2A2733;
+    --tape-ink: #F2EEFA;
+    --rule: rgba(29,31,20,0.14);
+    --display-weight: 700;
+    --r-card: 6px;
+    --r-num: 6px;
+    --font-display: 'Chakra Petch', 'Arial Narrow', 'Trebuchet MS', sans-serif;
+    --font-body: 'Red Hat Text', -apple-system, 'Segoe UI', sans-serif;
+    --right: #1D7A45; --right-soft: #DCF1E3;
+    --wrong: #B3261E; --wrong-soft: #F9DEDC;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #13140D; --surface: #1E2016; --surface-2: #26281D; --ink: #F1F2E6; --ink-soft: #BEC0A9; --accent: #C9A2F0; --accent-soft: #2C1E3D; --past: #FFA56E; --past-soft: #40261A; --tape: #0B0A10; --tape-ink: #F2EEFA; --rule: rgba(241,242,230,0.16); --right: #72D69D; --right-soft: #17311F; --wrong: #F48D84; --wrong-soft: #3D1F1D; }
+  }
+  :root[data-theme="dark"] { --bg: #13140D; --surface: #1E2016; --surface-2: #26281D; --ink: #F1F2E6; --ink-soft: #BEC0A9; --accent: #C9A2F0; --accent-soft: #2C1E3D; --past: #FFA56E; --past-soft: #40261A; --tape: #0B0A10; --tape-ink: #F2EEFA; --rule: rgba(241,242,230,0.16); --right: #72D69D; --right-soft: #17311F; --wrong: #F48D84; --wrong-soft: #3D1F1D; }
+
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 19px; line-height: 1.55; }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 22px 18px 64px; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+  .back-link {
+    display: inline-block; margin: 0 0 20px; padding: 10px 16px; min-height: 44px;
+    font-weight: 700; font-size: 16px; color: var(--ink); text-decoration: none;
+    background: var(--surface); border: 2px solid var(--rule); border-radius: var(--r-btn, 999px);
+  }
+  h1, h2, h3 { font-family: var(--font-display); font-weight: var(--display-weight, 400); line-height: 1.12; }
+  h2 { font-size: 30px; margin: 0 0 8px; }
+  section { margin-bottom: 48px; }
+  .sub { color: var(--ink-soft); margin: 0 0 18px; }
+  .lead { font-size: 21px; margin: 0 0 18px; }
+  .no { color: var(--wrong); text-decoration: line-through; text-decoration-thickness: 2px; }
+  .yes { color: var(--right); font-weight: 700; }
+  .say {
+    display: none; font: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
+    padding: 6px 12px; min-height: 40px; margin-left: 6px; vertical-align: middle;
+    border-radius: 999px; border: 2px solid var(--accent); background: var(--accent-soft); color: var(--ink);
+  }
+  .can-speak .say { display: inline-block; }
+  .steps { display: grid; gap: 12px; }
+  .step { background: var(--surface); border-radius: var(--r-card, 18px); padding: 16px 18px; display: flex; gap: 14px; align-items: flex-start; }
+  .step .n { flex: 0 0 auto; width: 44px; height: 44px; border-radius: var(--r-num, 50%); display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 22px; background: var(--accent); color: var(--surface); }
+  .step p { margin: 0; font-size: 20px; }
+  .step .hint { font-size: 20px; margin-top: 6px; color: var(--ink-soft); }
+  .traps { display: grid; gap: 12px; }
+  .trap { background: var(--surface); border-radius: var(--r-card, 18px); padding: 18px; border-left: 8px solid var(--wrong); }
+  .trap h3 { margin: 0 0 6px; font-size: 24px; }
+  .trap p { margin: 0 0 10px; }
+  .eg { font-size: 21px; margin: 0 0 6px !important; }
+  .cards { display: grid; gap: 12px; }
+  .card { background: var(--surface); border-radius: var(--r-card, 18px); padding: 16px 18px; scroll-margin-top: 20px; }
+  .card h3 { margin: 0 0 6px; font-size: 26px; }
+  .card p { margin: 0 0 6px; }
+  .specials { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 520px) { .specials { grid-template-columns: 1fr; } }
+  .special { background: var(--surface-2); border-radius: var(--r-card, 18px); padding: 16px 18px; border: 3px dashed var(--accent); scroll-margin-top: 20px; }
+  .special h3 { margin: 0 0 6px; font-size: 24px; }
+  .special ul { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 2px; }
+  .special li { font-size: 20px; }
+  .special p { margin: 0 0 6px; }
+  .pin { background: var(--surface); border-radius: var(--r-card, 22px); padding: 20px; border: 3px solid var(--rule); }
+  .pin ul { margin: 0; padding-left: 22px; font-size: 20px; line-height: 1.7; }
+  .chant { margin: 16px 0 0; padding: 16px; border-radius: 16px; text-align: center; background: var(--accent-soft);
+    font-family: var(--font-display); font-size: 22px; line-height: 1.4; }
+  footer { text-align: center; font-size: 14px; color: var(--ink-soft); margin-top: 32px; }
+  .hmsg { margin: 10px 2px 0; font-size: 18px; min-height: 2.8em; }
+  .hmsg b.good { color: var(--right); } .hmsg b.try { color: var(--wrong); }
+
+
+  .pw { color: var(--past); font-weight: 700; }
+  .hero h1 { font-size: clamp(40px, 11vw, 60px); margin: 0 0 12px; text-transform: uppercase; letter-spacing: .02em; }
+  .hero h1 span { color: var(--accent); }
+  .vcr { background: var(--tape); color: var(--tape-ink); border-radius: 8px; padding: 14px; }
+  .reels { display: flex; justify-content: center; gap: 70px; margin: 2px 0 10px; }
+  .reel { width: 46px; height: 46px; border-radius: 50%; border: 6px dotted var(--tape-ink); opacity: .8; }
+  .reel.spin { animation: spin .6s linear 2 reverse; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .tv { background: var(--surface); color: var(--ink); border-radius: 6px; padding: 12px 14px; }
+  .tv .when { display: inline-block; font-family: var(--font-display); font-size: 14px; padding: 2px 8px; border-radius: 4px; margin-bottom: 4px; }
+  .tv .when.today { background: var(--accent-soft); color: var(--accent); }
+  .tv .when.yday { background: var(--past-soft); color: var(--past); }
+  .tv p { margin: 0 0 8px; font-size: 21px; font-weight: 700; }
+  .gap { display: inline-block; min-width: 70px; border-bottom: 3px dashed var(--ink-soft); }
+  .rw-btn { font: inherit; font-family: var(--font-display); font-size: 20px; width: 100%; min-height: 56px; margin: 10px 0 0; border-radius: 6px;
+    border: 3px solid var(--tape-ink); background: transparent; color: var(--tape-ink); cursor: pointer; }
+  .rw-btn:disabled { opacity: .4; cursor: default; }
+  .opts3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+  .o3 { font: inherit; font-weight: 700; font-size: 19px; min-height: 56px; border-radius: 6px; cursor: pointer; border: 3px solid var(--past); background: var(--past-soft); color: var(--ink); }
+  .o3:disabled { opacity: .5; cursor: default; }
+  .vcr .hmsg { color: var(--tape-ink); }
+  .vcr .hmsg b.good { color: #8BE3A8; } .vcr .hmsg b.try { color: #FFB0A8; }
+  .nextb { font: inherit; font-weight: 700; font-size: 17px; min-height: 48px; padding: 8px 18px; border-radius: 6px; border: none; background: var(--accent-soft); color: var(--ink); cursor: pointer; }
+  .past-grid { list-style: none; margin: 8px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; font-size: 19px; }
+  @media (max-width: 460px) { .past-grid { grid-template-columns: 1fr 1fr; } }
+  .past-grid li { background: var(--surface-2); border-radius: 6px; padding: 6px 8px; }
+  .past-grid b { color: var(--past); }
+  .card { border-left: 8px solid var(--accent); }
+  .card h3 { color: var(--accent); }
+
+  /* ================= QUIZ BANK ENGINE (shared by every lesson; qb- prefix avoids clashes) ================= */
+  .qb { --qb-cols: 2; }
+  .qb-bar {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 3;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 10px 16px; margin: 0 0 18px; border-radius: var(--qb-radius);
+    background: var(--qb-bar); color: var(--qb-bar-ink);
+  }
+  .qb-label { font-size: 12.5px; opacity: 0.8; }
+  .qb-score { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 28px; line-height: 1.05; }
+  .qb-progress { font-size: 12.5px; opacity: 0.85; margin-top: 2px; }
+  .qb-new {
+    font: inherit; font-weight: 700; font-size: 14px; padding: 10px 16px; min-height: 44px;
+    border-radius: 999px; border: 2px solid currentColor; background: transparent; color: inherit; cursor: pointer;
+  }
+  .qb-list, .qb-summary { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 96px); }
+  .qb-card {
+    background: var(--qb-card); border: var(--qb-card-border); box-shadow: var(--qb-card-shadow);
+    border-radius: var(--qb-radius); padding: 16px 16px 14px; margin: 0 0 14px; color: var(--qb-ink);
+  }
+  .qb-speak {
+    float: right; margin: -4px 0 6px 10px; font: inherit; font-size: 13.5px; font-weight: 700;
+    padding: 7px 12px; min-height: 38px; border-radius: 999px; cursor: pointer;
+    border: 2px solid var(--qb-accent); background: var(--qb-accent-soft); color: var(--qb-ink);
+  }
+  .qb-num { font-size: 12.5px; color: var(--qb-soft); margin: 0 0 4px; }
+  .qb-ask { font-size: 13.5px; font-weight: 700; color: var(--qb-accent); margin: 0 0 6px; }
+  .qb-text { font-size: var(--qb-text-size, 16.5px); line-height: 1.6; margin: 0 0 14px; }
+  .qb-blank {
+    display: inline-block; min-width: 60px; padding: 0 3px; text-align: center;
+    border-bottom: 2.5px dashed var(--qb-soft); color: var(--qb-soft);
+  }
+  .qb-blank.qb-filled { border-bottom-style: solid; border-bottom-color: var(--qb-accent); color: var(--qb-accent); font-weight: 700; }
+  .qb-blank.qb-none { font-style: italic; font-weight: 400; }
+  .qb-opts { display: flex; flex-direction: column; gap: 9px; }
+  .qb-opts.qb-row { display: grid; grid-template-columns: repeat(var(--qb-cols), minmax(0, 1fr)); }
+  .qb-opt {
+    font: inherit; font-size: var(--qb-opt-size, 15.5px); line-height: 1.45; text-align: left; color: var(--qb-ink);
+    padding: 11px 14px; min-height: var(--qb-tap, 46px); border-radius: var(--qb-radius-opt);
+    border: 2px solid var(--qb-rule); background: var(--qb-page); cursor: pointer;
+  }
+  .qb-row .qb-opt { text-align: center; font-weight: 600; padding-left: 6px; padding-right: 6px; }
+  .qb-opt:not(:disabled):hover { border-color: var(--qb-accent); }
+  .qb-opt:disabled, .qb-part:disabled { cursor: default; }
+  .qb-letter { font-family: var(--qb-font); font-weight: var(--qb-font-weight); margin-right: 10px; color: var(--qb-accent); }
+  .qb-note { font-size: 12.5px; font-weight: 400; color: var(--qb-soft); }
+  .qb-punct { font-size: 22px; line-height: 0; font-weight: 700; }
+  .qb-spot { display: flex; flex-wrap: wrap; gap: 8px 6px; margin: 0 0 4px; }
+  .qb-part {
+    font: inherit; font-size: var(--qb-opt-size, 16px); line-height: 1.35; text-align: left; color: var(--qb-ink); cursor: pointer;
+    background: var(--qb-accent-soft); border: none; border-bottom: 3px dashed var(--qb-accent);
+    border-radius: 4px 4px 0 0; padding: 7px 9px; min-height: 40px;
+  }
+  .qb-opt.qb-correct, .qb-opt.qb-reveal { background: var(--qb-right-soft); border-color: var(--qb-right); }
+  .qb-opt.qb-incorrect { background: var(--qb-wrong-soft); border-color: var(--qb-wrong); }
+  .qb-part.qb-correct, .qb-part.qb-reveal { background: var(--qb-right-soft); border-bottom: 3px solid var(--qb-right); }
+  .qb-part.qb-incorrect { background: var(--qb-wrong-soft); border-bottom: 3px solid var(--qb-wrong); }
+  .qb-feedback { display: none; margin-top: 12px; padding-top: 12px; border-top: 2px dashed var(--qb-rule); font-size: 14px; line-height: 1.55; }
+  .qb-feedback.qb-show { display: block; }
+  .qb-verdict { display: block; font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 18px; margin-bottom: 2px; }
+  .qb-fb-ok .qb-verdict { color: var(--qb-right); }
+  .qb-fb-no .qb-verdict { color: var(--qb-wrong); }
+  .qb-summary {
+    background: var(--qb-card); color: var(--qb-ink); border: 3px solid var(--qb-accent);
+    border-radius: var(--qb-radius); padding: 18px 20px; margin-top: 8px;
+  }
+  .qb-summary h3 { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 30px; line-height: 1.1; margin: 0 0 6px; color: var(--qb-accent); }
+  .qb-summary p { margin: 0 0 10px; line-height: 1.55; }
+  .qb-sum-label { font-weight: 700; margin-top: 14px !important; }
+  .qb-areas { list-style: none; margin: 0 0 12px; padding: 0; }
+  .qb-areas li { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--qb-rule); }
+  .qb-areas a { color: var(--qb-ink); font-weight: 600; }
+  .qb-areas span { color: var(--qb-wrong); font-weight: 700; white-space: nowrap; }
+  .qb-meta { font-size: 13px; color: var(--qb-soft); }
+  .qb-go {
+    font: inherit; font-weight: 700; font-size: 16px; width: 100%; min-height: 50px; margin-top: 4px; cursor: pointer;
+    border: none; border-radius: var(--qb-radius); background: var(--qb-accent); color: var(--qb-on-accent);
+  }
+
+  /* Theme the quiz engine through these tokens only. */
+  :root {
+    --qb-page: var(--surface-2);
+    --qb-card: var(--surface);
+    --qb-ink: var(--ink);
+    --qb-soft: var(--ink-soft);
+    --qb-on-accent: var(--surface);
+    --qb-right: var(--right);
+    --qb-right-soft: var(--right-soft);
+    --qb-wrong: var(--wrong);
+    --qb-wrong-soft: var(--wrong-soft);
+    --qb-rule: var(--rule);
+    --qb-bar-ink: var(--surface);
+    --qb-font: var(--font-display);
+    --qb-font-weight: var(--display-weight, 400);
+    --qb-radius: var(--r-card, 18px);
+    --qb-radius-opt: 14px;
+    --qb-card-border: none;
+    --qb-card-shadow: none;
+    --qb-text-size: 21px;
+    --qb-opt-size: 19px;
+    --qb-tap: 56px;
+    --qb-accent: var(--accent);
+    --qb-accent-soft: var(--accent-soft);
+    --qb-bar: var(--accent);
+  }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back-link" href="index.html#lower">← Back to the shelf</a>
+
+  <!-- 1. HERO -->
+  <header class="hero">
+    <h1>Press <span>Rewind!</span></h1>
+    <p class="lead">When something already happened, press ⏪ and the doing word changes to a <span class="pw">past word</span>. Rewind each one to yesterday! <button class="say" type="button" data-say="When something already happened, press rewind, and the doing word changes to a past word. Rewind each one to yesterday!">🔊</button></p>
+    <div class="vcr">
+      <div class="reels" aria-hidden="true"><span class="reel" id="reel1"></span><span class="reel" id="reel2"></span></div>
+      <div class="tv">
+        <span class="when today">TODAY</span>
+        <p id="todayLine"></p>
+        <div id="ydayBox" hidden><span class="when yday">YESTERDAY</span><p id="ydayLine"></p></div>
+      </div>
+      <button class="rw-btn" id="rwBtn" type="button">⏪ REWIND</button>
+      <div class="opts3" id="opts3" hidden></div>
+      <p class="hmsg" id="rwMsg" aria-live="polite"></p>
+      <button class="nextb" id="rwNext" type="button" hidden>Next →</button>
+    </div>
+  </header>
+
+  <!-- 2. THE RULE -->
+  <section id="rule">
+    <h2>Two questions</h2>
+    <p class="sub">Look for the rewind words: <b>yesterday, last night, last week, just now, two days ago</b>.</p>
+    <div class="steps">
+      <div class="step"><span class="n">⏪</span><div><p><b>Did it already happen?</b> Use a past word. Most add <b>-ed</b>. Some are surprise words. <button class="say" type="button" data-say="Did it already happen? Use a past word. Most add e d. Some are surprise words. Yesterday I walked. Yesterday I ate. Look for the rewind words: yesterday, last night, last week, just now, two days ago.">🔊</button></p>
+        <p class="hint">walk → walk<span class="pw">ed</span> · eat → <span class="pw">ate</span></p></div></div>
+      <div class="step"><span class="n">⏸️</span><div><p><b>Was it in the middle of happening?</b> Use <b>was</b> or <b>were</b> + <b>-ing</b>. <button class="say" type="button" data-say="Was it in the middle of happening? Use was or were, plus i n g. I was eating when the phone rang.">🔊</button></p>
+        <p class="hint">I <span class="pw">was eating</span> when the phone rang. 📞</p></div></div>
+    </div>
+  </section>
+
+  <!-- 3. THE TRAPS -->
+  <section id="traps">
+    <h2>Watch out!</h2>
+    <p class="sub">Surprise words never take -ed.</p>
+    <div class="trap">
+      <p>These words don't exist! Use the surprise word instead. <button class="say" type="button" data-say="Surprise words never take e d. These words don't exist! Not eated: ate. Not goed: went. Not buyed: bought. Not runned: ran.">🔊</button></p>
+      <p class="eg"><span class="no">eated</span> → <span class="yes">ate</span> · <span class="no">goed</span> → <span class="yes">went</span></p>
+      <p class="eg"><span class="no">buyed</span> → <span class="yes">bought</span> · <span class="no">runned</span> → <span class="yes">ran</span></p>
+      <p class="eg"><span class="no">catched</span> → <span class="yes">caught</span> · <span class="no">taked</span> → <span class="yes">took</span></p>
+    </div>
+  </section>
+
+  <!-- 4. CASES -->
+  <section id="cases">
+    <h2>Three kinds of rewind</h2>
+    <p class="sub">Add -ed, learn the surprise words, or use was and were.</p>
+    <div class="cards">
+      <div class="card" id="ed-words"><h3>Add -ed</h3>
+        <p class="eg">walk → walk<b class="pw">ed</b> · play → play<b class="pw">ed</b></p>
+        <p class="eg">jump → jump<b class="pw">ed</b> · help → help<b class="pw">ed</b></p>
+        <button class="say" type="button" data-say="Add e d. Walk, walked. Play, played. Jump, jumped. Help, helped.">🔊</button></div>
+      <div class="card" id="surprise-past"><h3>Surprise past words</h3>
+        <p>These change in their own way. Learn them by heart! <button class="say" type="button" data-say="Surprise past words. Eat, ate. Go, went. See, saw. Run, ran. Come, came. Sit, sat. Drink, drank. Swim, swam. Sing, sang. Write, wrote. Make, made. Take, took. Give, gave. Buy, bought. Catch, caught. Sleep, slept. Have, had.">🔊</button></p>
+        <ul class="past-grid">
+          <li>eat → <b>ate</b></li><li>go → <b>went</b></li><li>see → <b>saw</b></li><li>run → <b>ran</b></li><li>come → <b>came</b></li><li>sit → <b>sat</b></li>
+          <li>drink → <b>drank</b></li><li>swim → <b>swam</b></li><li>sing → <b>sang</b></li><li>write → <b>wrote</b></li><li>make → <b>made</b></li><li>take → <b>took</b></li>
+          <li>give → <b>gave</b></li><li>buy → <b>bought</b></li><li>catch → <b>caught</b></li><li>sleep → <b>slept</b></li><li>have → <b>had</b></li>
+        </ul></div>
+      <div class="card" id="was-were"><h3>was / were + -ing</h3>
+        <p>In the middle of doing something, when something else happened.</p>
+        <p class="eg">I / he / she / it → <b class="pw">was</b> eating</p>
+        <p class="eg">we / you / they → <b class="pw">were</b> eating</p>
+        <p class="eg">We were playing when it rained. 🌧️</p>
+        <button class="say" type="button" data-say="Was or were, plus i n g. For being in the middle of doing something, when something else happened. I, he, she, it: was eating. We, you, they: were eating. We were playing when it rained.">🔊</button></div>
+    </div>
+  </section>
+
+  <!-- 5. SPECIAL CASES -->
+  <section id="specials">
+    <h2>Tricky -ed endings</h2>
+    <p class="sub">Look at the end of the doing word first.</p>
+    <div class="specials">
+      <div class="special"><h3>Ends in e? Just add d</h3>
+        <ul><li>bake → bake<b>d</b></li><li>smile → smile<b>d</b></li></ul>
+        <button class="say" type="button" data-say="Ends in e? Just add d. Bake, baked. Smile, smiled.">🔊</button></div>
+      <div class="special"><h3>y → ied</h3>
+        <p>No vowel before the y? Change it to <b>ied</b>.</p>
+        <ul><li>cry → cr<b>ied</b></li><li>carry → carr<b>ied</b></li><li>try → tr<b>ied</b></li></ul>
+        <p>A vowel before the y? Just add ed: play → play<b>ed</b>, stay → stay<b>ed</b>. <button class="say" type="button" data-say="Y to i e d. No vowel before the y? Change it to i e d. Cry, cried. Carry, carried. Try, tried. A vowel before the y? Just add e d. Play, played. Stay, stayed.">🔊</button></p></div>
+    </div>
+  </section>
+
+  <!-- 6. PRACTICE -->
+  <section id="practice">
+    <h2>Your turn!</h2>
+    <p class="sub">Answer <span id="qbDraw">10</span> questions. Tap 🔊 to hear each one. Every time you play, you get new questions! <span hidden id="qbBank">61</span></p>
+    <div class="qb" id="qb">
+      <div class="qb-bar">
+        <div><div class="qb-label">Your score</div><div class="qb-score" id="qbScore">0 / 10</div><div class="qb-progress" id="qbProgress">0 of 10 answered</div></div>
+        <button class="qb-new" id="qbNew" type="button">New quiz</button>
+      </div>
+      <div class="qb-list" id="qbList"></div>
+      <div class="qb-summary" id="qbSummary" hidden></div>
+    </div>
+  </section>
+
+  <!-- 7. PIN THIS UP -->
+  <section class="pin">
+    <h2>Pin This Up</h2>
+    <ul>
+      <li>Rewind words: yesterday, last night, last week, just now, ago</li>
+      <li>Most words add <span class="pw">-ed</span>: walked, played</li>
+      <li>Surprise words: ate, went, saw, ran, bought (never eated!)</li>
+      <li>baked, cried, played</li>
+      <li>In the middle: I <span class="pw">was</span> eating, they <span class="pw">were</span> eating</li>
+    </ul>
+    <p class="chant">Press rewind and what do you get?<br>I walked, I played, I ate, I met!<br>Not eated, not goed, that isn't true,<br>I went, I saw, and so did you!</p>
+  </section>
+
+  <footer>My Grammar Shelf · Lower shelf, Lesson 17</footer>
+</div>
+
+<script>
+(function () {
+
+  const canSpeak = !!window.speechSynthesis && typeof window.speechSynthesis.speak === 'function' && typeof SpeechSynthesisUtterance !== 'undefined';
+  function sayIt(text) {
+    try { window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'en-GB'; u.rate = 0.9; window.speechSynthesis.speak(u); } catch (e) {}
+  }
+  if (canSpeak) {
+    document.body.classList.add('can-speak');
+    document.querySelectorAll('.say').forEach(b => {
+      b.setAttribute('aria-label', 'Read this aloud');
+      b.addEventListener('click', () => sayIt(b.dataset.say));
+    });
+  }
+
+  /* ---------- Hero ---------- */
+  /* [today, yesterday with ___, right, wrong, wrong, why] */
+  const TAPES = [
+    ['Today, Ravi eats a curry puff.', 'Yesterday, Ravi ___ a curry puff.', 'ate', 'eated', 'eats', 'Eat is a surprise word: ate.'],
+    ['Today, we go to the zoo.', 'Yesterday, we ___ to the zoo.', 'went', 'goed', 'go', 'Go is a surprise word: went.'],
+    ['Today, Mei plays chapteh.', 'Yesterday, Mei ___ chapteh.', 'played', 'plaied', 'plays', 'Play just adds -ed: played.'],
+    ['Today, I see a rainbow.', 'Yesterday, I ___ a rainbow.', 'saw', 'seeing', 'see', 'See is a surprise word: saw.'],
+    ['Today, Grandma bakes a cake.', 'Yesterday, Grandma ___ a cake.', 'baked', 'bakeed', 'bakes', 'Bake ends in e, so just add d: baked.'],
+    ['Today, the baby cries.', 'Yesterday, the baby ___.', 'cried', 'cryed', 'cries', 'Cry has no vowel before the y: cried.'],
+    ['Today, Siti swims in the pool.', 'Yesterday, Siti ___ in the pool.', 'swam', 'swimmed', 'swims', 'Swim is a surprise word: swam.'],
+    ['Today, Dad buys some kueh.', 'Yesterday, Dad ___ some kueh.', 'bought', 'buyed', 'buys', 'Buy is a surprise word: bought.']
+  ];
+  const todayLine = document.getElementById('todayLine'), ydayBox = document.getElementById('ydayBox'), ydayLine = document.getElementById('ydayLine');
+  const rwBtn = document.getElementById('rwBtn'), opts3 = document.getElementById('opts3'), rwMsg = document.getElementById('rwMsg'), rwNext = document.getElementById('rwNext');
+  const reels = [document.getElementById('reel1'), document.getElementById('reel2')];
+  let tapeN = 0;
+  function loadTape() {
+    const t = TAPES[tapeN];
+    todayLine.textContent = t[0]; ydayBox.hidden = true; opts3.hidden = true; opts3.innerHTML = '';
+    rwBtn.disabled = false; rwMsg.textContent = ''; rwNext.hidden = true;
+  }
+  rwBtn.addEventListener('click', () => {
+    const t = TAPES[tapeN];
+    reels.forEach(r => { r.classList.remove('spin'); void r.offsetWidth; r.classList.add('spin'); });
+    ydayLine.innerHTML = t[1].replace('___', '<span class="gap">&nbsp;</span>'); ydayBox.hidden = false;
+    rwBtn.disabled = true; opts3.hidden = false;
+    const o = [t[2], t[3], t[4]];
+    for (let i = o.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [o[i], o[j]] = [o[j], o[i]]; }
+    o.forEach(w => {
+      const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'o3'; btn.textContent = w;
+      btn.addEventListener('click', () => {
+        if (w === t[2]) {
+          ydayLine.textContent = t[1].replace('___', w);
+          rwMsg.innerHTML = '<b class="good">Rewound!</b> ' + t[5];
+          opts3.querySelectorAll('button').forEach(x => x.disabled = true);
+          if (canSpeak) sayIt(ydayLine.textContent);
+          rwNext.hidden = false; rwNext.textContent = tapeN === TAPES.length - 1 ? 'Play again ↺' : 'Next tape →';
+        } else if (w === t[4]) {
+          rwMsg.innerHTML = '<b class="try">Good try!</b> That is the today word. Yesterday needs a past word.';
+        } else {
+          rwMsg.innerHTML = '<b class="try">Good try!</b> Is it an -ed word, or a surprise word? Look at the lesson below.';
+        }
+      });
+      opts3.appendChild(btn);
+    });
+  });
+  rwNext.addEventListener('click', () => { tapeN = (tapeN + 1) % TAPES.length; loadTape(); });
+  loadTape();
+
+  { /* qb-start: quiz engine in its own scope, so its names can't clash with the lesson's */
+  /* ================= QUIZ: question bank (61 questions) ================= */
+  const LESSON_KEY = "shelf-lower-17";
+  const QB_BANDS = [4, 4, 2];
+  const QB_TEXT = {"speak": true, "right": ["Well done!", "Great job!", "You got it!", "Super!"], "wrong": "Good try!", "summary": {"perfect": "All correct! Perfect replay! Try a new set!", "high": "Great work! Look at the part below, then try a new set.", "mid": "Good effort! Read the parts below again, then try a new set.", "low": "Let's look at the lesson again together, then try a new set.", "review": "Have another look at"}, "ask": {"check": "Is this right?", "pick": "Which one is right?", "fill": "Which word fits?", "spot": "Tap the word with the mistake."}, "yn": ["Wrong", "Right"]};
+  const TAGS = {
+    ed: { label: "Add -ed: walked, played", href: '#ed-words' },
+    spell: { label: "baked, cried, played", href: '#specials' },
+    odd: { label: "Surprise past words: ate, went, saw", href: '#surprise-past' },
+    trap: { label: "Trap: ate, not eated", href: '#traps' },
+    clue: { label: "Rewind words: yesterday, ago", href: '#rule' },
+    waswere: { label: "was eating, were eating", href: '#was-were' },
+  };
+  const BANK = [
+    {"id": "e01", "t": "fill", "d": 1, "tag": "ed", "q": "Yesterday, I ___ to the park.", "o": ["walked", "walk"], "why": "\"Yesterday\" means rewind: walk + ed = walked."},
+    {"id": "e02", "t": "fill", "d": 1, "tag": "ed", "q": "Last night, we ___ a game.", "o": ["played", "play"], "why": "\"Last night\" means rewind: played."},
+    {"id": "e03", "t": "fill", "d": 1, "tag": "ed", "q": "Ravi ___ over the puddle yesterday.", "o": ["jumped", "jumps"], "why": "\"Yesterday\" means rewind: jumped."},
+    {"id": "e04", "t": "fill", "d": 2, "tag": "ed", "q": "Mum ___ the door just now.", "o": ["opened", "opens"], "why": "\"Just now\" already happened: opened."},
+    {"id": "e05", "t": "fill", "d": 2, "tag": "ed", "q": "Yesterday, the baby ___ at the clown.", "o": ["laughed", "laughs"], "why": "\"Yesterday\" means rewind: laughed."},
+    {"id": "e06", "t": "check", "d": 1, "tag": "ed", "q": "Yesterday, I helped Grandma.", "a": 1, "why": "Yesterday: helped. Right!"},
+    {"id": "e07", "t": "check", "d": 2, "tag": "ed", "q": "Last week, Mei visit her cousin.", "a": 0, "why": "\"Last week\" means rewind: Mei visited."},
+    {"id": "e08", "t": "check", "d": 3, "tag": "ed", "q": "We watched a film last Sunday.", "a": 1, "why": "Last Sunday: watched. Right!"},
+    {"id": "e09", "t": "spot", "d": 3, "tag": "ed", "parts": ["Last Saturday,", "Dad", "wash", "the car."], "a": 2, "why": "\"Last Saturday\" means rewind: Dad washed.", "ask": "Tap the word with the mistake."},
+    {"id": "e10", "t": "pick", "d": 2, "tag": "ed", "ask": "Which one is right?", "o": ["She cleaned her room yesterday.", "She clean her room yesterday."], "why": "Yesterday: cleaned."},
+    {"id": "p01", "t": "fill", "d": 1, "tag": "spell", "q": "Grandma ___ a cake yesterday.", "o": ["baked", "bakeed"], "why": "Bake ends in e, so just add d: baked."},
+    {"id": "p02", "t": "fill", "d": 2, "tag": "spell", "q": "The baby ___ last night.", "o": ["cried", "cryed"], "why": "Cry has no vowel before the y: cried."},
+    {"id": "p03", "t": "fill", "d": 2, "tag": "spell", "q": "Siti ___ at me yesterday.", "o": ["smiled", "smileed"], "why": "Smile ends in e, so just add d: smiled."},
+    {"id": "p04", "t": "fill", "d": 2, "tag": "spell", "q": "Dad ___ the heavy box just now.", "o": ["carried", "carryed"], "why": "Carry has no vowel before the y: carried."},
+    {"id": "p05", "t": "fill", "d": 3, "tag": "spell", "q": "We ___ in the pool last Sunday.", "o": ["played", "plaied"], "why": "Play has a vowel before the y, so just add ed: played."},
+    {"id": "p06", "t": "check", "d": 1, "tag": "spell", "q": "Mei baked cookies yesterday.", "a": 1, "why": "Bake + d: baked. Right!"},
+    {"id": "p07", "t": "check", "d": 2, "tag": "spell", "q": "The boy cryed when he fell.", "a": 0, "why": "Cry has no vowel before the y: cried."},
+    {"id": "p08", "t": "check", "d": 3, "tag": "spell", "q": "We stayed at Grandpa's house last night.", "a": 1, "why": "Stay has a vowel before the y: stayed. Right!"},
+    {"id": "p09", "t": "check", "d": 3, "tag": "spell", "q": "Ali tryed his best in the race.", "a": 0, "why": "Try has no vowel before the y: tried."},
+    {"id": "o01", "t": "fill", "d": 1, "tag": "odd", "q": "Yesterday, I ___ a pau.", "o": ["ate", "eat"], "why": "Eat is a surprise word: ate."},
+    {"id": "o02", "t": "fill", "d": 1, "tag": "odd", "q": "Last week, we ___ to the zoo.", "o": ["went", "go"], "why": "Go is a surprise word: went."},
+    {"id": "o03", "t": "fill", "d": 1, "tag": "odd", "q": "I ___ a rainbow yesterday.", "o": ["saw", "see"], "why": "See is a surprise word: saw."},
+    {"id": "o04", "t": "fill", "d": 2, "tag": "odd", "q": "Last night, Ravi ___ a letter to Grandma.", "o": ["wrote", "writes"], "why": "Write is a surprise word: wrote."},
+    {"id": "o05", "t": "fill", "d": 2, "tag": "odd", "q": "Mum ___ me a new book yesterday.", "o": ["bought", "buys"], "why": "Buy is a surprise word: bought."},
+    {"id": "o06", "t": "fill", "d": 2, "tag": "odd", "q": "We ___ in the sea last Sunday.", "o": ["swam", "swim"], "why": "Swim is a surprise word: swam."},
+    {"id": "o07", "t": "fill", "d": 3, "tag": "odd", "q": "The dog ___ after the ball just now.", "o": ["ran", "runs"], "why": "Run is a surprise word: ran."},
+    {"id": "o08", "t": "fill", "d": 3, "tag": "odd", "q": "Last night, Grandpa ___ a song at the party.", "o": ["sang", "sings"], "why": "Sing is a surprise word: sang."},
+    {"id": "o09", "t": "check", "d": 1, "tag": "odd", "q": "Yesterday, we went to the beach.", "a": 1, "why": "Go becomes went. Right!"},
+    {"id": "o10", "t": "check", "d": 2, "tag": "odd", "q": "Last night, I sleep early.", "a": 0, "why": "Sleep is a surprise word: I slept early."},
+    {"id": "o11", "t": "check", "d": 2, "tag": "odd", "q": "Mei drank all her milk this morning.", "a": 1, "why": "Drink becomes drank. Right!"},
+    {"id": "o12", "t": "check", "d": 3, "tag": "odd", "q": "Yesterday, Ali come to my house.", "a": 0, "why": "Come is a surprise word: Ali came."},
+    {"id": "o13", "t": "pick", "d": 2, "tag": "odd", "ask": "Which one is right?", "o": ["I took the bus home yesterday.", "I taked the bus home yesterday.", "I take the bus home yesterday."], "why": "Take is a surprise word: took."},
+    {"id": "t01", "t": "fill", "d": 1, "tag": "trap", "q": "She ___ her lunch.", "o": ["ate", "eated"], "why": "There is no word \"eated\". Say: ate."},
+    {"id": "t02", "t": "fill", "d": 1, "tag": "trap", "q": "We ___ home after school.", "o": ["went", "goed"], "why": "There is no word \"goed\". Say: went."},
+    {"id": "t03", "t": "fill", "d": 2, "tag": "trap", "q": "Dad ___ me a toy.", "o": ["bought", "buyed"], "why": "There is no word \"buyed\". Say: bought."},
+    {"id": "t04", "t": "fill", "d": 2, "tag": "trap", "q": "I ___ a big fish!", "o": ["caught", "catched"], "why": "There is no word \"catched\". Say: caught."},
+    {"id": "t05", "t": "fill", "d": 3, "tag": "trap", "q": "They ___ a sandcastle.", "o": ["made", "maked"], "why": "There is no word \"maked\". Say: made."},
+    {"id": "t06", "t": "check", "d": 1, "tag": "trap", "q": "I eated an apple.", "a": 0, "why": "There is no word \"eated\". Say: I ate an apple."},
+    {"id": "t07", "t": "check", "d": 2, "tag": "trap", "q": "Siti goed to the library.", "a": 0, "why": "There is no word \"goed\". Say: Siti went."},
+    {"id": "t08", "t": "check", "d": 2, "tag": "trap", "q": "Jun Wei gave me a sticker.", "a": 1, "why": "Give becomes gave. Right!"},
+    {"id": "t09", "t": "check", "d": 3, "tag": "trap", "q": "Mum taked us to the pasar malam.", "a": 0, "why": "There is no word \"taked\". Say: Mum took us."},
+    {"id": "t10", "t": "spot", "d": 3, "tag": "trap", "parts": ["After school,", "I", "runned", "home."], "a": 2, "why": "There is no word \"runned\". Say: I ran home.", "ask": "Tap the word with the mistake."},
+    {"id": "t11", "t": "check", "d": 3, "tag": "trap", "q": "We sat on the bench.", "a": 1, "why": "Sit becomes sat. Right!"},
+    {"id": "c01", "t": "fill", "d": 1, "tag": "clue", "q": "Yesterday, I ___ football.", "o": ["played", "play"], "why": "\"Yesterday\" means rewind: played."},
+    {"id": "c02", "t": "fill", "d": 1, "tag": "clue", "q": "Every day, I ___ football.", "o": ["play", "played"], "why": "\"Every day\" is not a rewind word: I play."},
+    {"id": "c03", "t": "fill", "d": 2, "tag": "clue", "q": "Last night, Mum ___ curry.", "o": ["cooked", "cooks"], "why": "\"Last night\" means rewind: cooked."},
+    {"id": "c04", "t": "fill", "d": 2, "tag": "clue", "q": "Two days ago, it ___ all day.", "o": ["rained", "rains"], "why": "\"Ago\" means rewind: rained."},
+    {"id": "c05", "t": "check", "d": 2, "tag": "clue", "q": "Last Monday, we have a test.", "a": 0, "why": "\"Last Monday\" means rewind: we had a test."},
+    {"id": "c06", "t": "check", "d": 3, "tag": "clue", "q": "Two days ago, the shop closed early.", "a": 1, "why": "\"Ago\" means rewind: closed. Right!"},
+    {"id": "c07", "t": "pick", "d": 3, "tag": "clue", "ask": "Which one is right?", "o": ["Last year, I was in Primary 1.", "Last year, I am in Primary 1."], "why": "\"Last year\" means rewind: I was."},
+    {"id": "c08", "t": "check", "d": 3, "tag": "clue", "q": "Yesterday, Siti plays the piano.", "a": 0, "why": "\"Yesterday\" means rewind: Siti played the piano."},
+    {"id": "w01", "t": "fill", "d": 1, "tag": "waswere", "q": "I ___ eating when the phone rang.", "o": ["was", "were"], "why": "I goes with was: I was eating."},
+    {"id": "w02", "t": "fill", "d": 1, "tag": "waswere", "q": "They ___ playing when it rained.", "o": ["were", "was"], "why": "They goes with were: they were playing."},
+    {"id": "w03", "t": "fill", "d": 2, "tag": "waswere", "q": "She was ___ a book when I came in.", "o": ["reading", "read"], "why": "In the middle of it: was + -ing, reading."},
+    {"id": "w04", "t": "fill", "d": 2, "tag": "waswere", "q": "We ___ sleeping when the thunder boomed.", "o": ["were", "was"], "why": "We goes with were: we were sleeping."},
+    {"id": "w05", "t": "fill", "d": 3, "tag": "waswere", "q": "Dad ___ driving when he saw a rainbow.", "o": ["was", "were"], "why": "Dad is one person: was driving."},
+    {"id": "w06", "t": "check", "d": 1, "tag": "waswere", "q": "I was sleeping when Mum came home.", "a": 1, "why": "I was sleeping. Right!"},
+    {"id": "w07", "t": "check", "d": 2, "tag": "waswere", "q": "The children was singing in the hall.", "a": 0, "why": "Children means more than one: were singing."},
+    {"id": "w08", "t": "check", "d": 3, "tag": "waswere", "q": "Mei was draw when the bell rang.", "a": 0, "why": "In the middle of it needs -ing: Mei was drawing."},
+    {"id": "w09", "t": "check", "d": 3, "tag": "waswere", "q": "We were having dinner when Grandpa called.", "a": 1, "why": "We were having. Right!"},
+    {"id": "w10", "t": "pick", "d": 2, "tag": "waswere", "ask": "Which one is right?", "o": ["They were swimming.", "They was swimming."], "why": "They goes with were."},
+  ];
+
+  /* ================= QUIZ BANK ENGINE (shared by every lesson) =================
+     Needs, defined above it: LESSON_KEY, TAGS, BANK.
+     Optional: QB_BANDS = [easy, medium, tricky] questions per attempt (default 7/7/6 = 20);
+     QB_TEXT = { ask: {...}, yn: [...], right: [...], wrong: '...', speak: true, summary: {...} }.
+     Each attempt draws BAND_SIZES questions (easy, medium, tricky). The draw builds many
+     candidate quizzes and keeps the best: every tag present, 3+ of each type, balanced
+     check answers, unseen questions first. Options are shuffled; ids seen are remembered. */
+  const BAND_SIZES = (typeof QB_BANDS !== 'undefined') ? QB_BANDS : [7, 7, 6];
+  const DRAW = BAND_SIZES.reduce((a, b) => a + b, 0);
+  const TYPE_TARGET = Math.max(1, Math.min(3, Math.floor(DRAW / new Set(BANK.map(q => q.t)).size)));   // e.g. 20 Qs → 3 of each type, 10 Qs with 4 types → 2
+  const QBT = (typeof QB_TEXT !== 'undefined') ? QB_TEXT : {};
+  const ASK = Object.assign({
+    check: 'Is this sentence correct?',
+    pick:  'Pick the correct sentence.',
+    fill:  'Which choice fills the gap correctly?',
+    spot:  'Tap the part with the mistake.'
+  }, QBT.ask || {});
+  const YN = QBT.yn || ['Needs fixing', 'Correct'];
+  const RIGHT = QBT.right || ['Correct!'];
+  const WRONG = QBT.wrong || 'Not quite.';
+  const SUM = Object.assign({
+    perfect: 'A perfect run! Try another set to make sure it sticks.',
+    high: 'Strong work. Have a quick look at the areas below, then try a fresh set.',
+    mid: 'Good progress. Re-read the parts below before your next attempt.',
+    low: 'Worth another look at the lesson. Start with the areas below, then try a fresh set.',
+    review: 'Areas to review'
+  }, QBT.summary || {});
+  const CAN_SPEAK = !!QBT.speak && typeof window !== 'undefined' && !!window.speechSynthesis &&
+    typeof window.speechSynthesis.speak === 'function' && typeof SpeechSynthesisUtterance !== 'undefined';
+  function speak(text) {
+    try {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-GB'; u.rate = 0.9;
+      window.speechSynthesis.speak(u);
+    } catch (e) { /* no speech on this device */ }
+  }
+
+  const store = {
+    get(k, fallback) { try { const v = localStorage.getItem(LESSON_KEY + ':' + k); return v === null ? fallback : JSON.parse(v); } catch (e) { return fallback; } },
+    set(k, v) { try { localStorage.setItem(LESSON_KEY + ':' + k, JSON.stringify(v)); } catch (e) { /* storage unavailable: quiz still works */ } }
+  };
+  const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  function buildCandidate(seen) {
+    const chosen = [], tagN = {}, typeN = {};
+    let fixN = 0, okN = 0;
+    for (let band = 1; band <= 3; band++) {
+      const picks = [];
+      for (let k = 0; k < BAND_SIZES[band - 1]; k++) {
+        let best = null, bestScore = -Infinity;
+        BANK.forEach(q => {
+          if (q.d !== band || picks.includes(q)) return;
+          let s = Math.random() * 3;
+          if (!seen.has(q.id)) s += 6;
+          if (!tagN[q.tag]) s += 12;
+          s -= (typeN[q.t] || 0) * 1.2;
+          if ((typeN[q.t] || 0) < TYPE_TARGET) s += 3;   // nudge every type up to its target
+          if (q.t === 'check') { const lean = q.a === 0 ? fixN - okN : okN - fixN; if (lean >= 1) s -= 4; }
+          if (s > bestScore) { bestScore = s; best = q; }
+        });
+        if (!best) break;
+        picks.push(best);
+        tagN[best.tag] = (tagN[best.tag] || 0) + 1;
+        typeN[best.t] = (typeN[best.t] || 0) + 1;
+        if (best.t === 'check') { if (best.a === 0) fixN++; else okN++; }
+      }
+      chosen.push(...shuffle(picks));
+    }
+    return chosen;
+  }
+
+  function rateCandidate(c, seen) {
+    const tags = new Set(c.map(q => q.tag)).size;
+    const types = {};
+    c.forEach(q => types[q.t] = (types[q.t] || 0) + 1);
+    const used = [...new Set(BANK.map(q => q.t))];
+    const minType = Math.min(...used.map(t => types[t] || 0));
+    const checks = c.filter(q => q.t === 'check');
+    const lean = Math.abs(checks.filter(q => q.a === 0).length * 2 - checks.length);
+    return (tags === Object.keys(TAGS).length ? 10000 : tags * 500)
+         + (c.length === DRAW ? 5000 : 0)
+         + Math.min(minType, TYPE_TARGET) * 300
+         + (lean <= 2 ? 200 : 0)
+         + c.filter(q => !seen.has(q.id)).length * 10;
+  }
+
+  function drawQuiz() {
+    let seen = new Set(store.get('seen', []));
+    if (BANK.length - seen.size < DRAW) seen = new Set(store.get('last', []));   // new cycle, but skip the last attempt
+    let chosen = null, bestRate = -1;
+    for (let tries = 0; tries < 200; tries++) {
+      const c = buildCandidate(seen), r = rateCandidate(c, seen);
+      if (r > bestRate) { bestRate = r; chosen = c; }
+    }
+    chosen.forEach(q => seen.add(q.id));
+    store.set('seen', [...seen]);
+    store.set('last', chosen.map(q => q.id));
+    return chosen.map(q => {
+      if (q.t === 'pick' || q.t === 'fill') {
+        const opts = shuffle(q.o.map((text, i) => ({ text, ok: i === 0 })));
+        return { q, opts, answer: opts.findIndex(o => o.ok) };
+      }
+      if (q.t === 'check') return { q, opts: YN.map(text => ({ text })), answer: q.a };
+      return { q, opts: null, answer: q.a };
+    });
+  }
+
+  const listEl = document.getElementById('qbList');
+  const scoreEl = document.getElementById('qbScore');
+  const progressEl = document.getElementById('qbProgress');
+  const summaryEl = document.getElementById('qbSummary');
+  let current = [], score = 0, done = 0, missed = [];
+
+  function updateScore() {
+    scoreEl.textContent = score + ' / ' + current.length;
+    progressEl.textContent = done + ' of ' + current.length + ' answered';
+  }
+
+  /* Small or empty options are hard to see on a button, so label them. */
+  function optLabel(text) {
+    const t = text.trim();
+    if (t === '') return '<span class="qb-note">(nothing)</span>';
+    if (t === ',') return '<span class="qb-punct">,</span> <span class="qb-note">(a comma)</span>';
+    if (t === '.') return '<span class="qb-punct">.</span> <span class="qb-note">(a full stop)</span>';
+    if (t === '?') return '<span class="qb-punct">?</span> <span class="qb-note">(a question mark)</span>';
+    if (t === '!') return '<span class="qb-punct">!</span> <span class="qb-note">(an exclamation mark)</span>';
+    return esc(text);
+  }
+  function plainLabel(text) {
+    const t = text.trim();
+    return t === '' ? 'nothing' : t === ',' ? 'a comma' : t === '.' ? 'a full stop'
+      : t === '?' ? 'a question mark' : t === '!' ? 'an exclamation mark' : '"' + t + '"';
+  }
+  function sentenceWithGap(q, text) {
+    let filler = '<span class="qb-blank">___</span>';
+    if (text !== undefined) {
+      filler = text.trim() === ''
+        ? '<span class="qb-blank qb-filled qb-none">(nothing)</span>'
+        : '<span class="qb-blank qb-filled">' + esc(text) + '</span>';
+    }
+    return esc(q.q).replace('___', filler);
+  }
+
+  function render() {
+    listEl.innerHTML = '';
+    summaryEl.hidden = true;
+    current.forEach((item, i) => {
+      const q = item.q;
+      const card = document.createElement('div');
+      card.className = 'qb-card';
+      card.dataset.type = q.t;
+      let body;
+      if (q.t === 'spot') {
+        body = '<div class="qb-spot">' + q.parts.map((p, k) =>
+          '<button type="button" class="qb-part" data-k="' + k + '">' + esc(p) + '</button>').join('') + '</div>';
+      } else if (q.t === 'fill') {
+        const cols = item.opts.length;
+        body = '<p class="qb-text">' + sentenceWithGap(q) + '</p><div class="qb-opts qb-row" style="--qb-cols:' + cols + '"></div>';
+      } else if (q.t === 'check') {
+        body = '<p class="qb-text">' + esc(q.q) + '</p><div class="qb-opts qb-row"></div>';
+      } else {
+        body = (q.q ? '<p class="qb-text">' + esc(q.q) + '</p>' : '') + '<div class="qb-opts"></div>';
+      }
+      card.innerHTML =
+        (CAN_SPEAK ? '<button type="button" class="qb-speak" aria-label="Read this question aloud">🔊 Read it to me</button>' : '') +
+        '<p class="qb-num">Question ' + (i + 1) + ' of ' + current.length + '</p>' +
+        '<p class="qb-ask">' + esc(q.ask || ASK[q.t]) + '</p>' + body +
+        '<div class="qb-feedback" role="status"></div>';
+      if (CAN_SPEAK) {
+        const bits = [q.ask || ASK[q.t]];
+        if (q.t === 'spot') bits.push(q.parts.join(' '));
+        else if (q.q) bits.push(q.q.replace('___', 'blank'));
+        const sayOpt = t => { const x = t.trim(); return x === '' ? 'nothing' : x === '.' ? 'full stop' : x === ',' ? 'comma' : x === '?' ? 'question mark' : x === '!' ? 'exclamation mark' : x; };
+        if (q.t === 'pick' || q.t === 'fill') item.opts.forEach((o, j) => bits.push((q.t === 'pick' ? String.fromCharCode(65 + j) + ': ' : '') + sayOpt(o.text)));
+        if (q.t === 'check') bits.push(YN.join(', or '));
+        const spoken = bits.map(t => t.trim().replace(/[.\s]+$/, '')).filter(Boolean)
+          .map(t => /[?!]$/.test(t) ? t : t + '.').join(' ');
+        card.querySelector('.qb-speak').addEventListener('click', () => speak(spoken));
+      }
+      if (q.t === 'spot') {
+        card.querySelectorAll('.qb-part').forEach(b => b.addEventListener('click', () => answer(i, +b.dataset.k, card)));
+      } else {
+        const opts = card.querySelector('.qb-opts');
+        item.opts.forEach((o, j) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'qb-opt';
+          b.innerHTML = (q.t === 'pick' ? '<span class="qb-letter">' + String.fromCharCode(65 + j) + '</span>' : '') + optLabel(o.text);
+          b.addEventListener('click', () => answer(i, j, card));
+          opts.appendChild(b);
+        });
+      }
+      listEl.appendChild(card);
+    });
+    updateScore();
+  }
+
+  function answer(i, j, card) {
+    const item = current[i];
+    if (item.done) return;
+    item.done = true; done++;
+    const q = item.q, ok = j === item.answer;
+    if (ok) score++; else missed.push(q.tag);
+    card.querySelectorAll(q.t === 'spot' ? '.qb-part' : '.qb-opt').forEach((b, k) => {
+      b.disabled = true;
+      if (k === j) b.classList.add(ok ? 'qb-correct' : 'qb-incorrect');
+      else if (k === item.answer && !ok) b.classList.add('qb-reveal');
+    });
+    if (q.t === 'fill') card.querySelector('.qb-text').innerHTML = sentenceWithGap(q, item.opts[j].text);
+    let right;
+    if (q.t === 'spot') right = 'The mistake is in "' + esc(q.parts[item.answer]) + '".';
+    else if (q.t === 'pick') right = 'The answer is ' + String.fromCharCode(65 + item.answer) + '.';
+    else right = 'The answer is ' + esc(plainLabel(item.opts[item.answer].text)) + '.';
+    const fb = card.querySelector('.qb-feedback');
+    fb.classList.add('qb-show', ok ? 'qb-fb-ok' : 'qb-fb-no');
+    fb.innerHTML = '<span class="qb-verdict">' + (ok ? RIGHT[Math.floor(Math.random() * RIGHT.length)] : WRONG + ' ' + right) + '</span>' + esc(q.why);
+    updateScore();
+    if (done === current.length) showSummary();
+  }
+
+  function showSummary() {
+    const best = Math.max(store.get('best', 0), score);
+    store.set('best', best);
+    const attempts = store.get('attempts', 0) + 1;
+    store.set('attempts', attempts);
+    const counts = {};
+    missed.forEach(t => counts[t] = (counts[t] || 0) + 1);
+    const areas = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+    const n = current.length;
+    let msg;
+    if (score === n) msg = SUM.perfect;
+    else if (score >= Math.ceil(n * 0.8)) msg = SUM.high;
+    else if (score >= Math.ceil(n * 0.6)) msg = SUM.mid;
+    else msg = SUM.low;
+    summaryEl.innerHTML =
+      '<h3>You scored ' + score + ' / ' + n + '</h3><p>' + msg + '</p>' +
+      (areas.length ? '<p class="qb-sum-label">' + esc(SUM.review) + '</p><ul class="qb-areas">' + areas.map(t =>
+        '<li><a href="' + TAGS[t].href + '">' + esc(TAGS[t].label) + '</a><span>' + counts[t] + ' wrong</span></li>').join('') + '</ul>' : '') +
+      '<p class="qb-meta">Attempts on this device: ' + attempts + ' · Best score: ' + best + ' / ' + n + '</p>' +
+      '<button type="button" class="qb-go" id="qbAgain">Try ' + n + ' new questions</button>';
+    summaryEl.hidden = false;
+    document.getElementById('qbAgain').addEventListener('click', () => { newQuiz(); listEl.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    summaryEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function newQuiz() {
+    current = drawQuiz(); score = 0; done = 0; missed = [];
+    render();
+  }
+
+  const bankEl = document.getElementById('qbBank'), drawEl = document.getElementById('qbDraw');
+  if (bankEl) bankEl.textContent = BANK.length;
+  if (drawEl) drawEl.textContent = DRAW;
+  document.getElementById('qbNew').addEventListener('click', () => {
+    newQuiz();
+    listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  newQuiz();
+  } /* qb-end */
+})();
+</script>
+</body>
+</html>
