@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Three Steps Up: tall, taller, tallest</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪜</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FFEBD6;
+    --surface: #FFFFFF;
+    --surface-2: #FFF6EC;
+    --ink: #22180F;
+    --ink-soft: #61523F;
+    --accent: #0D5C63;
+    --accent-soft: #D3ECEE;
+    --st1: #2E7D32;
+    --st1-soft: #DDF0DC;
+    --st2: #1F5FA8;
+    --st2-soft: #DCE7F6;
+    --st3: #7A2DA0;
+    --st3-soft: #EEDDF6;
+    --rule: rgba(34,24,15,0.14);
+    --r-card: 14px;
+    --r-num: 6px;
+    --font-display: 'Bagel Fat One', 'Arial Rounded MT Bold', 'Trebuchet MS', sans-serif;
+    --font-body: 'Sora', -apple-system, 'Segoe UI', sans-serif;
+    --right: #1D7A45; --right-soft: #DCF1E3;
+    --wrong: #B3261E; --wrong-soft: #F9DEDC;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #1A130C; --surface: #251C14; --surface-2: #2D231A; --ink: #F8EFE5; --ink-soft: #C9B9A6; --accent: #7DD3DB; --accent-soft: #123538; --st1: #8CD68F; --st1-soft: #1A3219; --st2: #8EBCF5; --st2-soft: #172C45; --st3: #D9A0F5; --st3-soft: #331C42; --rule: rgba(248,239,229,0.16); --right: #72D69D; --right-soft: #17311F; --wrong: #F48D84; --wrong-soft: #3D1F1D; }
+  }
+  :root[data-theme="dark"] { --bg: #1A130C; --surface: #251C14; --surface-2: #2D231A; --ink: #F8EFE5; --ink-soft: #C9B9A6; --accent: #7DD3DB; --accent-soft: #123538; --st1: #8CD68F; --st1-soft: #1A3219; --st2: #8EBCF5; --st2-soft: #172C45; --st3: #D9A0F5; --st3-soft: #331C42; --rule: rgba(248,239,229,0.16); --right: #72D69D; --right-soft: #17311F; --wrong: #F48D84; --wrong-soft: #3D1F1D; }
+
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 19px; line-height: 1.55; }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 22px 18px 64px; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+  .back-link {
+    display: inline-block; margin: 0 0 20px; padding: 10px 16px; min-height: 44px;
+    font-weight: 700; font-size: 16px; color: var(--ink); text-decoration: none;
+    background: var(--surface); border: 2px solid var(--rule); border-radius: var(--r-btn, 999px);
+  }
+  h1, h2, h3 { font-family: var(--font-display); font-weight: var(--display-weight, 400); line-height: 1.12; }
+  h2 { font-size: 30px; margin: 0 0 8px; }
+  section { margin-bottom: 48px; }
+  .sub { color: var(--ink-soft); margin: 0 0 18px; }
+  .lead { font-size: 21px; margin: 0 0 18px; }
+  .no { color: var(--wrong); text-decoration: line-through; text-decoration-thickness: 2px; }
+  .yes { color: var(--right); font-weight: 700; }
+  .say {
+    display: none; font: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
+    padding: 6px 12px; min-height: 40px; margin-left: 6px; vertical-align: middle;
+    border-radius: 999px; border: 2px solid var(--accent); background: var(--accent-soft); color: var(--ink);
+  }
+  .can-speak .say { display: inline-block; }
+  .steps { display: grid; gap: 12px; }
+  .step { background: var(--surface); border-radius: var(--r-card, 18px); padding: 16px 18px; display: flex; gap: 14px; align-items: flex-start; }
+  .step .n { flex: 0 0 auto; width: 44px; height: 44px; border-radius: var(--r-num, 50%); display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 22px; background: var(--accent); color: var(--surface); }
+  .step p { margin: 0; font-size: 20px; }
+  .step .hint { font-size: 20px; margin-top: 6px; color: var(--ink-soft); }
+  .traps { display: grid; gap: 12px; }
+  .trap { background: var(--surface); border-radius: var(--r-card, 18px); padding: 18px; border-left: 8px solid var(--wrong); }
+  .trap h3 { margin: 0 0 6px; font-size: 24px; }
+  .trap p { margin: 0 0 10px; }
+  .eg { font-size: 21px; margin: 0 0 6px !important; }
+  .cards { display: grid; gap: 12px; }
+  .card { background: var(--surface); border-radius: var(--r-card, 18px); padding: 16px 18px; scroll-margin-top: 20px; }
+  .card h3 { margin: 0 0 6px; font-size: 26px; }
+  .card p { margin: 0 0 6px; }
+  .specials { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 520px) { .specials { grid-template-columns: 1fr; } }
+  .special { background: var(--surface-2); border-radius: var(--r-card, 18px); padding: 16px 18px; border: 3px dashed var(--accent); scroll-margin-top: 20px; }
+  .special h3 { margin: 0 0 6px; font-size: 24px; }
+  .special ul { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 2px; }
+  .special li { font-size: 20px; }
+  .special p { margin: 0 0 6px; }
+  .pin { background: var(--surface); border-radius: var(--r-card, 22px); padding: 20px; border: 3px solid var(--rule); }
+  .pin ul { margin: 0; padding-left: 22px; font-size: 20px; line-height: 1.7; }
+  .chant { margin: 16px 0 0; padding: 16px; border-radius: 16px; text-align: center; background: var(--accent-soft);
+    font-family: var(--font-display); font-size: 22px; line-height: 1.4; }
+  footer { text-align: center; font-size: 14px; color: var(--ink-soft); margin-top: 32px; }
+  .hmsg { margin: 10px 2px 0; font-size: 18px; min-height: 2.8em; }
+  .hmsg b.good { color: var(--right); } .hmsg b.try { color: var(--wrong); }
+
+
+  .s1 { color: var(--st1); font-weight: 700; } .s2 { color: var(--st2); font-weight: 700; } .s3 { color: var(--st3); font-weight: 700; }
+  .hero h1 { font-size: clamp(40px, 11vw, 60px); margin: 0 0 12px; }
+  .hero h1 .s1, .hero h1 .s2, .hero h1 .s3 { font-weight: 400; }
+  .climb { background: var(--surface); border-radius: 14px; padding: 14px; }
+  .stairs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: end; gap: 6px; height: 190px; margin-bottom: 12px; }
+  .stair { border-radius: 10px 10px 0 0; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding: 8px 4px; text-align: center; }
+  .stair .num { font-size: 13px; font-weight: 700; color: var(--surface); opacity: .9; }
+  .stair .w { font-family: var(--font-display); font-size: clamp(16px, 4.6vw, 22px); color: var(--surface); min-height: 1.3em; word-break: break-word; }
+  .stair .pic { font-size: 22px; min-height: 1.3em; letter-spacing: -3px; }
+  .stair.a { height: 45%; background: var(--st1); } .stair.b { height: 70%; background: var(--st2); } .stair.c { height: 100%; background: var(--st3); }
+  .stair.fill .w { animation: pop .35s ease-out; }
+  @keyframes pop { from { transform: scale(.5); opacity: 0; } to { transform: none; opacity: 1; } }
+  .tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .tile { font: inherit; font-weight: 700; font-size: 19px; min-height: 54px; border-radius: 12px; cursor: pointer; border: 3px solid var(--rule); background: var(--surface-2); color: var(--ink); }
+  .tile:disabled { opacity: .35; cursor: default; }
+  .ask { font-weight: 700; margin: 0 0 8px; }
+  .nextb { font: inherit; font-weight: 700; font-size: 17px; min-height: 48px; padding: 8px 18px; border-radius: 12px; border: none; background: var(--accent); color: var(--surface); cursor: pointer; }
+  .card.c1 { border-top: 10px solid var(--st1); } .card.c2 { border-top: 10px solid var(--st2); } .card.c3 { border-top: 10px solid var(--st3); }
+  .card.c1 h3 { color: var(--st1); } .card.c2 h3 { color: var(--st2); } .card.c3 h3 { color: var(--st3); }
+  .wtable { width: 100%; border-collapse: collapse; font-size: 19px; margin-top: 8px; }
+  .wtable th { text-align: left; font-size: 14px; color: var(--ink-soft); padding: 4px 6px; }
+  .wtable td { padding: 6px; border-top: 1px solid var(--rule); }
+
+  /* ================= QUIZ BANK ENGINE (shared by every lesson; qb- prefix avoids clashes) ================= */
+  .qb { --qb-cols: 2; }
+  .qb-bar {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 3;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 10px 16px; margin: 0 0 18px; border-radius: var(--qb-radius);
+    background: var(--qb-bar); color: var(--qb-bar-ink);
+  }
+  .qb-label { font-size: 12.5px; opacity: 0.8; }
+  .qb-score { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 28px; line-height: 1.05; }
+  .qb-progress { font-size: 12.5px; opacity: 0.85; margin-top: 2px; }
+  .qb-new {
+    font: inherit; font-weight: 700; font-size: 14px; padding: 10px 16px; min-height: 44px;
+    border-radius: 999px; border: 2px solid currentColor; background: transparent; color: inherit; cursor: pointer;
+  }
+  .qb-list, .qb-summary { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 96px); }
+  .qb-card {
+    background: var(--qb-card); border: var(--qb-card-border); box-shadow: var(--qb-card-shadow);
+    border-radius: var(--qb-radius); padding: 16px 16px 14px; margin: 0 0 14px; color: var(--qb-ink);
+  }
+  .qb-speak {
+    float: right; margin: -4px 0 6px 10px; font: inherit; font-size: 13.5px; font-weight: 700;
+    padding: 7px 12px; min-height: 38px; border-radius: 999px; cursor: pointer;
+    border: 2px solid var(--qb-accent); background: var(--qb-accent-soft); color: var(--qb-ink);
+  }
+  .qb-num { font-size: 12.5px; color: var(--qb-soft); margin: 0 0 4px; }
+  .qb-ask { font-size: 13.5px; font-weight: 700; color: var(--qb-accent); margin: 0 0 6px; }
+  .qb-text { font-size: var(--qb-text-size, 16.5px); line-height: 1.6; margin: 0 0 14px; }
+  .qb-blank {
+    display: inline-block; min-width: 60px; padding: 0 3px; text-align: center;
+    border-bottom: 2.5px dashed var(--qb-soft); color: var(--qb-soft);
+  }
+  .qb-blank.qb-filled { border-bottom-style: solid; border-bottom-color: var(--qb-accent); color: var(--qb-accent); font-weight: 700; }
+  .qb-blank.qb-none { font-style: italic; font-weight: 400; }
+  .qb-opts { display: flex; flex-direction: column; gap: 9px; }
+  .qb-opts.qb-row { display: grid; grid-template-columns: repeat(var(--qb-cols), minmax(0, 1fr)); }
+  .qb-opt {
+    font: inherit; font-size: var(--qb-opt-size, 15.5px); line-height: 1.45; text-align: left; color: var(--qb-ink);
+    padding: 11px 14px; min-height: var(--qb-tap, 46px); border-radius: var(--qb-radius-opt);
+    border: 2px solid var(--qb-rule); background: var(--qb-page); cursor: pointer;
+  }
+  .qb-row .qb-opt { text-align: center; font-weight: 600; padding-left: 6px; padding-right: 6px; }
+  .qb-opt:not(:disabled):hover { border-color: var(--qb-accent); }
+  .qb-opt:disabled, .qb-part:disabled { cursor: default; }
+  .qb-letter { font-family: var(--qb-font); font-weight: var(--qb-font-weight); margin-right: 10px; color: var(--qb-accent); }
+  .qb-note { font-size: 12.5px; font-weight: 400; color: var(--qb-soft); }
+  .qb-punct { font-size: 22px; line-height: 0; font-weight: 700; }
+  .qb-spot { display: flex; flex-wrap: wrap; gap: 8px 6px; margin: 0 0 4px; }
+  .qb-part {
+    font: inherit; font-size: var(--qb-opt-size, 16px); line-height: 1.35; text-align: left; color: var(--qb-ink); cursor: pointer;
+    background: var(--qb-accent-soft); border: none; border-bottom: 3px dashed var(--qb-accent);
+    border-radius: 4px 4px 0 0; padding: 7px 9px; min-height: 40px;
+  }
+  .qb-opt.qb-correct, .qb-opt.qb-reveal { background: var(--qb-right-soft); border-color: var(--qb-right); }
+  .qb-opt.qb-incorrect { background: var(--qb-wrong-soft); border-color: var(--qb-wrong); }
+  .qb-part.qb-correct, .qb-part.qb-reveal { background: var(--qb-right-soft); border-bottom: 3px solid var(--qb-right); }
+  .qb-part.qb-incorrect { background: var(--qb-wrong-soft); border-bottom: 3px solid var(--qb-wrong); }
+  .qb-feedback { display: none; margin-top: 12px; padding-top: 12px; border-top: 2px dashed var(--qb-rule); font-size: 14px; line-height: 1.55; }
+  .qb-feedback.qb-show { display: block; }
+  .qb-verdict { display: block; font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 18px; margin-bottom: 2px; }
+  .qb-fb-ok .qb-verdict { color: var(--qb-right); }
+  .qb-fb-no .qb-verdict { color: var(--qb-wrong); }
+  .qb-summary {
+    background: var(--qb-card); color: var(--qb-ink); border: 3px solid var(--qb-accent);
+    border-radius: var(--qb-radius); padding: 18px 20px; margin-top: 8px;
+  }
+  .qb-summary h3 { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 30px; line-height: 1.1; margin: 0 0 6px; color: var(--qb-accent); }
+  .qb-summary p { margin: 0 0 10px; line-height: 1.55; }
+  .qb-sum-label { font-weight: 700; margin-top: 14px !important; }
+  .qb-areas { list-style: none; margin: 0 0 12px; padding: 0; }
+  .qb-areas li { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--qb-rule); }
+  .qb-areas a { color: var(--qb-ink); font-weight: 600; }
+  .qb-areas span { color: var(--qb-wrong); font-weight: 700; white-space: nowrap; }
+  .qb-meta { font-size: 13px; color: var(--qb-soft); }
+  .qb-go {
+    font: inherit; font-weight: 700; font-size: 16px; width: 100%; min-height: 50px; margin-top: 4px; cursor: pointer;
+    border: none; border-radius: var(--qb-radius); background: var(--qb-accent); color: var(--qb-on-accent);
+  }
+
+  /* Theme the quiz engine through these tokens only. */
+  :root {
+    --qb-page: var(--surface-2);
+    --qb-card: var(--surface);
+    --qb-ink: var(--ink);
+    --qb-soft: var(--ink-soft);
+    --qb-on-accent: var(--surface);
+    --qb-right: var(--right);
+    --qb-right-soft: var(--right-soft);
+    --qb-wrong: var(--wrong);
+    --qb-wrong-soft: var(--wrong-soft);
+    --qb-rule: var(--rule);
+    --qb-bar-ink: var(--surface);
+    --qb-font: var(--font-display);
+    --qb-font-weight: var(--display-weight, 400);
+    --qb-radius: var(--r-card, 18px);
+    --qb-radius-opt: 14px;
+    --qb-card-border: none;
+    --qb-card-shadow: none;
+    --qb-text-size: 21px;
+    --qb-opt-size: 19px;
+    --qb-tap: 56px;
+    --qb-accent: var(--accent);
+    --qb-accent-soft: var(--accent-soft);
+    --qb-bar: var(--accent);
+  }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back-link" href="index.html#lower">← Back to the shelf</a>
+
+  <!-- 1. HERO -->
+  <header class="hero">
+    <h1>Three Steps <span class="s3">Up</span></h1>
+    <p class="lead">Describing words can climb! <span class="s1">Step 1</span> is the plain word. <span class="s2">Step 2</span> adds <b>-er</b>. <span class="s3">Step 3</span> adds <b>-est</b>. Tap the words in order to build the stairs. <button class="say" type="button" data-say="Describing words can climb! Step 1 is the plain word. Step 2 adds e r. Step 3 adds e s t. Tap the words in order to build the stairs.">🔊</button></p>
+    <div class="climb">
+      <div class="stairs" aria-live="polite">
+        <div class="stair a" id="st0"><span class="num">STEP 1</span><span class="w"></span><span class="pic"></span></div>
+        <div class="stair b" id="st1"><span class="num">STEP 2</span><span class="w"></span><span class="pic"></span></div>
+        <div class="stair c" id="st2"><span class="num">STEP 3</span><span class="w"></span><span class="pic"></span></div>
+      </div>
+      <p class="ask" id="stAsk"></p>
+      <div class="tiles" id="stTiles"></div>
+      <p class="hmsg" id="stMsg" aria-live="polite"></p>
+      <button class="nextb" id="stNext" type="button" hidden>Next stairs →</button>
+    </div>
+  </header>
+
+  <!-- 2. THE RULE -->
+  <section id="rule">
+    <h2>How many are you looking at?</h2>
+    <p class="sub">Count, then pick the step.</p>
+    <div class="steps">
+      <div class="step" id="describe"><span class="n" style="background:var(--st1)">1</span><div><p><b class="s1">One thing?</b> Use the plain describing word. It tells you what something is like. <button class="say" type="button" data-say="One thing? Use the plain describing word. It tells you what something is like. Ravi is tall. A red ball. A hot drink.">🔊</button></p>
+        <p class="hint">Ravi is <span class="s1">tall</span>. · a <span class="s1">red</span> ball · a <span class="s1">hot</span> drink</p></div></div>
+      <div class="step" id="step-2"><span class="n" style="background:var(--st2)">2</span><div><p><b class="s2">Two things?</b> Add <b>-er</b> and use <b>than</b>. <button class="say" type="button" data-say="Two things? Add e r, and use than. Ravi is taller than Mei.">🔊</button></p>
+        <p class="hint">Ravi is tall<span class="s2">er</span> than Mei.</p></div></div>
+      <div class="step" id="step-3"><span class="n" style="background:var(--st3)">3</span><div><p><b class="s3">Three or more?</b> Add <b>-est</b> and use <b>the</b>. <button class="say" type="button" data-say="Three or more? Add e s t, and use the. Ali is the tallest boy in the class.">🔊</button></p>
+        <p class="hint">Ali is <b>the</b> tall<span class="s3">est</span> boy in the class.</p></div></div>
+    </div>
+  </section>
+
+  <!-- 3. THE TRAP -->
+  <section id="traps">
+    <h2>Watch out!</h2>
+    <p class="sub">Only one way up the stairs.</p>
+    <div class="trap">
+      <p>Use <b>-er</b> or <b>more</b>, never both. Use <b>-est</b> or <b>most</b>, never both! <button class="say" type="button" data-say="Use e r, or more, never both. Use e s t, or most, never both! Taller, not more taller. The biggest, not the most biggest.">🔊</button></p>
+      <p class="eg"><span class="no">more taller</span> → <span class="yes">taller</span></p>
+      <p class="eg"><span class="no">the most biggest</span> → <span class="yes">the biggest</span></p>
+    </div>
+  </section>
+
+  <!-- 4. CASES -->
+  <section id="cases">
+    <h2>Climbing tips</h2>
+    <p class="sub">Look at the end of the word before you climb.</p>
+    <div class="cards">
+      <div class="card c1"><h3>Most words: -er, -est</h3>
+        <table class="wtable"><tr><th>1</th><th>2</th><th>3</th></tr>
+          <tr><td>tall</td><td>tall<b class="s2">er</b></td><td>tall<b class="s3">est</b></td></tr>
+          <tr><td>fast</td><td>fast<b class="s2">er</b></td><td>fast<b class="s3">est</b></td></tr></table>
+        <button class="say" type="button" data-say="Most words: e r, e s t. Tall, taller, tallest. Fast, faster, fastest.">🔊</button></div>
+      <div class="card c2"><h3>Spelling changes</h3>
+        <table class="wtable"><tr><th>ends in…</th><th>2</th><th>3</th></tr>
+          <tr><td>e: nice</td><td>nic<b class="s2">er</b></td><td>nic<b class="s3">est</b></td></tr>
+          <tr><td>y: happy</td><td>happ<b class="s2">ier</b></td><td>happ<b class="s3">iest</b></td></tr>
+          <tr><td>big, hot, fat</td><td>bi<b class="s2">gger</b></td><td>ho<b class="s3">ttest</b></td></tr></table>
+        <p style="margin-top:8px">Ends in <b>e</b>? Just add r or st. Ends in <b>y</b>? Change it to i. <b>Big, hot, fat, sad</b>: double the last letter. <button class="say" type="button" data-say="Spelling changes. Ends in e? Just add r, or s t. Nice, nicer, nicest. Ends in y? Change it to i. Happy, happier, happiest. Big, hot, fat, sad: double the last letter. Bigger, hottest.">🔊</button></p></div>
+      <div class="card c3"><h3>Long words: more, most</h3>
+        <p class="eg"><b class="s2">more</b> beautiful · <b class="s3">the most</b> beautiful</p>
+        <p class="eg"><b class="s2">more</b> colourful · <b class="s3">the most</b> delicious</p>
+        <p>Long words like beautiful, colourful, delicious and expensive don't take -er or -est. <button class="say" type="button" data-say="Long words: more and most. More beautiful. The most beautiful. More colourful. The most delicious. Long words like beautiful, colourful, delicious and expensive don't take e r or e s t.">🔊</button></p></div>
+    </div>
+  </section>
+
+  <!-- 5. SPECIAL CASES -->
+  <section id="specials">
+    <h2>Surprise stairs</h2>
+    <p class="sub">Two words change completely, and naming words can describe too.</p>
+    <div class="specials">
+      <div class="special"><h3>Learn these by heart</h3>
+        <ul><li>good → <b>better</b> → <b>best</b> 🏆</li><li>bad → <b>worse</b> → <b>worst</b> 🌧️</li></ul>
+        <p><span class="no">gooder</span>, <span class="no">baddest</span> are not real words. <button class="say" type="button" data-say="Learn these by heart. Good, better, best. Bad, worse, worst. Gooder and baddest are not real words.">🔊</button></p></div>
+      <div class="special" id="school-hall"><h3>The school hall</h3>
+        <p>A naming word can describe another naming word. It tells you <b>what kind</b>.</p>
+        <ul><li>the <b>school</b> hall</li><li>a <b>birthday</b> cake</li><li>the <b>bus</b> stop</li></ul>
+        <p>It never gets -s: my <b>school</b> bag. <button class="say" type="button" data-say="The school hall. A naming word can describe another naming word. It tells you what kind. The school hall. A birthday cake. The bus stop. It never gets s: my school bag.">🔊</button></p></div>
+    </div>
+  </section>
+
+  <!-- 6. PRACTICE -->
+  <section id="practice">
+    <h2>Your turn!</h2>
+    <p class="sub">Answer <span id="qbDraw">10</span> questions. Tap 🔊 to hear each one. Every time you play, you get new questions! <span hidden id="qbBank">65</span></p>
+    <div class="qb" id="qb">
+      <div class="qb-bar">
+        <div><div class="qb-label">Your score</div><div class="qb-score" id="qbScore">0 / 10</div><div class="qb-progress" id="qbProgress">0 of 10 answered</div></div>
+        <button class="qb-new" id="qbNew" type="button">New quiz</button>
+      </div>
+      <div class="qb-list" id="qbList"></div>
+      <div class="qb-summary" id="qbSummary" hidden></div>
+    </div>
+  </section>
+
+  <!-- 7. PIN THIS UP -->
+  <section class="pin">
+    <h2>Pin This Up</h2>
+    <ul>
+      <li><span class="s1">One</span>: tall · <span class="s2">Two</span>: tall<b>er</b> than · <span class="s3">Three or more</span>: <b>the</b> tall<b>est</b></li>
+      <li>nicer, happier, bigger</li>
+      <li>Long words: <b>more</b> beautiful, <b>the most</b> beautiful</li>
+      <li>good, better, best · bad, worse, worst</li>
+      <li>Never "more taller" or "most biggest"</li>
+    </ul>
+    <p class="chant">Tall on one, and taller on two,<br>tallest on three, the top's for you!<br>Good, better, best, never let it rest,<br>till your good is better and your better is best!</p>
+  </section>
+
+  <footer>My Grammar Shelf · Lower shelf, Lesson 20</footer>
+</div>
+
+<script>
+(function () {
+
+  const canSpeak = !!window.speechSynthesis && typeof window.speechSynthesis.speak === 'function' && typeof SpeechSynthesisUtterance !== 'undefined';
+  function sayIt(text) {
+    try { window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'en-GB'; u.rate = 0.9; window.speechSynthesis.speak(u); } catch (e) {}
+  }
+  if (canSpeak) {
+    document.body.classList.add('can-speak');
+    document.querySelectorAll('.say').forEach(b => {
+      b.setAttribute('aria-label', 'Read this aloud');
+      b.addEventListener('click', () => sayIt(b.dataset.say));
+    });
+  }
+
+  /* ---------- Hero ---------- */
+  /* [plain, -er, -est, wrong tile, emoji 1/2/3, hint for wrong tile] */
+  const STAIRS = [
+    ['tall', 'taller', 'tallest', 'more tall', ['🦒', '🦒🦒', '🦒🦒🦒'], 'Tall is a short word: just add -er.'],
+    ['big', 'bigger', 'biggest', 'biger', ['🐘', '🐘🐘', '🐘🐘🐘'], 'Big doubles the g: bigger.'],
+    ['happy', 'happier', 'happiest', 'happyer', ['😊', '😊😊', '😊😊😊'], 'Happy ends in y: change it to i.'],
+    ['good', 'better', 'best', 'gooder', ['👍', '👍👍', '👍👍👍'], 'Good is a surprise word: good, better, best.'],
+    ['nice', 'nicer', 'nicest', 'niceer', ['🌸', '🌸🌸', '🌸🌸🌸'], 'Nice ends in e: just add r.'],
+    ['beautiful', 'more beautiful', 'most beautiful', 'beautifuller', ['🦋', '🦋🦋', '🦋🦋🦋'], 'Beautiful is a long word: use more and most.']
+  ];
+  const stEls = [0, 1, 2].map(i => document.getElementById('st' + i));
+  const stAsk = document.getElementById('stAsk'), stTiles = document.getElementById('stTiles'), stMsg = document.getElementById('stMsg'), stNext = document.getElementById('stNext');
+  let sN = 0, placed = 0;
+  function loadStairs() {
+    const s = STAIRS[sN]; placed = 0;
+    stEls.forEach(e => { e.classList.remove('fill'); e.querySelector('.w').textContent = ''; e.querySelector('.pic').textContent = ''; });
+    stAsk.textContent = 'Tap the word for Step 1.'; stMsg.textContent = ''; stNext.hidden = true; stTiles.innerHTML = '';
+    const t = [s[0], s[1], s[2], s[3]];
+    for (let i = t.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [t[i], t[j]] = [t[j], t[i]]; }
+    t.forEach(w => {
+      const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'tile'; btn.textContent = w;
+      btn.addEventListener('click', () => {
+        if (w === s[placed]) {
+          const e = stEls[placed];
+          e.querySelector('.w').textContent = w; e.querySelector('.pic').textContent = s[4][placed]; e.classList.add('fill');
+          btn.disabled = true; placed++;
+          if (canSpeak) sayIt(w);
+          if (placed === 3) {
+            stTiles.querySelectorAll('button').forEach(x => x.disabled = true);
+            stAsk.textContent = s[0] + ', ' + s[1] + ', ' + s[2] + '!';
+            stMsg.innerHTML = '<b class="good">You reached the top!</b> One: ' + s[0] + '. Two: ' + s[1] + '. Three or more: the ' + s[2] + '.';
+            stNext.hidden = false; stNext.textContent = sN === STAIRS.length - 1 ? 'Play again ↺' : 'Next stairs →';
+          } else {
+            stAsk.textContent = 'Now tap the word for Step ' + (placed + 1) + '.'; stMsg.textContent = '';
+          }
+        } else if (w === s[3]) {
+          stMsg.innerHTML = '<b class="try">Good try!</b> ' + s[5];
+        } else {
+          stMsg.innerHTML = '<b class="try">Good try!</b> That word goes on a higher step. Which comes next?';
+        }
+      });
+      stTiles.appendChild(btn);
+    });
+  }
+  stNext.addEventListener('click', () => { sN = (sN + 1) % STAIRS.length; loadStairs(); });
+  loadStairs();
+
+  { /* qb-start: quiz engine in its own scope, so its names can't clash with the lesson's */
+  /* ================= QUIZ: question bank (65 questions) ================= */
+  const LESSON_KEY = "shelf-lower-20";
+  const QB_BANDS = [4, 4, 2];
+  const QB_TEXT = {"speak": true, "right": ["Well done!", "Great job!", "You got it!", "Super!"], "wrong": "Good try!", "summary": {"perfect": "All correct! You reached the top step! Try a new set!", "high": "Great work! Look at the part below, then try a new set.", "mid": "Good effort! Read the parts below again, then try a new set.", "low": "Let's look at the lesson again together, then try a new set.", "review": "Have another look at"}, "ask": {"check": "Is this right?", "pick": "Which one is right?", "fill": "Which word fits?", "spot": "Tap the word with the mistake."}, "yn": ["Wrong", "Right"]};
+  const TAGS = {
+    describe: { label: "Describing words: a red ball", href: '#describe' },
+    er: { label: "Two things: taller than", href: '#step-2' },
+    est: { label: "Three or more: the tallest", href: '#step-3' },
+    spell: { label: "bigger, nicer, happier", href: '#cases' },
+    odd: { label: "good, better, best", href: '#specials' },
+    more: { label: "more beautiful, most beautiful", href: '#cases' },
+    double: { label: "Trap: not more taller", href: '#traps' },
+    kind: { label: "Naming words can describe: school hall", href: '#school-hall' },
+  };
+  const BANK = [
+    {"id": "d01", "t": "pick", "d": 1, "tag": "describe", "ask": "Which is the describing word?", "o": ["fluffy", "cat", "sleeps"], "why": "Fluffy tells us what the cat is like.", "q": "The fluffy cat sleeps."},
+    {"id": "d02", "t": "pick", "d": 1, "tag": "describe", "ask": "Which is the describing word?", "o": ["red", "ball", "kicked"], "why": "Red tells us what the ball is like.", "q": "Ravi kicked the red ball."},
+    {"id": "d03", "t": "pick", "d": 1, "tag": "describe", "ask": "Which is the describing word?", "o": ["hot", "soup", "drank"], "why": "Hot tells us what the soup is like.", "q": "I drank the hot soup."},
+    {"id": "d04", "t": "pick", "d": 2, "tag": "describe", "ask": "Which is the describing word?", "o": ["tiny", "ant", "carried"], "why": "Tiny tells us what the ant is like.", "q": "The tiny ant carried a crumb."},
+    {"id": "d05", "t": "pick", "d": 2, "tag": "describe", "ask": "Which is the describing word?", "o": ["noisy", "children", "played"], "why": "Noisy tells us what the children are like.", "q": "The noisy children played outside."},
+    {"id": "d06", "t": "pick", "d": 3, "tag": "describe", "ask": "Which is the describing word?", "o": ["sweet", "mangoes", "bought"], "why": "Sweet tells us what the mangoes are like.", "q": "Mum bought some sweet mangoes."},
+    {"id": "d07", "t": "fill", "d": 1, "tag": "describe", "q": "The sky is ___ today.", "o": ["blue", "run"], "why": "Blue describes the sky. Run is a doing word."},
+    {"id": "d08", "t": "fill", "d": 2, "tag": "describe", "q": "I have a ___ kite.", "o": ["big", "fly"], "why": "Big describes the kite. Fly is a doing word."},
+    {"id": "e01", "t": "fill", "d": 1, "tag": "er", "q": "Ravi is ___ than Mei.", "o": ["taller", "tallest"], "why": "Two people, and \"than\": taller."},
+    {"id": "e02", "t": "fill", "d": 1, "tag": "er", "q": "A car is ___ than a bike.", "o": ["faster", "fastest"], "why": "Two things: faster than."},
+    {"id": "e03", "t": "fill", "d": 1, "tag": "er", "q": "An elephant is ___ than a mouse.", "o": ["bigger", "biggest"], "why": "Two animals: bigger than."},
+    {"id": "e04", "t": "fill", "d": 2, "tag": "er", "q": "My bag is ___ than your bag.", "o": ["smaller", "smallest"], "why": "Two bags: smaller than."},
+    {"id": "e05", "t": "fill", "d": 2, "tag": "er", "q": "Grandpa is ___ than Dad.", "o": ["older", "oldest"], "why": "Two people: older than."},
+    {"id": "e06", "t": "check", "d": 1, "tag": "er", "q": "A cat is smaller than a horse.", "a": 1, "why": "Two animals, -er + than. Right!"},
+    {"id": "e07", "t": "check", "d": 2, "tag": "er", "q": "My ruler is longest than yours.", "a": 0, "why": "Two rulers, so -er: longer than yours."},
+    {"id": "e08", "t": "check", "d": 3, "tag": "er", "q": "Today is hottest than yesterday.", "a": 0, "why": "Two days, so -er: hotter than yesterday."},
+    {"id": "e09", "t": "pick", "d": 2, "tag": "er", "ask": "Which one is right?", "o": ["Siti is shorter than Ali.", "Siti is shortest than Ali.", "Siti is short than Ali."], "why": "Two people: shorter than."},
+    {"id": "s01", "t": "fill", "d": 1, "tag": "est", "q": "Ali is the ___ boy in our class.", "o": ["tallest", "taller"], "why": "The whole class: the tallest."},
+    {"id": "s02", "t": "fill", "d": 1, "tag": "est", "q": "The cheetah is the ___ animal of all.", "o": ["fastest", "faster"], "why": "Of all: the fastest."},
+    {"id": "s03", "t": "fill", "d": 2, "tag": "est", "q": "This is the ___ shell on the beach.", "o": ["smallest", "smaller"], "why": "All the shells on the beach: the smallest."},
+    {"id": "s04", "t": "fill", "d": 2, "tag": "est", "q": "Of my three brothers, Jun is the ___.", "o": ["youngest", "younger"], "why": "Three brothers: the youngest."},
+    {"id": "s05", "t": "fill", "d": 3, "tag": "est", "q": "Grandma is the ___ person in my family.", "o": ["oldest", "older"], "why": "The whole family: the oldest."},
+    {"id": "s06", "t": "check", "d": 1, "tag": "est", "q": "The whale is the biggest animal in the sea.", "a": 1, "why": "All the animals in the sea: the biggest. Right!"},
+    {"id": "s07", "t": "check", "d": 2, "tag": "est", "q": "Mei is the taller girl in the class.", "a": 0, "why": "The whole class: the tallest girl."},
+    {"id": "s08", "t": "check", "d": 3, "tag": "est", "q": "This is the longest bridge in Singapore.", "a": 1, "why": "All the bridges: the longest. Right!"},
+    {"id": "s09", "t": "spot", "d": 3, "tag": "est", "parts": ["Of all", "the fruits,", "durian is the", "smellier."], "a": 3, "why": "All the fruits: the smelliest.", "ask": "Tap the word with the mistake."},
+    {"id": "p01", "t": "fill", "d": 1, "tag": "spell", "q": "My dog is ___ than your dog.", "o": ["bigger", "biger"], "why": "Big: one vowel, one last letter, so double it: bigger."},
+    {"id": "p02", "t": "fill", "d": 1, "tag": "spell", "q": "Your drawing is ___ than mine.", "o": ["nicer", "niceer"], "why": "Nice ends in e, so just add r: nicer."},
+    {"id": "p03", "t": "fill", "d": 2, "tag": "spell", "q": "Mei is ___ today than yesterday.", "o": ["happier", "happyer"], "why": "Happy ends in y: change y to i, then -er: happier."},
+    {"id": "p04", "t": "fill", "d": 2, "tag": "spell", "q": "Today is the ___ day of the year!", "o": ["hottest", "hotest"], "why": "Hot: double the t: hottest."},
+    {"id": "p05", "t": "fill", "d": 2, "tag": "spell", "q": "This box is ___ than that one.", "o": ["heavier", "heavyer"], "why": "Heavy ends in y: heavier."},
+    {"id": "p06", "t": "fill", "d": 3, "tag": "spell", "q": "That was the ___ joke ever!", "o": ["funniest", "funnyest"], "why": "Funny ends in y: funniest."},
+    {"id": "p07", "t": "check", "d": 1, "tag": "spell", "q": "My cat is fatter than yours.", "a": 1, "why": "Fat doubles the t: fatter. Right!"},
+    {"id": "p08", "t": "check", "d": 2, "tag": "spell", "q": "The baby is cuteer than the doll.", "a": 0, "why": "Cute ends in e, so just add r: cuter."},
+    {"id": "p09", "t": "check", "d": 3, "tag": "spell", "q": "This is the easyest puzzle.", "a": 0, "why": "Easy ends in y: the easiest puzzle."},
+    {"id": "o01", "t": "fill", "d": 1, "tag": "odd", "q": "My mark is ___ than last time!", "o": ["better", "gooder"], "why": "Good is a surprise word: good, better, best."},
+    {"id": "o02", "t": "fill", "d": 1, "tag": "odd", "q": "Siti is the ___ singer in the choir.", "o": ["best", "goodest"], "why": "Good is a surprise word: the best."},
+    {"id": "o03", "t": "fill", "d": 2, "tag": "odd", "q": "The rain is ___ today than yesterday.", "o": ["worse", "badder"], "why": "Bad is a surprise word: bad, worse, worst."},
+    {"id": "o04", "t": "fill", "d": 2, "tag": "odd", "q": "That was the ___ storm ever!", "o": ["worst", "baddest"], "why": "Bad is a surprise word: the worst."},
+    {"id": "o05", "t": "check", "d": 1, "tag": "odd", "q": "You are my best friend.", "a": 1, "why": "Good, better, best. Right!"},
+    {"id": "o06", "t": "check", "d": 2, "tag": "odd", "q": "My cold is badder today.", "a": 0, "why": "Bad is a surprise word: my cold is worse today."},
+    {"id": "o07", "t": "check", "d": 3, "tag": "odd", "q": "Ravi's handwriting is gooder than mine.", "a": 0, "why": "Good is a surprise word: better than mine."},
+    {"id": "o08", "t": "pick", "d": 3, "tag": "odd", "ask": "Which one is right?", "o": ["good, better, best", "good, gooder, goodest", "good, better, goodest"], "why": "Good changes completely: good, better, best."},
+    {"id": "m01", "t": "fill", "d": 1, "tag": "more", "q": "This dress is ___ beautiful than that one.", "o": ["more", "most"], "why": "Long word, two things: more beautiful than."},
+    {"id": "m02", "t": "fill", "d": 2, "tag": "more", "q": "This is the ___ colourful kite of all.", "o": ["most", "more"], "why": "Long word, of all: the most colourful."},
+    {"id": "m03", "t": "fill", "d": 2, "tag": "more", "q": "Durian is ___ expensive than bananas.", "o": ["more", "most"], "why": "Long word, two things: more expensive than."},
+    {"id": "m04", "t": "fill", "d": 3, "tag": "more", "q": "That was the ___ exciting ride at the park!", "o": ["most", "more"], "why": "Long word, all the rides: the most exciting."},
+    {"id": "m05", "t": "check", "d": 1, "tag": "more", "q": "This book is more interesting than that one.", "a": 1, "why": "Long word, two things: more interesting. Right!"},
+    {"id": "m06", "t": "check", "d": 2, "tag": "more", "q": "Grandma makes the deliciousest kueh.", "a": 0, "why": "Long words don't take -est: the most delicious kueh."},
+    {"id": "m07", "t": "check", "d": 3, "tag": "more", "q": "This sofa is more comfortable than the chair.", "a": 1, "why": "Long word: more comfortable. Right!"},
+    {"id": "m08", "t": "pick", "d": 2, "tag": "more", "ask": "Which one is right?", "o": ["more beautiful", "beautifuller", "beautifulest"], "why": "Long words use more: more beautiful."},
+    {"id": "t01", "t": "fill", "d": 1, "tag": "double", "q": "My brother is ___ than me.", "o": ["taller", "more taller"], "why": "Use -er OR more, never both: taller."},
+    {"id": "t02", "t": "fill", "d": 2, "tag": "double", "q": "This is the ___ cake in the shop.", "o": ["biggest", "most biggest"], "why": "Use -est OR most, never both: the biggest."},
+    {"id": "t03", "t": "check", "d": 1, "tag": "double", "q": "The cat is more fatter than the dog.", "a": 0, "why": "Never both: the cat is fatter than the dog."},
+    {"id": "t04", "t": "check", "d": 2, "tag": "double", "q": "A tiger is faster than a cow.", "a": 1, "why": "Just -er: faster. Right!"},
+    {"id": "t05", "t": "check", "d": 3, "tag": "double", "q": "That is the most tallest tree in the park.", "a": 0, "why": "Never both: the tallest tree."},
+    {"id": "t06", "t": "spot", "d": 2, "tag": "double", "parts": ["My kite", "flew", "more higher", "than yours."], "a": 2, "why": "Never both: higher than yours.", "ask": "Tap the word with the mistake."},
+    {"id": "t07", "t": "pick", "d": 3, "tag": "double", "ask": "Which one is right?", "o": ["the smallest ant", "the most smallest ant", "the most small ant"], "why": "Short word: just -est, the smallest."},
+    {"id": "k01", "t": "pick", "d": 1, "tag": "kind", "ask": "Which word tells you what kind of hall?", "o": ["school", "hall", "the"], "why": "School tells us which hall it is.", "q": "the school hall"},
+    {"id": "k02", "t": "pick", "d": 2, "tag": "kind", "ask": "Which word tells you what kind of cake?", "o": ["birthday", "cake", "a"], "why": "Birthday tells us what kind of cake.", "q": "a birthday cake"},
+    {"id": "k03", "t": "pick", "d": 2, "tag": "kind", "ask": "Which word tells you what kind of stop?", "o": ["bus", "stop", "the"], "why": "Bus tells us what kind of stop.", "q": "the bus stop"},
+    {"id": "k04", "t": "pick", "d": 3, "tag": "kind", "ask": "Which word tells you what kind of boots?", "o": ["football", "boots", "my"], "why": "Football tells us what kind of boots.", "q": "my football boots"},
+    {"id": "k05", "t": "fill", "d": 2, "tag": "kind", "q": "Put the milk in the ___ fridge.", "o": ["kitchen", "kitchens"], "why": "When a naming word describes, it has no -s: the kitchen fridge."},
+    {"id": "k06", "t": "fill", "d": 3, "tag": "kind", "q": "We sat on the ___ bench.", "o": ["park", "parks"], "why": "When a naming word describes, it has no -s: the park bench."},
+    {"id": "k07", "t": "check", "d": 3, "tag": "kind", "q": "I lost my schools bag.", "a": 0, "why": "No -s on the describing naming word: my school bag."},
+  ];
+
+  /* ================= QUIZ BANK ENGINE (shared by every lesson) =================
+     Needs, defined above it: LESSON_KEY, TAGS, BANK.
+     Optional: QB_BANDS = [easy, medium, tricky] questions per attempt (default 7/7/6 = 20);
+     QB_TEXT = { ask: {...}, yn: [...], right: [...], wrong: '...', speak: true, summary: {...} }.
+     Each attempt draws BAND_SIZES questions (easy, medium, tricky). The draw builds many
+     candidate quizzes and keeps the best: every tag present, 3+ of each type, balanced
+     check answers, unseen questions first. Options are shuffled; ids seen are remembered. */
+  const BAND_SIZES = (typeof QB_BANDS !== 'undefined') ? QB_BANDS : [7, 7, 6];
+  const DRAW = BAND_SIZES.reduce((a, b) => a + b, 0);
+  const TYPE_TARGET = Math.max(1, Math.min(3, Math.floor(DRAW / new Set(BANK.map(q => q.t)).size)));   // e.g. 20 Qs → 3 of each type, 10 Qs with 4 types → 2
+  const QBT = (typeof QB_TEXT !== 'undefined') ? QB_TEXT : {};
+  const ASK = Object.assign({
+    check: 'Is this sentence correct?',
+    pick:  'Pick the correct sentence.',
+    fill:  'Which choice fills the gap correctly?',
+    spot:  'Tap the part with the mistake.'
+  }, QBT.ask || {});
+  const YN = QBT.yn || ['Needs fixing', 'Correct'];
+  const RIGHT = QBT.right || ['Correct!'];
+  const WRONG = QBT.wrong || 'Not quite.';
+  const SUM = Object.assign({
+    perfect: 'A perfect run! Try another set to make sure it sticks.',
+    high: 'Strong work. Have a quick look at the areas below, then try a fresh set.',
+    mid: 'Good progress. Re-read the parts below before your next attempt.',
+    low: 'Worth another look at the lesson. Start with the areas below, then try a fresh set.',
+    review: 'Areas to review'
+  }, QBT.summary || {});
+  const CAN_SPEAK = !!QBT.speak && typeof window !== 'undefined' && !!window.speechSynthesis &&
+    typeof window.speechSynthesis.speak === 'function' && typeof SpeechSynthesisUtterance !== 'undefined';
+  function speak(text) {
+    try {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-GB'; u.rate = 0.9;
+      window.speechSynthesis.speak(u);
+    } catch (e) { /* no speech on this device */ }
+  }
+
+  const store = {
+    get(k, fallback) { try { const v = localStorage.getItem(LESSON_KEY + ':' + k); return v === null ? fallback : JSON.parse(v); } catch (e) { return fallback; } },
+    set(k, v) { try { localStorage.setItem(LESSON_KEY + ':' + k, JSON.stringify(v)); } catch (e) { /* storage unavailable: quiz still works */ } }
+  };
+  const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  function buildCandidate(seen) {
+    const chosen = [], tagN = {}, typeN = {};
+    let fixN = 0, okN = 0;
+    for (let band = 1; band <= 3; band++) {
+      const picks = [];
+      for (let k = 0; k < BAND_SIZES[band - 1]; k++) {
+        let best = null, bestScore = -Infinity;
+        BANK.forEach(q => {
+          if (q.d !== band || picks.includes(q)) return;
+          let s = Math.random() * 3;
+          if (!seen.has(q.id)) s += 6;
+          if (!tagN[q.tag]) s += 12;
+          s -= (typeN[q.t] || 0) * 1.2;
+          if ((typeN[q.t] || 0) < TYPE_TARGET) s += 3;   // nudge every type up to its target
+          if (q.t === 'check') { const lean = q.a === 0 ? fixN - okN : okN - fixN; if (lean >= 1) s -= 4; }
+          if (s > bestScore) { bestScore = s; best = q; }
+        });
+        if (!best) break;
+        picks.push(best);
+        tagN[best.tag] = (tagN[best.tag] || 0) + 1;
+        typeN[best.t] = (typeN[best.t] || 0) + 1;
+        if (best.t === 'check') { if (best.a === 0) fixN++; else okN++; }
+      }
+      chosen.push(...shuffle(picks));
+    }
+    return chosen;
+  }
+
+  function rateCandidate(c, seen) {
+    const tags = new Set(c.map(q => q.tag)).size;
+    const types = {};
+    c.forEach(q => types[q.t] = (types[q.t] || 0) + 1);
+    const used = [...new Set(BANK.map(q => q.t))];
+    const minType = Math.min(...used.map(t => types[t] || 0));
+    const checks = c.filter(q => q.t === 'check');
+    const lean = Math.abs(checks.filter(q => q.a === 0).length * 2 - checks.length);
+    return (tags === Object.keys(TAGS).length ? 10000 : tags * 500)
+         + (c.length === DRAW ? 5000 : 0)
+         + Math.min(minType, TYPE_TARGET) * 300
+         + (lean <= 2 ? 200 : 0)
+         + c.filter(q => !seen.has(q.id)).length * 10;
+  }
+
+  function drawQuiz() {
+    let seen = new Set(store.get('seen', []));
+    if (BANK.length - seen.size < DRAW) seen = new Set(store.get('last', []));   // new cycle, but skip the last attempt
+    let chosen = null, bestRate = -1;
+    for (let tries = 0; tries < 200; tries++) {
+      const c = buildCandidate(seen), r = rateCandidate(c, seen);
+      if (r > bestRate) { bestRate = r; chosen = c; }
+    }
+    chosen.forEach(q => seen.add(q.id));
+    store.set('seen', [...seen]);
+    store.set('last', chosen.map(q => q.id));
+    return chosen.map(q => {
+      if (q.t === 'pick' || q.t === 'fill') {
+        const opts = shuffle(q.o.map((text, i) => ({ text, ok: i === 0 })));
+        return { q, opts, answer: opts.findIndex(o => o.ok) };
+      }
+      if (q.t === 'check') return { q, opts: YN.map(text => ({ text })), answer: q.a };
+      return { q, opts: null, answer: q.a };
+    });
+  }
+
+  const listEl = document.getElementById('qbList');
+  const scoreEl = document.getElementById('qbScore');
+  const progressEl = document.getElementById('qbProgress');
+  const summaryEl = document.getElementById('qbSummary');
+  let current = [], score = 0, done = 0, missed = [];
+
+  function updateScore() {
+    scoreEl.textContent = score + ' / ' + current.length;
+    progressEl.textContent = done + ' of ' + current.length + ' answered';
+  }
+
+  /* Small or empty options are hard to see on a button, so label them. */
+  function optLabel(text) {
+    const t = text.trim();
+    if (t === '') return '<span class="qb-note">(nothing)</span>';
+    if (t === ',') return '<span class="qb-punct">,</span> <span class="qb-note">(a comma)</span>';
+    if (t === '.') return '<span class="qb-punct">.</span> <span class="qb-note">(a full stop)</span>';
+    if (t === '?') return '<span class="qb-punct">?</span> <span class="qb-note">(a question mark)</span>';
+    if (t === '!') return '<span class="qb-punct">!</span> <span class="qb-note">(an exclamation mark)</span>';
+    return esc(text);
+  }
+  function plainLabel(text) {
+    const t = text.trim();
+    return t === '' ? 'nothing' : t === ',' ? 'a comma' : t === '.' ? 'a full stop'
+      : t === '?' ? 'a question mark' : t === '!' ? 'an exclamation mark' : '"' + t + '"';
+  }
+  function sentenceWithGap(q, text) {
+    let filler = '<span class="qb-blank">___</span>';
+    if (text !== undefined) {
+      filler = text.trim() === ''
+        ? '<span class="qb-blank qb-filled qb-none">(nothing)</span>'
+        : '<span class="qb-blank qb-filled">' + esc(text) + '</span>';
+    }
+    return esc(q.q).replace('___', filler);
+  }
+
+  function render() {
+    listEl.innerHTML = '';
+    summaryEl.hidden = true;
+    current.forEach((item, i) => {
+      const q = item.q;
+      const card = document.createElement('div');
+      card.className = 'qb-card';
+      card.dataset.type = q.t;
+      let body;
+      if (q.t === 'spot') {
+        body = '<div class="qb-spot">' + q.parts.map((p, k) =>
+          '<button type="button" class="qb-part" data-k="' + k + '">' + esc(p) + '</button>').join('') + '</div>';
+      } else if (q.t === 'fill') {
+        const cols = item.opts.length;
+        body = '<p class="qb-text">' + sentenceWithGap(q) + '</p><div class="qb-opts qb-row" style="--qb-cols:' + cols + '"></div>';
+      } else if (q.t === 'check') {
+        body = '<p class="qb-text">' + esc(q.q) + '</p><div class="qb-opts qb-row"></div>';
+      } else {
+        body = (q.q ? '<p class="qb-text">' + esc(q.q) + '</p>' : '') + '<div class="qb-opts"></div>';
+      }
+      card.innerHTML =
+        (CAN_SPEAK ? '<button type="button" class="qb-speak" aria-label="Read this question aloud">🔊 Read it to me</button>' : '') +
+        '<p class="qb-num">Question ' + (i + 1) + ' of ' + current.length + '</p>' +
+        '<p class="qb-ask">' + esc(q.ask || ASK[q.t]) + '</p>' + body +
+        '<div class="qb-feedback" role="status"></div>';
+      if (CAN_SPEAK) {
+        const bits = [q.ask || ASK[q.t]];
+        if (q.t === 'spot') bits.push(q.parts.join(' '));
+        else if (q.q) bits.push(q.q.replace('___', 'blank'));
+        const sayOpt = t => { const x = t.trim(); return x === '' ? 'nothing' : x === '.' ? 'full stop' : x === ',' ? 'comma' : x === '?' ? 'question mark' : x === '!' ? 'exclamation mark' : x; };
+        if (q.t === 'pick' || q.t === 'fill') item.opts.forEach((o, j) => bits.push((q.t === 'pick' ? String.fromCharCode(65 + j) + ': ' : '') + sayOpt(o.text)));
+        if (q.t === 'check') bits.push(YN.join(', or '));
+        const spoken = bits.map(t => t.trim().replace(/[.\s]+$/, '')).filter(Boolean)
+          .map(t => /[?!]$/.test(t) ? t : t + '.').join(' ');
+        card.querySelector('.qb-speak').addEventListener('click', () => speak(spoken));
+      }
+      if (q.t === 'spot') {
+        card.querySelectorAll('.qb-part').forEach(b => b.addEventListener('click', () => answer(i, +b.dataset.k, card)));
+      } else {
+        const opts = card.querySelector('.qb-opts');
+        item.opts.forEach((o, j) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'qb-opt';
+          b.innerHTML = (q.t === 'pick' ? '<span class="qb-letter">' + String.fromCharCode(65 + j) + '</span>' : '') + optLabel(o.text);
+          b.addEventListener('click', () => answer(i, j, card));
+          opts.appendChild(b);
+        });
+      }
+      listEl.appendChild(card);
+    });
+    updateScore();
+  }
+
+  function answer(i, j, card) {
+    const item = current[i];
+    if (item.done) return;
+    item.done = true; done++;
+    const q = item.q, ok = j === item.answer;
+    if (ok) score++; else missed.push(q.tag);
+    card.querySelectorAll(q.t === 'spot' ? '.qb-part' : '.qb-opt').forEach((b, k) => {
+      b.disabled = true;
+      if (k === j) b.classList.add(ok ? 'qb-correct' : 'qb-incorrect');
+      else if (k === item.answer && !ok) b.classList.add('qb-reveal');
+    });
+    if (q.t === 'fill') card.querySelector('.qb-text').innerHTML = sentenceWithGap(q, item.opts[j].text);
+    let right;
+    if (q.t === 'spot') right = 'The mistake is in "' + esc(q.parts[item.answer]) + '".';
+    else if (q.t === 'pick') right = 'The answer is ' + String.fromCharCode(65 + item.answer) + '.';
+    else right = 'The answer is ' + esc(plainLabel(item.opts[item.answer].text)) + '.';
+    const fb = card.querySelector('.qb-feedback');
+    fb.classList.add('qb-show', ok ? 'qb-fb-ok' : 'qb-fb-no');
+    fb.innerHTML = '<span class="qb-verdict">' + (ok ? RIGHT[Math.floor(Math.random() * RIGHT.length)] : WRONG + ' ' + right) + '</span>' + esc(q.why);
+    updateScore();
+    if (done === current.length) showSummary();
+  }
+
+  function showSummary() {
+    const best = Math.max(store.get('best', 0), score);
+    store.set('best', best);
+    const attempts = store.get('attempts', 0) + 1;
+    store.set('attempts', attempts);
+    const counts = {};
+    missed.forEach(t => counts[t] = (counts[t] || 0) + 1);
+    const areas = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+    const n = current.length;
+    let msg;
+    if (score === n) msg = SUM.perfect;
+    else if (score >= Math.ceil(n * 0.8)) msg = SUM.high;
+    else if (score >= Math.ceil(n * 0.6)) msg = SUM.mid;
+    else msg = SUM.low;
+    summaryEl.innerHTML =
+      '<h3>You scored ' + score + ' / ' + n + '</h3><p>' + msg + '</p>' +
+      (areas.length ? '<p class="qb-sum-label">' + esc(SUM.review) + '</p><ul class="qb-areas">' + areas.map(t =>
+        '<li><a href="' + TAGS[t].href + '">' + esc(TAGS[t].label) + '</a><span>' + counts[t] + ' wrong</span></li>').join('') + '</ul>' : '') +
+      '<p class="qb-meta">Attempts on this device: ' + attempts + ' · Best score: ' + best + ' / ' + n + '</p>' +
+      '<button type="button" class="qb-go" id="qbAgain">Try ' + n + ' new questions</button>';
+    summaryEl.hidden = false;
+    document.getElementById('qbAgain').addEventListener('click', () => { newQuiz(); listEl.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    summaryEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function newQuiz() {
+    current = drawQuiz(); score = 0; done = 0; missed = [];
+    render();
+  }
+
+  const bankEl = document.getElementById('qbBank'), drawEl = document.getElementById('qbDraw');
+  if (bankEl) bankEl.textContent = BANK.length;
+  if (drawEl) drawEl.textContent = DRAW;
+  document.getElementById('qbNew').addEventListener('click', () => {
+    newQuiz();
+    listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  newQuiz();
+  } /* qb-end */
+})();
+</script>
+</body>
+</html>

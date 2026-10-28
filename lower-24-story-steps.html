@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Story Steps: first, next, then, finally</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍞</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shantell+Sans:wght@800&family=Rubik:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F1E6D8;
+    --surface: #FFFFFF;
+    --surface-2: #FAF4EC;
+    --ink: #1F1A14;
+    --ink-soft: #5B5045;
+    --accent: #4E7D1E;
+    --accent-soft: #E2EFD3;
+    --egg: #8F6500;
+    --egg-soft: #FFF0C2;
+    --toast: #8A5426;
+    --toast-soft: #F2DEC9;
+    --rule: rgba(31,26,20,0.14);
+    --r-card: 18px;
+    --display-weight: 800;
+    --font-display: 'Shantell Sans', 'Comic Sans MS', 'Trebuchet MS', sans-serif;
+    --font-body: 'Rubik', -apple-system, 'Segoe UI', sans-serif;
+    --right: #1D7A45; --right-soft: #DCF1E3;
+    --wrong: #B3261E; --wrong-soft: #F9DEDC;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #17130E; --surface: #221C16; --surface-2: #2A231B; --ink: #F6EFE6; --ink-soft: #C6B9A9; --accent: #A6D877; --accent-soft: #20321A; --egg: #F2C94C; --egg-soft: #3A2E10; --toast: #E0A673; --toast-soft: #3A2617; --rule: rgba(246,239,230,0.16); --right: #72D69D; --right-soft: #17311F; --wrong: #F48D84; --wrong-soft: #3D1F1D; }
+  }
+  :root[data-theme="dark"] { --bg: #17130E; --surface: #221C16; --surface-2: #2A231B; --ink: #F6EFE6; --ink-soft: #C6B9A9; --accent: #A6D877; --accent-soft: #20321A; --egg: #F2C94C; --egg-soft: #3A2E10; --toast: #E0A673; --toast-soft: #3A2617; --rule: rgba(246,239,230,0.16); --right: #72D69D; --right-soft: #17311F; --wrong: #F48D84; --wrong-soft: #3D1F1D; }
+
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 19px; line-height: 1.55; }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 22px 18px 64px; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+  .back-link {
+    display: inline-block; margin: 0 0 20px; padding: 10px 16px; min-height: 44px;
+    font-weight: 700; font-size: 16px; color: var(--ink); text-decoration: none;
+    background: var(--surface); border: 2px solid var(--rule); border-radius: var(--r-btn, 999px);
+  }
+  h1, h2, h3 { font-family: var(--font-display); font-weight: var(--display-weight, 400); line-height: 1.12; }
+  h2 { font-size: 30px; margin: 0 0 8px; }
+  section { margin-bottom: 48px; }
+  .sub { color: var(--ink-soft); margin: 0 0 18px; }
+  .lead { font-size: 21px; margin: 0 0 18px; }
+  .no { color: var(--wrong); text-decoration: line-through; text-decoration-thickness: 2px; }
+  .yes { color: var(--right); font-weight: 700; }
+  .say {
+    display: none; font: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
+    padding: 6px 12px; min-height: 40px; margin-left: 6px; vertical-align: middle;
+    border-radius: 999px; border: 2px solid var(--accent); background: var(--accent-soft); color: var(--ink);
+  }
+  .can-speak .say { display: inline-block; }
+  .steps { display: grid; gap: 12px; }
+  .step { background: var(--surface); border-radius: var(--r-card, 18px); padding: 16px 18px; display: flex; gap: 14px; align-items: flex-start; }
+  .step .n { flex: 0 0 auto; width: 44px; height: 44px; border-radius: var(--r-num, 50%); display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 22px; background: var(--accent); color: var(--surface); }
+  .step p { margin: 0; font-size: 20px; }
+  .step .hint { font-size: 20px; margin-top: 6px; color: var(--ink-soft); }
+  .traps { display: grid; gap: 12px; }
+  .trap { background: var(--surface); border-radius: var(--r-card, 18px); padding: 18px; border-left: 8px solid var(--wrong); }
+  .trap h3 { margin: 0 0 6px; font-size: 24px; }
+  .trap p { margin: 0 0 10px; }
+  .eg { font-size: 21px; margin: 0 0 6px !important; }
+  .cards { display: grid; gap: 12px; }
+  .card { background: var(--surface); border-radius: var(--r-card, 18px); padding: 16px 18px; scroll-margin-top: 20px; }
+  .card h3 { margin: 0 0 6px; font-size: 26px; }
+  .card p { margin: 0 0 6px; }
+  .specials { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 520px) { .specials { grid-template-columns: 1fr; } }
+  .special { background: var(--surface-2); border-radius: var(--r-card, 18px); padding: 16px 18px; border: 3px dashed var(--accent); scroll-margin-top: 20px; }
+  .special h3 { margin: 0 0 6px; font-size: 24px; }
+  .special ul { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 2px; }
+  .special li { font-size: 20px; }
+  .special p { margin: 0 0 6px; }
+  .pin { background: var(--surface); border-radius: var(--r-card, 22px); padding: 20px; border: 3px solid var(--rule); }
+  .pin ul { margin: 0; padding-left: 22px; font-size: 20px; line-height: 1.7; }
+  .chant { margin: 16px 0 0; padding: 16px; border-radius: 16px; text-align: center; background: var(--accent-soft);
+    font-family: var(--font-display); font-size: 22px; line-height: 1.4; }
+  footer { text-align: center; font-size: 14px; color: var(--ink-soft); margin-top: 32px; }
+  .hmsg { margin: 10px 2px 0; font-size: 18px; min-height: 2.8em; }
+  .hmsg b.good { color: var(--right); } .hmsg b.try { color: var(--wrong); }
+
+
+  .sw { color: var(--accent); font-weight: 700; } .sw2 { color: var(--egg); font-weight: 700; } .sw3 { color: var(--toast); font-weight: 700; }
+  .hero h1 { font-size: clamp(40px, 11vw, 60px); margin: 0 0 12px; }
+  .hero h1 span { color: var(--accent); }
+  .kitchen { background: var(--surface); border-radius: 18px; padding: 14px; border: 3px dashed var(--toast); }
+  .task { font-family: var(--font-display); font-weight: 800; font-size: 22px; text-align: center; margin: 0 0 10px; }
+  .done-list { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 6px; counter-reset: s; }
+  .done-list li { background: var(--accent-soft); border-radius: 12px; padding: 8px 12px; font-size: 18px; min-height: 46px; display: flex; align-items: center; gap: 8px; }
+  .done-list li.empty { background: var(--surface-2); border: 2px dashed var(--rule); color: var(--ink-soft); }
+  .done-list li b { color: var(--accent); white-space: nowrap; }
+  .done-list li.new { animation: slide .35s ease-out; }
+  @keyframes slide { from { transform: translateX(-20px); opacity: 0; } to { transform: none; opacity: 1; } }
+  .cardsx { display: grid; gap: 8px; }
+  .stepcard { font: inherit; font-size: 18px; font-weight: 600; text-align: left; min-height: 56px; padding: 8px 12px 8px 14px; border-radius: 12px; cursor: pointer;
+    border: 3px solid var(--toast); background: var(--toast-soft); color: var(--ink); display: flex; align-items: center; gap: 10px; }
+  .stepcard .e { font-size: 26px; }
+  .stepcard:disabled { opacity: .3; cursor: default; }
+  .nextb { font: inherit; font-weight: 700; font-size: 17px; min-height: 48px; padding: 8px 18px; border-radius: 999px; border: none; background: var(--accent); color: var(--surface); cursor: pointer; }
+  .flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-top: 12px; }
+  @media (max-width: 480px) { .flow { grid-template-columns: 1fr 1fr; } }
+  .flow div { background: var(--surface); border-radius: 14px; padding: 10px 6px; text-align: center; font-size: 15px; }
+  .flow div b { display: block; font-family: var(--font-display); font-size: 20px; }
+  .flow div .e { font-size: 26px; display: block; }
+  .card.c-first { border-left: 10px solid var(--accent); } .card.c-mid { border-left: 10px solid var(--egg); } .card.c-fin { border-left: 10px solid var(--toast); }
+  .card.c-first h3 { color: var(--accent); } .card.c-mid h3 { color: var(--egg); } .card.c-fin h3 { color: var(--toast); }
+
+  /* ================= QUIZ BANK ENGINE (shared by every lesson; qb- prefix avoids clashes) ================= */
+  .qb { --qb-cols: 2; }
+  .qb-bar {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 3;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 10px 16px; margin: 0 0 18px; border-radius: var(--qb-radius);
+    background: var(--qb-bar); color: var(--qb-bar-ink);
+  }
+  .qb-label { font-size: 12.5px; opacity: 0.8; }
+  .qb-score { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 28px; line-height: 1.05; }
+  .qb-progress { font-size: 12.5px; opacity: 0.85; margin-top: 2px; }
+  .qb-new {
+    font: inherit; font-weight: 700; font-size: 14px; padding: 10px 16px; min-height: 44px;
+    border-radius: 999px; border: 2px solid currentColor; background: transparent; color: inherit; cursor: pointer;
+  }
+  .qb-list, .qb-summary { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 96px); }
+  .qb-card {
+    background: var(--qb-card); border: var(--qb-card-border); box-shadow: var(--qb-card-shadow);
+    border-radius: var(--qb-radius); padding: 16px 16px 14px; margin: 0 0 14px; color: var(--qb-ink);
+  }
+  .qb-speak {
+    float: right; margin: -4px 0 6px 10px; font: inherit; font-size: 13.5px; font-weight: 700;
+    padding: 7px 12px; min-height: 38px; border-radius: 999px; cursor: pointer;
+    border: 2px solid var(--qb-accent); background: var(--qb-accent-soft); color: var(--qb-ink);
+  }
+  .qb-num { font-size: 12.5px; color: var(--qb-soft); margin: 0 0 4px; }
+  .qb-ask { font-size: 13.5px; font-weight: 700; color: var(--qb-accent); margin: 0 0 6px; }
+  .qb-text { font-size: var(--qb-text-size, 16.5px); line-height: 1.6; margin: 0 0 14px; }
+  .qb-blank {
+    display: inline-block; min-width: 60px; padding: 0 3px; text-align: center;
+    border-bottom: 2.5px dashed var(--qb-soft); color: var(--qb-soft);
+  }
+  .qb-blank.qb-filled { border-bottom-style: solid; border-bottom-color: var(--qb-accent); color: var(--qb-accent); font-weight: 700; }
+  .qb-blank.qb-none { font-style: italic; font-weight: 400; }
+  .qb-opts { display: flex; flex-direction: column; gap: 9px; }
+  .qb-opts.qb-row { display: grid; grid-template-columns: repeat(var(--qb-cols), minmax(0, 1fr)); }
+  .qb-opt {
+    font: inherit; font-size: var(--qb-opt-size, 15.5px); line-height: 1.45; text-align: left; color: var(--qb-ink);
+    padding: 11px 14px; min-height: var(--qb-tap, 46px); border-radius: var(--qb-radius-opt);
+    border: 2px solid var(--qb-rule); background: var(--qb-page); cursor: pointer;
+  }
+  .qb-row .qb-opt { text-align: center; font-weight: 600; padding-left: 6px; padding-right: 6px; }
+  .qb-opt:not(:disabled):hover { border-color: var(--qb-accent); }
+  .qb-opt:disabled, .qb-part:disabled { cursor: default; }
+  .qb-letter { font-family: var(--qb-font); font-weight: var(--qb-font-weight); margin-right: 10px; color: var(--qb-accent); }
+  .qb-note { font-size: 12.5px; font-weight: 400; color: var(--qb-soft); }
+  .qb-punct { font-size: 22px; line-height: 0; font-weight: 700; }
+  .qb-spot { display: flex; flex-wrap: wrap; gap: 8px 6px; margin: 0 0 4px; }
+  .qb-part {
+    font: inherit; font-size: var(--qb-opt-size, 16px); line-height: 1.35; text-align: left; color: var(--qb-ink); cursor: pointer;
+    background: var(--qb-accent-soft); border: none; border-bottom: 3px dashed var(--qb-accent);
+    border-radius: 4px 4px 0 0; padding: 7px 9px; min-height: 40px;
+  }
+  .qb-opt.qb-correct, .qb-opt.qb-reveal { background: var(--qb-right-soft); border-color: var(--qb-right); }
+  .qb-opt.qb-incorrect { background: var(--qb-wrong-soft); border-color: var(--qb-wrong); }
+  .qb-part.qb-correct, .qb-part.qb-reveal { background: var(--qb-right-soft); border-bottom: 3px solid var(--qb-right); }
+  .qb-part.qb-incorrect { background: var(--qb-wrong-soft); border-bottom: 3px solid var(--qb-wrong); }
+  .qb-feedback { display: none; margin-top: 12px; padding-top: 12px; border-top: 2px dashed var(--qb-rule); font-size: 14px; line-height: 1.55; }
+  .qb-feedback.qb-show { display: block; }
+  .qb-verdict { display: block; font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 18px; margin-bottom: 2px; }
+  .qb-fb-ok .qb-verdict { color: var(--qb-right); }
+  .qb-fb-no .qb-verdict { color: var(--qb-wrong); }
+  .qb-summary {
+    background: var(--qb-card); color: var(--qb-ink); border: 3px solid var(--qb-accent);
+    border-radius: var(--qb-radius); padding: 18px 20px; margin-top: 8px;
+  }
+  .qb-summary h3 { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 30px; line-height: 1.1; margin: 0 0 6px; color: var(--qb-accent); }
+  .qb-summary p { margin: 0 0 10px; line-height: 1.55; }
+  .qb-sum-label { font-weight: 700; margin-top: 14px !important; }
+  .qb-areas { list-style: none; margin: 0 0 12px; padding: 0; }
+  .qb-areas li { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--qb-rule); }
+  .qb-areas a { color: var(--qb-ink); font-weight: 600; }
+  .qb-areas span { color: var(--qb-wrong); font-weight: 700; white-space: nowrap; }
+  .qb-meta { font-size: 13px; color: var(--qb-soft); }
+  .qb-go {
+    font: inherit; font-weight: 700; font-size: 16px; width: 100%; min-height: 50px; margin-top: 4px; cursor: pointer;
+    border: none; border-radius: var(--qb-radius); background: var(--qb-accent); color: var(--qb-on-accent);
+  }
+
+  /* Theme the quiz engine through these tokens only. */
+  :root {
+    --qb-page: var(--surface-2);
+    --qb-card: var(--surface);
+    --qb-ink: var(--ink);
+    --qb-soft: var(--ink-soft);
+    --qb-on-accent: var(--surface);
+    --qb-right: var(--right);
+    --qb-right-soft: var(--right-soft);
+    --qb-wrong: var(--wrong);
+    --qb-wrong-soft: var(--wrong-soft);
+    --qb-rule: var(--rule);
+    --qb-bar-ink: var(--surface);
+    --qb-font: var(--font-display);
+    --qb-font-weight: var(--display-weight, 400);
+    --qb-radius: var(--r-card, 18px);
+    --qb-radius-opt: 14px;
+    --qb-card-border: none;
+    --qb-card-shadow: none;
+    --qb-text-size: 21px;
+    --qb-opt-size: 19px;
+    --qb-tap: 56px;
+    --qb-accent: var(--accent);
+    --qb-accent-soft: var(--accent-soft);
+    --qb-bar: var(--accent);
+  }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back-link" href="index.html#lower">← Back to the shelf</a>
+
+  <!-- 1. HERO -->
+  <header class="hero">
+    <h1>Story <span>Steps</span></h1>
+    <p class="lead">Let's make kaya toast! Tap the steps in the right order. The step words <span class="sw">First</span>, <span class="sw2">Next</span>, <span class="sw2">Then</span> and <span class="sw3">Finally</span> pop in front! <button class="say" type="button" data-say="Let's make kaya toast! Tap the steps in the right order. The step words First, Next, Then and Finally pop in front!">🔊</button></p>
+    <div class="kitchen">
+      <p class="task" id="task"></p>
+      <ol class="done-list" id="doneList" aria-live="polite"></ol>
+      <div class="cardsx" id="stepCards"></div>
+      <p class="hmsg" id="kMsg" aria-live="polite"></p>
+      <button class="nextb" id="kNext" type="button" hidden>Next recipe →</button>
+    </div>
+  </header>
+
+  <!-- 2. THE RULE -->
+  <section id="rule">
+    <h2>Think: what happens first?</h2>
+    <p class="sub">Step words tell the reader the order.</p>
+    <div class="steps">
+      <div class="step"><span class="n">1</span><div><p><b>Put the steps in order.</b> Ask: what has to happen before the next thing can happen? <button class="say" type="button" data-say="Step one. Put the steps in order. Ask: what has to happen before the next thing can happen? You put on your socks before your shoes.">🔊</button></p>
+        <p class="hint">🧦 socks before 👟 shoes</p></div></div>
+      <div class="step"><span class="n">2</span><div><p><b>Add the step words.</b> <span class="sw">First</span> at the start, <span class="sw2">next, then, after that</span> in the middle, <span class="sw3">finally</span> at the end. <button class="say" type="button" data-say="Step two. Add the step words. First at the start. Next, then, or after that in the middle. Finally at the end.">🔊</button></p></div></div>
+    </div>
+    <div class="flow">
+      <div><span class="e">🍞</span><b class="sw">First,</b>toast the bread</div>
+      <div><span class="e">🟢</span><b class="sw2">Next,</b>spread the kaya</div>
+      <div><span class="e">🧈</span><b class="sw2">Then</b>add butter</div>
+      <div><span class="e">😋</span><b class="sw3">Finally,</b>eat it!</div>
+    </div>
+  </section>
+
+  <!-- 3. THE TRAP -->
+  <section id="traps">
+    <h2>Watch out!</h2>
+    <p class="sub">The words must match the order.</p>
+    <div class="trap">
+      <p><b>Finally</b> is only for the <b>last</b> step. <b>First</b> is only for the <b>first</b> step. <button class="say" type="button" data-say="Watch out! Finally is only for the last step. First is only for the first step. Finally, I woke up, is wrong. Waking up is the start: First, I woke up.">🔊</button></p>
+      <p class="eg"><span class="no">Finally, I woke up. Then I had breakfast.</span></p>
+      <p class="eg"><span class="yes">First, I woke up. Then I had breakfast.</span></p>
+    </div>
+  </section>
+
+  <!-- 4. CASES -->
+  <section id="cases">
+    <h2>Beginning, middle, end</h2>
+    <p class="sub">Every set of steps has three parts.</p>
+    <div class="cards">
+      <div class="card c-first" id="step-first"><h3>The start: First</h3>
+        <p class="eg"><b class="sw">First</b>, I took out the bread.</p>
+        <button class="say" type="button" data-say="The start: First. First, I took out the bread.">🔊</button></div>
+      <div class="card c-mid" id="step-middle"><h3>The middle: Next, Then, After that</h3>
+        <p>Use any of these. They all mean "the step after".</p>
+        <p class="eg"><b class="sw2">Next</b>, I put it in the toaster.</p>
+        <p class="eg"><b class="sw2">Then</b> I spread the kaya.</p>
+        <p class="eg"><b class="sw2">After that</b>, I added butter.</p>
+        <button class="say" type="button" data-say="The middle: Next, Then, or After that. Use any of these. They all mean the step after. Next, I put it in the toaster. Then I spread the kaya. After that, I added butter.">🔊</button></div>
+      <div class="card c-fin" id="step-finally"><h3>The end: Finally</h3>
+        <p class="eg"><b class="sw3">Finally</b>, I ate my kaya toast! 😋</p>
+        <button class="say" type="button" data-say="The end: Finally. Finally, I ate my kaya toast!">🔊</button></div>
+    </div>
+  </section>
+
+  <!-- 5. SPECIAL CASES -->
+  <section id="specials">
+    <h2>Checking a whole story</h2>
+    <p class="sub">Read it like a film. Does it make sense?</p>
+    <div class="specials">
+      <div class="special"><h3>Does it make sense?</h3>
+        <p>Picture each step. Could it really happen in that order?</p>
+        <p><span class="no">First, I ate the cake. Then I baked it.</span></p>
+        <p><span class="yes">First, I baked the cake. Then I ate it.</span> <button class="say" type="button" data-say="Does it make sense? Picture each step. Could it really happen in that order? First, I ate the cake. Then I baked it. That can't happen! First, I baked the cake. Then I ate it.">🔊</button></p></div>
+      <div class="special"><h3>Look for the step out of place</h3>
+        <p>One step in the wrong place spoils the story.</p>
+        <p class="eg">wrap the gift 🎁 → tie a ribbon 🎀 → give it to Mum → <span class="no">buy the gift</span></p>
+        <p>You must buy it first! <button class="say" type="button" data-say="Look for the step out of place. One step in the wrong place spoils the story. Wrap the gift, tie a ribbon, give it to Mum, then buy the gift? No! You must buy it first!">🔊</button></p></div>
+    </div>
+  </section>
+
+  <!-- 6. PRACTICE -->
+  <section id="practice">
+    <h2>Your turn!</h2>
+    <p class="sub">Answer <span id="qbDraw">10</span> questions. Tap 🔊 to hear each one. Every time you play, you get new questions! <span hidden id="qbBank">60</span></p>
+    <div class="qb" id="qb">
+      <div class="qb-bar">
+        <div><div class="qb-label">Your score</div><div class="qb-score" id="qbScore">0 / 10</div><div class="qb-progress" id="qbProgress">0 of 10 answered</div></div>
+        <button class="qb-new" id="qbNew" type="button">New quiz</button>
+      </div>
+      <div class="qb-list" id="qbList"></div>
+      <div class="qb-summary" id="qbSummary" hidden></div>
+    </div>
+  </section>
+
+  <!-- 7. PIN THIS UP -->
+  <section class="pin">
+    <h2>Pin This Up</h2>
+    <ul>
+      <li>Think: what has to happen first?</li>
+      <li><span class="sw">First</span>: the start</li>
+      <li><span class="sw2">Next, Then, After that</span>: the middle</li>
+      <li><span class="sw3">Finally</span>: the end</li>
+      <li>Read it like a film: does it make sense?</li>
+    </ul>
+    <p class="chant">First the bread goes in to toast,<br>next the kaya, I love it most!<br>Then the butter, melting, yum,<br>finally, it's in my tum!</p>
+  </section>
+
+  <footer>My Grammar Shelf · Lower shelf, Lesson 24</footer>
+</div>
+
+<script>
+(function () {
+
+  const canSpeak = !!window.speechSynthesis && typeof window.speechSynthesis.speak === 'function' && typeof SpeechSynthesisUtterance !== 'undefined';
+  function sayIt(text) {
+    try { window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'en-GB'; u.rate = 0.9; window.speechSynthesis.speak(u); } catch (e) {}
+  }
+  if (canSpeak) {
+    document.body.classList.add('can-speak');
+    document.querySelectorAll('.say').forEach(b => {
+      b.setAttribute('aria-label', 'Read this aloud');
+      b.addEventListener('click', () => sayIt(b.dataset.say));
+    });
+  }
+
+  /* ---------- Hero ---------- */
+  /* [title, steps in order: [emoji, text]] */
+  const RECIPES = [
+    ['🍞 Making kaya toast', [['🍞', 'I toasted the bread.'], ['🟢', 'I spread the kaya.'], ['🧈', 'I added the butter.'], ['😋', 'I ate my kaya toast.']]],
+    ['🦷 Brushing my teeth', [['🪥', 'I took my toothbrush.'], ['🫧', 'I put on the toothpaste.'], ['😁', 'I brushed my teeth.'], ['💧', 'I rinsed my mouth.']]],
+    ['🌱 Planting a seed', [['🕳️', 'I dug a hole.'], ['🌰', 'I put the seed in.'], ['💦', 'I watered it.'], ['🌻', 'A flower grew!']]],
+    ['🚌 Taking the bus', [['🚏', 'I waited at the bus stop.'], ['🚌', 'I got on the bus.'], ['💳', 'I tapped my card.'], ['🏫', 'I got off at school.']]]
+  ];
+  const WORDS = ['First,', 'Next,', 'Then', 'Finally,'];
+  const task = document.getElementById('task'), doneList = document.getElementById('doneList'), stepCards = document.getElementById('stepCards');
+  const kMsg = document.getElementById('kMsg'), kNext = document.getElementById('kNext');
+  let rN = 0, got = 0;
+  function lower(t) { return t.charAt(0) === 'I' && t.charAt(1) === ' ' ? t : t.charAt(0).toLowerCase() + t.slice(1); }
+  function loadRecipe() {
+    const r = RECIPES[rN]; got = 0;
+    task.textContent = r[0]; kMsg.textContent = ''; kNext.hidden = true;
+    doneList.innerHTML = WORDS.map(() => '<li class="empty">…</li>').join('');
+    stepCards.innerHTML = '';
+    const order = r[1].map((s, i) => i);
+    do { for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; } }
+    while (order.every((v, i) => v === i));
+    order.forEach(i => {
+      const s = r[1][i];
+      const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'stepcard';
+      btn.innerHTML = '<span class="e">' + s[0] + '</span>' + s[1];
+      btn.addEventListener('click', () => {
+        if (i === got) {
+          const li = doneList.children[got];
+          li.className = 'new'; li.innerHTML = '<b>' + WORDS[got] + '</b> ' + s[0] + ' ' + lower(s[1]);
+          btn.disabled = true;
+          if (canSpeak) sayIt(WORDS[got].replace(',', '') + ', ' + s[1]);
+          got++;
+          if (got === r[1].length) {
+            kMsg.innerHTML = '<b class="good">All in order!</b> First, next, then, finally. 🎉';
+            kNext.hidden = false; kNext.textContent = rN === RECIPES.length - 1 ? 'Play again ↺' : 'Next recipe →';
+          } else {
+            kMsg.innerHTML = '<b class="good">Yes!</b> What happens ' + (got === r[1].length - 1 ? 'at the very end?' : 'next?');
+          }
+        } else {
+          kMsg.innerHTML = '<b class="try">Good try!</b> ' + (got === 0 ? 'What has to happen before everything else?' : 'Something else has to happen before that.');
+        }
+      });
+      stepCards.appendChild(btn);
+    });
+  }
+  kNext.addEventListener('click', () => { rN = (rN + 1) % RECIPES.length; loadRecipe(); });
+  loadRecipe();
+
+  { /* qb-start: quiz engine in its own scope, so its names can't clash with the lesson's */
+  /* ================= QUIZ: question bank (60 questions) ================= */
+  const LESSON_KEY = "shelf-lower-24";
+  const QB_BANDS = [4, 4, 2];
+  const QB_TEXT = {"speak": true, "right": ["Well done!", "Great job!", "You got it!", "Super!"], "wrong": "Good try!", "summary": {"perfect": "All correct! Every step in the right place! Try a new set!", "high": "Great work! Look at the part below, then try a new set.", "mid": "Good effort! Read the parts below again, then try a new set.", "low": "Let's look at the lesson again together, then try a new set.", "review": "Have another look at"}, "ask": {"check": "Is this right?", "pick": "Which one is right?", "fill": "Which word fits?", "spot": "Tap the word with the mistake."}, "yn": ["Wrong", "Right"]};
+  const TAGS = {
+    first: { label: "First: the start", href: '#step-first' },
+    middle: { label: "Next, then, after that: the middle", href: '#step-middle' },
+    finally: { label: "Finally: the end", href: '#step-finally' },
+    order: { label: "Which comes first?", href: '#rule' },
+    story: { label: "A whole story in order", href: '#specials' },
+  };
+  const BANK = [
+    {"id": "f01", "t": "fill", "d": 1, "tag": "first", "q": "___, I took out the bread. Next, I put it in the toaster.", "o": ["First", "Finally"], "why": "Taking out the bread is the start: First."},
+    {"id": "f02", "t": "fill", "d": 1, "tag": "first", "q": "___, I woke up. Then I brushed my teeth.", "o": ["First", "Finally"], "why": "Waking up comes at the start: First."},
+    {"id": "f03", "t": "fill", "d": 2, "tag": "first", "q": "___, we bought the tickets. Then we watched the film.", "o": ["First", "Finally"], "why": "Buying tickets comes at the start: First."},
+    {"id": "f04", "t": "fill", "d": 2, "tag": "first", "q": "___, Mei filled the pot with water. Next, she boiled it.", "o": ["First", "Finally"], "why": "Filling the pot comes at the start: First."},
+    {"id": "f05", "t": "check", "d": 1, "tag": "first", "q": "First, I put on my socks. Then I put on my shoes.", "a": 1, "why": "Socks go on before shoes. Right!"},
+    {"id": "f06", "t": "check", "d": 2, "tag": "first", "q": "Finally, I opened my lunch box. Then I ate my sandwich.", "a": 0, "why": "Opening the box is the start: First, I opened my lunch box."},
+    {"id": "f07", "t": "pick", "d": 2, "tag": "first", "ask": "Which word starts the steps?", "o": ["First", "Finally", "Then"], "why": "First starts the story."},
+    {"id": "f08", "t": "check", "d": 3, "tag": "first", "q": "First, Ravi dug a hole. Next, he put the seed in it.", "a": 1, "why": "Dig the hole before the seed goes in. Right!"},
+    {"id": "m01", "t": "fill", "d": 1, "tag": "middle", "q": "First, I boiled water. ___, I put the noodles in. Finally, I ate them.", "o": ["Next", "First"], "why": "In the middle: Next."},
+    {"id": "m02", "t": "fill", "d": 1, "tag": "middle", "q": "First, we went to the beach. ___, we built a sandcastle. Finally, we went home.", "o": ["Then", "Finally"], "why": "In the middle: Then."},
+    {"id": "m03", "t": "fill", "d": 2, "tag": "middle", "q": "First, Dad washed the car. ___, he dried it. Finally, he polished it.", "o": ["After that", "First"], "why": "In the middle: After that."},
+    {"id": "m04", "t": "fill", "d": 2, "tag": "middle", "q": "First, I drew a cat. ___, I coloured it. Finally, I wrote my name.", "o": ["Next", "Finally"], "why": "In the middle: Next."},
+    {"id": "m05", "t": "fill", "d": 3, "tag": "middle", "q": "First, Siti read the question. ___, she wrote her answer. Finally, she checked it.", "o": ["Then", "First"], "why": "In the middle: Then."},
+    {"id": "m06", "t": "check", "d": 1, "tag": "middle", "q": "First, I washed my hands. Next, I ate my lunch.", "a": 1, "why": "Next comes after First. Right!"},
+    {"id": "m07", "t": "check", "d": 2, "tag": "middle", "q": "First, we queued. Finally, we paid. Then we ate.", "a": 0, "why": "Finally comes last: First, we queued. Then we paid. Finally, we ate."},
+    {"id": "m08", "t": "pick", "d": 2, "tag": "middle", "ask": "Which word goes in the middle?", "o": ["Next", "First", "Finally"], "why": "Next goes in the middle."},
+    {"id": "m09", "t": "check", "d": 3, "tag": "middle", "q": "First, Grandma mixed the flour. After that, she added the eggs. Finally, she baked the cake.", "a": 1, "why": "First, after that, finally. Right!"},
+    {"id": "z01", "t": "fill", "d": 1, "tag": "finally", "q": "First, we planted the seed. Then we watered it. ___, a flower grew!", "o": ["Finally", "First"], "why": "The end of the story: Finally."},
+    {"id": "z02", "t": "fill", "d": 1, "tag": "finally", "q": "First, I packed my bag. Next, I put on my shoes. ___, I went to school.", "o": ["Finally", "First"], "why": "The last step: Finally."},
+    {"id": "z03", "t": "fill", "d": 2, "tag": "finally", "q": "First, Jun mixed the paint. Then he painted the box. ___, he let it dry.", "o": ["Finally", "First"], "why": "The last step: Finally."},
+    {"id": "z04", "t": "fill", "d": 2, "tag": "finally", "q": "First, we waited for the bus. Next, we got on. ___, we reached Grandma's house.", "o": ["Finally", "First"], "why": "The end of the trip: Finally."},
+    {"id": "z05", "t": "check", "d": 1, "tag": "finally", "q": "First, I bathed. Then I put on my pyjamas. Finally, I went to bed.", "a": 1, "why": "Going to bed is the last step. Right!"},
+    {"id": "z06", "t": "check", "d": 2, "tag": "finally", "q": "Finally, I woke up. Then I had breakfast.", "a": 0, "why": "Waking up is the start: First, I woke up."},
+    {"id": "z07", "t": "pick", "d": 2, "tag": "finally", "ask": "Which word ends the steps?", "o": ["Finally", "Next", "First"], "why": "Finally ends the steps."},
+    {"id": "z08", "t": "check", "d": 3, "tag": "finally", "q": "First, Ali found his kite. Next, he ran with it. Finally, it flew high in the sky!", "a": 1, "why": "The kite flying is the end. Right!"},
+    {"id": "o01", "t": "pick", "d": 1, "tag": "order", "ask": "Which comes first?", "o": ["I put on my socks.", "I put on my shoes."], "why": "Socks go on before shoes."},
+    {"id": "o02", "t": "pick", "d": 1, "tag": "order", "ask": "Which comes first?", "o": ["I peeled the banana.", "I ate the banana."], "why": "You peel it before you eat it."},
+    {"id": "o03", "t": "pick", "d": 1, "tag": "order", "ask": "Which comes first?", "o": ["I opened the door.", "I walked into the room."], "why": "Open the door before you walk in."},
+    {"id": "o04", "t": "pick", "d": 2, "tag": "order", "ask": "Which comes last?", "o": ["We bought the ice cream.", "We ate the ice cream."], "why": "Eating comes after buying."},
+    {"id": "o05", "t": "pick", "d": 2, "tag": "order", "ask": "Which comes last?", "o": ["I dried my hands.", "I washed my hands."], "why": "Drying comes after washing."},
+    {"id": "o06", "t": "pick", "d": 2, "tag": "order", "ask": "Which comes first?", "o": ["The egg cracked.", "The chick came out."], "why": "The egg cracks first, then the chick comes out."},
+    {"id": "o07", "t": "pick", "d": 3, "tag": "order", "ask": "Which comes first?", "o": ["Mum mixed the batter.", "Mum baked the cake.", "We ate the cake."], "why": "Mixing comes before baking and eating."},
+    {"id": "o08", "t": "pick", "d": 3, "tag": "order", "ask": "Which comes last?", "o": ["The flower grew.", "We planted the seed.", "We watered the seed."], "why": "The flower grows at the very end."},
+    {"id": "s01", "t": "pick", "d": 1, "tag": "story", "ask": "Which story is in the right order?", "o": ["First, I got up. Then I brushed my teeth. Finally, I went to school.", "First, I went to school. Then I got up. Finally, I brushed my teeth.", "First, I brushed my teeth. Then I went to school. Finally, I got up."], "why": "Get up, brush teeth, then go to school."},
+    {"id": "s02", "t": "pick", "d": 2, "tag": "story", "ask": "Which story is in the right order?", "o": ["First, I made the toast. Next, I spread the kaya. Finally, I ate it.", "First, I ate the toast. Next, I made it. Finally, I spread the kaya.", "First, I spread the kaya. Next, I ate it. Finally, I made the toast."], "why": "Make it, spread it, eat it."},
+    {"id": "s03", "t": "pick", "d": 2, "tag": "story", "ask": "Which story is in the right order?", "o": ["First, we queued. Then we bought chicken rice. Finally, we sat down to eat.", "First, we sat down to eat. Then we queued. Finally, we bought chicken rice.", "First, we bought chicken rice. Then we sat down to eat. Finally, we queued."], "why": "Queue, buy, then eat."},
+    {"id": "s04", "t": "pick", "d": 3, "tag": "story", "ask": "Which story is in the right order?", "o": ["First, Mei got on the bus. Next, she tapped her card. Then she sat down. Finally, she got off.", "First, Mei got off the bus. Next, she sat down. Then she tapped her card. Finally, she got on.", "First, Mei sat down. Next, she got on the bus. Then she got off. Finally, she tapped her card."], "why": "Get on, tap, sit, get off."},
+    {"id": "s05", "t": "check", "d": 2, "tag": "story", "q": "First, Ravi kicked the ball. Then it flew into the goal. Finally, everyone cheered.", "a": 1, "why": "Kick, goal, cheer. Right!"},
+    {"id": "s06", "t": "check", "d": 3, "tag": "story", "q": "First, the ice cream melted. Then we took it out of the freezer.", "a": 0, "why": "Take it out first, then it melts."},
+    {"id": "s07", "t": "spot", "d": 3, "tag": "story", "parts": ["First, I wrapped the gift.", "Next, I tied a ribbon.", "Then I gave it to Mum.", "Finally, I bought the gift."], "a": 3, "why": "You buy the gift first, not at the end.", "ask": "Tap the step in the wrong place."},
+    {"id": "s08", "t": "spot", "d": 2, "tag": "story", "parts": ["First, I wore my helmet.", "Finally, I rode my bike.", "Then I parked it."], "a": 1, "why": "Riding is in the middle, so not Finally: Next, I rode my bike.", "ask": "Tap the step with the wrong word."},
+    {"id": "s09", "t": "check", "d": 1, "tag": "story", "q": "First, I got wet. Then it rained.", "a": 0, "why": "The rain comes first: First, it rained. Then I got wet."},
+    {"id": "f09", "t": "fill", "d": 1, "tag": "first", "q": "___, I poured the cereal. Then I added the milk.", "o": ["First", "Finally"], "why": "Cereal goes in the bowl at the start: First."},
+    {"id": "f10", "t": "fill", "d": 3, "tag": "first", "q": "___, the teacher gave out the papers. Then we wrote our names. Finally, we started the test.", "o": ["First", "Next"], "why": "Giving out papers is the start: First."},
+    {"id": "f11", "t": "check", "d": 3, "tag": "first", "q": "Then I put the stamp on. First, I wrote the letter.", "a": 0, "why": "Write the letter first: First, I wrote the letter. Then I put the stamp on."},
+    {"id": "f12", "t": "spot", "d": 3, "tag": "first", "parts": ["Next, I woke up.", "Then I made my bed.", "Finally, I ate breakfast."], "a": 0, "why": "Waking up is the start: First, I woke up.", "ask": "Tap the step with the wrong word."},
+    {"id": "m10", "t": "fill", "d": 1, "tag": "middle", "q": "First, I put on my helmet. ___, I rode my bike.", "o": ["Then", "First"], "why": "After the first step: Then."},
+    {"id": "m11", "t": "fill", "d": 3, "tag": "middle", "q": "First, we mixed the flour and eggs. ___, we poured it into a tin. Finally, we baked it.", "o": ["Next", "Finally"], "why": "In the middle: Next."},
+    {"id": "m12", "t": "check", "d": 3, "tag": "middle", "q": "First, I washed the cup. Finally, I dried it. Next, I put it away.", "a": 0, "why": "Finally is last: First, I washed it. Next, I dried it. Finally, I put it away."},
+    {"id": "m13", "t": "spot", "d": 3, "tag": "middle", "parts": ["First, Mum cut the cake.", "First, she put a slice on a plate.", "Finally, she gave it to me."], "a": 1, "why": "That step is in the middle: Next, she put a slice on a plate.", "ask": "Tap the step with the wrong word."},
+    {"id": "z09", "t": "fill", "d": 1, "tag": "finally", "q": "First, I wrote my card. ___, I gave it to Dad.", "o": ["Finally", "First"], "why": "Giving the card is the end: Finally."},
+    {"id": "z10", "t": "fill", "d": 3, "tag": "finally", "q": "First, we lined up. Next, we walked to the hall. Then we sat down. ___, the concert began!", "o": ["Finally", "First"], "why": "The concert starting is the end: Finally."},
+    {"id": "z11", "t": "check", "d": 3, "tag": "finally", "q": "First, I fed the fish. Finally, I bought the fish food.", "a": 0, "why": "You need the food first: First, I bought the fish food. Finally, I fed the fish."},
+    {"id": "z12", "t": "spot", "d": 2, "tag": "finally", "parts": ["First, we packed our bags.", "Finally, we got in the car.", "Then we drove to the beach."], "a": 1, "why": "Getting in the car is in the middle: Next, we got in the car.", "ask": "Tap the step with the wrong word."},
+    {"id": "o09", "t": "pick", "d": 1, "tag": "order", "ask": "Which comes first?", "o": ["I filled the cup.", "I drank the water."], "why": "You fill the cup before you drink."},
+    {"id": "o10", "t": "pick", "d": 3, "tag": "order", "ask": "Which comes last?", "o": ["I put the letter in the envelope.", "I posted the letter.", "I wrote the letter."], "why": "Posting it is the very end."},
+    {"id": "o11", "t": "check", "d": 2, "tag": "order", "q": "First, I put on my shoes. Then I put on my socks.", "a": 0, "why": "Socks go on before shoes: First, I put on my socks."},
+    {"id": "o12", "t": "check", "d": 3, "tag": "order", "q": "First, the bell rang. Then the children went out for recess.", "a": 1, "why": "The bell rings, then recess. Right!"},
+    {"id": "s10", "t": "pick", "d": 3, "tag": "story", "ask": "Which story is in the right order?", "o": ["First, I switched on the tap. Next, I washed my hands. Then I switched off the tap. Finally, I dried my hands.", "First, I dried my hands. Next, I switched on the tap. Then I washed my hands. Finally, I switched off the tap.", "First, I washed my hands. Next, I dried them. Then I switched on the tap. Finally, I switched it off."], "why": "Tap on, wash, tap off, dry."},
+    {"id": "s11", "t": "check", "d": 3, "tag": "story", "q": "First, Siti blew out the candles. Then everyone sang Happy Birthday. Finally, we lit the candles.", "a": 0, "why": "The candles are lit first, then the song, then blowing them out."},
+  ];
+
+  /* ================= QUIZ BANK ENGINE (shared by every lesson) =================
+     Needs, defined above it: LESSON_KEY, TAGS, BANK.
+     Optional: QB_BANDS = [easy, medium, tricky] questions per attempt (default 7/7/6 = 20);
+     QB_TEXT = { ask: {...}, yn: [...], right: [...], wrong: '...', speak: true, summary: {...} }.
+     Each attempt draws BAND_SIZES questions (easy, medium, tricky). The draw builds many
+     candidate quizzes and keeps the best: every tag present, 3+ of each type, balanced
+     check answers, unseen questions first. Options are shuffled; ids seen are remembered. */
+  const BAND_SIZES = (typeof QB_BANDS !== 'undefined') ? QB_BANDS : [7, 7, 6];
+  const DRAW = BAND_SIZES.reduce((a, b) => a + b, 0);
+  const TYPE_TARGET = Math.max(1, Math.min(3, Math.floor(DRAW / new Set(BANK.map(q => q.t)).size)));   // e.g. 20 Qs → 3 of each type, 10 Qs with 4 types → 2
+  const QBT = (typeof QB_TEXT !== 'undefined') ? QB_TEXT : {};
+  const ASK = Object.assign({
+    check: 'Is this sentence correct?',
+    pick:  'Pick the correct sentence.',
+    fill:  'Which choice fills the gap correctly?',
+    spot:  'Tap the part with the mistake.'
+  }, QBT.ask || {});
+  const YN = QBT.yn || ['Needs fixing', 'Correct'];
+  const RIGHT = QBT.right || ['Correct!'];
+  const WRONG = QBT.wrong || 'Not quite.';
+  const SUM = Object.assign({
+    perfect: 'A perfect run! Try another set to make sure it sticks.',
+    high: 'Strong work. Have a quick look at the areas below, then try a fresh set.',
+    mid: 'Good progress. Re-read the parts below before your next attempt.',
+    low: 'Worth another look at the lesson. Start with the areas below, then try a fresh set.',
+    review: 'Areas to review'
+  }, QBT.summary || {});
+  const CAN_SPEAK = !!QBT.speak && typeof window !== 'undefined' && !!window.speechSynthesis &&
+    typeof window.speechSynthesis.speak === 'function' && typeof SpeechSynthesisUtterance !== 'undefined';
+  function speak(text) {
+    try {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-GB'; u.rate = 0.9;
+      window.speechSynthesis.speak(u);
+    } catch (e) { /* no speech on this device */ }
+  }
+
+  const store = {
+    get(k, fallback) { try { const v = localStorage.getItem(LESSON_KEY + ':' + k); return v === null ? fallback : JSON.parse(v); } catch (e) { return fallback; } },
+    set(k, v) { try { localStorage.setItem(LESSON_KEY + ':' + k, JSON.stringify(v)); } catch (e) { /* storage unavailable: quiz still works */ } }
+  };
+  const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  function buildCandidate(seen) {
+    const chosen = [], tagN = {}, typeN = {};
+    let fixN = 0, okN = 0;
+    for (let band = 1; band <= 3; band++) {
+      const picks = [];
+      for (let k = 0; k < BAND_SIZES[band - 1]; k++) {
+        let best = null, bestScore = -Infinity;
+        BANK.forEach(q => {
+          if (q.d !== band || picks.includes(q)) return;
+          let s = Math.random() * 3;
+          if (!seen.has(q.id)) s += 6;
+          if (!tagN[q.tag]) s += 12;
+          s -= (typeN[q.t] || 0) * 1.2;
+          if ((typeN[q.t] || 0) < TYPE_TARGET) s += 3;   // nudge every type up to its target
+          if (q.t === 'check') { const lean = q.a === 0 ? fixN - okN : okN - fixN; if (lean >= 1) s -= 4; }
+          if (s > bestScore) { bestScore = s; best = q; }
+        });
+        if (!best) break;
+        picks.push(best);
+        tagN[best.tag] = (tagN[best.tag] || 0) + 1;
+        typeN[best.t] = (typeN[best.t] || 0) + 1;
+        if (best.t === 'check') { if (best.a === 0) fixN++; else okN++; }
+      }
+      chosen.push(...shuffle(picks));
+    }
+    return chosen;
+  }
+
+  function rateCandidate(c, seen) {
+    const tags = new Set(c.map(q => q.tag)).size;
+    const types = {};
+    c.forEach(q => types[q.t] = (types[q.t] || 0) + 1);
+    const used = [...new Set(BANK.map(q => q.t))];
+    const minType = Math.min(...used.map(t => types[t] || 0));
+    const checks = c.filter(q => q.t === 'check');
+    const lean = Math.abs(checks.filter(q => q.a === 0).length * 2 - checks.length);
+    return (tags === Object.keys(TAGS).length ? 10000 : tags * 500)
+         + (c.length === DRAW ? 5000 : 0)
+         + Math.min(minType, TYPE_TARGET) * 300
+         + (lean <= 2 ? 200 : 0)
+         + c.filter(q => !seen.has(q.id)).length * 10;
+  }
+
+  function drawQuiz() {
+    let seen = new Set(store.get('seen', []));
+    if (BANK.length - seen.size < DRAW) seen = new Set(store.get('last', []));   // new cycle, but skip the last attempt
+    let chosen = null, bestRate = -1;
+    for (let tries = 0; tries < 200; tries++) {
+      const c = buildCandidate(seen), r = rateCandidate(c, seen);
+      if (r > bestRate) { bestRate = r; chosen = c; }
+    }
+    chosen.forEach(q => seen.add(q.id));
+    store.set('seen', [...seen]);
+    store.set('last', chosen.map(q => q.id));
+    return chosen.map(q => {
+      if (q.t === 'pick' || q.t === 'fill') {
+        const opts = shuffle(q.o.map((text, i) => ({ text, ok: i === 0 })));
+        return { q, opts, answer: opts.findIndex(o => o.ok) };
+      }
+      if (q.t === 'check') return { q, opts: YN.map(text => ({ text })), answer: q.a };
+      return { q, opts: null, answer: q.a };
+    });
+  }
+
+  const listEl = document.getElementById('qbList');
+  const scoreEl = document.getElementById('qbScore');
+  const progressEl = document.getElementById('qbProgress');
+  const summaryEl = document.getElementById('qbSummary');
+  let current = [], score = 0, done = 0, missed = [];
+
+  function updateScore() {
+    scoreEl.textContent = score + ' / ' + current.length;
+    progressEl.textContent = done + ' of ' + current.length + ' answered';
+  }
+
+  /* Small or empty options are hard to see on a button, so label them. */
+  function optLabel(text) {
+    const t = text.trim();
+    if (t === '') return '<span class="qb-note">(nothing)</span>';
+    if (t === ',') return '<span class="qb-punct">,</span> <span class="qb-note">(a comma)</span>';
+    if (t === '.') return '<span class="qb-punct">.</span> <span class="qb-note">(a full stop)</span>';
+    if (t === '?') return '<span class="qb-punct">?</span> <span class="qb-note">(a question mark)</span>';
+    if (t === '!') return '<span class="qb-punct">!</span> <span class="qb-note">(an exclamation mark)</span>';
+    return esc(text);
+  }
+  function plainLabel(text) {
+    const t = text.trim();
+    return t === '' ? 'nothing' : t === ',' ? 'a comma' : t === '.' ? 'a full stop'
+      : t === '?' ? 'a question mark' : t === '!' ? 'an exclamation mark' : '"' + t + '"';
+  }
+  function sentenceWithGap(q, text) {
+    let filler = '<span class="qb-blank">___</span>';
+    if (text !== undefined) {
+      filler = text.trim() === ''
+        ? '<span class="qb-blank qb-filled qb-none">(nothing)</span>'
+        : '<span class="qb-blank qb-filled">' + esc(text) + '</span>';
+    }
+    return esc(q.q).replace('___', filler);
+  }
+
+  function render() {
+    listEl.innerHTML = '';
+    summaryEl.hidden = true;
+    current.forEach((item, i) => {
+      const q = item.q;
+      const card = document.createElement('div');
+      card.className = 'qb-card';
+      card.dataset.type = q.t;
+      let body;
+      if (q.t === 'spot') {
+        body = '<div class="qb-spot">' + q.parts.map((p, k) =>
+          '<button type="button" class="qb-part" data-k="' + k + '">' + esc(p) + '</button>').join('') + '</div>';
+      } else if (q.t === 'fill') {
+        const cols = item.opts.length;
+        body = '<p class="qb-text">' + sentenceWithGap(q) + '</p><div class="qb-opts qb-row" style="--qb-cols:' + cols + '"></div>';
+      } else if (q.t === 'check') {
+        body = '<p class="qb-text">' + esc(q.q) + '</p><div class="qb-opts qb-row"></div>';
+      } else {
+        body = (q.q ? '<p class="qb-text">' + esc(q.q) + '</p>' : '') + '<div class="qb-opts"></div>';
+      }
+      card.innerHTML =
+        (CAN_SPEAK ? '<button type="button" class="qb-speak" aria-label="Read this question aloud">🔊 Read it to me</button>' : '') +
+        '<p class="qb-num">Question ' + (i + 1) + ' of ' + current.length + '</p>' +
+        '<p class="qb-ask">' + esc(q.ask || ASK[q.t]) + '</p>' + body +
+        '<div class="qb-feedback" role="status"></div>';
+      if (CAN_SPEAK) {
+        const bits = [q.ask || ASK[q.t]];
+        if (q.t === 'spot') bits.push(q.parts.join(' '));
+        else if (q.q) bits.push(q.q.replace('___', 'blank'));
+        const sayOpt = t => { const x = t.trim(); return x === '' ? 'nothing' : x === '.' ? 'full stop' : x === ',' ? 'comma' : x === '?' ? 'question mark' : x === '!' ? 'exclamation mark' : x; };
+        if (q.t === 'pick' || q.t === 'fill') item.opts.forEach((o, j) => bits.push((q.t === 'pick' ? String.fromCharCode(65 + j) + ': ' : '') + sayOpt(o.text)));
+        if (q.t === 'check') bits.push(YN.join(', or '));
+        const spoken = bits.map(t => t.trim().replace(/[.\s]+$/, '')).filter(Boolean)
+          .map(t => /[?!]$/.test(t) ? t : t + '.').join(' ');
+        card.querySelector('.qb-speak').addEventListener('click', () => speak(spoken));
+      }
+      if (q.t === 'spot') {
+        card.querySelectorAll('.qb-part').forEach(b => b.addEventListener('click', () => answer(i, +b.dataset.k, card)));
+      } else {
+        const opts = card.querySelector('.qb-opts');
+        item.opts.forEach((o, j) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'qb-opt';
+          b.innerHTML = (q.t === 'pick' ? '<span class="qb-letter">' + String.fromCharCode(65 + j) + '</span>' : '') + optLabel(o.text);
+          b.addEventListener('click', () => answer(i, j, card));
+          opts.appendChild(b);
+        });
+      }
+      listEl.appendChild(card);
+    });
+    updateScore();
+  }
+
+  function answer(i, j, card) {
+    const item = current[i];
+    if (item.done) return;
+    item.done = true; done++;
+    const q = item.q, ok = j === item.answer;
+    if (ok) score++; else missed.push(q.tag);
+    card.querySelectorAll(q.t === 'spot' ? '.qb-part' : '.qb-opt').forEach((b, k) => {
+      b.disabled = true;
+      if (k === j) b.classList.add(ok ? 'qb-correct' : 'qb-incorrect');
+      else if (k === item.answer && !ok) b.classList.add('qb-reveal');
+    });
+    if (q.t === 'fill') card.querySelector('.qb-text').innerHTML = sentenceWithGap(q, item.opts[j].text);
+    let right;
+    if (q.t === 'spot') right = 'The mistake is in "' + esc(q.parts[item.answer]) + '".';
+    else if (q.t === 'pick') right = 'The answer is ' + String.fromCharCode(65 + item.answer) + '.';
+    else right = 'The answer is ' + esc(plainLabel(item.opts[item.answer].text)) + '.';
+    const fb = card.querySelector('.qb-feedback');
+    fb.classList.add('qb-show', ok ? 'qb-fb-ok' : 'qb-fb-no');
+    fb.innerHTML = '<span class="qb-verdict">' + (ok ? RIGHT[Math.floor(Math.random() * RIGHT.length)] : WRONG + ' ' + right) + '</span>' + esc(q.why);
+    updateScore();
+    if (done === current.length) showSummary();
+  }
+
+  function showSummary() {
+    const best = Math.max(store.get('best', 0), score);
+    store.set('best', best);
+    const attempts = store.get('attempts', 0) + 1;
+    store.set('attempts', attempts);
+    const counts = {};
+    missed.forEach(t => counts[t] = (counts[t] || 0) + 1);
+    const areas = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+    const n = current.length;
+    let msg;
+    if (score === n) msg = SUM.perfect;
+    else if (score >= Math.ceil(n * 0.8)) msg = SUM.high;
+    else if (score >= Math.ceil(n * 0.6)) msg = SUM.mid;
+    else msg = SUM.low;
+    summaryEl.innerHTML =
+      '<h3>You scored ' + score + ' / ' + n + '</h3><p>' + msg + '</p>' +
+      (areas.length ? '<p class="qb-sum-label">' + esc(SUM.review) + '</p><ul class="qb-areas">' + areas.map(t =>
+        '<li><a href="' + TAGS[t].href + '">' + esc(TAGS[t].label) + '</a><span>' + counts[t] + ' wrong</span></li>').join('') + '</ul>' : '') +
+      '<p class="qb-meta">Attempts on this device: ' + attempts + ' · Best score: ' + best + ' / ' + n + '</p>' +
+      '<button type="button" class="qb-go" id="qbAgain">Try ' + n + ' new questions</button>';
+    summaryEl.hidden = false;
+    document.getElementById('qbAgain').addEventListener('click', () => { newQuiz(); listEl.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    summaryEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function newQuiz() {
+    current = drawQuiz(); score = 0; done = 0; missed = [];
+    render();
+  }
+
+  const bankEl = document.getElementById('qbBank'), drawEl = document.getElementById('qbDraw');
+  if (bankEl) bankEl.textContent = BANK.length;
+  if (drawEl) drawEl.textContent = DRAW;
+  document.getElementById('qbNew').addEventListener('click', () => {
+    newQuiz();
+    listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  newQuiz();
+  } /* qb-end */
+})();
+</script>
+</body>
+</html>
