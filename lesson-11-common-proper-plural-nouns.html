@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Zoom In, Zoom Out: Common, Proper and Plural Nouns</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📷</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FFF8DB;            /* film-box yellow, pale */
+    --surface: #FFFFFF;
+    --ink: #1C1F2E;
+    --ink-soft: #565B70;
+    --focus: #B0177F;         /* zoom in: proper nouns, magenta */
+    --focus-soft: #FBE1F1;
+    --wide: #1E5BB8;          /* zoom out: plurals, wide-angle blue */
+    --wide-soft: #DDE8FA;
+    --rec: #C2410C;           /* REC dot, used sparingly */
+    --frame: #1C1F2E;
+    --right: #1F7A45;   --right-soft: #DDF1E4;
+    --wrong: #B3261E;   --wrong-soft: #F8DEDC;
+    --rule: rgba(28,31,46,0.14);
+    --font-display: 'Unbounded', 'Arial Black', sans-serif;
+    --font-body: 'Atkinson Hyperlegible', -apple-system, BlinkMacSystemFont, sans-serif;
+
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #15161F; --surface: #20222E; --ink: #F3F1E6; --ink-soft: #B7B9C8;
+      --focus: #F07CC8; --focus-soft: #3A1631;
+      --wide: #84AEF5; --wide-soft: #172640;
+      --rec: #FF8A57; --frame: #F3F1E6;
+      --right: #6FD49A; --right-soft: #17321F;
+      --wrong: #F08A82; --wrong-soft: #3A1E1C;
+      --rule: rgba(243,241,230,0.15);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #15161F; --surface: #20222E; --ink: #F3F1E6; --ink-soft: #B7B9C8;
+    --focus: #F07CC8; --focus-soft: #3A1631;
+    --wide: #84AEF5; --wide-soft: #172640;
+    --rec: #FF8A57; --frame: #F3F1E6;
+    --right: #6FD49A; --right-soft: #17321F;
+    --wrong: #F08A82; --wrong-soft: #3A1E1C;
+    --rule: rgba(243,241,230,0.15);
+  }
+
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16.5px; }
+  .wrap { max-width: 740px; margin: 0 auto; padding: 28px 18px 64px; }
+  section { margin-bottom: 52px; }
+  h1, h2 { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.01em; }
+  h2 { font-size: 26px; line-height: 1.15; margin: 0 0 8px; }
+  h3 { font-weight: 700; font-size: 18px; margin: 0 0 8px; }
+  p { line-height: 1.58; }
+  .sub { color: var(--ink-soft); margin: 0 0 20px; max-width: 60ch; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .fo { color: var(--focus); font-weight: 700; }
+  .wi { color: var(--wide); font-weight: 700; }
+  .bad { color: var(--wrong); text-decoration: line-through; text-decoration-thickness: 1.5px; }
+  .good { color: var(--right); font-weight: 700; }
+  .why { color: var(--ink-soft); font-size: 15px; }
+  .end { font-weight: 700; color: var(--wide); }
+
+  .back-link {
+    display: inline-block; margin: 0 0 22px; padding: 9px 16px; min-height: 40px;
+    font-weight: 700; font-size: 14px; color: var(--ink); text-decoration: none;
+    border: 2px solid var(--ink); border-radius: 6px; background: var(--surface);
+  }
+  .book-ref { display: inline-block; margin-left: 8px; font-size: 13px; color: var(--ink-soft); }
+
+  /* Viewfinder corners: the lesson's one visual motif */
+  .vf { position: relative; padding: 18px 18px 16px; background: var(--surface); border-radius: 4px; }
+  .vf > .c { position: absolute; width: 18px; height: 18px; border-color: var(--frame); border-style: solid; border-width: 0; }
+  .vf > .c.tl { top: 0; left: 0; border-top-width: 3px; border-left-width: 3px; }
+  .vf > .c.tr { top: 0; right: 0; border-top-width: 3px; border-right-width: 3px; }
+  .vf > .c.bl { bottom: 0; left: 0; border-bottom-width: 3px; border-left-width: 3px; }
+  .vf > .c.br { bottom: 0; right: 0; border-bottom-width: 3px; border-right-width: 3px; }
+  .vf.focus > .c { border-color: var(--focus); }
+  .vf.wide > .c { border-color: var(--wide); }
+
+  /* ---------- Hero ---------- */
+  .hero h1 { font-size: clamp(34px, 9vw, 56px); line-height: 1.02; margin: 0 0 14px; }
+  .hero h1 .in { color: var(--focus); } .hero h1 .out { color: var(--wide); }
+  .lead { font-size: 17px; max-width: 60ch; margin: 0 0 22px; }
+  .cam { background: var(--frame); border-radius: 18px; padding: 14px; }
+  .cam-top { display: flex; justify-content: space-between; align-items: center; color: var(--bg); font-size: 13px; font-weight: 700; padding: 0 4px 10px; }
+  .rec { display: inline-flex; align-items: center; gap: 6px; }
+  .rec::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--rec); }
+  .screen { position: relative; background: var(--surface); border-radius: 8px; min-height: 150px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 26px 18px 18px; text-align: center; }
+  .screen .c { position: absolute; width: 22px; height: 22px; border: 0 solid var(--ink-soft); }
+  .screen .c.tl { top: 10px; left: 10px; border-top-width: 3px; border-left-width: 3px; }
+  .screen .c.tr { top: 10px; right: 10px; border-top-width: 3px; border-right-width: 3px; }
+  .screen .c.bl { bottom: 10px; left: 10px; border-bottom-width: 3px; border-left-width: 3px; }
+  .screen .c.br { bottom: 10px; right: 10px; border-bottom-width: 3px; border-right-width: 3px; }
+  .screen.sharp .c { border-color: var(--focus); } .screen.widen .c { border-color: var(--wide); }
+  .shot-ctx { font-size: 15px; color: var(--ink-soft); margin: 0 0 6px; }
+  .shot-word { font-family: var(--font-display); font-weight: 800; font-size: clamp(24px, 7vw, 34px); line-height: 1.15; filter: blur(2.5px); transition: filter .35s ease; }
+  .screen.sharp .shot-word, .screen.widen .shot-word, .screen.clear .shot-word, .screen.wmode .shot-word { filter: none; }
+  .cam-btns.stack { grid-template-columns: 1fr; }
+  .screen.sharp .shot-word { color: var(--focus); } .screen.widen .shot-word { color: var(--wide); }
+  .mode { display: inline-block; font-size: 12.5px; font-weight: 700; padding: 3px 10px; border-radius: 12px; margin-bottom: 8px; background: var(--focus-soft); color: var(--ink); }
+  .mode.w { background: var(--wide-soft); }
+  .cam-btns { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-top: 12px; }
+  .cbtn { font: inherit; font-weight: 700; font-size: 15.5px; min-height: 52px; padding: 8px 10px; border-radius: 12px; cursor: pointer; border: 2px solid var(--bg); background: transparent; color: var(--bg); }
+  .cbtn:hover { background: rgba(255,255,255,0.08); }
+  .cbtn:disabled { opacity: .5; cursor: default; }
+  .cbtn.picked-ok { background: #1F7A45; border-color: #1F7A45; color: #fff; opacity: 1; }
+  .cam-msg { color: var(--bg); margin: 12px 4px 4px; min-height: 76px; font-size: 15.5px; }
+  .cam-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .cam-count { color: var(--bg); opacity: .8; font-size: 13px; }
+  .next { font: inherit; font-weight: 700; font-size: 14.5px; min-height: 44px; padding: 10px 18px; border-radius: 22px; border: none; background: var(--bg); color: var(--frame); cursor: pointer; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .cam { background: #0B0C12; border: 2px solid #3A3D4D; } :root:not([data-theme="light"]) .cam-top, :root:not([data-theme="light"]) .cam-msg, :root:not([data-theme="light"]) .cam-count { color: var(--ink); } :root:not([data-theme="light"]) .cbtn { color: var(--ink); border-color: var(--ink-soft); } :root:not([data-theme="light"]) .next { background: var(--ink); color: #0B0C12; } }
+  :root[data-theme="dark"] .cam { background: #0B0C12; border: 2px solid #3A3D4D; }
+  :root[data-theme="dark"] .cam-top, :root[data-theme="dark"] .cam-msg, :root[data-theme="dark"] .cam-count { color: var(--ink); }
+  :root[data-theme="dark"] .cbtn { color: var(--ink); border-color: var(--ink-soft); }
+  :root[data-theme="dark"] .next { background: var(--ink); color: #0B0C12; }
+
+  /* ---------- Rule ---------- */
+  .dials { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 560px) { .dials { grid-template-columns: 1fr; } }
+  .dial h3 { font-family: var(--font-display); font-weight: 600; font-size: 16px; }
+  .dial .q { font-weight: 700; margin: 0 0 6px; }
+  .dial ul { margin: 6px 0 0; padding-left: 18px; line-height: 1.65; font-size: 15.5px; }
+  .idcard { margin-top: 18px; border: 2px solid var(--focus); border-radius: 12px; background: var(--focus-soft); padding: 14px 16px; }
+  .idcard h3 { margin-bottom: 4px; }
+  .tbl { overflow-x: auto; margin-top: 10px; }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; min-width: 460px; }
+  th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  th { font-size: 13.5px; color: var(--ink-soft); font-weight: 700; }
+  .idcard td:first-child { font-weight: 700; white-space: nowrap; }
+  .note { margin: 12px 0 0; font-size: 15px; }
+
+  /* ---------- Traps ---------- */
+  .trap { margin-bottom: 18px; border-left: 6px solid var(--wrong); }
+  .trap p { margin: 6px 0; }
+  .pairs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; margin: 8px 0; font-size: 15.5px; }
+  .pairs .h { font-size: 13px; color: var(--ink-soft); font-weight: 700; }
+  @media (max-width: 560px) { .pairs { grid-template-columns: 1fr 1fr; font-size: 14.5px; } }
+
+  /* ---------- Cases: the plural ladder ---------- */
+  .ladder { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; counter-reset: step; }
+  .ladder > li { counter-increment: step; }
+  .ladder h3::before { content: counter(step); display: inline-grid; place-items: center; width: 28px; height: 28px; margin-right: 8px; border-radius: 50%; background: var(--wide); color: var(--surface); font-family: var(--font-display); font-size: 14px; }
+  .chips { list-style: none; margin: 8px 0 4px; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  .chips li { padding: 4px 10px; border-radius: 6px; background: var(--wide-soft); font-size: 15px; }
+  .chips.f li { background: var(--focus-soft); }
+  .chips b { color: var(--wide); }
+  .ex { margin: 6px 0 0; font-size: 15.5px; }
+
+  /* ---------- Specials ---------- */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 560px) { .grid-2 { grid-template-columns: 1fr; } }
+  .special p { margin: 6px 0; font-size: 15.5px; }
+
+  /* ---------- Pin This Up ---------- */
+  .summary .vf { padding: 20px 22px; }
+  .summary ul { margin: 0 0 14px; padding-left: 18px; line-height: 1.7; }
+  .chant { font-family: var(--font-display); font-weight: 600; font-size: 17px; line-height: 1.5; margin: 0; color: var(--focus); }
+  footer { text-align: center; color: var(--ink-soft); font-size: 13px; margin-top: 30px; }
+
+  @media (prefers-reduced-motion: reduce) { .shot-word { transition: none; } html { scroll-behavior: auto; } }
+
+  /* ================= QUIZ BANK ENGINE (shared by every lesson; qb- prefix avoids clashes) ================= */
+  .qb { --qb-cols: 2; }
+  .qb-bar {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 3;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 10px 16px; margin: 0 0 18px; border-radius: var(--qb-radius);
+    background: var(--qb-bar); color: var(--qb-bar-ink);
+  }
+  .qb-label { font-size: 12.5px; opacity: 0.8; }
+  .qb-score { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 28px; line-height: 1.05; }
+  .qb-progress { font-size: 12.5px; opacity: 0.85; margin-top: 2px; }
+  .qb-new {
+    font: inherit; font-weight: 700; font-size: 14px; padding: 10px 16px; min-height: 44px;
+    border-radius: 999px; border: 2px solid currentColor; background: transparent; color: inherit; cursor: pointer;
+  }
+  .qb-list, .qb-summary { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 96px); }
+  .qb-card {
+    background: var(--qb-card); border: var(--qb-card-border); box-shadow: var(--qb-card-shadow);
+    border-radius: var(--qb-radius); padding: 16px 16px 14px; margin: 0 0 14px; color: var(--qb-ink);
+  }
+  .qb-speak {
+    float: right; margin: -4px 0 6px 10px; font: inherit; font-size: 13.5px; font-weight: 700;
+    padding: 7px 12px; min-height: 38px; border-radius: 999px; cursor: pointer;
+    border: 2px solid var(--qb-accent); background: var(--qb-accent-soft); color: var(--qb-ink);
+  }
+  .qb-num { font-size: 12.5px; color: var(--qb-soft); margin: 0 0 4px; }
+  .qb-ask { font-size: 13.5px; font-weight: 700; color: var(--qb-accent); margin: 0 0 6px; }
+  .qb-text { font-size: var(--qb-text-size, 16.5px); line-height: 1.6; margin: 0 0 14px; }
+  .qb-blank {
+    display: inline-block; min-width: 60px; padding: 0 3px; text-align: center;
+    border-bottom: 2.5px dashed var(--qb-soft); color: var(--qb-soft);
+  }
+  .qb-blank.qb-filled { border-bottom-style: solid; border-bottom-color: var(--qb-accent); color: var(--qb-accent); font-weight: 700; }
+  .qb-blank.qb-none { font-style: italic; font-weight: 400; }
+  .qb-opts { display: flex; flex-direction: column; gap: 9px; }
+  .qb-opts.qb-row { display: grid; grid-template-columns: repeat(var(--qb-cols), minmax(0, 1fr)); }
+  .qb-opt {
+    font: inherit; font-size: var(--qb-opt-size, 15.5px); line-height: 1.45; text-align: left; color: var(--qb-ink);
+    padding: 11px 14px; min-height: var(--qb-tap, 46px); border-radius: var(--qb-radius-opt);
+    border: 2px solid var(--qb-rule); background: var(--qb-page); cursor: pointer;
+  }
+  .qb-row .qb-opt { text-align: center; font-weight: 600; padding-left: 6px; padding-right: 6px; }
+  .qb-opt:not(:disabled):hover { border-color: var(--qb-accent); }
+  .qb-opt:disabled, .qb-part:disabled { cursor: default; }
+  .qb-letter { font-family: var(--qb-font); font-weight: var(--qb-font-weight); margin-right: 10px; color: var(--qb-accent); }
+  .qb-note { font-size: 12.5px; font-weight: 400; color: var(--qb-soft); }
+  .qb-punct { font-size: 22px; line-height: 0; font-weight: 700; }
+  .qb-spot { display: flex; flex-wrap: wrap; gap: 8px 6px; margin: 0 0 4px; }
+  .qb-part {
+    font: inherit; font-size: var(--qb-opt-size, 16px); line-height: 1.35; text-align: left; color: var(--qb-ink); cursor: pointer;
+    background: var(--qb-accent-soft); border: none; border-bottom: 3px dashed var(--qb-accent);
+    border-radius: 4px 4px 0 0; padding: 7px 9px; min-height: 40px;
+  }
+  .qb-opt.qb-correct, .qb-opt.qb-reveal { background: var(--qb-right-soft); border-color: var(--qb-right); }
+  .qb-opt.qb-incorrect { background: var(--qb-wrong-soft); border-color: var(--qb-wrong); }
+  .qb-part.qb-correct, .qb-part.qb-reveal { background: var(--qb-right-soft); border-bottom: 3px solid var(--qb-right); }
+  .qb-part.qb-incorrect { background: var(--qb-wrong-soft); border-bottom: 3px solid var(--qb-wrong); }
+  .qb-feedback { display: none; margin-top: 12px; padding-top: 12px; border-top: 2px dashed var(--qb-rule); font-size: 14px; line-height: 1.55; }
+  .qb-feedback.qb-show { display: block; }
+  .qb-verdict { display: block; font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 18px; margin-bottom: 2px; }
+  .qb-fb-ok .qb-verdict { color: var(--qb-right); }
+  .qb-fb-no .qb-verdict { color: var(--qb-wrong); }
+  .qb-summary {
+    background: var(--qb-card); color: var(--qb-ink); border: 3px solid var(--qb-accent);
+    border-radius: var(--qb-radius); padding: 18px 20px; margin-top: 8px;
+  }
+  .qb-summary h3 { font-family: var(--qb-font); font-weight: var(--qb-font-weight); font-size: 30px; line-height: 1.1; margin: 0 0 6px; color: var(--qb-accent); }
+  .qb-summary p { margin: 0 0 10px; line-height: 1.55; }
+  .qb-sum-label { font-weight: 700; margin-top: 14px !important; }
+  .qb-areas { list-style: none; margin: 0 0 12px; padding: 0; }
+  .qb-areas li { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--qb-rule); }
+  .qb-areas a { color: var(--qb-ink); font-weight: 600; }
+  .qb-areas span { color: var(--qb-wrong); font-weight: 700; white-space: nowrap; }
+  .qb-meta { font-size: 13px; color: var(--qb-soft); }
+  .qb-go {
+    font: inherit; font-weight: 700; font-size: 16px; width: 100%; min-height: 50px; margin-top: 4px; cursor: pointer;
+    border: none; border-radius: var(--qb-radius); background: var(--qb-accent); color: var(--qb-on-accent);
+  }
+
+  /* Theme the quiz engine through these tokens only. */
+  :root {
+    --qb-page: var(--bg);
+    --qb-card: var(--surface);
+    --qb-ink: var(--ink);
+    --qb-soft: var(--ink-soft);
+    --qb-accent: var(--focus);
+    --qb-accent-soft: var(--focus-soft);
+    --qb-on-accent: #FFFFFF;
+    --qb-right: var(--right);
+    --qb-right-soft: var(--right-soft);
+    --qb-wrong: var(--wrong);
+    --qb-wrong-soft: var(--wrong-soft);
+    --qb-rule: var(--rule);
+    --qb-bar: var(--frame);
+    --qb-bar-ink: var(--bg);
+    --qb-font: var(--font-display);
+    --qb-font-weight: 800;
+    --qb-radius: 6px;
+    --qb-radius-opt: 8px;
+    --qb-card-border: 2px solid var(--rule);
+    --qb-card-shadow: none;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --qb-on-accent: #2A0A20; --qb-bar: #0B0C12; --qb-bar-ink: var(--ink); } }
+  :root[data-theme="dark"] { --qb-on-accent: #2A0A20; --qb-bar: #0B0C12; --qb-bar-ink: var(--ink); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back-link" href="index.html#upper">← Back to the shelf</a><span class="book-ref">Lesson 11 · Book 1A + 1C</span>
+
+  <!-- 1. HERO -->
+  <header class="hero">
+    <h1><span class="in">Zoom In,</span><br><span class="out">Zoom Out</span></h1>
+    <p class="lead">Every noun is a photo, and you're the one holding the camera. <b class="fo">Zoom in</b> until the name tag is sharp, and you've found one particular person, place or thing: <i>Ms Goh</i>, <i>Rosyth School</i>, <i>the Singapore River</i>. That's a <b class="fo">proper noun</b>, and it always gets a capital. Stay zoomed out and it could be any of them: <i>a teacher</i>, <i>a school</i>, <i>a river</i>. That's a <b>common noun</b>. Then <b class="wi">widen the lens</b> to fit more than one in the frame, and the noun turns <b class="wi">plural</b>. The tricky part is that the ending doesn't always just add -s.</p>
+
+    <div class="cam" aria-label="Camera game">
+      <div class="cam-top"><span class="rec">REC</span><span id="camMode">Focus check</span></div>
+      <div class="screen" id="screen" aria-live="polite">
+        <span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span>
+        <span class="mode" id="shotTag">Zoom in or out?</span>
+        <p class="shot-ctx" id="shotCtx"></p>
+        <div class="shot-word" id="shotWord"></div>
+      </div>
+      <div class="cam-btns" id="camBtns"></div>
+      <p class="cam-msg" id="camMsg"></p>
+      <div class="cam-foot"><span class="cam-count" id="camCount"></span><button class="next" type="button" id="camNext">Next shot →</button></div>
+    </div>
+  </header>
+
+  <!-- 2. THE RULE -->
+  <section id="rule">
+    <h2>Two dials on the lens</h2>
+    <p class="sub">Every noun answers two questions. Turn the focus dial first, then the width dial.</p>
+    <div class="dials">
+      <div class="vf dial focus"><span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span>
+        <h3>Dial 1: Focus</h3>
+        <p class="q">Any one of its kind, or one particular, named one?</p>
+        <ul>
+          <li><b>Common noun</b>: things, animals, places and types of people <i>in general</i>. <i>girl, dog, music, lunch, table, doctor</i></li>
+          <li><b class="fo">Proper noun</b>: the <i>name</i> of one <i>specific</i> person, organisation or place. <i>Italy, Taj Mahal, Sunday, Middle Street</i></li>
+          <li>A proper noun <b>always</b> begins with a capital letter.</li>
+        </ul>
+      </div>
+      <div class="vf dial wide"><span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span>
+        <h3>Dial 2: Width</h3>
+        <p class="q">One in the frame, or more than one?</p>
+        <ul>
+          <li><b>Singular</b>: one person or thing. <i>a doctor, that patient</i></li>
+          <li><b class="wi">Plural</b>: more than one. <i>two doctors, many patients</i></li>
+          <li>Most nouns add <span class="end">-s</span>, but many follow a different pattern. Climb the <a href="#cases">plural ladder</a> to choose the right ending.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="idcard" id="proper">
+      <h3>What counts as a name? The proper-noun ID card</h3>
+      <div class="tbl">
+        <table>
+          <tr><th>Kind of name</th><th>Examples</th></tr>
+          <tr><td>People and titles</td><td>Ms Goh, Uncle Raju, Sir Stamford Raffles, Edgar Allan Poe</td></tr>
+          <tr><td>Organisations</td><td>Rosyth School, the National Library Board, the Singapore Zoo</td></tr>
+          <tr><td>Countries and places</td><td>Japan, New Zealand, Tampines, Bedok North, the Singapore River, Lake Toba</td></tr>
+          <tr><td>Buildings</td><td>Marina Bay Sands, the Esplanade, Changi General Hospital, the Eiffel Tower</td></tr>
+          <tr><td>Historical events</td><td>World War II, the Japanese Occupation</td></tr>
+          <tr><td>Days, months, festivals</td><td>Monday, December, Hari Raya Puasa, Chinese New Year, Racial Harmony Day</td></tr>
+          <tr><td>Languages and nationalities</td><td>Japanese, Malay, a Singaporean</td></tr>
+          <tr><td>Titles of books, films, plays</td><td><i>Charlotte's Web</i>, <i>The Lion King</i>, <i>Harry Potter and the Half-Blood Prince</i></td></tr>
+        </table>
+      </div>
+      <p class="note"><b>Titles:</b> every main word takes a capital. Small words such as <i>a, an, the, and, of, in, on</i> stay small, unless they're the first word: <i>The Boy in the Striped Pyjamas</i>.</p>
+      <p class="note"><b>Not on the card:</b> seasons are common nouns, so they stay small. <span class="good">We went to Japan in winter.</span></p>
+    </div>
+  </section>
+
+  <!-- 3. TRAPS -->
+  <section id="traps">
+    <h2>Three blurry shots</h2>
+    <p class="sub">These are the mistakes that lose marks in editing.</p>
+
+    <div class="vf trap"><span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span>
+      <h3>Trap 1: Same word, two jobs</h3>
+      <p>Many words can be a plain common noun <i>or</i> part of a name. The capital goes on only when the word is part of the name.</p>
+      <div class="pairs">
+        <span class="h">Common (zoomed out)</span><span class="h">Part of a name (zoomed in)</span>
+        <span>my uncle</span><span class="fo">Uncle Raju</span>
+        <span>the hospital</span><span class="fo">Changi General Hospital</span>
+        <span>a river</span><span class="fo">the Singapore River</span>
+        <span>the lake at the park</span><span class="fo">Lake Toba</span>
+        <span>our form teacher</span><span class="fo">Ms Goh</span>
+        <span>my grandma</span><span class="fo">Grandma (used as her name)</span>
+      </div>
+      <p><span class="bad">My Uncle took me to the Hospital.</span> → <span class="good">My uncle took me to the hospital.</span></p>
+      <p class="why">A clue: after <i>my, his, the, our</i>, a word like <i>uncle</i> or <i>grandma</i> is usually common. When you use it in place of a name ("Grandma cooked dinner"), it's a name and takes a capital.</p>
+    </div>
+
+    <div class="vf trap"><span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span>
+      <h3>Trap 2: Plain -s on a word that needs more</h3>
+      <p><span class="bad">boxs</span> → <span class="good">boxes</span> · <span class="bad">partys</span> → <span class="good">parties</span> · <span class="bad">knifes</span> → <span class="good">knives</span> · <span class="bad">sheeps</span> → <span class="good">sheep</span> · <span class="bad">childrens</span> → <span class="good">children</span></p>
+      <p class="why">Before adding -s, check the word's last letters against the plural ladder below. Words that are already plural (children, teeth, people) never take another -s.</p>
+    </div>
+
+    <div class="vf trap"><span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span>
+      <h3>Trap 3: "One of the…"</h3>
+      <p><span class="bad">One of the doctor are able to help us.</span> → <span class="good">One of the doctors is able to help us.</span></p>
+      <p class="why">"One of the" picks one person from a group, so the noun after it is <b class="wi">plural</b> (doctors). But you are still talking about <i>one</i>, so the verb is <b>singular</b> (is, has, was). Words like <i>many, several, a few</i> and numbers above one also need a plural noun: <i>many patients</i>.</p>
+    </div>
+  </section>
+
+  <!-- 4. CASES -->
+  <section id="cases">
+    <h2>The plural ladder</h2>
+    <p class="sub">Look at how the word ends, then find its step on the ladder.</p>
+    <ol class="ladder">
+      <li class="vf wide"><span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span>
+        <h3>Most nouns: add -s</h3>
+        <ul class="chips"><li>toy → toy<b>s</b></li><li>kite → kite<b>s</b></li><li>tiger → tiger<b>s</b></li><li>parade → parade<b>s</b></li></ul>
+      </li>
+      <li class="vf wide"><span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span>
+        <h3>Ends in -ss, -x, -ch, -sh: add -es</h3>
+        <ul class="chips"><li>witness → witness<b>es</b></li><li>tax → tax<b>es</b></li><li>bench → bench<b>es</b></li><li>bush → bush<b>es</b></li><li>class → class<b>es</b></li><li>dish → dish<b>es</b></li></ul>
+        <p class="why">Say it aloud: the plural gets an extra beat ("bench-iz"), and the e makes room for it.</p>
+      </li>
+      <li class="vf wide"><span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span>
+        <h3>Ends in -o: add -s or -es</h3>
+        <p class="ex"><b>Vowel before the o: always -s.</b></p>
+        <ul class="chips"><li>video → video<b>s</b></li><li>radio → radio<b>s</b></li><li>zoo → zoo<b>s</b></li><li>kangaroo → kangaroo<b>s</b></li></ul>
+        <p class="ex"><b>Consonant before the o:</b> some take -s, and some take -es. Learn the -es words.</p>
+        <ul class="chips"><li>piano → piano<b>s</b></li><li>photo → photo<b>s</b></li><li>potato → potato<b>es</b></li><li>tomato → tomato<b>es</b></li><li>hero → hero<b>es</b></li><li>echo → echo<b>es</b></li></ul>
+      </li>
+      <li class="vf wide"><span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span>
+        <h3>Ends in -y: check the letter before it</h3>
+        <p class="ex"><b>Consonant + y: change y to -ies.</b></p>
+        <ul class="chips"><li>lady → lad<b>ies</b></li><li>story → stor<b>ies</b></li><li>city → cit<b>ies</b></li><li>candy → cand<b>ies</b></li><li>baby → bab<b>ies</b></li><li>party → part<b>ies</b></li></ul>
+        <p class="ex"><b>Vowel + y: just add -s.</b></p>
+        <ul class="chips"><li>toy → toy<b>s</b></li><li>monkey → monkey<b>s</b></li><li>holiday → holiday<b>s</b></li><li>journey → journey<b>s</b></li></ul>
+      </li>
+      <li class="vf wide"><span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span>
+        <h3>Ends in -f or -fe: often -ves</h3>
+        <ul class="chips"><li>yourself → yoursel<b>ves</b></li><li>wolf → wol<b>ves</b></li><li>life → li<b>ves</b></li><li>knife → kni<b>ves</b></li><li>leaf → lea<b>ves</b></li><li>half → hal<b>ves</b></li><li>shelf → shel<b>ves</b></li><li>thief → thie<b>ves</b></li><li>loaf → loa<b>ves</b></li></ul>
+        <p class="ex"><b>The keepers</b> just add -s: roof → roof<b class="end">s</b>, chief → chief<b class="end">s</b>, cliff → cliff<b class="end">s</b>, giraffe → giraffe<b class="end">s</b>, belief → belief<b class="end">s</b>.</p>
+      </li>
+      <li class="vf wide"><span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span>
+        <h3>Ends in -us: change to -i</h3>
+        <ul class="chips"><li>syllabus → syllab<b>i</b></li><li>focus → foc<b>i</b></li><li>cactus → cact<b>i</b></li><li>radius → radi<b>i</b></li></ul>
+        <p class="why">The -i is already plural, so never add -s to it: <span class="bad">cactis</span>. (You may also see forms like "cactuses"; the quiz uses the -i forms from your book.)</p>
+      </li>
+      <li class="vf wide"><span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span>
+        <h3>Irregular: the word changes inside</h3>
+        <ul class="chips"><li>tooth → teeth</li><li>foot → feet</li><li>goose → geese</li><li>mouse → mice</li><li>man → men</li><li>woman → women</li><li>child → children</li><li>person → people</li></ul>
+        <p class="why">These are already plural. <span class="bad">teeths, childrens, peoples</span> are never right in a sentence like "The children laughed".</p>
+      </li>
+      <li class="vf wide"><span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span>
+        <h3>Same in singular and plural</h3>
+        <ul class="chips"><li>one sheep, twenty sheep</li><li>one deer, five deer</li><li>one aircraft, two aircraft</li><li>one species, many species</li></ul>
+      </li>
+      <li class="vf wide"><span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span>
+        <h3>Always plural: even when there's just one</h3>
+        <ul class="chips"><li>scissors</li><li>spectacles</li><li>trousers</li><li>jeans</li><li>shorts</li><li>goggles</li><li>binoculars</li><li>pliers</li></ul>
+        <p class="ex">They come in two matching halves, so they're always plural and take a plural verb: <span class="good">My spectacles are</span> on the table. <span class="bad">Your shorts is dirty.</span></p>
+      </li>
+    </ol>
+  </section>
+
+  <!-- 5. SPECIAL CASES -->
+  <section id="specials">
+    <h2>Special shots</h2>
+    <p class="sub">The quiz checks these too.</p>
+    <div class="grid-2">
+      <div class="vf special"><span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span>
+        <h3>"A pair of" decides the verb</h3>
+        <p>When you count an always-plural noun with <i>pair</i>, the verb follows <i>pair</i>.</p>
+        <p><span class="good">A pair of scissors <b>is</b> in the drawer.</span></p>
+        <p><span class="good">This pair of trousers <b>is</b> too big.</span></p>
+        <p><span class="good">Two pairs of goggles <b>are</b> missing.</span></p>
+      </div>
+      <div class="vf special"><span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span>
+        <h3>Compound nouns: the main word goes plural</h3>
+        <p>In a noun made of several words, put the plural on the main word, the person.</p>
+        <p>passer-by → <span class="good">passer<b>s</b>-by</span> · sister-in-law → <span class="good">sister<b>s</b>-in-law</span></p>
+        <p>brother-in-law → <span class="good">brother<b>s</b>-in-law</span> · son-in-law → <span class="good">son<b>s</b>-in-law</span></p>
+        <p><span class="bad">passer-bys</span> <span class="bad">sister-in-laws</span></p>
+      </div>
+      <div class="vf special"><span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span>
+        <h3>Hundred, thousand, dozen after a number</h3>
+        <p>After a number, these words stay single. The noun after them is plural.</p>
+        <p><span class="good">two hundred girls</span> · <span class="good">five thousand runners</span> · <span class="good">three dozen eggs</span></p>
+        <p><span class="bad">two hundreds girls</span></p>
+        <p>With no number in front, they take -s and "of": <span class="good">hundreds of people</span>, <span class="good">dozens of children</span>.</p>
+      </div>
+      <div class="vf special"><span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span>
+        <h3>Spotting the proper nouns in a sentence</h3>
+        <p>Count the names, not the capitals. In <i>"Mr Tan's car broke down near the Singapore River on Tuesday"</i>, there are three proper nouns: <b class="fo">Mr Tan</b>, <b class="fo">the Singapore River</b> and <b class="fo">Tuesday</b>. A name of several words, like <i>The Lion King</i>, counts as <b>one</b> proper noun.</p>
+        <p>To find the common noun for a name, zoom out: <i>Changi Airport</i> → <i>an airport</i>; <i>Japan</i> → <i>a country</i>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. PRACTICE -->
+  <section id="practice">
+    <h2>Photo shoot</h2>
+    <p class="sub">Each attempt draws <span id="qbDraw">20</span> questions from a bank of <span id="qbBank">148</span>, so every try is different. The questions get trickier as you go. Finish them all to see which shots to retake.</p>
+    <div class="qb" id="qb">
+      <div class="qb-bar">
+        <div><div class="qb-label">Your score</div><div class="qb-score" id="qbScore">0 / 20</div><div class="qb-progress" id="qbProgress">0 of 20 answered</div></div>
+        <button class="qb-new" id="qbNew" type="button">New quiz</button>
+      </div>
+      <div class="qb-list" id="qbList"></div>
+      <div class="qb-summary" id="qbSummary" hidden></div>
+    </div>
+  </section>
+
+  <!-- 7. PIN THIS UP -->
+  <section class="summary">
+    <h2>Pin This Up</h2>
+    <div class="vf focus"><span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span>
+      <ul>
+        <li><b class="fo">Zoom in (proper):</b> the name of one particular person, place, organisation, event, day, month, festival, language or title. It always gets a capital.</li>
+        <li><b>Zoom out (common):</b> any one of its kind, so it stays small. Watch for words with two jobs: my uncle / Uncle Raju.</li>
+        <li><b class="wi">Widen (plural):</b> -s · -es after ss, x, ch, sh · -o: potatoes, tomatoes, heroes, echoes · consonant + y → -ies · f/fe → -ves (but roofs, chiefs) · -us → -i.</li>
+        <li><b>No extra -s:</b> teeth, mice, children, people, sheep, deer, aircraft. <b>Always plural:</b> scissors, spectacles, trousers.</li>
+        <li><b>One of the</b> + plural noun + singular verb. <b>A pair of</b> scissors <b>is</b>. Two <b>hundred</b> pupils. Passer<b>s</b>-by.</li>
+      </ul>
+      <p class="chant">Zoom in for one, give its name a capital crown;<br>zoom out for more, and check the ending of the noun!</p>
+    </div>
+  </section>
+
+  <footer>My Grammar Shelf · Lesson 11 · Book 1A + 1C</footer>
+</div>
+
+<script>
+(function () {
+  /* ---------- Hero: the camera ---------- */
+  const SHOTS = [
+    { kind: 'focus', ctx: 'Arjun visited the zoo on…', w: 'Saturday', a: 1, m: 'Saturday is the name of one particular day. Zoom in: proper noun, capital S.' },
+    { kind: 'focus', ctx: 'We took a photo of the…', w: 'river', a: 0, m: 'It could be any river, so it stays zoomed out: a common noun.' },
+    { kind: 'focus', ctx: 'We walked along…', w: 'the Singapore River', a: 1, m: 'Now it has a name, so "River" is part of the name and takes a capital.' },
+    { kind: 'wide', ctx: 'one bench, two…', w: 'bench', o: ['benches', 'benchs', 'benchies'], m: 'Bench ends in -ch, so add -es: benches.' },
+    { kind: 'focus', ctx: 'Nurul is proud to be a…', w: 'Singaporean', a: 1, m: 'Nationalities come from a country\'s name, so they\'re proper nouns.' },
+    { kind: 'wide', ctx: 'one story, many…', w: 'story', o: ['stories', 'storys', 'storyes'], m: 'Consonant + y, so change the y to -ies: stories.' },
+    { kind: 'focus', ctx: 'My grandmother is a retired…', w: 'teacher', a: 0, m: '"Teacher" is a type of person, not a name: a common noun.' },
+    { kind: 'wide', ctx: 'one knife, two…', w: 'knife', o: ['knives', 'knifes', 'knifves'], m: 'Knife is on the -ves step: knives.' },
+    { kind: 'focus', ctx: 'We went skiing in Japan in…', w: 'winter', a: 0, m: 'Seasons aren\'t on the proper-noun ID card, so "winter" stays small.' },
+    { kind: 'wide', ctx: 'one sheep, twenty…', w: 'sheep', o: ['sheep', 'sheeps', 'sheepes'], m: 'Sheep looks the same in the plural. No -s!' },
+    { kind: 'wide', ctx: 'one cactus, three…', w: 'cactus', o: ['cacti', 'cactis', 'cacties'], m: 'Cactus is on the -us → -i step: cacti.' },
+    { kind: 'wide', ctx: 'one passer-by, two…', w: 'passer-by', o: ['passers-by', 'passer-bys', 'passers-bys'], m: 'The main word, the person, goes plural: passers-by.' }
+  ];
+  let shotI = 0, solved = 0;
+  const screen = document.getElementById('screen'), ctxEl = document.getElementById('shotCtx'), wordEl = document.getElementById('shotWord');
+  const tagEl = document.getElementById('shotTag'), modeEl = document.getElementById('camMode'), btns = document.getElementById('camBtns');
+  const msgEl = document.getElementById('camMsg'), countEl = document.getElementById('camCount');
+  function shuffled(arr) { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+  function showShot() {
+    const s = SHOTS[shotI];
+    screen.className = s.kind === 'wide' ? 'screen wmode' : 'screen';
+    btns.className = s.kind === 'wide' ? 'cam-btns stack' : 'cam-btns';
+    ctxEl.textContent = s.ctx;
+    wordEl.textContent = s.kind === 'wide' ? s.w + ' → ?' : s.w;
+    btns.innerHTML = '';
+    countEl.textContent = 'Shot ' + (shotI + 1) + ' of ' + SHOTS.length;
+    if (s.kind === 'focus') {
+      tagEl.className = 'mode'; tagEl.textContent = 'Focus: common or proper?';
+      modeEl.textContent = 'Focus check';
+      msgEl.textContent = 'Is this any one of its kind, or one particular, named one?';
+      [['Zoom out · common', 0], ['Zoom in · proper', 1]].forEach(([label, v]) => addBtn(label, v === s.a));
+    } else {
+      tagEl.className = 'mode w'; tagEl.textContent = 'Widen: pick the plural';
+      modeEl.textContent = 'Wide angle';
+      msgEl.textContent = 'Fit more than one into the frame. Which plural is right?';
+      shuffled(s.o).forEach(o => addBtn(o, o === s.o[0]));
+    }
+  }
+  function addBtn(label, ok) {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'cbtn'; b.textContent = label;
+    b.addEventListener('click', () => {
+      const s = SHOTS[shotI];
+      if (ok) {
+        screen.classList.add(s.kind === 'focus' ? (s.a ? 'sharp' : 'clear') : 'widen');
+        if (s.kind === 'wide') wordEl.textContent = s.o[0];
+        msgEl.innerHTML = '<b>Got it.</b> ' + s.m;
+        b.classList.add('picked-ok');
+        btns.querySelectorAll('button').forEach(x => x.disabled = true);
+        solved++;
+      } else {
+        b.disabled = true;
+        msgEl.innerHTML = '<b>Blurry.</b> ' + (s.kind === 'focus' ? 'Ask: could there be many of these, all called by this word? Or is it the name of just one?' : 'Check which step of the plural ladder this word is on.');
+      }
+    });
+    btns.appendChild(b);
+  }
+  document.getElementById('camNext').addEventListener('click', () => { shotI = (shotI + 1) % SHOTS.length; showShot(); });
+  showShot();
+
+  { /* qb-start: quiz engine in its own scope, so its names can't clash with the lesson's */
+  /* ================= QUIZ: question bank (148 questions) ================= */
+  const LESSON_KEY = "shelf-l11";
+  const QB_TEXT = {"ask": {"check": "Is this sentence correct?", "pick": "Pick the correct sentence.", "fill": "Which choice fills the gap?", "spot": "Tap the part with the mistake."}, "yn": ["Needs fixing", "Correct"], "summary": {"review": "Shots to retake"}};
+  const TAGS = {
+    kind: { label: "Focus: common or proper noun?", href: '#rule' },
+    names: { label: "The proper-noun ID card (days, festivals, titles)", href: '#proper' },
+    jobs: { label: "Trap 1: same word, two jobs (my uncle / Uncle Raju)", href: '#traps' },
+    oneof: { label: "Trap 3: one of the + plural noun + singular verb", href: '#traps' },
+    es: { label: "Ladder: -s, -es, and words ending in -o", href: '#cases' },
+    y: { label: "Ladder: consonant + y → -ies, vowel + y → -s", href: '#cases' },
+    fves: { label: "Ladder: f/fe → -ves, and the keepers (roofs)", href: '#cases' },
+    irreg: { label: "Ladder: irregular, same form, -us → -i", href: '#cases' },
+    onlypl: { label: "Always plural (scissors) and “a pair of”", href: '#cases' },
+    compound: { label: "Passers-by, and two hundred / hundreds of", href: '#specials' },
+  };
+  const BANK = [
+    {"id": "k01", "t": "fill", "d": 1, "tag": "kind", "q": "In “Arjun visited the zoo on Saturday”, the word “zoo” is a ___ noun.", "o": ["common", "proper"], "why": "Any zoo could be called a zoo, so it's a zoomed-out, common noun."},
+    {"id": "k02", "t": "fill", "d": 1, "tag": "kind", "q": "In “Arjun visited the zoo on Saturday”, the word “Saturday” is a ___ noun.", "o": ["proper", "common"], "why": "Days of the week are names of particular days, so they are proper nouns with a capital."},
+    {"id": "k03", "t": "fill", "d": 1, "tag": "kind", "q": "In “My cousin lives in Tampines”, the word “Tampines” is a ___ noun.", "o": ["proper", "common"], "why": "Tampines is the name of one particular place, so it's a proper noun."},
+    {"id": "k04", "t": "fill", "d": 1, "tag": "kind", "q": "In “My cousin lives in Tampines”, the word “cousin” is a ___ noun.", "o": ["common", "proper"], "why": "Many people are cousins, so “cousin” is a common noun."},
+    {"id": "k05", "t": "fill", "d": 2, "tag": "kind", "q": "In “We read Charlotte's Web in class”, “Charlotte's Web” is a ___ noun.", "o": ["proper", "common"], "why": "It's the title of one particular book, and book titles are proper nouns."},
+    {"id": "k06", "t": "fill", "d": 2, "tag": "kind", "q": "In “Nurul is proud to be a Singaporean”, the word “Singaporean” is a ___ noun.", "o": ["proper", "common"], "why": "Nationalities come from the name of a country, so they are proper nouns with a capital."},
+    {"id": "k07", "t": "fill", "d": 2, "tag": "kind", "q": "In “The doctor at Raffles Hospital was kind”, the word “doctor” is a ___ noun.", "o": ["common", "proper"], "why": "“Doctor” names a type of person, not one particular person, so it's common."},
+    {"id": "k08", "t": "pick", "d": 2, "tag": "kind", "ask": "Which of these is a proper noun?", "o": ["Sentosa", "island", "beach", "holiday"], "why": "Sentosa is the name of one particular island; the others could be any island, beach or holiday."},
+    {"id": "k09", "t": "pick", "d": 2, "tag": "kind", "ask": "Which of these is a common noun?", "o": ["museum", "Monday", "Japan", "Ms Goh"], "why": "“Museum” could be any museum. The others name one particular day, country or person."},
+    {"id": "k10", "t": "check", "d": 1, "tag": "kind", "q": "Girl, dog, music, lunch and table are all common nouns.", "a": 1, "why": "None of them names one particular person, animal or thing, so they're all common nouns."},
+    {"id": "k11", "t": "check", "d": 2, "tag": "kind", "q": "“Chinese New Year” is a common noun because it names a festival.", "a": 0, "why": "It names one particular festival, so it's a proper noun, with a capital on each main word."},
+    {"id": "k12", "t": "pick", "d": 3, "tag": "kind", "ask": "How many proper nouns are in this sentence? “The Lion King is showing at the Esplanade.”", "o": ["two", "one", "three"], "why": "The Lion King (a title) and the Esplanade (a building) are the two proper nouns."},
+    {"id": "k13", "t": "pick", "d": 3, "tag": "kind", "ask": "How many proper nouns are in this sentence? “Mr Tan's car broke down near the Singapore River on Tuesday.”", "o": ["three", "two", "four"], "why": "Mr Tan, the Singapore River and Tuesday are proper nouns; “car” is common."},
+    {"id": "k14", "t": "fill", "d": 2, "tag": "kind", "q": "“Changi Airport” is a proper noun. The common noun for it is ___.", "o": ["airport", "Changi", "Airport"], "why": "Zoom out from the name and you get the plain word for any such place: airport, in small letters."},
+    {"id": "k15", "t": "fill", "d": 1, "tag": "kind", "q": "“Country” is a common noun. A proper noun for it is ___.", "o": ["Japan", "city", "japan"], "why": "Japan names one particular country, and a proper noun always starts with a capital."},
+    {"id": "j01", "t": "check", "d": 1, "tag": "jobs", "q": "My uncle works at Changi General Hospital.", "a": 1, "why": "“My uncle” is a common noun; Changi General Hospital is the name of one hospital."},
+    {"id": "j02", "t": "check", "d": 1, "tag": "jobs", "q": "My Uncle took me to the Hospital.", "a": 0, "why": "Here “uncle” and “hospital” are not names, so they stay small: my uncle, the hospital."},
+    {"id": "j03", "t": "fill", "d": 1, "tag": "jobs", "q": "Yesterday, ___ Raju fixed our bicycle.", "o": ["Uncle", "uncle"], "why": "“Uncle Raju” is what we call him, so “Uncle” is part of his name and takes a capital."},
+    {"id": "j04", "t": "fill", "d": 1, "tag": "jobs", "q": "My ___ is a bus driver.", "o": ["uncle", "Uncle"], "why": "After “my”, “uncle” is just the word for the relative, a common noun."},
+    {"id": "j05", "t": "spot", "d": 2, "tag": "jobs", "parts": ["Our school", "is near", "the River,", "so we often", "see kayaks."], "a": 2, "why": "“River” isn't a name here, so it should be “the river”."},
+    {"id": "j06", "t": "spot", "d": 2, "tag": "jobs", "parts": ["Last week,", "my class", "visited", "the Science centre."], "a": 3, "why": "“Science Centre” is the name of one place, so every main word needs a capital."},
+    {"id": "j07", "t": "fill", "d": 2, "tag": "jobs", "q": "We walked along ___ to Merlion Park.", "o": ["the Singapore River", "the singapore river", "the Singapore river"], "why": "The Singapore River is the name of one river, so both main words take capitals."},
+    {"id": "j08", "t": "check", "d": 2, "tag": "jobs", "q": "Our Form Teacher, Ms Goh, gave us a quiz.", "a": 0, "why": "“Form teacher” is her job, a common noun; only her name, Ms Goh, takes capitals."},
+    {"id": "j09", "t": "pick", "d": 2, "tag": "jobs", "ask": "Pick the correct sentence.", "o": ["My grandmother lives in Bedok North.", "My Grandmother lives in Bedok North.", "My grandmother lives in bedok north."], "why": "“My grandmother” is common; Bedok North is the name of a place."},
+    {"id": "j10", "t": "pick", "d": 2, "tag": "jobs", "ask": "Pick the correct sentence.", "o": ["Mum bought fish at the market.", "Mum bought fish at the Market.", "Mum bought Fish at the market."], "why": "Fish and market are ordinary common nouns here, so they stay small."},
+    {"id": "j11", "t": "spot", "d": 3, "tag": "jobs", "parts": ["When Grandpa", "visited", "his old School,", "Rosyth School,", "he cried."], "a": 2, "why": "“His old school” is common; only the name, Rosyth School, takes capitals."},
+    {"id": "j12", "t": "fill", "d": 3, "tag": "jobs", "q": "Last night, ___ cooked chicken rice for us.", "o": ["Grandma", "grandma"], "why": "With no “my” in front, “Grandma” is used as her name, so it takes a capital."},
+    {"id": "j13", "t": "fill", "d": 3, "tag": "jobs", "q": "Last night, my ___ cooked chicken rice for us.", "o": ["grandma", "Grandma"], "why": "After “my”, “grandma” is the common word for the relative, so it stays small."},
+    {"id": "j14", "t": "check", "d": 2, "tag": "jobs", "q": "The Lake at Bishan Park was full of ducks.", "a": 0, "why": "“The lake” isn't a name here, so it stays small. Bishan Park is the name."},
+    {"id": "j15", "t": "check", "d": 3, "tag": "jobs", "q": "We visited Lake Toba in Indonesia during the holidays.", "a": 1, "why": "“Lake Toba” is the name of one lake, so “Lake” is part of the name."},
+    {"id": "n01", "t": "fill", "d": 1, "tag": "names", "q": "Our class trip is on ___.", "o": ["Friday", "friday"], "why": "Days of the week are proper nouns, so they always start with a capital."},
+    {"id": "n02", "t": "fill", "d": 1, "tag": "names", "q": "My favourite month is ___ because of the school holidays.", "o": ["June", "june"], "why": "Months are proper nouns, so they take a capital."},
+    {"id": "n03", "t": "check", "d": 1, "tag": "names", "q": "We celebrate Hari Raya Puasa with our neighbours.", "a": 1, "why": "Festivals are proper nouns, so each main word of Hari Raya Puasa takes a capital."},
+    {"id": "n04", "t": "check", "d": 1, "tag": "names", "q": "My brother is reading harry potter.", "a": 0, "why": "A book title is a proper noun: Harry Potter."},
+    {"id": "n05", "t": "fill", "d": 2, "tag": "names", "q": "Marcus is learning to speak ___.", "o": ["Japanese", "japanese"], "why": "Languages are proper nouns, so they take a capital."},
+    {"id": "n06", "t": "fill", "d": 2, "tag": "names", "q": "We went skiing in Japan in ___.", "o": ["winter", "Winter"], "why": "Seasons are common nouns, so “winter” stays small."},
+    {"id": "n07", "t": "spot", "d": 2, "tag": "names", "parts": ["My aunt", "bought tickets", "for the musical", "the lion king."], "a": 3, "why": "The title of a musical is a proper noun: The Lion King."},
+    {"id": "n08", "t": "pick", "d": 2, "tag": "names", "ask": "Pick the correct sentence.", "o": ["We read The Boy in the Striped Pyjamas.", "We read The Boy In The Striped Pyjamas.", "We read the boy in the striped pyjamas."], "why": "In a title, main words take capitals; small words like “in” and “the” stay small unless they come first."},
+    {"id": "n09", "t": "fill", "d": 3, "tag": "names", "q": "We watched ___ at the cinema.", "o": ["Harry Potter and the Chamber of Secrets", "Harry Potter And The Chamber Of Secrets", "Harry potter and the chamber of secrets"], "why": "Main words in a title take capitals; small words like and, the and of stay small."},
+    {"id": "n10", "t": "check", "d": 2, "tag": "names", "q": "During the december holidays, we flew to Bangkok.", "a": 0, "why": "Months are proper nouns: the December holidays."},
+    {"id": "n11", "t": "fill", "d": 2, "tag": "names", "q": "Ahmad is proud to be a ___.", "o": ["Singaporean", "singaporean"], "why": "Nationalities are proper nouns, so “Singaporean” takes a capital."},
+    {"id": "n12", "t": "check", "d": 3, "tag": "names", "q": "In winter, my cousins in Canada go skating every Saturday.", "a": 1, "why": "Winter is a season (common); Canada and Saturday are proper nouns."},
+    {"id": "n13", "t": "spot", "d": 3, "tag": "names", "parts": ["Every year,", "Ms Goh's class", "celebrates", "racial harmony day."], "a": 3, "why": "Racial Harmony Day is the name of one particular day, so each word takes a capital."},
+    {"id": "n14", "t": "check", "d": 1, "tag": "names", "q": "Singapore is a small Country.", "a": 0, "why": "“Country” could be any country, so it is common and stays small: a small country."},
+    {"id": "n15", "t": "pick", "d": 3, "tag": "names", "ask": "Pick the correct sentence.", "o": ["Sir Stamford Raffles landed in Singapore in 1819.", "Sir Stamford Raffles landed in singapore in 1819.", "sir Stamford Raffles landed in Singapore in 1819."], "why": "“Sir Stamford Raffles” is a person's name with title, and Singapore is a country."},
+    {"id": "n16", "t": "fill", "d": 3, "tag": "names", "q": "The Japanese Occupation of Singapore happened during ___.", "o": ["World War II", "world war II", "World war II"], "why": "A historical event is a proper noun, so every main word takes a capital."},
+    {"id": "e01", "t": "fill", "d": 1, "tag": "es", "q": "Mdm Rahimah packed three ___ of old toys.", "o": ["boxes", "boxs"], "why": "Box ends in -x, so add -es: boxes."},
+    {"id": "e02", "t": "fill", "d": 1, "tag": "es", "q": "There are four long ___ in the school garden.", "o": ["benches", "benchs"], "why": "Bench ends in -ch, so add -es: benches."},
+    {"id": "e03", "t": "fill", "d": 1, "tag": "es", "q": "The gardener trimmed the ___ along the path.", "o": ["bushes", "bushs"], "why": "Bush ends in -sh, so add -es: bushes."},
+    {"id": "e04", "t": "fill", "d": 1, "tag": "es", "q": "Two ___ saw the accident.", "o": ["witnesses", "witness", "witnessies"], "why": "Witness ends in -ss, so add -es: witnesses."},
+    {"id": "e05", "t": "fill", "d": 1, "tag": "es", "q": "Mum bought two new ___ for the kitchen.", "o": ["dishes", "dishs"], "why": "Dish ends in -sh, so add -es: dishes."},
+    {"id": "e06", "t": "fill", "d": 2, "tag": "es", "q": "We ate mashed ___ with our chicken.", "o": ["potatoes", "potatos"], "why": "Potato is one of the -o words that take -es: potatoes."},
+    {"id": "e07", "t": "fill", "d": 2, "tag": "es", "q": "My cousin posts cooking ___ online.", "o": ["videos", "videoes"], "why": "Video has a vowel before the o, so just add -s: videos."},
+    {"id": "e08", "t": "fill", "d": 2, "tag": "es", "q": "Our school has two grand ___ in the hall.", "o": ["pianos", "pianoes"], "why": "Piano is one of the -o words that just take -s: pianos."},
+    {"id": "e09", "t": "fill", "d": 2, "tag": "es", "q": "The firefighters were the ___ of the day.", "o": ["heroes", "heros"], "why": "Hero is one of the -o words that take -es: heroes."},
+    {"id": "e10", "t": "check", "d": 2, "tag": "es", "q": "The tomatos in Grandma's garden are ripe.", "a": 0, "why": "Tomato takes -es, like potato: tomatoes."},
+    {"id": "e11", "t": "check", "d": 2, "tag": "es", "q": "Dad keeps all our family photos in an album.", "a": 1, "why": "Photo is one of the -o words that just take -s."},
+    {"id": "e12", "t": "spot", "d": 2, "tag": "es", "parts": ["The two", "Primary 6 class", "went on a", "learning journey."], "a": 1, "why": "There are two of them, so the plural is needed: classes, with -es after -ss."},
+    {"id": "e13", "t": "spot", "d": 3, "tag": "es", "parts": ["The shop", "sells radioes,", "fans and", "rice cookers."], "a": 1, "why": "Radio has a vowel before the o, so just add -s: radios."},
+    {"id": "e14", "t": "pick", "d": 3, "tag": "es", "ask": "Pick the correct sentence.", "o": ["The echoes in the cave scared the boys.", "The echos in the cave scared the boys.", "The echoes in the cave scared the boyes."], "why": "Echo takes -es (echoes); boy just takes -s (boys)."},
+    {"id": "e15", "t": "check", "d": 1, "tag": "es", "q": "The police officers questioned the two witness.", "a": 0, "why": "Two means plural, and witness ends in -ss, so add -es: the two witnesses."},
+    {"id": "e16", "t": "check", "d": 3, "tag": "es", "q": "We saw kangaroos and wallabies at the zoo.", "a": 1, "why": "Kangaroo has a vowel before the final o, so it just takes -s."},
+    {"id": "y01", "t": "fill", "d": 1, "tag": "y", "q": "Grandpa told us ___ about life in the kampong.", "o": ["stories", "storys"], "why": "Story has a consonant before the y, so change y to -ies: stories."},
+    {"id": "y02", "t": "fill", "d": 1, "tag": "y", "q": "Singapore and Kuala Lumpur are busy ___.", "o": ["cities", "citys"], "why": "City has a consonant before the y, so it becomes cities."},
+    {"id": "y03", "t": "fill", "d": 1, "tag": "y", "q": "The ___ at the market sold fresh flowers.", "o": ["ladies", "ladys"], "why": "Lady has a consonant before the y, so it becomes ladies."},
+    {"id": "y04", "t": "fill", "d": 2, "tag": "y", "q": "The ___ in the playroom are new.", "o": ["toys", "toies"], "why": "Toy has a vowel before the y, so just add -s: toys."},
+    {"id": "y05", "t": "fill", "d": 2, "tag": "y", "q": "The school ___ start next week.", "o": ["holidays", "holidaies"], "why": "Holiday has a vowel before the y, so just add -s: holidays."},
+    {"id": "y06", "t": "fill", "d": 2, "tag": "y", "q": "The ___ in the nursery were sleeping.", "o": ["babies", "babys"], "why": "Baby has a consonant before the y, so it becomes babies."},
+    {"id": "y07", "t": "check", "d": 2, "tag": "y", "q": "The monkeys at the zoo stole our snacks.", "a": 1, "why": "Monkey has a vowel before the y, so it just takes -s."},
+    {"id": "y08", "t": "check", "d": 2, "tag": "y", "q": "Our class organised two charity partys.", "a": 0, "why": "Party has a consonant before the y, so it becomes parties."},
+    {"id": "y09", "t": "spot", "d": 3, "tag": "y", "parts": ["We hung", "colourful lanterns", "in the two", "hallwaies."], "a": 3, "why": "Hallway has a vowel before the y, so just add -s: hallways."},
+    {"id": "y10", "t": "pick", "d": 3, "tag": "y", "ask": "Pick the correct sentence.", "o": ["The donkeys carried berries up the hill.", "The donkies carried berries up the hill.", "The donkeys carried berrys up the hill."], "why": "Donkey (vowel + y) takes -s; berry (consonant + y) becomes berries."},
+    {"id": "y11", "t": "check", "d": 3, "tag": "y", "q": "Both journeys took us through quiet valleys.", "a": 1, "why": "Journey and valley have a vowel before the y, so they just take -s."},
+    {"id": "y12", "t": "check", "d": 1, "tag": "y", "q": "The librarys in Singapore lend e-books too.", "a": 0, "why": "Library has a consonant before the y, so it becomes libraries."},
+    {"id": "y13", "t": "fill", "d": 2, "tag": "y", "q": "Two ___ fluttered over the flowers in the garden.", "o": ["butterflies", "butterflys"], "why": "Butterfly has a consonant before the y, so it becomes butterflies."},
+    {"id": "f01", "t": "fill", "d": 1, "tag": "fves", "q": "Mum sliced the birthday cake with two ___.", "o": ["knives", "knifes"], "why": "Knife changes -fe to -ves: knives."},
+    {"id": "f02", "t": "fill", "d": 1, "tag": "fves", "q": "The ___ howled at the moon.", "o": ["wolves", "wolfs"], "why": "Wolf changes -f to -ves: wolves."},
+    {"id": "f03", "t": "fill", "d": 1, "tag": "fves", "q": "People say cats have nine ___.", "o": ["lives", "lifes"], "why": "Life changes -fe to -ves: lives."},
+    {"id": "f04", "t": "fill", "d": 1, "tag": "fves", "q": "Help ___ to some food, children.", "o": ["yourselves", "yourselfs"], "why": "Yourself changes -f to -ves when it means more than one person: yourselves."},
+    {"id": "f05", "t": "fill", "d": 2, "tag": "fves", "q": "The ___ of the rain tree fell into the drain.", "o": ["leaves", "leafs"], "why": "Leaf changes -f to -ves: leaves."},
+    {"id": "f06", "t": "fill", "d": 2, "tag": "fves", "q": "The ___ broke into the shop at night.", "o": ["thieves", "thiefs"], "why": "Thief changes -f to -ves: thieves."},
+    {"id": "f07", "t": "fill", "d": 2, "tag": "fves", "q": "Cut the papaya into two ___.", "o": ["halves", "halfs"], "why": "Half changes -f to -ves: halves."},
+    {"id": "f08", "t": "fill", "d": 2, "tag": "fves", "q": "The library has many tall ___.", "o": ["shelves", "shelfs"], "why": "Shelf changes -f to -ves: shelves."},
+    {"id": "f09", "t": "fill", "d": 3, "tag": "fves", "q": "The ___ of the old shophouses were damaged in the storm.", "o": ["roofs", "rooves"], "why": "Roof is one of the keepers: it just takes -s."},
+    {"id": "f10", "t": "fill", "d": 3, "tag": "fves", "q": "The two police ___ shook hands after the meeting.", "o": ["chiefs", "chieves"], "why": "Chief is one of the keepers: it just takes -s."},
+    {"id": "f11", "t": "check", "d": 3, "tag": "fves", "q": "The giraffes at the zoo nibbled the leaves.", "a": 1, "why": "Giraffe keeps its f (giraffes); leaf changes to leaves."},
+    {"id": "f12", "t": "check", "d": 2, "tag": "fves", "q": "The baker sold ten loafs of bread.", "a": 0, "why": "Loaf changes -f to -ves: ten loaves of bread."},
+    {"id": "f13", "t": "spot", "d": 3, "tag": "fves", "parts": ["Both", "fire chieves", "praised", "the volunteers."], "a": 1, "why": "Chief is a keeper: it just takes -s, so “fire chiefs”."},
+    {"id": "f14", "t": "pick", "d": 3, "tag": "fves", "ask": "Pick the correct sentence.", "o": ["The cliffs were covered in leaves.", "The clives were covered in leaves.", "The cliffs were covered in leafs."], "why": "Cliff keeps its f (cliffs), but leaf changes to leaves."},
+    {"id": "i01", "t": "fill", "d": 1, "tag": "irreg", "q": "Brush your ___ twice a day.", "o": ["teeth", "tooths", "teeths"], "why": "Tooth changes inside the word: teeth. Never add -s to teeth."},
+    {"id": "i02", "t": "fill", "d": 1, "tag": "irreg", "q": "Three ___ ran across the kitchen floor.", "o": ["mice", "mouses", "mices"], "why": "Mouse changes inside the word: mice."},
+    {"id": "i03", "t": "fill", "d": 1, "tag": "irreg", "q": "The farmer has twenty ___.", "o": ["sheep", "sheeps"], "why": "Sheep is the same in the singular and the plural."},
+    {"id": "i04", "t": "fill", "d": 1, "tag": "irreg", "q": "We saw five ___ on the night safari.", "o": ["deer", "deers"], "why": "Deer is the same in the singular and the plural."},
+    {"id": "i05", "t": "fill", "d": 2, "tag": "irreg", "q": "My new shoes hurt both my ___.", "o": ["feet", "foots", "feets"], "why": "Foot changes inside the word: feet."},
+    {"id": "i06", "t": "fill", "d": 2, "tag": "irreg", "q": "The ___ were swimming in the pond.", "o": ["geese", "gooses"], "why": "Goose changes inside the word: geese."},
+    {"id": "i07", "t": "fill", "d": 2, "tag": "irreg", "q": "Many ___ grow well in the desert.", "o": ["cacti", "cactis", "cacties"], "why": "Cactus changes -us to -i: cacti. Never add -s to the -i."},
+    {"id": "i08", "t": "fill", "d": 2, "tag": "irreg", "q": "Our teachers have finished planning both ___.", "o": ["syllabi", "syllabis", "syllabus"], "why": "“Both” means two, and syllabus changes -us to -i: syllabi."},
+    {"id": "i09", "t": "fill", "d": 3, "tag": "irreg", "q": "All the ___ of a circle are the same length.", "o": ["radii", "radiis", "radius"], "why": "Radius changes -us to -i: radii."},
+    {"id": "i10", "t": "fill", "d": 3, "tag": "irreg", "q": "The two ___ of today's lesson are written on the board.", "o": ["foci", "focis", "focus"], "why": "Focus changes -us to -i: foci."},
+    {"id": "i11", "t": "check", "d": 2, "tag": "irreg", "q": "Two men and three women helped the old man.", "a": 1, "why": "Man becomes men and woman becomes women."},
+    {"id": "i12", "t": "check", "d": 2, "tag": "irreg", "q": "The childrens enjoyed the puppet show.", "a": 0, "why": "Children is already plural, so it never takes another -s."},
+    {"id": "i13", "t": "spot", "d": 3, "tag": "irreg", "parts": ["The two", "aircrafts", "landed at", "Changi Airport."], "a": 1, "why": "Aircraft is the same in the singular and the plural: two aircraft."},
+    {"id": "i14", "t": "check", "d": 3, "tag": "irreg", "q": "Many species of birds live in Sungei Buloh.", "a": 1, "why": "Species is the same in the singular and the plural."},
+    {"id": "i15", "t": "pick", "d": 3, "tag": "irreg", "ask": "Pick the correct sentence.", "o": ["Those men saw three deer and two geese.", "Those mens saw three deer and two geese.", "Those men saw three deers and two geese."], "why": "Men, deer and geese are already plural; none of them takes -s."},
+    {"id": "i16", "t": "check", "d": 1, "tag": "irreg", "q": "Grandpa has false teeths.", "a": 0, "why": "Teeth is already the plural of tooth, so it never takes -s."},
+    {"id": "i17", "t": "fill", "d": 2, "tag": "irreg", "q": "Many ___ queued for the new bubble tea shop.", "o": ["people", "peoples", "person"], "why": "The plural of person is people, which never takes -s."},
+    {"id": "i18", "t": "check", "d": 3, "tag": "irreg", "q": "The sheeps on the farm were sheared.", "a": 0, "why": "Sheep is the same in the plural: the sheep on the farm."},
+    {"id": "o01", "t": "fill", "d": 1, "tag": "onlypl", "q": "My ___ are on the table.", "o": ["spectacles", "spectacle"], "why": "Spectacles (glasses) is always plural."},
+    {"id": "o02", "t": "fill", "d": 1, "tag": "onlypl", "q": "Where ___ my scissors?", "o": ["are", "is"], "why": "Scissors is always plural, so it takes a plural verb: are."},
+    {"id": "o03", "t": "fill", "d": 1, "tag": "onlypl", "q": "These ___ are too long for me.", "o": ["trousers", "trouser"], "why": "Trousers is always plural."},
+    {"id": "o04", "t": "fill", "d": 2, "tag": "onlypl", "q": "My new jeans ___ too tight.", "o": ["are", "is"], "why": "Jeans is always plural, so it takes “are”."},
+    {"id": "o05", "t": "fill", "d": 2, "tag": "onlypl", "q": "Dad's binoculars ___ in the car.", "o": ["are", "is"], "why": "Binoculars is always plural, so it takes “are”."},
+    {"id": "o06", "t": "fill", "d": 2, "tag": "onlypl", "q": "A pair of scissors ___ in the drawer.", "o": ["is", "are"], "why": "With “a pair of”, the verb follows “pair”: one pair is."},
+    {"id": "o07", "t": "check", "d": 2, "tag": "onlypl", "q": "Your shorts is dirty.", "a": 0, "why": "Shorts is always plural, so it takes a plural verb: your shorts are dirty."},
+    {"id": "o08", "t": "check", "d": 2, "tag": "onlypl", "q": "Two pairs of goggles are missing from the pool.", "a": 1, "why": "The verb follows “pairs”, which is plural, so “are” is right."},
+    {"id": "o09", "t": "fill", "d": 3, "tag": "onlypl", "q": "This pair of trousers ___ too big for Marcus.", "o": ["is", "are"], "why": "The verb follows “pair”, and this is one pair, so “is”."},
+    {"id": "o10", "t": "spot", "d": 3, "tag": "onlypl", "parts": ["Grandpa", "cannot find", "his spectacle", "anywhere."], "a": 2, "why": "Spectacles (glasses) is always plural: his spectacles."},
+    {"id": "o11", "t": "pick", "d": 3, "tag": "onlypl", "ask": "Pick the correct sentence.", "o": ["My swimming goggles are in my bag.", "My swimming goggle is in my bag.", "My swimming goggles is in my bag."], "why": "Goggles is always plural and takes a plural verb: are."},
+    {"id": "o12", "t": "check", "d": 1, "tag": "onlypl", "q": "The scissors is sharp, so be careful.", "a": 0, "why": "Scissors is always plural, so it takes a plural verb: the scissors are sharp."},
+    {"id": "o13", "t": "check", "d": 3, "tag": "onlypl", "q": "These pliers belong to my father.", "a": 1, "why": "Pliers is always plural, so it goes with “these” and “belong”."},
+    {"id": "q01", "t": "fill", "d": 1, "tag": "oneof", "q": "One of the ___ is absent today.", "o": ["pupils", "pupil"], "why": "“One of the” picks one from a group, so the noun is plural: pupils."},
+    {"id": "q02", "t": "fill", "d": 1, "tag": "oneof", "q": "I hope one of the doctors ___ able to help us.", "o": ["is", "are"], "why": "The verb goes with “one”, so it's singular: one of the doctors is."},
+    {"id": "q03", "t": "fill", "d": 1, "tag": "oneof", "q": "There are many ___ at the clinic today.", "o": ["patients", "patient"], "why": "“Many” means more than one, so the noun is plural."},
+    {"id": "q04", "t": "fill", "d": 2, "tag": "oneof", "q": "Several ___ waited at the bus stop.", "o": ["commuters", "commuter"], "why": "“Several” means more than one, so the noun is plural."},
+    {"id": "q05", "t": "check", "d": 2, "tag": "oneof", "q": "One of my friend lives in Punggol.", "a": 0, "why": "“One of my” picks from a group, so it needs the plural: one of my friends."},
+    {"id": "q06", "t": "check", "d": 2, "tag": "oneof", "q": "One of the boxes is heavy.", "a": 1, "why": "Plural noun (boxes), singular verb (is) to match “one”."},
+    {"id": "q07", "t": "spot", "d": 2, "tag": "oneof", "parts": ["One of", "the boys", "in my class", "are from India."], "a": 3, "why": "The verb goes with “one”, not “boys”: one of the boys is."},
+    {"id": "q08", "t": "pick", "d": 2, "tag": "oneof", "ask": "Pick the correct sentence.", "o": ["One of the cakes was burnt.", "One of the cake was burnt.", "One of the cakes were burnt."], "why": "Plural noun after “one of the”, singular verb for “one”."},
+    {"id": "q09", "t": "spot", "d": 3, "tag": "oneof", "parts": ["One of", "the new benches", "near the playground", "have broken."], "a": 3, "why": "The verb goes with “one”: one of the new benches has broken."},
+    {"id": "q10", "t": "check", "d": 3, "tag": "oneof", "q": "One of the heroes of the story is a little girl.", "a": 1, "why": "Plural noun (heroes, with -es), singular verb (is)."},
+    {"id": "q11", "t": "fill", "d": 3, "tag": "oneof", "q": "One of the ___ in the classroom is broken.", "o": ["shelves", "shelf", "shelfs"], "why": "After “one of the” you need the plural, and shelf becomes shelves."},
+    {"id": "q12", "t": "fill", "d": 1, "tag": "oneof", "q": "Mum bought a few ___ at the market.", "o": ["oranges", "orange"], "why": "“A few” means more than one, so the noun is plural."},
+    {"id": "q13", "t": "pick", "d": 3, "tag": "oneof", "ask": "Pick the correct sentence.", "o": ["One of my cousins is a doctor.", "One of my cousin is a doctor.", "One of my cousins are a doctor."], "why": "Plural noun (cousins), singular verb (is) to match “one”."},
+    {"id": "q14", "t": "check", "d": 1, "tag": "oneof", "q": "There are many car in the car park.", "a": 0, "why": "“Many” means more than one, so the noun must be plural: many cars."},
+    {"id": "m01", "t": "fill", "d": 2, "tag": "compound", "q": "Two ___ stopped to help the old lady.", "o": ["passers-by", "passer-bys", "passers-bys"], "why": "In a compound noun, the main word takes the plural: passers-by."},
+    {"id": "m02", "t": "fill", "d": 2, "tag": "compound", "q": "Both my ___ came for dinner.", "o": ["sisters-in-law", "sister-in-laws"], "why": "The main word is “sister”, so it takes the -s: sisters-in-law."},
+    {"id": "m03", "t": "fill", "d": 3, "tag": "compound", "q": "The school hall can hold two ___ pupils.", "o": ["hundred", "hundreds"], "why": "After a number, hundred stays single: two hundred pupils."},
+    {"id": "m04", "t": "fill", "d": 3, "tag": "compound", "q": "Mum bought three ___ eggs for the bake sale.", "o": ["dozen", "dozens"], "why": "After a number, dozen stays single: three dozen eggs."},
+    {"id": "m05", "t": "check", "d": 2, "tag": "compound", "q": "Many passer-bys stared at the busker.", "a": 0, "why": "The main word, “passer”, takes the -s: many passers-by."},
+    {"id": "m06", "t": "check", "d": 3, "tag": "compound", "q": "Five thousand runners took part in the race.", "a": 1, "why": "After a number, thousand stays single: five thousand runners."},
+    {"id": "m07", "t": "spot", "d": 3, "tag": "compound", "parts": ["Over", "two thousands", "fans", "cheered for the team."], "a": 1, "why": "After a number, thousand stays single: two thousand fans."},
+    {"id": "m08", "t": "check", "d": 3, "tag": "compound", "q": "Hundreds of people queued outside the stadium.", "a": 1, "why": "With no number in front, “hundreds of” is right."},
+    {"id": "m09", "t": "pick", "d": 2, "tag": "compound", "ask": "Pick the correct sentence.", "o": ["My two brothers-in-law are pilots.", "My two brother-in-laws are pilots.", "My two brothers-in-laws are pilots."], "why": "Only the main word, brother, takes the -s: brothers-in-law."},
+    {"id": "m10", "t": "fill", "d": 2, "tag": "compound", "q": "Grandma has three ___.", "o": ["sons-in-law", "son-in-laws"], "why": "The main word is “son”, so it takes the -s: sons-in-law."},
+    {"id": "m11", "t": "pick", "d": 3, "tag": "compound", "ask": "Pick the correct sentence.", "o": ["Dozens of children waited for Santa.", "Dozen of children waited for Santa.", "Dozens of childrens waited for Santa."], "why": "With no number in front, it's “dozens of”; children never takes -s."},
+    {"id": "m12", "t": "check", "d": 2, "tag": "compound", "q": "Both of Dad's brothers-in-law live in Johor.", "a": 1, "why": "The main word, brother, takes the -s: brothers-in-law."},
+    {"id": "m13", "t": "fill", "d": 3, "tag": "compound", "q": "The temple was built ___ of years ago.", "o": ["hundreds", "hundred"], "why": "With no number in front, use “hundreds of”."},
+    {"id": "m14", "t": "fill", "d": 2, "tag": "compound", "q": "Our school has about one ___ teachers.", "o": ["hundred", "hundreds"], "why": "After a number (one), hundred stays single: one hundred teachers."},
+  ];
+
+  /* ================= QUIZ BANK ENGINE (shared by every lesson) =================
+     Needs, defined above it: LESSON_KEY, TAGS, BANK.
+     Optional: QB_BANDS = [easy, medium, tricky] questions per attempt (default 7/7/6 = 20);
+     QB_TEXT = { ask: {...}, yn: [...], right: [...], wrong: '...', speak: true, summary: {...} }.
+     Each attempt draws BAND_SIZES questions (easy, medium, tricky). The draw builds many
+     candidate quizzes and keeps the best: every tag present, 3+ of each type, balanced
+     check answers, unseen questions first. Options are shuffled; ids seen are remembered. */
+  const BAND_SIZES = (typeof QB_BANDS !== 'undefined') ? QB_BANDS : [7, 7, 6];
+  const DRAW = BAND_SIZES.reduce((a, b) => a + b, 0);
+  const TYPE_TARGET = Math.max(1, Math.min(3, Math.floor(DRAW / new Set(BANK.map(q => q.t)).size)));   // e.g. 20 Qs → 3 of each type, 10 Qs with 4 types → 2
+  const QBT = (typeof QB_TEXT !== 'undefined') ? QB_TEXT : {};
+  const ASK = Object.assign({
+    check: 'Is this sentence correct?',
+    pick:  'Pick the correct sentence.',
+    fill:  'Which choice fills the gap correctly?',
+    spot:  'Tap the part with the mistake.'
+  }, QBT.ask || {});
+  const YN = QBT.yn || ['Needs fixing', 'Correct'];
+  const RIGHT = QBT.right || ['Correct!'];
+  const WRONG = QBT.wrong || 'Not quite.';
+  const SUM = Object.assign({
+    perfect: 'A perfect run! Try another set to make sure it sticks.',
+    high: 'Strong work. Have a quick look at the areas below, then try a fresh set.',
+    mid: 'Good progress. Re-read the parts below before your next attempt.',
+    low: 'Worth another look at the lesson. Start with the areas below, then try a fresh set.',
+    review: 'Areas to review'
+  }, QBT.summary || {});
+  const CAN_SPEAK = !!QBT.speak && typeof window !== 'undefined' && !!window.speechSynthesis &&
+    typeof window.speechSynthesis.speak === 'function' && typeof SpeechSynthesisUtterance !== 'undefined';
+  function speak(text) {
+    try {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-GB'; u.rate = 0.9;
+      window.speechSynthesis.speak(u);
+    } catch (e) { /* no speech on this device */ }
+  }
+
+  const store = {
+    get(k, fallback) { try { const v = localStorage.getItem(LESSON_KEY + ':' + k); return v === null ? fallback : JSON.parse(v); } catch (e) { return fallback; } },
+    set(k, v) { try { localStorage.setItem(LESSON_KEY + ':' + k, JSON.stringify(v)); } catch (e) { /* storage unavailable: quiz still works */ } }
+  };
+  const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  function buildCandidate(seen) {
+    const chosen = [], tagN = {}, typeN = {};
+    let fixN = 0, okN = 0;
+    for (let band = 1; band <= 3; band++) {
+      const picks = [];
+      for (let k = 0; k < BAND_SIZES[band - 1]; k++) {
+        let best = null, bestScore = -Infinity;
+        BANK.forEach(q => {
+          if (q.d !== band || picks.includes(q)) return;
+          let s = Math.random() * 3;
+          if (!seen.has(q.id)) s += 6;
+          if (!tagN[q.tag]) s += 12;
+          s -= (typeN[q.t] || 0) * 1.2;
+          if ((typeN[q.t] || 0) < TYPE_TARGET) s += 3;   // nudge every type up to its target
+          if (q.t === 'check') { const lean = q.a === 0 ? fixN - okN : okN - fixN; if (lean >= 1) s -= 4; }
+          if (s > bestScore) { bestScore = s; best = q; }
+        });
+        if (!best) break;
+        picks.push(best);
+        tagN[best.tag] = (tagN[best.tag] || 0) + 1;
+        typeN[best.t] = (typeN[best.t] || 0) + 1;
+        if (best.t === 'check') { if (best.a === 0) fixN++; else okN++; }
+      }
+      chosen.push(...shuffle(picks));
+    }
+    return chosen;
+  }
+
+  function rateCandidate(c, seen) {
+    const tags = new Set(c.map(q => q.tag)).size;
+    const types = {};
+    c.forEach(q => types[q.t] = (types[q.t] || 0) + 1);
+    const used = [...new Set(BANK.map(q => q.t))];
+    const minType = Math.min(...used.map(t => types[t] || 0));
+    const checks = c.filter(q => q.t === 'check');
+    const lean = Math.abs(checks.filter(q => q.a === 0).length * 2 - checks.length);
+    return (tags === Object.keys(TAGS).length ? 10000 : tags * 500)
+         + (c.length === DRAW ? 5000 : 0)
+         + Math.min(minType, TYPE_TARGET) * 300
+         + (lean <= 2 ? 200 : 0)
+         + c.filter(q => !seen.has(q.id)).length * 10;
+  }
+
+  function drawQuiz() {
+    let seen = new Set(store.get('seen', []));
+    if (BANK.length - seen.size < DRAW) seen = new Set(store.get('last', []));   // new cycle, but skip the last attempt
+    let chosen = null, bestRate = -1;
+    for (let tries = 0; tries < 200; tries++) {
+      const c = buildCandidate(seen), r = rateCandidate(c, seen);
+      if (r > bestRate) { bestRate = r; chosen = c; }
+    }
+    chosen.forEach(q => seen.add(q.id));
+    store.set('seen', [...seen]);
+    store.set('last', chosen.map(q => q.id));
+    return chosen.map(q => {
+      if (q.t === 'pick' || q.t === 'fill') {
+        const opts = shuffle(q.o.map((text, i) => ({ text, ok: i === 0 })));
+        return { q, opts, answer: opts.findIndex(o => o.ok) };
+      }
+      if (q.t === 'check') return { q, opts: YN.map(text => ({ text })), answer: q.a };
+      return { q, opts: null, answer: q.a };
+    });
+  }
+
+  const listEl = document.getElementById('qbList');
+  const scoreEl = document.getElementById('qbScore');
+  const progressEl = document.getElementById('qbProgress');
+  const summaryEl = document.getElementById('qbSummary');
+  let current = [], score = 0, done = 0, missed = [];
+
+  function updateScore() {
+    scoreEl.textContent = score + ' / ' + current.length;
+    progressEl.textContent = done + ' of ' + current.length + ' answered';
+  }
+
+  /* Small or empty options are hard to see on a button, so label them. */
+  function optLabel(text) {
+    const t = text.trim();
+    if (t === '') return '<span class="qb-note">(nothing)</span>';
+    if (t === ',') return '<span class="qb-punct">,</span> <span class="qb-note">(a comma)</span>';
+    if (t === '.') return '<span class="qb-punct">.</span> <span class="qb-note">(a full stop)</span>';
+    if (t === '?') return '<span class="qb-punct">?</span> <span class="qb-note">(a question mark)</span>';
+    if (t === '!') return '<span class="qb-punct">!</span> <span class="qb-note">(an exclamation mark)</span>';
+    return esc(text);
+  }
+  function plainLabel(text) {
+    const t = text.trim();
+    return t === '' ? 'nothing' : t === ',' ? 'a comma' : t === '.' ? 'a full stop'
+      : t === '?' ? 'a question mark' : t === '!' ? 'an exclamation mark' : '"' + t + '"';
+  }
+  function sentenceWithGap(q, text) {
+    let filler = '<span class="qb-blank">___</span>';
+    if (text !== undefined) {
+      filler = text.trim() === ''
+        ? '<span class="qb-blank qb-filled qb-none">(nothing)</span>'
+        : '<span class="qb-blank qb-filled">' + esc(text) + '</span>';
+    }
+    return esc(q.q).replace('___', filler);
+  }
+
+  function render() {
+    listEl.innerHTML = '';
+    summaryEl.hidden = true;
+    current.forEach((item, i) => {
+      const q = item.q;
+      const card = document.createElement('div');
+      card.className = 'qb-card';
+      card.dataset.type = q.t;
+      let body;
+      if (q.t === 'spot') {
+        body = '<div class="qb-spot">' + q.parts.map((p, k) =>
+          '<button type="button" class="qb-part" data-k="' + k + '">' + esc(p) + '</button>').join('') + '</div>';
+      } else if (q.t === 'fill') {
+        const cols = item.opts.length;
+        body = '<p class="qb-text">' + sentenceWithGap(q) + '</p><div class="qb-opts qb-row" style="--qb-cols:' + cols + '"></div>';
+      } else if (q.t === 'check') {
+        body = '<p class="qb-text">' + esc(q.q) + '</p><div class="qb-opts qb-row"></div>';
+      } else {
+        body = (q.q ? '<p class="qb-text">' + esc(q.q) + '</p>' : '') + '<div class="qb-opts"></div>';
+      }
+      card.innerHTML =
+        (CAN_SPEAK ? '<button type="button" class="qb-speak" aria-label="Read this question aloud">🔊 Read it to me</button>' : '') +
+        '<p class="qb-num">Question ' + (i + 1) + ' of ' + current.length + '</p>' +
+        '<p class="qb-ask">' + esc(q.ask || ASK[q.t]) + '</p>' + body +
+        '<div class="qb-feedback" role="status"></div>';
+      if (CAN_SPEAK) {
+        const bits = [q.ask || ASK[q.t]];
+        if (q.t === 'spot') bits.push(q.parts.join(' '));
+        else if (q.q) bits.push(q.q.replace('___', 'blank'));
+        const sayOpt = t => { const x = t.trim(); return x === '' ? 'nothing' : x === '.' ? 'full stop' : x === ',' ? 'comma' : x === '?' ? 'question mark' : x === '!' ? 'exclamation mark' : x; };
+        if (q.t === 'pick' || q.t === 'fill') item.opts.forEach((o, j) => bits.push((q.t === 'pick' ? String.fromCharCode(65 + j) + ': ' : '') + sayOpt(o.text)));
+        if (q.t === 'check') bits.push(YN.join(', or '));
+        const spoken = bits.map(t => t.trim().replace(/[.\s]+$/, '')).filter(Boolean)
+          .map(t => /[?!]$/.test(t) ? t : t + '.').join(' ');
+        card.querySelector('.qb-speak').addEventListener('click', () => speak(spoken));
+      }
+      if (q.t === 'spot') {
+        card.querySelectorAll('.qb-part').forEach(b => b.addEventListener('click', () => answer(i, +b.dataset.k, card)));
+      } else {
+        const opts = card.querySelector('.qb-opts');
+        item.opts.forEach((o, j) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'qb-opt';
+          b.innerHTML = (q.t === 'pick' ? '<span class="qb-letter">' + String.fromCharCode(65 + j) + '</span>' : '') + optLabel(o.text);
+          b.addEventListener('click', () => answer(i, j, card));
+          opts.appendChild(b);
+        });
+      }
+      listEl.appendChild(card);
+    });
+    updateScore();
+  }
+
+  function answer(i, j, card) {
+    const item = current[i];
+    if (item.done) return;
+    item.done = true; done++;
+    const q = item.q, ok = j === item.answer;
+    if (ok) score++; else missed.push(q.tag);
+    card.querySelectorAll(q.t === 'spot' ? '.qb-part' : '.qb-opt').forEach((b, k) => {
+      b.disabled = true;
+      if (k === j) b.classList.add(ok ? 'qb-correct' : 'qb-incorrect');
+      else if (k === item.answer && !ok) b.classList.add('qb-reveal');
+    });
+    if (q.t === 'fill') card.querySelector('.qb-text').innerHTML = sentenceWithGap(q, item.opts[j].text);
+    let right;
+    if (q.t === 'spot') right = 'The mistake is in "' + esc(q.parts[item.answer]) + '".';
+    else if (q.t === 'pick') right = 'The answer is ' + String.fromCharCode(65 + item.answer) + '.';
+    else right = 'The answer is ' + esc(plainLabel(item.opts[item.answer].text)) + '.';
+    const fb = card.querySelector('.qb-feedback');
+    fb.classList.add('qb-show', ok ? 'qb-fb-ok' : 'qb-fb-no');
+    fb.innerHTML = '<span class="qb-verdict">' + (ok ? RIGHT[Math.floor(Math.random() * RIGHT.length)] : WRONG + ' ' + right) + '</span>' + esc(q.why);
+    updateScore();
+    if (done === current.length) showSummary();
+  }
+
+  function showSummary() {
+    const best = Math.max(store.get('best', 0), score);
+    store.set('best', best);
+    const attempts = store.get('attempts', 0) + 1;
+    store.set('attempts', attempts);
+    const counts = {};
+    missed.forEach(t => counts[t] = (counts[t] || 0) + 1);
+    const areas = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+    const n = current.length;
+    let msg;
+    if (score === n) msg = SUM.perfect;
+    else if (score >= Math.ceil(n * 0.8)) msg = SUM.high;
+    else if (score >= Math.ceil(n * 0.6)) msg = SUM.mid;
+    else msg = SUM.low;
+    summaryEl.innerHTML =
+      '<h3>You scored ' + score + ' / ' + n + '</h3><p>' + msg + '</p>' +
+      (areas.length ? '<p class="qb-sum-label">' + esc(SUM.review) + '</p><ul class="qb-areas">' + areas.map(t =>
+        '<li><a href="' + TAGS[t].href + '">' + esc(TAGS[t].label) + '</a><span>' + counts[t] + ' wrong</span></li>').join('') + '</ul>' : '') +
+      '<p class="qb-meta">Attempts on this device: ' + attempts + ' · Best score: ' + best + ' / ' + n + '</p>' +
+      '<button type="button" class="qb-go" id="qbAgain">Try ' + n + ' new questions</button>';
+    summaryEl.hidden = false;
+    document.getElementById('qbAgain').addEventListener('click', () => { newQuiz(); listEl.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    summaryEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function newQuiz() {
+    current = drawQuiz(); score = 0; done = 0; missed = [];
+    render();
+  }
+
+  const bankEl = document.getElementById('qbBank'), drawEl = document.getElementById('qbDraw');
+  if (bankEl) bankEl.textContent = BANK.length;
+  if (drawEl) drawEl.textContent = DRAW;
+  document.getElementById('qbNew').addEventListener('click', () => {
+    newQuiz();
+    listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  newQuiz();
+  } /* qb-end */
+})();
+</script>
+</body>
+</html>

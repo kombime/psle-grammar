@@ -279,7 +279,7 @@
     <p class="sub">Every noun goes in one place, and that decides which words can go with it.</p>
     <div class="two">
       <div class="tray">
-        <span class="tag-l">Counter tray: countable</span>
+        <span class="tag-l">Counter tray: countable (count nouns)</span>
         <p>You can put a number in front: <i>one</i> egg, <i>two</i> eggs.</p>
         <ul>
           <li>one: <b>a / an</b> egg</li>
@@ -288,7 +288,7 @@
         </ul>
       </div>
       <div class="jar">
-        <span class="tag-l">Scoop jar: uncountable</span>
+        <span class="tag-l">Scoop jar: uncountable (non-count nouns)</span>
         <p>You measure it, pour it, or it's an idea. No number fits: <span class="bad">two rices</span>.</p>
         <ul>
           <li><b>no a / an</b>: <span class="bad">a rice</span></li>
@@ -334,8 +334,8 @@
     <p class="sub">Learn these groups of jar words, the measuring words that count them, and which amount words go with each place.</p>
     <div class="stack">
       <div class="jar">
-        <span class="tag-l">Jar 1: things you pour, scoop or weigh</span>
-        <ul class="chips"><li>water</li><li>milk</li><li>rice</li><li>sugar</li><li>bread</li><li>ice</li><li>sand</li><li>paper</li><li>glass</li><li>plastic</li><li>money</li></ul>
+        <span class="tag-l">Jar 1: mass nouns, things you pour, scoop or weigh</span>
+        <ul class="chips"><li>water</li><li>milk</li><li>rice</li><li>sugar</li><li>bread</li><li>ice</li><li>sand</li><li>paper</li><li>glass</li><li>plastic</li><li>money</li><li>flour</li><li>wool</li><li>leather</li><li>dust</li><li>air</li></ul>
         <p>The <span class="sc">water</span> in the pool <b>was</b> cold. Mum bought some <span class="sc">rice</span> and <span class="sc">bread</span>.</p>
       </div>
       <div class="jar">
@@ -345,8 +345,8 @@
         <p class="why">These are the sneaky ones. They describe a whole group, so the group word stays single. The countable parts are different words: pens and rulers are stationery; chairs and tables are furniture.</p>
       </div>
       <div class="jar">
-        <span class="tag-l">Jar 3: feelings and ideas</span>
-        <ul class="chips"><li>fun</li><li>help</li><li>support</li><li>patience</li><li>courage</li><li>knowledge</li><li>excitement</li></ul>
+        <span class="tag-l">Jar 3: abstract nouns, feelings and ideas</span>
+        <ul class="chips"><li>fun</li><li>help</li><li>support</li><li>patience</li><li>courage</li><li>knowledge</li><li>excitement</li><li>pride</li><li>beauty</li><li>love</li><li>warmth</li><li>faith</li><li>power</li></ul>
         <p>We had lots of <span class="sc">fun</span>. Thank you for all your <span class="sc">help</span> and <span class="sc">support</span>.</p>
       </div>
       <div class="tray">
@@ -405,13 +405,21 @@
         <p><span class="bad">We were split into groups of threes.</span></p>
         <p><span class="good">We were split into groups of three.</span></p>
       </div>
+      <div class="special" id="partverb">
+        <h3>The measuring word decides the verb</h3>
+        <p>Your book calls measuring words <b>partitives</b>. With one, the verb matches the <b>measuring word</b>, not the jar word.</p>
+        <p><span class="good">One bar of chocolate <b>is</b> not enough.</span> (one bar)</p>
+        <p><span class="good">Two drops of oil <b>are</b> added into the pot.</span> (two drops)</p>
+        <p><span class="good">Four loaves of bread <b>were</b> sold this morning.</span> (four loaves)</p>
+        <p class="why">Cover up "of ___" and read what's left: "Four loaves… were sold."</p>
+      </div>
     </div>
   </section>
 
   <!-- 6. PRACTICE -->
   <section id="practice">
     <h2>Stock the shelves</h2>
-    <p class="sub">Each attempt draws <span id="qbDraw">20</span> questions from a bank of <span id="qbBank">150</span>, so every try is different. The questions get trickier as you go. Finish them all to see which shelves to review.</p>
+    <p class="sub">Each attempt draws <span id="qbDraw">20</span> questions from a bank of <span id="qbBank">167</span>, so every try is different. The questions get trickier as you go. Finish them all to see which shelves to review.</p>
     <div class="qb" id="qb">
       <div class="qb-bar">
         <div><div class="qb-label">Your score</div><div class="qb-score" id="qbScore">0 / 20</div><div class="qb-progress" id="qbProgress">0 of 20 answered</div></div>
@@ -429,7 +437,7 @@
       <li><b class="cn">Tray (countable):</b> a/an, -s, many, a few, fewer, a number of.</li>
       <li><b class="sc">Jar (uncountable):</b> no a/an, no -s, much, a little, less, an amount of, singular verb.</li>
       <li><b>Sneaky jar words:</b> homework, furniture, luggage, equipment, stationery, information, advice, feedback, news.</li>
-      <li><b>To count a jar word:</b> a piece of advice, a glass of water, a loaf of bread.</li>
+      <li><b>To count a jar word:</b> a piece of advice, a glass of water, a loaf of bread. The verb follows the measuring word: two loaves of bread <b>were</b>.</li>
       <li><b>Watch for:</b> words with two meanings (paper, time), already-plural people/children, and "groups of three".</li>
     </ul>
     <p class="chant">Count it on the tray, with many and -s;<br>scoop it from the jar: much, and no -s!</p>
@@ -484,7 +492,7 @@
   showItem();
 
   { /* qb-start: quiz engine in its own scope, so its names can't clash with the lesson's */
-  /* ================= QUIZ: question bank (153 questions) ================= */
+  /* ================= QUIZ: question bank (167 questions) ================= */
   const LESSON_KEY = "shelf-l10";
   const QB_TEXT = {"ask": {"check": "Is this sentence correct?", "pick": "Pick the correct sentence.", "fill": "Which choice fills the gap?", "spot": "Tap the part with the mistake."}, "yn": ["Needs fixing", "Correct"], "summary": {"review": "Shelves to review"}};
   const TAGS = {
@@ -496,6 +504,7 @@
     verb: { label: "Jar words take a singular verb", href: '#specials' },
     twomeaning: { label: "Same word, two shelves (paper, time)", href: '#specials' },
     plural: { label: "Already plural (people) and groups of three", href: '#specials' },
+    partverb: { label: "The measuring word decides the verb (two drops of oil are)", href: '#partverb' },
   };
   const BANK = [
     {"id": "c01", "t": "fill", "d": 1, "tag": "count", "q": "I bought three ___ at the bookshop.", "o": ["books", "book"], "why": "Books can be counted one by one, so after \"three\" use the plural: books."},
@@ -651,6 +660,20 @@
     {"id": "x05", "t": "check", "d": 3, "tag": "quantity", "q": "We had lots of fun, and we made lots of friends.", "a": 1, "why": "\"Lots of\" works with both uncountable (fun) and countable (friends)."},
     {"id": "x06", "t": "fill", "d": 2, "tag": "quantity", "q": "There were ___ students in the hall.", "o": ["plenty of", "much"], "why": "\"Plenty of\" works with both kinds; \"much\" can't go with countable students."},
     {"id": "x07", "t": "pick", "d": 3, "tag": "quantity", "ask": "Which sentence is correct?", "o": ["Some pupils brought some food to share.", "Some pupils brought a food to share.", "Much pupils brought some food to share.", "Some pupils brought many food to share."], "why": "\"Some\" works with both kinds of noun, but food here is uncountable."},
+    {"id": "pv01", "t": "fill", "d": 1, "tag": "partverb", "q": "Two drops of oil ___ added into the pot.", "o": ["are", "is"], "why": "The verb matches the measuring word: two drops are."},
+    {"id": "pv02", "t": "fill", "d": 1, "tag": "partverb", "q": "One bar of chocolate ___ not enough for my sweet tooth!", "o": ["is", "are"], "why": "The verb matches the measuring word: one bar is."},
+    {"id": "pv03", "t": "fill", "d": 2, "tag": "partverb", "q": "Four loaves of bread ___ sold this morning.", "o": ["were", "was"], "why": "The verb matches the measuring word: four loaves were."},
+    {"id": "pv04", "t": "fill", "d": 2, "tag": "partverb", "q": "A can of soda ___ a lot of sugar.", "o": ["contains", "contain"], "why": "The verb matches the measuring word: one can contains."},
+    {"id": "pv05", "t": "fill", "d": 2, "tag": "partverb", "q": "Three cartons of milk ___ gone bad, so we threw them away.", "o": ["have", "has"], "why": "The verb matches the measuring word: three cartons have."},
+    {"id": "pv06", "t": "check", "d": 2, "tag": "partverb", "q": "A bowl of rice is enough for me.", "a": 1, "why": "One bowl, so the singular verb “is” is right."},
+    {"id": "pv07", "t": "check", "d": 2, "tag": "partverb", "q": "Two glasses of water was spilt on the table.", "a": 0, "why": "Two glasses is plural, so the verb must be “were”."},
+    {"id": "pv08", "t": "spot", "d": 3, "tag": "partverb", "parts": ["Six pieces", "of luggage", "was left", "at the counter."], "a": 2, "why": "The verb matches “six pieces”, so it should be “were left”."},
+    {"id": "pv09", "t": "pick", "d": 3, "tag": "partverb", "ask": "Which sentence is correct?", "o": ["A slice of cake is $3.50 at the canteen.", "A slice of cake are $3.50 at the canteen.", "A slice of cakes is $3.50 at the canteen."], "why": "One slice takes “is”, and cake stays without -s after “a slice of”."},
+    {"id": "pv10", "t": "fill", "d": 3, "tag": "partverb", "q": "Every morning, two spoonfuls of sugar ___ added to Grandpa's kopi.", "o": ["are", "is"], "why": "The verb matches “two spoonfuls”, which is plural."},
+    {"id": "pv11", "t": "check", "d": 3, "tag": "partverb", "q": "A piece of advice from my coach has helped me a lot.", "a": 1, "why": "One piece takes the singular verb “has”."},
+    {"id": "pv12", "t": "check", "d": 1, "tag": "partverb", "q": "Three sheets of paper is on your desk.", "a": 0, "why": "Three sheets is plural, so the verb must be “are”."},
+    {"id": "v17", "t": "check", "d": 2, "tag": "verb", "q": "The beauty of the Botanic Gardens amazes every visitor.", "a": 1, "why": "Beauty is an abstract jar word, so it takes the singular verb “amazes”."},
+    {"id": "v18", "t": "fill", "d": 3, "tag": "verb", "q": "Too much pride ___ caused many quarrels between the two friends.", "o": ["has", "have"], "why": "Pride is an abstract jar word, so it takes the singular verb “has”."},
   ];
 
   /* ================= QUIZ BANK ENGINE (shared by every lesson) =================
